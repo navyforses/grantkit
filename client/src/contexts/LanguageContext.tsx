@@ -6,6 +6,7 @@ import { ru } from "@/i18n/ru";
 import { ka } from "@/i18n/ka";
 import type { Translations } from "@/i18n/types";
 import grantTranslations from "@/data/grantTranslations.json";
+import grantContentTranslations from "@/data/grantContentTranslations.json";
 
 export type Language = "en" | "fr" | "es" | "ru" | "ka";
 
@@ -26,8 +27,17 @@ export const LANGUAGES: LanguageOption[] = [
 
 const translations: Record<Language, Translations> = { en, fr, es, ru, ka };
 
-// Type for the grant translations JSON
+// Type for the grant translations JSON (categories, types, situations, countries)
 type TranslationLookup = Record<string, Record<string, string>>;
+
+// Type for grant content translations (name, description, eligibility per grant per language)
+type GrantContentLookup = Record<string, Record<string, { name: string; description: string; eligibility: string }>>;
+
+interface GrantContent {
+  name: string;
+  description: string;
+  eligibility: string;
+}
 
 interface LanguageContextType {
   language: Language;
@@ -41,6 +51,8 @@ interface LanguageContextType {
   tSituation: (situation: string) => string;
   /** Translate a country name */
   tCountry: (country: string) => string;
+  /** Get translated grant content (name, description, eligibility) by grant ID */
+  tGrantContent: (grantId: number, fallback: GrantContent) => GrantContent;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -84,8 +96,28 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     [language]
   );
 
+  const tGrantContent = useCallback(
+    (grantId: number, fallback: GrantContent): GrantContent => {
+      // For English, always use the original data
+      if (language === "en") return fallback;
+
+      const grantTrans = (grantContentTranslations as GrantContentLookup)[String(grantId)];
+      if (!grantTrans) return fallback;
+
+      const langTrans = grantTrans[language];
+      if (!langTrans) return fallback;
+
+      return {
+        name: langTrans.name || fallback.name,
+        description: langTrans.description || fallback.description,
+        eligibility: langTrans.eligibility || fallback.eligibility,
+      };
+    },
+    [language]
+  );
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, tCategory, tType, tSituation, tCountry }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, tCategory, tType, tSituation, tCountry, tGrantContent }}>
       {children}
     </LanguageContext.Provider>
   );

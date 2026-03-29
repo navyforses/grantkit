@@ -1,11 +1,11 @@
 /*
  * GrantCard Component
  * Design: Structured Clarity — category color-coded left border, dense but scannable layout
- * Uses dynamic translations for categories, types, and situations
+ * Uses dynamic translations for categories, types, situations, AND grant content (name, description, eligibility)
  */
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, ExternalLink, MapPin, Tag, User } from "lucide-react";
+import { ArrowUpRight, ExternalLink, MapPin, Tag } from "lucide-react";
 import { getCategoryStyle, getCategoryBorderColor, type Grant } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -16,7 +16,14 @@ interface GrantCardProps {
 
 export default function GrantCard({ grant, index }: GrantCardProps) {
   const borderColor = getCategoryBorderColor(grant.category);
-  const { t, tCategory, tType, tSituation, tCountry } = useLanguage();
+  const { t, tCategory, tType, tSituation, tCountry, tGrantContent } = useLanguage();
+
+  // Get translated grant content (name, description, eligibility)
+  const content = tGrantContent(grant.id, {
+    name: grant.name,
+    description: grant.description,
+    eligibility: grant.eligibility || "",
+  });
 
   const translatedCategory = tCategory(grant.category);
   const translatedCountry = tCountry(grant.country);
@@ -49,7 +56,7 @@ export default function GrantCard({ grant, index }: GrantCardProps) {
             <span className="text-xl mt-0.5 shrink-0">{countryFlag}</span>
             <div className="min-w-0">
               <h3 className="font-semibold text-[#0f172a] leading-snug text-[15px] group-hover:text-[#1e3a5f] transition-colors">
-                {grant.name}
+                {content.name}
               </h3>
               <p className="text-sm text-gray-500 mt-0.5 truncate">{grant.organization}</p>
             </div>
@@ -60,9 +67,9 @@ export default function GrantCard({ grant, index }: GrantCardProps) {
         </div>
 
         {/* Description */}
-        {grant.description && (
+        {content.description && (
           <p className="text-sm text-gray-600 leading-relaxed mb-3 line-clamp-2">
-            {grant.description}
+            {content.description}
           </p>
         )}
 
@@ -84,10 +91,10 @@ export default function GrantCard({ grant, index }: GrantCardProps) {
         </div>
 
         {/* Situations / Eligibility */}
-        {(translatedSituations || grant.eligibility) && (
+        {(translatedSituations || content.eligibility) && (
           <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-2">
             <span className="font-medium text-gray-600">{t.grants.eligibility}</span>{" "}
-            {translatedSituations || grant.eligibility}
+            {translatedSituations || content.eligibility}
           </p>
         )}
 

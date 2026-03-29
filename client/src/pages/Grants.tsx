@@ -3,6 +3,7 @@
  * Design: Structured Clarity — dense card grid with sticky filter bar
  * Members-only content with trust-based access (banner at top)
  * Now with 199 real grants from grants.supportnow.org
+ * Search works across both original and translated content
  */
 
 import { useMemo, useState } from "react";
@@ -12,8 +13,12 @@ import Footer from "@/components/Footer";
 import GrantCard from "@/components/GrantCard";
 import Navbar from "@/components/Navbar";
 import grantsData from "@/data/grants.json";
+import grantContentTranslations from "@/data/grantContentTranslations.json";
 import { GUMROAD_URL, type CategoryValue, type CountryValue, type Grant } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+type ContentTransMap = Record<string, Record<string, { name: string; description: string; eligibility: string }>>;
+const contentTrans = grantContentTranslations as ContentTransMap;
 
 const allGrants = grantsData as Grant[];
 
@@ -21,22 +26,38 @@ export default function Grants() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>("all");
   const [selectedCountry, setSelectedCountry] = useState<CountryValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const filteredGrants = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
     return allGrants.filter((grant) => {
       const categoryMatch = selectedCategory === "all" || grant.category === selectedCategory;
       const countryMatch = selectedCountry === "all" || grant.country === selectedCountry;
-      const searchMatch = !query || 
-        grant.name.toLowerCase().includes(query) ||
-        grant.organization.toLowerCase().includes(query) ||
-        grant.description.toLowerCase().includes(query) ||
-        grant.situations.some(s => s.toLowerCase().includes(query)) ||
-        grant.types.some(t => t.toLowerCase().includes(query));
+
+      let searchMatch = true;
+      if (query) {
+        // Search in original English content
+        const origMatch =
+          grant.name.toLowerCase().includes(query) ||
+          grant.organization.toLowerCase().includes(query) ||
+          grant.description.toLowerCase().includes(query) ||
+          grant.situations.some(s => s.toLowerCase().includes(query)) ||
+          grant.types.some(tp => tp.toLowerCase().includes(query));
+
+        // Also search in translated content for current language
+        const trans = contentTrans[String(grant.id)]?.[language];
+        const transMatch = trans
+          ? (trans.name || "").toLowerCase().includes(query) ||
+            (trans.description || "").toLowerCase().includes(query) ||
+            (trans.eligibility || "").toLowerCase().includes(query)
+          : false;
+
+        searchMatch = origMatch || transMatch;
+      }
+
       return categoryMatch && countryMatch && searchMatch;
     });
-  }, [selectedCategory, selectedCountry, searchQuery]);
+  }, [selectedCategory, selectedCountry, searchQuery, language]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
