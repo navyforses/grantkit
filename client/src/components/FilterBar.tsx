@@ -2,30 +2,11 @@
  * FilterBar Component
  * Design: Structured Clarity — pill-shaped category tabs + country dropdown
  * Sticky on scroll, clean horizontal layout
+ * Uses dynamic translations from grantTranslations.json
  */
 
 import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
-import type { Translations } from "@/i18n/types";
-
-const categoryTranslationKeys: Record<string, keyof Translations["categories"]> = {
-  all: "all",
-  "medical-treatment": "medicalTreatment",
-  rehabilitation: "rehabilitation",
-  "rare-disease": "rareDisease",
-  pediatric: "pediatric",
-  startup: "startup",
-};
-
-const countryTranslationKeys: Record<string, keyof Translations["countries"]> = {
-  all: "all",
-  US: "us",
-  EU: "eu",
-  France: "france",
-  Germany: "germany",
-  UK: "uk",
-  Georgia: "georgia",
-};
 
 interface FilterBarProps {
   selectedCategory: CategoryValue;
@@ -33,6 +14,9 @@ interface FilterBarProps {
   onCategoryChange: (category: CategoryValue) => void;
   onCountryChange: (country: CountryValue) => void;
   grantCount: number;
+  /** Optional: search query */
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }
 
 export default function FilterBar({
@@ -41,31 +25,47 @@ export default function FilterBar({
   onCategoryChange,
   onCountryChange,
   grantCount,
+  searchQuery,
+  onSearchChange,
 }: FilterBarProps) {
-  const { t } = useLanguage();
+  const { t, tCategory, tCountry } = useLanguage();
 
   return (
     <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <div className="container py-4">
+        {/* Search bar */}
+        {onSearchChange && (
+          <div className="mb-3">
+            <input
+              type="text"
+              value={searchQuery || ""}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder={t.grants.searchPlaceholder || "Search grants..."}
+              className="w-full sm:max-w-md text-sm border border-gray-200 rounded-lg px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] placeholder:text-gray-400"
+            />
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           {/* Category tabs */}
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.value}
-                onClick={() => onCategoryChange(cat.value)}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
-                  selectedCategory === cat.value
-                    ? "bg-[#1e3a5f] text-white border-[#1e3a5f] shadow-sm"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                <span className="text-sm">{cat.icon}</span>
-                <span className="hidden sm:inline">
-                  {t.categories[categoryTranslationKeys[cat.value]] || cat.label}
-                </span>
-              </button>
-            ))}
+            {CATEGORIES.map((cat) => {
+              const label = cat.value === "all" ? t.categories.all : tCategory(cat.value);
+              return (
+                <button
+                  key={cat.value}
+                  onClick={() => onCategoryChange(cat.value)}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
+                    selectedCategory === cat.value
+                      ? "bg-[#1e3a5f] text-white border-[#1e3a5f] shadow-sm"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="text-sm">{cat.icon}</span>
+                  <span className="hidden sm:inline">{label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Country filter + count */}
@@ -78,11 +78,14 @@ export default function FilterBar({
               onChange={(e) => onCountryChange(e.target.value as CountryValue)}
               className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
             >
-              {COUNTRIES.map((country) => (
-                <option key={country.value} value={country.value}>
-                  {country.flag} {t.countries[countryTranslationKeys[country.value]] || country.label}
-                </option>
-              ))}
+              {COUNTRIES.map((country) => {
+                const label = country.value === "all" ? t.countries.all : tCountry(country.value);
+                return (
+                  <option key={country.value} value={country.value}>
+                    {country.flag} {label}
+                  </option>
+                );
+              })}
             </select>
           </div>
         </div>

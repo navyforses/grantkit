@@ -2,6 +2,7 @@
  * Grants Directory Page — GrantKit
  * Design: Structured Clarity — dense card grid with sticky filter bar
  * Members-only content with trust-based access (banner at top)
+ * Now with 199 real grants from grants.supportnow.org
  */
 
 import { useMemo, useState } from "react";
@@ -19,15 +20,23 @@ const allGrants = grantsData as Grant[];
 export default function Grants() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>("all");
   const [selectedCountry, setSelectedCountry] = useState<CountryValue>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const { t } = useLanguage();
 
   const filteredGrants = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
     return allGrants.filter((grant) => {
       const categoryMatch = selectedCategory === "all" || grant.category === selectedCategory;
       const countryMatch = selectedCountry === "all" || grant.country === selectedCountry;
-      return categoryMatch && countryMatch;
+      const searchMatch = !query || 
+        grant.name.toLowerCase().includes(query) ||
+        grant.organization.toLowerCase().includes(query) ||
+        grant.description.toLowerCase().includes(query) ||
+        grant.situations.some(s => s.toLowerCase().includes(query)) ||
+        grant.types.some(t => t.toLowerCase().includes(query));
+      return categoryMatch && countryMatch && searchMatch;
     });
-  }, [selectedCategory, selectedCountry]);
+  }, [selectedCategory, selectedCountry, searchQuery]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -58,6 +67,8 @@ export default function Grants() {
         onCategoryChange={setSelectedCategory}
         onCountryChange={setSelectedCountry}
         grantCount={filteredGrants.length}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
       {/* Grants grid */}

@@ -15,7 +15,29 @@ import grantsData from "@/data/grants.json";
 import { type Grant } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const featuredGrants = (grantsData as Grant[]).filter(g => g.featured).slice(0, 5);
+// Show first 5 grants from different categories for variety
+const allGrants = grantsData as Grant[];
+const previewGrants = (() => {
+  const seen = new Set<string>();
+  const result: Grant[] = [];
+  for (const g of allGrants) {
+    if (!seen.has(g.category)) {
+      result.push(g);
+      seen.add(g.category);
+    }
+    if (result.length >= 5) break;
+  }
+  // Fill remaining from the rest if needed
+  if (result.length < 5) {
+    for (const g of allGrants) {
+      if (!result.includes(g)) {
+        result.push(g);
+        if (result.length >= 5) break;
+      }
+    }
+  }
+  return result;
+})();
 
 const fadeInUp = {
   initial: { opacity: 0, y: 24 },
@@ -151,12 +173,13 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5 max-w-6xl mx-auto">
             {[
               { icon: "🏥", title: t.whatYouGet.cat1Title, desc: t.whatYouGet.cat1Desc },
               { icon: "♿", title: t.whatYouGet.cat2Title, desc: t.whatYouGet.cat2Desc },
-              { icon: "🧬", title: t.whatYouGet.cat3Title, desc: t.whatYouGet.cat3Desc },
-              { icon: "🚀", title: t.whatYouGet.cat4Title, desc: t.whatYouGet.cat4Desc },
+              { icon: "💰", title: t.whatYouGet.cat3Title, desc: t.whatYouGet.cat3Desc },
+              { icon: "🤝", title: t.whatYouGet.cat4Title, desc: t.whatYouGet.cat4Desc },
+              { icon: "🎓", title: t.whatYouGet.cat5Title, desc: t.whatYouGet.cat5Desc },
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -203,7 +226,7 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
-            {featuredGrants.map((grant, i) => (
+            {previewGrants.map((grant, i) => (
               <GrantCard key={grant.id} grant={grant} index={i} />
             ))}
           </div>

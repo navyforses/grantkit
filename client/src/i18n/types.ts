@@ -48,6 +48,8 @@ export interface Translations {
     cat3Desc: string;
     cat4Title: string;
     cat4Desc: string;
+    cat5Title: string;
+    cat5Desc: string;
     includesTitle: string;
     includes: string[];
   };
@@ -91,26 +93,17 @@ export interface Translations {
     noResultsHint: string;
     apply: string;
     eligibility: string;
+    searchPlaceholder: string;
+    source: string;
   };
 
-  // Filter categories
+  // Filter categories (static "All" label only; dynamic categories use tCategory)
   categories: {
     all: string;
-    medicalTreatment: string;
-    rehabilitation: string;
-    rareDisease: string;
-    pediatric: string;
-    startup: string;
   };
 
-  // Countries
+  // Countries (static "All" label only; dynamic countries use tCountry)
   countries: {
     all: string;
-    us: string;
-    eu: string;
-    france: string;
-    germany: string;
-    uk: string;
-    georgia: string;
   };
 }
