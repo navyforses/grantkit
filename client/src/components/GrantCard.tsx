@@ -6,7 +6,9 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight, Calendar, DollarSign, MapPin } from "lucide-react";
-import { getCategoryLabel, getCategoryStyle, type Grant } from "@/lib/constants";
+import { getCategoryStyle, type Grant } from "@/lib/constants";
+import { useLanguage } from "@/contexts/LanguageContext";
+import type { Translations } from "@/i18n/types";
 
 interface GrantCardProps {
   grant: Grant;
@@ -21,8 +23,20 @@ const categoryBorderColors: Record<string, string> = {
   "startup": "border-l-emerald-500",
 };
 
+const categoryTranslationKeys: Record<string, keyof Translations["categories"]> = {
+  "all": "all",
+  "medical-treatment": "medicalTreatment",
+  "rehabilitation": "rehabilitation",
+  "rare-disease": "rareDisease",
+  "pediatric": "pediatric",
+  "startup": "startup",
+};
+
 export default function GrantCard({ grant, index }: GrantCardProps) {
   const borderColor = categoryBorderColors[grant.category] || "border-l-gray-400";
+  const { t } = useLanguage();
+
+  const translatedCategory = t.categories[categoryTranslationKeys[grant.category]] || grant.category;
 
   return (
     <motion.div
@@ -44,7 +58,7 @@ export default function GrantCard({ grant, index }: GrantCardProps) {
             </div>
           </div>
           <span className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border ${getCategoryStyle(grant.category)}`}>
-            {getCategoryLabel(grant.category)}
+            {translatedCategory}
           </span>
         </div>
 
@@ -71,7 +85,7 @@ export default function GrantCard({ grant, index }: GrantCardProps) {
 
         {/* Eligibility */}
         <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-2">
-          <span className="font-medium text-gray-600">Eligibility:</span> {grant.eligibility}
+          <span className="font-medium text-gray-600">{t.grants.eligibility}</span> {grant.eligibility}
         </p>
 
         {/* Apply button */}
@@ -81,7 +95,7 @@ export default function GrantCard({ grant, index }: GrantCardProps) {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1e3a5f] hover:text-[#22c55e] transition-colors"
         >
-          Apply
+          {t.grants.apply}
           <ArrowUpRight className="w-3.5 h-3.5" />
         </a>
       </div>

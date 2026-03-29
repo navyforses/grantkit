@@ -13,6 +13,7 @@ import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
 import grantsData from "@/data/grants.json";
 import { type Grant } from "@/lib/constants";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const featuredGrants = (grantsData as Grant[]).filter(g => g.featured).slice(0, 5);
 
@@ -31,25 +32,7 @@ const stagger = {
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  const faqs = [
-    {
-      q: "How often is it updated?",
-      a: "Monthly, with email notifications when new grants are added. We continuously monitor grant programs across all covered countries.",
-    },
-    {
-      q: "Can I cancel anytime?",
-      a: "Yes, you can cancel your subscription anytime through Gumroad. No questions asked, no hidden fees.",
-    },
-    {
-      q: "What countries are covered?",
-      a: "We cover grants from the US, EU (France, Germany, Netherlands, and more), UK, Georgia, Canada, and Australia. New countries are added regularly.",
-    },
-    {
-      q: "Is this for organizations or individuals?",
-      a: "Both. Our database includes grants for individuals, families seeking medical treatment, and early-stage startups looking for funding.",
-    },
-  ];
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -73,23 +56,22 @@ export default function Home() {
             >
               <span className="inline-flex items-center gap-2 text-sm font-medium text-blue-300 bg-blue-500/10 border border-blue-400/20 rounded-full px-4 py-1.5 mb-6">
                 <Globe className="w-3.5 h-3.5" />
-                Curated grant database — updated monthly
+                {t.hero.badge}
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold text-white leading-[1.1] tracking-tight mb-5">
-                Find Grants for Medical Treatment & Startups
-                <span className="text-[#22c55e]"> — Worldwide</span>
+                {t.hero.title}
+                <span className="text-[#22c55e]">{t.hero.titleAccent}</span>
               </h1>
               <p className="text-lg md:text-xl text-blue-100/80 leading-relaxed mb-8 max-w-2xl">
-                Curated database of 50+ grants for individuals, families, and founders.
-                Organized by category, country, and eligibility. Updated monthly.
+                {t.hero.subtitle}
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <PricingCTA text="Get Access — $9/month" size="large" />
+                <PricingCTA text={t.hero.cta} size="large" />
                 <a
                   href="#preview"
                   className="inline-flex items-center gap-2 text-sm font-medium text-blue-200 hover:text-white transition-colors"
                 >
-                  See sample grants
+                  {t.hero.seeGrants}
                   <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -104,10 +86,10 @@ export default function Home() {
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4"
           >
             {[
-              { icon: Globe, label: "Countries", value: "15+" },
-              { icon: Shield, label: "Medical & Rehab", value: "20+" },
-              { icon: Zap, label: "Startup Grants", value: "10+" },
-              { icon: Calendar, label: "Updated", value: "Monthly" },
+              { icon: Globe, label: t.hero.statCountriesLabel, value: t.hero.statCountries },
+              { icon: Shield, label: t.hero.statMedicalLabel, value: t.hero.statMedical },
+              { icon: Zap, label: t.hero.statStartupLabel, value: t.hero.statStartup },
+              { icon: Calendar, label: t.hero.statUpdatedLabel, value: t.hero.statUpdated },
             ].map((stat) => (
               <div
                 key={stat.label}
@@ -127,34 +109,21 @@ export default function Home() {
         <div className="container">
           <motion.div {...fadeInUp} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0f172a] tracking-tight mb-4">
-              Grant information is scattered, outdated,
-              <br className="hidden md:block" /> and hard to find
+              {t.problem.title}
             </h2>
             <p className="text-gray-500 max-w-xl mx-auto">
-              Thousands of grants exist, but finding the right one shouldn't take weeks.
+              {t.problem.subtitle}
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
-              {
-                icon: Search,
-                title: "Hours of searching",
-                desc: "Grant information is spread across dozens of government websites, NGOs, and databases in different languages.",
-              },
-              {
-                icon: Globe,
-                title: "Language barriers",
-                desc: "Confusing eligibility rules, complex application processes, and documentation in languages you don't speak.",
-              },
-              {
-                icon: Clock,
-                title: "Missing deadlines",
-                desc: "No centralized alerts or notifications. By the time you find a grant, the deadline has already passed.",
-              },
+              { icon: Search, title: t.problem.pain1Title, desc: t.problem.pain1Desc },
+              { icon: Globe, title: t.problem.pain2Title, desc: t.problem.pain2Desc },
+              { icon: Clock, title: t.problem.pain3Title, desc: t.problem.pain3Desc },
             ].map((pain, i) => (
               <motion.div
-                key={pain.title}
+                key={i}
                 {...stagger}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
                 className="bg-white border border-gray-200/80 rounded-xl p-6 hover:shadow-sm transition-shadow"
@@ -175,38 +144,22 @@ export default function Home() {
         <div className="container">
           <motion.div {...fadeInUp} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0f172a] tracking-tight mb-4">
-              Everything you need, organized in one place
+              {t.whatYouGet.title}
             </h2>
             <p className="text-gray-500 max-w-xl mx-auto">
-              Each grant is researched, verified, and formatted for quick scanning.
+              {t.whatYouGet.subtitle}
             </p>
           </motion.div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
             {[
-              {
-                icon: "🏥",
-                title: "Medical Treatment",
-                desc: "Copay assistance, treatment funding, and disability compensation programs.",
-              },
-              {
-                icon: "♿",
-                title: "Rehabilitation",
-                desc: "Physical therapy, early intervention, and pediatric rehabilitation grants.",
-              },
-              {
-                icon: "🧬",
-                title: "Rare Diseases",
-                desc: "Specialized funding for rare and orphan disease research and patient support.",
-              },
-              {
-                icon: "🚀",
-                title: "Startup Funding",
-                desc: "Innovation grants, SBIR/STTR programs, and EU accelerator funding.",
-              },
+              { icon: "🏥", title: t.whatYouGet.cat1Title, desc: t.whatYouGet.cat1Desc },
+              { icon: "♿", title: t.whatYouGet.cat2Title, desc: t.whatYouGet.cat2Desc },
+              { icon: "🧬", title: t.whatYouGet.cat3Title, desc: t.whatYouGet.cat3Desc },
+              { icon: "🚀", title: t.whatYouGet.cat4Title, desc: t.whatYouGet.cat4Desc },
             ].map((item, i) => (
               <motion.div
-                key={item.title}
+                key={i}
                 {...stagger}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="text-center p-6 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all"
@@ -220,18 +173,9 @@ export default function Home() {
 
           <motion.div {...fadeInUp} className="mt-12 max-w-3xl mx-auto">
             <div className="bg-[#f0fdf4] border border-green-200/60 rounded-xl p-6">
-              <h3 className="font-semibold text-[#0f172a] mb-3">Each grant entry includes:</h3>
+              <h3 className="font-semibold text-[#0f172a] mb-3">{t.whatYouGet.includesTitle}</h3>
               <div className="grid sm:grid-cols-2 gap-2">
-                {[
-                  "Grant name & organization",
-                  "Country with flag indicator",
-                  "Funding amount or range",
-                  "Category classification",
-                  "Eligibility summary",
-                  "Application deadline",
-                  "Direct application link",
-                  "Monthly update status",
-                ].map((item) => (
+                {t.whatYouGet.includes.map((item) => (
                   <div key={item} className="flex items-center gap-2 text-sm text-gray-700">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shrink-0" />
                     {item}
@@ -248,13 +192,13 @@ export default function Home() {
         <div className="container">
           <motion.div {...fadeInUp} className="text-center mb-10">
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#22c55e] uppercase tracking-wider mb-3">
-              Free Preview
+              {t.preview.badge}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-[#0f172a] tracking-tight mb-4">
-              See what's inside
+              {t.preview.title}
             </h2>
             <p className="text-gray-500 max-w-lg mx-auto">
-              Here are 5 sample grants from our database. Members get access to all 50+ grants.
+              {t.preview.subtitle}
             </p>
           </motion.div>
 
@@ -274,9 +218,9 @@ export default function Home() {
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl px-8 py-6 text-center shadow-lg">
                 <Lock className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-                <p className="font-semibold text-[#0f172a] mb-1">50+ more grants available for members</p>
-                <p className="text-sm text-gray-500 mb-4">Updated monthly with new opportunities</p>
-                <PricingCTA text="Unlock All Grants — $9/month" />
+                <p className="font-semibold text-[#0f172a] mb-1">{t.preview.lockedTitle}</p>
+                <p className="text-sm text-gray-500 mb-4">{t.preview.lockedSubtitle}</p>
+                <PricingCTA text={t.preview.unlockCta} />
               </div>
             </div>
           </div>
@@ -288,12 +232,12 @@ export default function Home() {
         <div className="container">
           <motion.div {...fadeInUp} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0f172a] tracking-tight mb-4">
-              Frequently asked questions
+              {t.faq.title}
             </h2>
           </motion.div>
 
           <div className="max-w-2xl mx-auto space-y-3">
-            {faqs.map((faq, i) => (
+            {t.faq.items.map((faq, i) => (
               <motion.div
                 key={i}
                 {...stagger}
@@ -329,13 +273,12 @@ export default function Home() {
         <div className="container text-center">
           <motion.div {...fadeInUp}>
             <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
-              Stop searching. Start applying.
+              {t.finalCta.title}
             </h2>
             <p className="text-blue-200/70 max-w-lg mx-auto mb-8">
-              Get instant access to 50+ curated grants across 15+ countries.
-              New grants added every month.
+              {t.finalCta.subtitle}
             </p>
-            <PricingCTA text="Get Access — $9/month" size="large" />
+            <PricingCTA text={t.finalCta.cta} size="large" />
           </motion.div>
         </div>
       </section>

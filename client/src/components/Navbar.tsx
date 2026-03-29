@@ -1,13 +1,16 @@
 /*
  * Navbar Component
- * Design: Structured Clarity — clean top navigation with logo and CTA
+ * Design: Structured Clarity — clean top navigation with logo, language switcher, and CTA
  */
 
 import { Link, useLocation } from "wouter";
 import PricingCTA from "./PricingCTA";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Navbar() {
   const [location] = useLocation();
+  const { t } = useLanguage();
 
   return (
     <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-30">
@@ -23,14 +26,14 @@ export default function Navbar() {
         </Link>
 
         {/* Nav links */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-5">
           <Link
             href="/"
             className={`text-sm font-medium transition-colors ${
               location === "/" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            Home
+            {t.nav.home}
           </Link>
           <Link
             href="/grants"
@@ -38,11 +41,12 @@ export default function Navbar() {
               location === "/grants" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            Grants Directory
+            {t.nav.grantsDirectory}
           </Link>
           <div className="hidden sm:block">
-            <PricingCTA text="Subscribe" size="default" />
+            <PricingCTA text={t.nav.subscribe} size="default" />
           </div>
+          <LanguageSwitcher />
         </div>
       </div>
     </nav>

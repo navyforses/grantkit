@@ -4,8 +4,11 @@
  */
 
 import { GUMROAD_URL } from "@/lib/constants";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-[#0f172a] text-gray-400">
       <div className="container py-12">
@@ -23,7 +26,7 @@ export default function Footer() {
           {/* Links */}
           <div className="flex items-center gap-6 text-sm">
             <a href="mailto:hello@grantkit.co" className="hover:text-white transition-colors">
-              Contact
+              {t.footer.contact}
             </a>
             <a
               href={GUMROAD_URL}
@@ -31,13 +34,13 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="hover:text-white transition-colors"
             >
-              Gumroad
+              {t.footer.gumroad}
             </a>
           </div>
 
           {/* Copyright */}
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} GrantKit. All rights reserved.
+            &copy; {new Date().getFullYear()} GrantKit. {t.footer.rights}
           </p>
         </div>
       </div>

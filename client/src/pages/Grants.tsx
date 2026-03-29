@@ -12,12 +12,14 @@ import GrantCard from "@/components/GrantCard";
 import Navbar from "@/components/Navbar";
 import grantsData from "@/data/grants.json";
 import { GUMROAD_URL, type CategoryValue, type CountryValue, type Grant } from "@/lib/constants";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const allGrants = grantsData as Grant[];
 
 export default function Grants() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>("all");
   const [selectedCountry, setSelectedCountry] = useState<CountryValue>("all");
+  const { t } = useLanguage();
 
   const filteredGrants = useMemo(() => {
     return allGrants.filter((grant) => {
@@ -35,7 +37,7 @@ export default function Grants() {
       <div className="bg-[#1e3a5f] text-white">
         <div className="container py-3 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-sm text-blue-100">
-            This page is for GrantKit members. Not a member yet?
+            {t.grants.memberBanner}
           </p>
           <a
             href={GUMROAD_URL}
@@ -43,7 +45,7 @@ export default function Grants() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-[#22c55e] hover:text-green-300 transition-colors"
           >
-            Subscribe on Gumroad
+            {t.grants.memberBannerCta}
             <ArrowRight className="w-3.5 h-3.5" />
           </a>
         </div>
@@ -69,9 +71,9 @@ export default function Grants() {
             </div>
           ) : (
             <div className="text-center py-20">
-              <p className="text-gray-400 text-lg mb-2">No grants found</p>
+              <p className="text-gray-400 text-lg mb-2">{t.grants.noResults}</p>
               <p className="text-gray-400 text-sm">
-                Try adjusting your filters to see more results.
+                {t.grants.noResultsHint}
               </p>
             </div>
           )}

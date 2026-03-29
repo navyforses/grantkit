@@ -5,6 +5,27 @@
  */
 
 import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue } from "@/lib/constants";
+import { useLanguage } from "@/contexts/LanguageContext";
+import type { Translations } from "@/i18n/types";
+
+const categoryTranslationKeys: Record<string, keyof Translations["categories"]> = {
+  all: "all",
+  "medical-treatment": "medicalTreatment",
+  rehabilitation: "rehabilitation",
+  "rare-disease": "rareDisease",
+  pediatric: "pediatric",
+  startup: "startup",
+};
+
+const countryTranslationKeys: Record<string, keyof Translations["countries"]> = {
+  all: "all",
+  US: "us",
+  EU: "eu",
+  France: "france",
+  Germany: "germany",
+  UK: "uk",
+  Georgia: "georgia",
+};
 
 interface FilterBarProps {
   selectedCategory: CategoryValue;
@@ -21,6 +42,8 @@ export default function FilterBar({
   onCountryChange,
   grantCount,
 }: FilterBarProps) {
+  const { t } = useLanguage();
+
   return (
     <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <div className="container py-4">
@@ -38,7 +61,9 @@ export default function FilterBar({
                 }`}
               >
                 <span className="text-sm">{cat.icon}</span>
-                <span className="hidden sm:inline">{cat.label}</span>
+                <span className="hidden sm:inline">
+                  {t.categories[categoryTranslationKeys[cat.value]] || cat.label}
+                </span>
               </button>
             ))}
           </div>
@@ -46,7 +71,7 @@ export default function FilterBar({
           {/* Country filter + count */}
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500 whitespace-nowrap">
-              <span className="font-semibold text-[#0f172a]">{grantCount}</span> grants
+              <span className="font-semibold text-[#0f172a]">{grantCount}</span> {t.grants.grantsCount}
             </span>
             <select
               value={selectedCountry}
@@ -55,7 +80,7 @@ export default function FilterBar({
             >
               {COUNTRIES.map((country) => (
                 <option key={country.value} value={country.value}>
-                  {country.flag} {country.label}
+                  {country.flag} {t.countries[countryTranslationKeys[country.value]] || country.label}
                 </option>
               ))}
             </select>
