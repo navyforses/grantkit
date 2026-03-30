@@ -191,3 +191,15 @@
 
 ## Bug Fixes
 - [x] Fix tRPC error: hardened SPA fallback to never serve HTML for /api/* routes + added client-side retry for non-JSON responses
+
+## Mobile App-Like Transformation
+- [x] Audit all pages in mobile viewport (375px) and document issues
+- [x] Create mobile bottom navigation bar (Home, Browse, Dashboard, Profile + Admin for admins)
+- [x] Add app shell with safe-area handling, viewport-fit=cover, PWA meta tags, MobileHeader + MobileBottomNav
+- [x] Redesign Home page for mobile-first (compact hero, horizontal-scroll cards, full-width CTAs, scrollbar-hide)
+- [x] Redesign Catalog/Browse with mobile-friendly filters (bottom sheet, horizontal category chips, single-column grid, larger touch targets)
+- [x] Redesign Grant Detail for mobile (sticky bottom CTA, collapsible sections, compact header, horizontal-scroll related grants, 2-col details grid)
+- [x] Optimize Dashboard, Profile, Contact, Privacy, Terms, Refund pages for mobile (compact spacing, touch-friendly inputs, no footer on mobile, pb-24 for bottom nav)
+- [x] Add PWA manifest.json (standalone display, portrait, theme-color #0f172a) and meta tags for Add to Home Screen
+- [x] Ensure all touch targets are 44px+ (h-11/h-12 buttons, p-3/p-4 cards) and spacing is thumb-friendly
+- [x] Test all pages — 183 vitest tests passing, no TypeScript errors, dev server running

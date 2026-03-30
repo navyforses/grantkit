@@ -100,6 +100,14 @@
   body {
     @apply bg-background text-foreground;
     font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Safe area for devices with notch/home indicator */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -141,5 +149,23 @@
       padding-right: 2rem;
       max-width: 1280px;
     }
+  }
+
+  /* Hide scrollbar for horizontal scroll sections on mobile */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Slide-up animation for mobile bottom sheets */
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
   }
 }

@@ -1,6 +1,7 @@
 /*
  * Refund Policy Page
- * Professional legal page for Paddle verification
+ * Mobile: compact spacing, readable prose, no footer
+ * Desktop: centered max-w-3xl layout
  */
 
 import Navbar from "@/components/Navbar";
@@ -22,31 +23,26 @@ export default function Refund() {
       />
       <Navbar />
 
-      <main className="flex-1 py-16">
-        <div className="container max-w-3xl">
-          {/* Back link */}
-          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1e3a5f] transition-colors mb-8">
-            <ArrowLeft className="w-4 h-4" />
+      <main className="flex-1 py-6 md:py-16 pb-24 md:pb-16">
+        <div className="container px-4 md:px-0 max-w-3xl">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-xs md:text-sm text-gray-500 active:text-[#1e3a5f] md:hover:text-[#1e3a5f] transition-colors mb-4 md:mb-8">
+            <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
             {t.legal?.backToHome || "Back to Home"}
           </Link>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-[#0f172a] tracking-tight mb-2">
+          <h1 className="text-xl md:text-4xl font-bold text-[#0f172a] tracking-tight mb-1 md:mb-2">
             {t.legal?.refundTitle || "Refund Policy"}
           </h1>
-          <p className="text-sm text-gray-400 mb-10">
+          <p className="text-xs md:text-sm text-gray-400 mb-6 md:mb-10">
             {t.legal?.lastUpdated || "Last updated"}: March 30, 2026
           </p>
 
-          <div className="prose prose-gray max-w-none prose-headings:text-[#0f172a] prose-headings:tracking-tight prose-p:text-gray-600 prose-p:leading-relaxed prose-li:text-gray-600 prose-a:text-[#1e3a5f] prose-a:no-underline hover:prose-a:underline">
+          <div className="prose prose-sm md:prose-base prose-gray max-w-none prose-headings:text-[#0f172a] prose-headings:tracking-tight prose-p:text-gray-600 prose-p:leading-relaxed prose-li:text-gray-600 prose-a:text-[#1e3a5f] prose-a:no-underline hover:prose-a:underline prose-headings:text-base md:prose-headings:text-xl prose-p:text-sm md:prose-p:text-base prose-li:text-sm md:prose-li:text-base">
             <h2>{t.legal?.refundOverviewTitle || "Overview"}</h2>
-            <p>
-              {t.legal?.refundOverviewText || "At GrantKit, we want you to be completely satisfied with your subscription. This Refund Policy outlines the terms and conditions under which refunds may be issued for our subscription service."}
-            </p>
+            <p>{t.legal?.refundOverviewText || "At GrantKit, we want you to be completely satisfied with your subscription. This Refund Policy outlines the terms and conditions under which refunds may be issued for our subscription service."}</p>
 
             <h2>{t.legal?.refundMerchantTitle || "Merchant of Record"}</h2>
-            <p>
-              {t.legal?.refundMerchantText || "All payments for GrantKit are processed by Paddle (paddle.com), our Merchant of Record. Paddle handles all billing, payment processing, and refund transactions on our behalf. As such, refund requests are subject to both our policy and Paddle's terms of service."}
-            </p>
+            <p>{t.legal?.refundMerchantText || "All payments for GrantKit are processed by Paddle (paddle.com), our Merchant of Record. Paddle handles all billing, payment processing, and refund transactions on our behalf. As such, refund requests are subject to both our policy and Paddle's terms of service."}</p>
 
             <h2>{t.legal?.refundEligibilityTitle || "Refund Eligibility"}</h2>
             <p>{t.legal?.refundEligibilityText || "You may be eligible for a refund under the following circumstances:"}</p>
@@ -74,19 +70,13 @@ export default function Refund() {
             </ol>
 
             <h2>{t.legal?.refundTimelineTitle || "Refund Processing Time"}</h2>
-            <p>
-              {t.legal?.refundTimelineText || "Once a refund is approved, it will be processed through Paddle. The refund will typically appear on your original payment method within 5-10 business days, depending on your bank or payment provider. Paddle will send you a confirmation email once the refund has been initiated."}
-            </p>
+            <p>{t.legal?.refundTimelineText || "Once a refund is approved, it will be processed through Paddle. The refund will typically appear on your original payment method within 5-10 business days, depending on your bank or payment provider. Paddle will send you a confirmation email once the refund has been initiated."}</p>
 
             <h2>{t.legal?.refundCancellationTitle || "Subscription Cancellation"}</h2>
-            <p>
-              {t.legal?.refundCancellationText || "You may cancel your subscription at any time through your account profile page. When you cancel, your subscription will remain active until the end of the current billing period. No partial refunds are provided for unused time within a billing period after the 14-day refund window has passed."}
-            </p>
+            <p>{t.legal?.refundCancellationText || "You may cancel your subscription at any time through your account profile page. When you cancel, your subscription will remain active until the end of the current billing period. No partial refunds are provided for unused time within a billing period after the 14-day refund window has passed."}</p>
 
             <h2>{t.legal?.refundChangesTitle || "Changes to This Policy"}</h2>
-            <p>
-              {t.legal?.refundChangesText || "We reserve the right to modify this Refund Policy at any time. Any changes will be posted on this page with an updated date. Your continued use of the service after changes constitutes acceptance of the modified policy."}
-            </p>
+            <p>{t.legal?.refundChangesText || "We reserve the right to modify this Refund Policy at any time. Any changes will be posted on this page with an updated date. Your continued use of the service after changes constitutes acceptance of the modified policy."}</p>
 
             <h2>{t.legal?.refundContactTitle || "Contact Us"}</h2>
             <p>
@@ -97,7 +87,9 @@ export default function Refund() {
         </div>
       </main>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 }

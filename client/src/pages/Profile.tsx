@@ -1,7 +1,8 @@
 /*
  * Profile Page — GrantKit
  * Shows account information and subscription management
- * Users can view status, cancel, or resubscribe
+ * Mobile: compact card layout, no footer, touch-friendly
+ * Desktop: centered max-w-2xl layout
  */
 
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -42,7 +43,6 @@ export default function Profile() {
   const cancelMutation = trpc.subscription.cancel.useMutation({
     onSuccess: () => {
       setShowCancelDialog(false);
-      // Refetch subscription status
       utils.subscription.status.invalidate();
     },
   });
@@ -54,13 +54,11 @@ export default function Profile() {
     window.location.href = "/";
   };
 
-  // Redirect to login if not authenticated
   if (!authLoading && !isAuthenticated) {
     window.location.href = getLoginUrl();
     return null;
   }
 
-  // Loading state
   if (authLoading || subLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
@@ -73,31 +71,11 @@ export default function Profile() {
   }
 
   const statusConfig: Record<string, { icon: React.ReactNode; color: string; bg: string }> = {
-    active: {
-      icon: <CheckCircle className="w-5 h-5" />,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50 border-emerald-200",
-    },
-    cancelled: {
-      icon: <XCircle className="w-5 h-5" />,
-      color: "text-red-500",
-      bg: "bg-red-50 border-red-200",
-    },
-    past_due: {
-      icon: <AlertTriangle className="w-5 h-5" />,
-      color: "text-amber-500",
-      bg: "bg-amber-50 border-amber-200",
-    },
-    paused: {
-      icon: <Pause className="w-5 h-5" />,
-      color: "text-gray-500",
-      bg: "bg-gray-50 border-gray-200",
-    },
-    none: {
-      icon: <XCircle className="w-5 h-5" />,
-      color: "text-gray-400",
-      bg: "bg-gray-50 border-gray-200",
-    },
+    active: { icon: <CheckCircle className="w-4 h-4 md:w-5 md:h-5" />, color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200" },
+    cancelled: { icon: <XCircle className="w-4 h-4 md:w-5 md:h-5" />, color: "text-red-500", bg: "bg-red-50 border-red-200" },
+    past_due: { icon: <AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />, color: "text-amber-500", bg: "bg-amber-50 border-amber-200" },
+    paused: { icon: <Pause className="w-4 h-4 md:w-5 md:h-5" />, color: "text-gray-500", bg: "bg-gray-50 border-gray-200" },
+    none: { icon: <XCircle className="w-4 h-4 md:w-5 md:h-5" />, color: "text-gray-400", bg: "bg-gray-50 border-gray-200" },
   };
 
   const statusKey = subStatus?.subscriptionStatus || "none";
@@ -116,66 +94,53 @@ export default function Profile() {
       <SEO title="Profile" noIndex />
       <Navbar />
 
-      <main className="flex-1 py-10 md:py-16">
-        <div className="container max-w-2xl">
+      <main className="flex-1 py-5 md:py-16 pb-24 md:pb-16">
+        <div className="container px-4 md:px-0 max-w-2xl">
           {/* Back link */}
           <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1e3a5f] transition-colors mb-8"
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 text-xs md:text-sm text-gray-500 active:text-[#1e3a5f] md:hover:text-[#1e3a5f] transition-colors mb-4 md:mb-8"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
             {t.profile.backToHome}
           </Link>
 
           {/* Page title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-[#0f172a] tracking-tight mb-8">
+          <h1 className="text-xl md:text-3xl font-bold text-[#0f172a] tracking-tight mb-4 md:mb-8">
             {t.profile.title}
           </h1>
 
           {/* Account Information Card */}
-          <div className="bg-white border border-gray-200/80 rounded-xl p-6 mb-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
-                <User className="w-5 h-5 text-[#1e3a5f]" />
+          <div className="bg-white border border-gray-200/80 rounded-xl p-4 md:p-6 mb-3 md:mb-6">
+            <div className="flex items-center gap-2.5 md:gap-3 mb-4 md:mb-6">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
+                <User className="w-4 h-4 md:w-5 md:h-5 text-[#1e3a5f]" />
               </div>
-              <h2 className="text-lg font-semibold text-[#0f172a]">{t.profile.accountInfo}</h2>
+              <h2 className="text-base md:text-lg font-semibold text-[#0f172a]">{t.profile.accountInfo}</h2>
             </div>
 
-            <div className="space-y-4">
-              {/* Name */}
-              <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+            <div className="space-y-0">
+              <div className="flex items-center gap-3 py-2.5 md:py-3 border-b border-gray-100">
                 <User className="w-4 h-4 text-gray-400 shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.name}</p>
-                  <p className="text-sm font-medium text-[#0f172a] truncate">
-                    {user?.name || "—"}
-                  </p>
+                  <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.name}</p>
+                  <p className="text-sm font-medium text-[#0f172a] truncate">{user?.name || "—"}</p>
                 </div>
               </div>
-
-              {/* Email */}
-              <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+              <div className="flex items-center gap-3 py-2.5 md:py-3 border-b border-gray-100">
                 <Mail className="w-4 h-4 text-gray-400 shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.email}</p>
-                  <p className="text-sm font-medium text-[#0f172a] truncate">
-                    {user?.email || "—"}
-                  </p>
+                  <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.email}</p>
+                  <p className="text-sm font-medium text-[#0f172a] truncate">{user?.email || "—"}</p>
                 </div>
               </div>
-
-              {/* Member since */}
-              <div className="flex items-center gap-3 py-3">
+              <div className="flex items-center gap-3 py-2.5 md:py-3">
                 <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.memberSince}</p>
+                  <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.memberSince}</p>
                   <p className="text-sm font-medium text-[#0f172a]">
                     {user?.createdAt
-                      ? new Date(user.createdAt).toLocaleDateString(undefined, {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })
+                      ? new Date(user.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
                       : "—"}
                   </p>
                 </div>
@@ -184,67 +149,55 @@ export default function Profile() {
           </div>
 
           {/* Subscription Card */}
-          <div className="bg-white border border-gray-200/80 rounded-xl p-6 mb-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
-                <CreditCard className="w-5 h-5 text-[#1e3a5f]" />
+          <div className="bg-white border border-gray-200/80 rounded-xl p-4 md:p-6 mb-3 md:mb-6">
+            <div className="flex items-center gap-2.5 md:gap-3 mb-4 md:mb-6">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-[#1e3a5f]/10 rounded-lg flex items-center justify-center">
+                <CreditCard className="w-4 h-4 md:w-5 md:h-5 text-[#1e3a5f]" />
               </div>
-              <h2 className="text-lg font-semibold text-[#0f172a]">{t.profile.subscription}</h2>
+              <h2 className="text-base md:text-lg font-semibold text-[#0f172a]">{t.profile.subscription}</h2>
             </div>
 
-            {/* Status badge */}
-            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium mb-6 ${config.color} ${config.bg}`}>
+            <div className={`inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full border text-xs md:text-sm font-medium mb-4 md:mb-6 ${config.color} ${config.bg}`}>
               {config.icon}
               {statusLabel[statusKey] || statusLabel.none}
             </div>
 
             {subStatus?.subscriptionStatus === "active" ? (
-              /* Active subscription details */
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+              <div className="space-y-0">
+                <div className="flex items-center gap-3 py-2.5 md:py-3 border-b border-gray-100">
                   <Shield className="w-4 h-4 text-gray-400 shrink-0" />
                   <div className="flex-1">
-                    <p className="text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.plan}</p>
+                    <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.plan}</p>
                     <p className="text-sm font-medium text-[#0f172a]">GrantKit Pro — $9/month</p>
                   </div>
                 </div>
-
                 {subStatus.subscriptionCurrentPeriodEnd && (
-                  <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+                  <div className="flex items-center gap-3 py-2.5 md:py-3 border-b border-gray-100">
                     <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
                     <div className="flex-1">
-                      <p className="text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.nextBilling}</p>
+                      <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.nextBilling}</p>
                       <p className="text-sm font-medium text-[#0f172a]">
-                        {new Date(subStatus.subscriptionCurrentPeriodEnd).toLocaleDateString(undefined, {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
+                        {new Date(subStatus.subscriptionCurrentPeriodEnd).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
                       </p>
                     </div>
                   </div>
                 )}
-
-                {/* Cancel button */}
-                <div className="pt-4">
+                <div className="pt-3 md:pt-4">
                   <button
                     onClick={() => setShowCancelDialog(true)}
-                    className="text-sm text-red-500 hover:text-red-600 font-medium transition-colors"
+                    className="text-xs md:text-sm text-red-500 active:text-red-600 md:hover:text-red-600 font-medium transition-colors py-1"
                   >
                     {t.profile.cancelSubscription}
                   </button>
                 </div>
               </div>
             ) : (
-              /* No active subscription — show subscribe CTA or admin notice */
-              <div className="bg-gray-50 rounded-lg p-5 text-center">
+              <div className="bg-gray-50 rounded-lg p-4 md:p-5 text-center">
                 {user?.role === "admin" ? (
-                  <p className="text-sm text-gray-500">
-                    You have full access as an administrator.
-                  </p>
+                  <p className="text-xs md:text-sm text-gray-500">You have full access as an administrator.</p>
                 ) : (
                   <>
-                    <p className="text-sm text-gray-500 mb-4">{t.profile.subscribeDesc}</p>
+                    <p className="text-xs md:text-sm text-gray-500 mb-3 md:mb-4">{t.profile.subscribeDesc}</p>
                     <PricingCTA text={t.profile.subscribeCta} size="default" />
                   </>
                 )}
@@ -253,10 +206,10 @@ export default function Profile() {
           </div>
 
           {/* Logout button */}
-          <div className="bg-white border border-gray-200/80 rounded-xl p-6">
+          <div className="bg-white border border-gray-200/80 rounded-xl p-4 md:p-6">
             <button
               onClick={handleLogout}
-              className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-red-500 transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 active:text-red-500 md:hover:text-red-500 transition-colors py-1"
             >
               <LogOut className="w-4 h-4" />
               {t.profile.logoutButton}
@@ -267,31 +220,31 @@ export default function Profile() {
 
       {/* Cancel Confirmation Dialog */}
       {showCancelDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-red-500" />
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm p-0 md:p-4">
+          <div className="bg-white rounded-t-2xl md:rounded-xl shadow-xl w-full md:max-w-md p-5 md:p-6 safe-area-bottom">
+            <div className="flex items-center gap-3 mb-3 md:mb-4">
+              <div className="w-9 h-9 md:w-10 md:h-10 bg-red-50 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
               </div>
-              <h3 className="text-lg font-semibold text-[#0f172a]">{t.profile.cancelConfirmTitle}</h3>
+              <h3 className="text-base md:text-lg font-semibold text-[#0f172a]">{t.profile.cancelConfirmTitle}</h3>
             </div>
-            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+            <p className="text-xs md:text-sm text-gray-500 mb-5 md:mb-6 leading-relaxed">
               {t.profile.cancelConfirmDesc}
             </p>
-            <div className="flex items-center gap-3 justify-end">
+            <div className="flex flex-col-reverse md:flex-row items-stretch md:items-center gap-2 md:gap-3 md:justify-end">
               <button
                 onClick={() => setShowCancelDialog(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                className="px-4 py-3 md:py-2 text-sm font-medium text-gray-700 bg-gray-100 active:bg-gray-200 md:hover:bg-gray-200 rounded-xl md:rounded-lg transition-colors text-center"
               >
                 {t.profile.cancelKeepButton}
               </button>
               <button
                 onClick={() => cancelMutation.mutate()}
                 disabled={cancelMutation.isPending}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50"
+                className="px-4 py-3 md:py-2 text-sm font-medium text-white bg-red-500 active:bg-red-600 md:hover:bg-red-600 rounded-xl md:rounded-lg transition-colors disabled:opacity-50 text-center"
               >
                 {cancelMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                 ) : (
                   t.profile.cancelConfirmButton
                 )}
@@ -301,7 +254,9 @@ export default function Profile() {
         </div>
       )}
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 }

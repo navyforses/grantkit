@@ -1,6 +1,7 @@
 /*
  * Catalog Page — Unified Grants & Resources Directory
  * Design: Structured Clarity — dense card grid with sticky filters
+ * Mobile: app-like single-column layout with bottom sheet filters
  * Content locked behind authentication + active subscription
  * Data sourced from database via tRPC with full-text multilingual search
  */
@@ -64,7 +65,7 @@ export default function Catalog() {
   const catalogInput = useMemo(
     () => ({
       search: debouncedSearch || undefined,
-      language: debouncedSearch ? language : undefined, // Only pass language when searching
+      language: debouncedSearch ? language : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
       country: selectedCountry !== "all" ? selectedCountry : undefined,
       type: selectedType !== "all" ? selectedType : undefined,
@@ -121,7 +122,6 @@ export default function Catalog() {
   const displayItems: CatalogItem[] = useMemo(() => {
     if (!catalogData?.grants) return [];
     return catalogData.grants.map((g) => {
-      // Use translations for current language if available
       const trans = (g as any).translations?.[language];
       return {
         id: g.id,
@@ -152,8 +152,6 @@ export default function Catalog() {
   const totalItems = catalogData?.total || 0;
   const totalPages = catalogData?.totalPages || 1;
   const isLoading = isAuthLoading || catalogLoading;
-
-  // Show a subtle loading indicator when fetching with debounced search
   const isSearching = isFetching && !!debouncedSearch;
 
   const resetFilters = () => {
@@ -161,6 +159,10 @@ export default function Catalog() {
     setSelectedCountry("all");
     setSelectedType("all");
     setSearchQuery("");
+    setFundingType("all");
+    setTargetDiagnosis("all");
+    setB2VisaEligible("all");
+    setHasDeadline(false);
     setPage(1);
   };
 
@@ -174,13 +176,13 @@ export default function Catalog() {
       />
       <Navbar />
 
-      {/* Page header */}
-      <div className="bg-[#0f172a] py-10">
-        <div className="container">
-          <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight mb-2">
+      {/* Page header — compact on mobile */}
+      <div className="bg-[#0f172a] py-6 md:py-10">
+        <div className="container px-4 md:px-0">
+          <h1 className="text-xl md:text-3xl font-bold text-white tracking-tight mb-1 md:mb-2">
             {t.catalog.title}
           </h1>
-          <p className="text-blue-200/70 max-w-xl">
+          <p className="text-blue-200/70 text-sm md:text-base max-w-xl">
             {t.catalog.subtitle}
           </p>
         </div>
@@ -209,18 +211,18 @@ export default function Catalog() {
         onHasDeadlineChange={(v) => { setHasDeadline(v); setPage(1); }}
       />
 
-      {/* Cards grid */}
-      <div className="container py-8 flex-1">
+      {/* Cards grid — single column on mobile, multi on desktop */}
+      <div className="container px-4 md:px-0 py-4 md:py-8 flex-1 pb-24 md:pb-8">
         {isLoading ? (
-          <div className="text-center py-20">
+          <div className="text-center py-16 md:py-20">
             <div className="w-8 h-8 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-gray-500">Loading...</p>
+            <p className="text-gray-500 text-sm">Loading...</p>
           </div>
         ) : (
           <>
             {/* Subtle search loading indicator */}
             {isSearching && (
-              <div className="flex items-center gap-2 mb-4 text-sm text-gray-500">
+              <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span>Searching...</span>
               </div>
@@ -228,7 +230,7 @@ export default function Catalog() {
 
             {displayItems.length > 0 ? (
               <>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                   {displayItems.map((item, i) => (
                     <CatalogCard
                       key={item.id}
@@ -241,31 +243,31 @@ export default function Catalog() {
                   ))}
                 </div>
 
-                {/* Pagination — only for active subscribers */}
+                {/* Pagination — mobile-friendly with larger touch targets */}
                 {isActive && totalPages > 1 && (
-                  <div className="mt-8 flex items-center justify-center gap-2">
+                  <div className="mt-6 md:mt-8 flex items-center justify-center gap-1 md:gap-2">
                     <button
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                      className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg active:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
-                      Previous
+                      Prev
                     </button>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                    <div className="flex items-center gap-0.5 md:gap-1">
+                      {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
                         let pageNum: number;
-                        if (totalPages <= 7) pageNum = i + 1;
-                        else if (page <= 4) pageNum = i + 1;
-                        else if (page >= totalPages - 3) pageNum = totalPages - 6 + i;
-                        else pageNum = page - 3 + i;
+                        if (totalPages <= 5) pageNum = i + 1;
+                        else if (page <= 3) pageNum = i + 1;
+                        else if (page >= totalPages - 2) pageNum = totalPages - 4 + i;
+                        else pageNum = page - 2 + i;
                         return (
                           <button
                             key={pageNum}
                             onClick={() => setPage(pageNum)}
-                            className={`w-9 h-9 text-sm rounded-lg transition-colors ${
+                            className={`w-10 h-10 md:w-9 md:h-9 text-sm rounded-lg transition-colors ${
                               page === pageNum
                                 ? "bg-[#1e3a5f] text-white font-semibold"
-                                : "text-gray-600 hover:bg-gray-100"
+                                : "text-gray-600 active:bg-gray-100"
                             }`}
                           >
                             {pageNum}
@@ -276,7 +278,7 @@ export default function Catalog() {
                     <button
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
-                      className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                      className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg active:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
                       Next
                     </button>
@@ -284,11 +286,11 @@ export default function Catalog() {
                 )}
               </>
             ) : (
-              <div className="text-center py-20">
-                <p className="text-gray-500 text-lg mb-2">{t.catalog.noResults}</p>
+              <div className="text-center py-16 md:py-20">
+                <p className="text-gray-500 text-base md:text-lg mb-2">{t.catalog.noResults}</p>
                 <button
                   onClick={resetFilters}
-                  className="text-sm text-[#1e3a5f] hover:underline"
+                  className="text-sm text-[#1e3a5f] active:underline"
                 >
                   {t.catalog.clearFilters}
                 </button>
@@ -297,11 +299,11 @@ export default function Catalog() {
 
             {/* ===== LOCKED CONTENT OVERLAY ===== */}
             {!isActive && (
-              <div className="relative mt-6">
+              <div className="relative mt-4 md:mt-6">
                 {/* Blurred placeholder cards */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 blur-sm opacity-40 pointer-events-none select-none">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 blur-sm opacity-40 pointer-events-none select-none">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="bg-white border border-gray-200 rounded-lg p-5 h-48">
+                    <div key={i} className="bg-white border border-gray-200 rounded-lg p-4 md:p-5 h-40 md:h-48">
                       <div className="h-4 bg-gray-200 rounded w-3/4 mb-3" />
                       <div className="h-3 bg-gray-100 rounded w-1/2 mb-2" />
                       <div className="h-3 bg-gray-100 rounded w-full mb-2" />
@@ -311,22 +313,22 @@ export default function Catalog() {
                 </div>
 
                 {/* Lock overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl px-8 py-8 text-center shadow-lg max-w-md">
-                    <Lock className="w-10 h-10 text-gray-400 mx-auto mb-4" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+                  <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl px-6 md:px-8 py-6 md:py-8 text-center shadow-lg max-w-md w-full">
+                    <Lock className="w-8 h-8 md:w-10 md:h-10 text-gray-400 mx-auto mb-3 md:mb-4" />
 
                     {!isAuthenticated ? (
                       <>
-                        <h3 className="text-lg font-bold text-[#0f172a] mb-2">
+                        <h3 className="text-base md:text-lg font-bold text-[#0f172a] mb-2">
                           {t.catalog.memberBanner}
                         </h3>
-                        <p className="text-sm text-gray-500 mb-6">
+                        <p className="text-sm text-gray-500 mb-5 md:mb-6">
                           {t.catalog.subtitle}
                         </p>
                         <div className="flex flex-col gap-3">
                           <a
                             href={getLoginUrl()}
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-[#1e3a5f] rounded-lg hover:bg-[#0f172a] transition-colors"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-[#1e3a5f] rounded-xl active:bg-[#0f172a] transition-colors"
                           >
                             <LogIn className="w-4 h-4" />
                             Login / Register
@@ -336,10 +338,10 @@ export default function Catalog() {
                       </>
                     ) : (
                       <>
-                        <h3 className="text-lg font-bold text-[#0f172a] mb-2">
+                        <h3 className="text-base md:text-lg font-bold text-[#0f172a] mb-2">
                           {t.catalog.ctaTitle}
                         </h3>
-                        <p className="text-sm text-gray-500 mb-6">
+                        <p className="text-sm text-gray-500 mb-5 md:mb-6">
                           {t.catalog.ctaSubtitle}
                         </p>
                         <div className="flex flex-col gap-3">
@@ -354,9 +356,9 @@ export default function Catalog() {
 
             {/* Member CTA - only show for active subscribers at the bottom */}
             {isActive && (
-              <div className="mt-12 bg-[#0f172a] rounded-xl p-8 text-center">
-                <h3 className="text-xl font-bold text-white mb-2">{t.catalog.ctaTitle}</h3>
-                <p className="text-blue-200/70 mb-6 max-w-md mx-auto">{t.catalog.ctaSubtitle}</p>
+              <div className="mt-8 md:mt-12 bg-[#0f172a] rounded-xl p-6 md:p-8 text-center">
+                <h3 className="text-lg md:text-xl font-bold text-white mb-2">{t.catalog.ctaTitle}</h3>
+                <p className="text-blue-200/70 text-sm md:text-base mb-4 md:mb-6 max-w-md mx-auto">{t.catalog.ctaSubtitle}</p>
                 <p className="text-green-400 text-sm font-medium">Active Subscriber</p>
               </div>
             )}
@@ -364,7 +366,9 @@ export default function Catalog() {
         )}
       </div>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 }

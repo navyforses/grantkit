@@ -1,0 +1,95 @@
+/*
+ * MobileBottomNav — App-like bottom tab bar for mobile devices
+ * Shows on screens < 768px. Provides quick access to Home, Browse, Dashboard, Profile.
+ */
+
+import { Link, useLocation } from "wouter";
+import { Home, Search, LayoutDashboard, User, Shield } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getLoginUrl } from "@/const";
+
+export default function MobileBottomNav() {
+  const [location] = useLocation();
+  const { user, isAuthenticated } = useAuth();
+  const { t } = useLanguage();
+
+  const tabs = [
+    {
+      href: "/",
+      icon: Home,
+      label: t.nav.home,
+      active: location === "/",
+    },
+    {
+      href: "/catalog",
+      icon: Search,
+      label: t.nav.catalog,
+      active: location === "/catalog" || location.startsWith("/grant/"),
+    },
+    {
+      href: isAuthenticated ? "/dashboard" : getLoginUrl(),
+      icon: LayoutDashboard,
+      label: "Dashboard",
+      active: location === "/dashboard",
+      isExternal: !isAuthenticated,
+    },
+    {
+      href: isAuthenticated ? "/profile" : getLoginUrl(),
+      icon: User,
+      label: t.nav.profile || "Profile",
+      active: location === "/profile",
+      isExternal: !isAuthenticated,
+    },
+  ];
+
+  // Add admin tab for admin users
+  if (user?.role === "admin") {
+    tabs.push({
+      href: "/admin",
+      icon: Shield,
+      label: "Admin",
+      active: location === "/admin",
+    });
+  }
+
+  return (
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-gray-200 safe-area-bottom">
+      <div className="flex items-center justify-around h-16 px-1">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          if (tab.isExternal) {
+            return (
+              <a
+                key={tab.href}
+                href={tab.href}
+                className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
+                  tab.active
+                    ? "text-[#1e3a5f]"
+                    : "text-gray-400 active:text-gray-600"
+                }`}
+              >
+                <Icon className="w-5 h-5" strokeWidth={tab.active ? 2.5 : 1.8} />
+                <span className="text-[10px] font-medium leading-tight">{tab.label}</span>
+              </a>
+            );
+          }
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
+                tab.active
+                  ? "text-[#1e3a5f]"
+                  : "text-gray-400 active:text-gray-600"
+              }`}
+            >
+              <Icon className="w-5 h-5" strokeWidth={tab.active ? 2.5 : 1.8} />
+              <span className="text-[10px] font-medium leading-tight">{tab.label}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}

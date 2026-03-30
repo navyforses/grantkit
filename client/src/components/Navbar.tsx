@@ -1,6 +1,7 @@
 /*
  * Navbar Component
  * Design: Structured Clarity — clean top navigation with logo, language switcher, auth, and CTA
+ * Hidden on mobile (< 768px) — MobileHeader + MobileBottomNav are used instead
  */
 
 import { Link, useLocation } from "wouter";
@@ -27,7 +28,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-30">
+    <nav className="hidden md:block bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-30">
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -71,14 +72,12 @@ export default function Navbar() {
                     }`}
                   >
                     <LayoutDashboard className="w-4 h-4" />
-                    <span className="hidden sm:inline">Dashboard</span>
+                    <span>Dashboard</span>
                   </Link>
 
                   {/* Show subscribe button only if not active subscriber */}
                   {!subStatus?.isActive && (
-                    <div className="hidden sm:block">
-                      <PricingCTA text={t.nav.subscribe} size="default" />
-                    </div>
+                    <PricingCTA text={t.nav.subscribe} size="default" />
                   )}
                   {/* Admin link */}
                   {user?.role === "admin" && (
@@ -87,7 +86,7 @@ export default function Navbar() {
                       className="inline-flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-2.5 py-1.5 rounded-lg transition-colors"
                     >
                       <Shield className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Admin</span>
+                      <span>Admin</span>
                     </Link>
                   )}
                   {/* User info + logout */}
@@ -96,7 +95,7 @@ export default function Navbar() {
                       <div className="w-8 h-8 bg-[#1e3a5f]/10 rounded-full flex items-center justify-center">
                         <User className="w-4 h-4 text-[#1e3a5f]" />
                       </div>
-                      <span className="hidden md:inline text-sm text-gray-600 max-w-[120px] truncate">
+                      <span className="text-sm text-gray-600 max-w-[120px] truncate">
                         {user?.name || user?.email || "User"}
                       </span>
                     </Link>
@@ -116,11 +115,9 @@ export default function Navbar() {
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1e3a5f] hover:text-[#0f172a] transition-colors"
                   >
                     <LogIn className="w-4 h-4" />
-                    <span className="hidden sm:inline">Login</span>
+                    <span>Login</span>
                   </a>
-                  <div className="hidden sm:block">
-                    <PricingCTA text={t.nav.subscribe} size="default" />
-                  </div>
+                  <PricingCTA text={t.nav.subscribe} size="default" />
                 </div>
               )}
             </>

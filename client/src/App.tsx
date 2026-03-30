@@ -6,6 +6,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { usePaddleInit } from "./hooks/usePaddle";
+import MobileHeader from "./components/MobileHeader";
+import MobileBottomNav from "./components/MobileBottomNav";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
 import GrantDetail from "./pages/GrantDetail";
@@ -17,6 +19,7 @@ import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
 import Admin from "./pages/Admin";
 import OnboardingModal from "./components/OnboardingModal";
+
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -51,7 +54,14 @@ function App() {
             <Toaster />
             <PaddleInitializer />
             <OnboardingModal />
-            <Router />
+            {/* Mobile-only header (hidden on md+) */}
+            <MobileHeader />
+            {/* Main content with bottom padding on mobile for bottom nav */}
+            <div className="pb-16 md:pb-0">
+              <Router />
+            </div>
+            {/* Mobile-only bottom tab bar (hidden on md+) */}
+            <MobileBottomNav />
           </TooltipProvider>
         </LanguageProvider>
       </ThemeProvider>

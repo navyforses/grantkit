@@ -1,0 +1,18 @@
+{
+  "name": "GrantKit — Find Medical & Startup Grants Worldwide",
+  "short_name": "GrantKit",
+  "description": "Curated database of 600+ grants for medical treatment, financial assistance, and academic scholarships.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "categories": ["health", "finance", "education"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
