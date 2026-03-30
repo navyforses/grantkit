@@ -8,12 +8,14 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { usePaddleInit } from "./hooks/usePaddle";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
+import Profile from "./pages/Profile";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/catalog" component={Catalog} />
+      <Route path="/profile" component={Profile} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

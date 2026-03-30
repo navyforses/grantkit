@@ -4,6 +4,7 @@ export interface Translations {
     home: string;
     catalog: string;
     subscribe: string;
+    profile: string;
   };
 
   // Hero
@@ -115,5 +116,33 @@ export interface Translations {
 
   countries: {
     all: string;
+  };
+
+  // Profile page
+  profile: {
+    title: string;
+    accountInfo: string;
+    name: string;
+    email: string;
+    memberSince: string;
+    subscription: string;
+    plan: string;
+    status: string;
+    nextBilling: string;
+    statusActive: string;
+    statusCancelled: string;
+    statusPastDue: string;
+    statusPaused: string;
+    statusNone: string;
+    cancelSubscription: string;
+    cancelConfirmTitle: string;
+    cancelConfirmDesc: string;
+    cancelConfirmButton: string;
+    cancelKeepButton: string;
+    resubscribe: string;
+    subscribeCta: string;
+    subscribeDesc: string;
+    logoutButton: string;
+    backToHome: string;
   };
 }

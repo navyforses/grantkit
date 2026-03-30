@@ -122,6 +122,33 @@ describe("subscription.status", () => {
   });
 });
 
+describe("subscription.cancel", () => {
+  it("returns error when user has no active subscription", async () => {
+    const ctx = createUserContext({ subscriptionStatus: "none" });
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.subscription.cancel();
+
+    expect(result.success).toBe(false);
+  });
+
+  it("returns error when subscription is already cancelled", async () => {
+    const ctx = createUserContext({ subscriptionStatus: "cancelled" });
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.subscription.cancel();
+
+    expect(result.success).toBe(false);
+  });
+
+  it("throws UNAUTHORIZED for unauthenticated users", async () => {
+    const ctx = createUnauthContext();
+    const caller = appRouter.createCaller(ctx);
+
+    await expect(caller.subscription.cancel()).rejects.toThrow();
+  });
+});
+
 describe("auth.me", () => {
   it("returns null for unauthenticated users", async () => {
     const ctx = createUnauthContext();

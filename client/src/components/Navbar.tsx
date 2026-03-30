@@ -71,12 +71,14 @@ export default function Navbar() {
                   )}
                   {/* User info + logout */}
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-[#1e3a5f]/10 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-[#1e3a5f]" />
-                    </div>
-                    <span className="hidden md:inline text-sm text-gray-600 max-w-[120px] truncate">
-                      {user?.name || user?.email || "User"}
-                    </span>
+                    <Link href="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                      <div className="w-8 h-8 bg-[#1e3a5f]/10 rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-[#1e3a5f]" />
+                      </div>
+                      <span className="hidden md:inline text-sm text-gray-600 max-w-[120px] truncate">
+                        {user?.name || user?.email || "User"}
+                      </span>
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="text-gray-400 hover:text-red-500 transition-colors p-1"

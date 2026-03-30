@@ -30,6 +30,17 @@ export const appRouter = router({
       };
     }),
 
+    // Cancel subscription (marks as cancelled in DB)
+    cancel: protectedProcedure.mutation(async ({ ctx }) => {
+      if (ctx.user.subscriptionStatus !== "active") {
+        return { success: false, error: "No active subscription" };
+      }
+      await updateUserSubscription(ctx.user.id, {
+        subscriptionStatus: "cancelled",
+      });
+      return { success: true };
+    }),
+
     // Called from frontend after successful Paddle checkout to record the subscription
     activate: protectedProcedure
       .input(z.object({
