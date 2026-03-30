@@ -119,6 +119,7 @@ export const appRouter = router({
     list: publicProcedure
       .input(z.object({
         search: z.string().optional(),
+        language: z.string().optional(),
         category: z.string().optional(),
         country: z.string().optional(),
         type: z.string().optional(),
@@ -127,9 +128,10 @@ export const appRouter = router({
         pageSize: z.number().min(1).max(100).default(20),
       }).optional())
       .query(async ({ input }) => {
-        const { search, category, country, type, sortBy, page = 1, pageSize = 20 } = input || {};
+        const { search, language, category, country, type, sortBy, page = 1, pageSize = 20 } = input || {};
         const result = await listGrants({
           search,
+          language,
           category,
           country,
           type,

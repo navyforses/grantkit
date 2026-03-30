@@ -2,10 +2,10 @@
  * Catalog Page — Unified Grants & Resources Directory
  * Design: Structured Clarity — dense card grid with sticky filters
  * Content locked behind authentication + active subscription
- * Data sourced from database via tRPC
+ * Data sourced from database via tRPC with full-text multilingual search
  */
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CatalogCard from "@/components/CatalogCard";
 import FilterBar, { type SortValue } from "@/components/FilterBar";
 import Footer from "@/components/Footer";
@@ -21,6 +21,17 @@ import { toast } from "sonner";
 
 const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
+const SEARCH_DEBOUNCE_MS = 300;
+
+/** Custom hook for debounced value */
+function useDebouncedValue<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debouncedValue;
+}
 
 export default function Catalog() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>("all");
@@ -32,6 +43,9 @@ export default function Catalog() {
   const { t, tCategory, tCountry, language } = useLanguage();
   const { isAuthenticated, loading: authLoading } = useAuth();
 
+  // Debounce search query to avoid excessive API calls
+  const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
+
   const { data: subStatus, isLoading: subLoading } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
@@ -40,10 +54,11 @@ export default function Catalog() {
   const isActive = subStatus?.isActive || false;
   const isAuthLoading = authLoading || (isAuthenticated && subLoading);
 
-  // Stabilize query input
+  // Stabilize query input with debounced search and language
   const catalogInput = useMemo(
     () => ({
-      search: searchQuery || undefined,
+      search: debouncedSearch || undefined,
+      language: debouncedSearch ? language : undefined, // Only pass language when searching
       category: selectedCategory !== "all" ? selectedCategory : undefined,
       country: selectedCountry !== "all" ? selectedCountry : undefined,
       type: selectedType !== "all" ? selectedType : undefined,
@@ -51,10 +66,10 @@ export default function Catalog() {
       page: isActive ? page : 1,
       pageSize: isActive ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
-    [searchQuery, selectedCategory, selectedCountry, selectedType, sortBy, page, isActive]
+    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, page, isActive]
   );
 
-  const { data: catalogData, isLoading: catalogLoading } = trpc.catalog.list.useQuery(catalogInput, {
+  const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
     retry: false,
     placeholderData: (prev: any) => prev,
   });
@@ -120,6 +135,9 @@ export default function Catalog() {
   const totalPages = catalogData?.totalPages || 1;
   const isLoading = isAuthLoading || catalogLoading;
 
+  // Show a subtle loading indicator when fetching with debounced search
+  const isSearching = isFetching && !!debouncedSearch;
+
   const resetFilters = () => {
     setSelectedCategory("all");
     setSelectedCountry("all");
@@ -168,6 +186,14 @@ export default function Catalog() {
           </div>
         ) : (
           <>
+            {/* Subtle search loading indicator */}
+            {isSearching && (
+              <div className="flex items-center gap-2 mb-4 text-sm text-gray-500">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Searching...</span>
+              </div>
+            )}
+
             {displayItems.length > 0 ? (
               <>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">

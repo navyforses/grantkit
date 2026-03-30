@@ -270,6 +270,42 @@ describe("catalog.list", () => {
     expect(result.grants[0].name).toContain("Alpha");
   });
 
+  it("supports search by organization name", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    const result = await caller.catalog.list({ search: "Org A", page: 1, pageSize: 10 });
+    expect(result.grants.length).toBeGreaterThan(0);
+    result.grants.forEach(g => expect(g.organization).toContain("Org A"));
+  });
+
+  it("supports search with language parameter for multilingual search", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    const result = await caller.catalog.list({ search: "Alpha", language: "ka", page: 1, pageSize: 10 });
+    expect(result.grants.length).toBeGreaterThan(0);
+  });
+
+  it("returns empty results for non-matching search", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    const result = await caller.catalog.list({ search: "xyznonexistent", page: 1, pageSize: 10 });
+    expect(result.grants.length).toBe(0);
+    expect(result.total).toBe(0);
+  });
+
+  it("supports newest sort option", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    const result = await caller.catalog.list({ sortBy: "newest", page: 1, pageSize: 10 });
+    expect(result.grants).toBeDefined();
+    expect(result.total).toBeGreaterThan(0);
+  });
+
+  it("supports combined search and category filter", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    const result = await caller.catalog.list({ search: "Alpha", category: "Medical & Treatment", page: 1, pageSize: 10 });
+    expect(result.grants.length).toBeGreaterThan(0);
+    result.grants.forEach(g => {
+      expect(g.category).toBe("Medical & Treatment");
+    });
+  });
+
   it("supports category filtering", async () => {
     const caller = appRouter.createCaller(createPublicContext());
     const result = await caller.catalog.list({ category: "Financial Assistance", page: 1, pageSize: 10 });

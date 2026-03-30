@@ -1,14 +1,14 @@
 /*
  * FilterBar Component
  * Design: Structured Clarity — pill-shaped category tabs + country dropdown + type filter + sort
- * Sticky on scroll, clean horizontal layout
+ * Sticky on scroll, clean horizontal layout with enhanced search UX
  */
 
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Search, X } from "lucide-react";
 import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export type SortValue = "name_asc" | "name_desc" | "category" | "country";
+export type SortValue = "name_asc" | "name_desc" | "category" | "country" | "newest";
 
 interface FilterBarProps {
   selectedCategory: CategoryValue;
@@ -42,16 +42,36 @@ export default function FilterBar({
   return (
     <div className="sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <div className="container py-4">
-        {/* Search bar */}
+        {/* Search bar with icon and clear button */}
         {onSearchChange && (
           <div className="mb-3">
-            <input
-              type="text"
-              value={searchQuery || ""}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={t.catalog.searchPlaceholder}
-              className="w-full sm:max-w-md text-sm border border-gray-200 rounded-lg px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] placeholder:text-gray-400"
-            />
+            <div className="relative w-full sm:max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery || ""}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder={t.catalog.searchPlaceholder}
+                className="w-full text-sm border border-gray-200 rounded-lg pl-9 pr-9 py-2.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] placeholder:text-gray-400 transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => onSearchChange("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            {/* Search result summary */}
+            {searchQuery && (
+              <p className="mt-1.5 text-xs text-gray-500">
+                {itemCount > 0
+                  ? `${itemCount} result${itemCount !== 1 ? "s" : ""} for "${searchQuery}"`
+                  : `No results for "${searchQuery}"`}
+              </p>
+            )}
           </div>
         )}
 
@@ -79,9 +99,11 @@ export default function FilterBar({
 
           {/* Type filter + Country filter + Sort + count */}
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-sm text-gray-500 whitespace-nowrap">
-              <span className="font-semibold text-[#0f172a]">{itemCount}</span> {t.catalog.itemsCount}
-            </span>
+            {!searchQuery && (
+              <span className="text-sm text-gray-500 whitespace-nowrap">
+                <span className="font-semibold text-[#0f172a]">{itemCount}</span> {t.catalog.itemsCount}
+              </span>
+            )}
 
             {/* Type filter */}
             <select
@@ -119,6 +141,7 @@ export default function FilterBar({
               >
                 <option value="name_asc">A → Z</option>
                 <option value="name_desc">Z → A</option>
+                <option value="newest">Newest</option>
                 <option value="category">Category</option>
                 <option value="country">Country</option>
               </select>

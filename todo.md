@@ -154,3 +154,12 @@
 - [x] Support Excel (XLS/XLSX) format
 - [x] Include translations import support (5 languages)
 - [x] Write vitest tests for import parsing and validation logic (151 tests total passing)
+
+## Full-Text Search for Grants Catalog
+- [x] Build backend search tRPC endpoint with LIKE/full-text query across name, description, organization
+- [x] Support search in translated content (grant_translations table)
+- [x] Integrate search with existing catalog filters (category, country, type)
+- [x] Build search input UI in catalog page with debounced input (300ms)
+- [x] Show search results count (e.g., "14 results for 'wheelchair'")
+- [x] Search integrated in catalog FilterBar with clear button
+- [x] Write vitest tests for search endpoint (156 tests total passing)

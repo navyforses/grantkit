@@ -420,9 +420,11 @@ export async function getSubscriptionStats() {
 
 // ===== Grant CRUD helpers =====
 
-/** List grants with search, filter, sort, and pagination */
+/** List grants with search, filter, sort, and pagination.
+ *  When `search` + `language` are provided, also searches grant_translations. */
 export async function listGrants(options?: {
   search?: string;
+  language?: string;
   category?: string;
   country?: string;
   type?: string;
@@ -434,8 +436,56 @@ export async function listGrants(options?: {
   const db = await getDb();
   if (!db) return { grants: [], total: 0 };
 
-  const { search, category, country, type, sortBy = "name_asc", limit = 50, offset = 0, activeOnly = true } = options || {};
+  const { search, language, category, country, type, sortBy = "name_asc", limit = 50, offset = 0, activeOnly = true } = options || {};
 
+  // If searching with a non-English language, use a subquery approach to search translations too
+  if (search && language && language !== "en") {
+    // Find itemIds matching in translations
+    const translationMatches = await db
+      .select({ grantItemId: grantTranslations.grantItemId })
+      .from(grantTranslations)
+      .where(
+        and(
+          eq(grantTranslations.language, language),
+          or(
+            like(grantTranslations.name, `%${search}%`),
+            like(grantTranslations.description, `%${search}%`),
+            like(grantTranslations.eligibility, `%${search}%`)
+          )
+        )
+      );
+    const translationItemIds = translationMatches.map(r => r.grantItemId);
+
+    // Build conditions: match in base fields OR in translation itemIds
+    const conditions: any[] = [];
+    if (activeOnly) conditions.push(eq(grants.isActive, true));
+
+    const searchConditions = [
+      like(grants.name, `%${search}%`),
+      like(grants.organization, `%${search}%`),
+      like(grants.description, `%${search}%`),
+    ];
+    if (translationItemIds.length > 0) {
+      searchConditions.push(inArray(grants.itemId, translationItemIds));
+    }
+    conditions.push(or(...searchConditions));
+
+    if (category && category !== "all") conditions.push(eq(grants.category, category));
+    if (country && country !== "all") conditions.push(eq(grants.country, country));
+    if (type && type !== "all") conditions.push(eq(grants.type, type as "grant" | "resource"));
+
+    const whereClause = and(...conditions);
+    const orderByClause = getOrderByClause(sortBy);
+
+    const [grantList, countResult] = await Promise.all([
+      db.select().from(grants).where(whereClause).orderBy(orderByClause).limit(limit).offset(offset),
+      db.select({ count: count() }).from(grants).where(whereClause),
+    ]);
+
+    return { grants: grantList, total: countResult[0]?.count ?? 0 };
+  }
+
+  // Standard search (English or no language specified)
   const conditions: any[] = [];
 
   if (activeOnly) {
@@ -465,27 +515,7 @@ export async function listGrants(options?: {
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-
-  // Determine sort order
-  let orderByClause;
-  switch (sortBy) {
-    case "name_desc":
-      orderByClause = desc(grants.name);
-      break;
-    case "category":
-      orderByClause = asc(grants.category);
-      break;
-    case "country":
-      orderByClause = asc(grants.country);
-      break;
-    case "newest":
-      orderByClause = desc(grants.createdAt);
-      break;
-    case "name_asc":
-    default:
-      orderByClause = asc(grants.name);
-      break;
-  }
+  const orderByClause = getOrderByClause(sortBy);
 
   const [grantList, countResult] = await Promise.all([
     db
@@ -505,6 +535,23 @@ export async function listGrants(options?: {
     grants: grantList,
     total: countResult[0]?.count ?? 0,
   };
+}
+
+/** Helper to get sort order clause */
+function getOrderByClause(sortBy?: string) {
+  switch (sortBy) {
+    case "name_desc":
+      return desc(grants.name);
+    case "category":
+      return asc(grants.category);
+    case "country":
+      return asc(grants.country);
+    case "newest":
+      return desc(grants.createdAt);
+    case "name_asc":
+    default:
+      return asc(grants.name);
+  }
 }
 
 /** Get a single grant by itemId */
