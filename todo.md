@@ -36,3 +36,14 @@
 - [x] Register /profile route in App.tsx
 - [x] Add profile link in Navbar for logged-in users
 - [x] Write vitest tests for profile-related procedures (12 tests passing)
+
+## Paddle Webhook
+- [x] Create Express webhook endpoint at /api/paddle/webhook
+- [x] Parse and verify Paddle webhook signature (HMAC-SHA256)
+- [x] Handle subscription.activated event
+- [x] Handle subscription.canceled event
+- [x] Handle subscription.paused event
+- [x] Handle subscription.past_due event
+- [x] Handle subscription.updated + resumed events
+- [x] Update user subscription status in DB based on events
+- [x] Write vitest tests for webhook handler logic (28 tests total passing)
