@@ -1,0 +1,62 @@
+[
+  {
+    "id": "res_531",
+    "name": "HHN (Healthcare Hospitality Network)",
+    "description": "უფასო სერვისი. ვებ ლოკატორი.",
+    "eligibility": "200+ ობიექტი. ZIP: 27705/27511.. B-2: 🟢"
+  },
+  {
+    "id": "res_532",
+    "name": "Harper's Home (მშენებარე?)",
+    "description": "მოცურებითი. იკითხეთ გახსნის თარიღი.",
+    "eligibility": "Duke Children's ოჯახები. 8 ერთეული.. B-2: 🟡"
+  },
+  {
+    "id": "res_533",
+    "name": "Duke სამედ.-იურიდიული პარტნიორობა",
+    "description": "უფასო. Duke-ის მიმართვით.",
+    "eligibility": "Duke პედ. პაციენტები.. B-2: 🟢"
+  },
+  {
+    "id": "res_534",
+    "name": "RMH ჩეპელ ჰილი",
+    "description": "უფასო. სოც. მუშაკის მიმართვა.",
+    "eligibility": "UNC/ადგილობრ. საავადმყ. ბავშვი.. B-2: 🟢"
+  },
+  {
+    "id": "res_535",
+    "name": "RMH WakeMed",
+    "description": "უფასო. სოც. მუშაკის მიმართვა.",
+    "eligibility": "WakeMed/ადგილ. ⚠️ Background check!. B-2: 🟡"
+  },
+  {
+    "id": "res_536",
+    "name": "SECU Caring House (Duke Cancer)",
+    "description": "$45/ღამე. Duke სოც. მუშაკის მიმართვა.",
+    "eligibility": "Duke კიბოს ზრდასრ. ⚠️ არა პედ.. B-2: 🟢"
+  },
+  {
+    "id": "res_537",
+    "name": "Best Nest პაციენტის საცხოვრ.",
+    "description": "შემცირებული. ვებგვერდიდან. Duke EAP ახსენეთ.",
+    "eligibility": "ტრანსპლანტ./კიბო. მინ. 3 ღამე.. B-2: 🟡"
+  },
+  {
+    "id": "res_538",
+    "name": "Lodge at Duke Medical Center",
+    "description": "სამედ. ფასდაკლ.. კონსიერჟი: 919-684-5887.",
+    "eligibility": "Duke პაციენტები. უფასო შატლი.. B-2: 🟢"
+  },
+  {
+    "id": "res_539",
+    "name": "JB Duke Hotel",
+    "description": "სამედ. ტარიფი. სამედ. ტარიფი მოითხოვეთ.",
+    "eligibility": "Duke პაციენტები.. B-2: 🟢"
+  },
+  {
+    "id": "res_540",
+    "name": "გახანგრძლივებ. სასტუმროები",
+    "description": "$50–80/ღამე. Duke კონსიერჟის სია.",
+    "eligibility": "Duke პაციენტები.. B-2: 🟢"
+  }
+]

@@ -3,6 +3,7 @@ export interface Translations {
   nav: {
     home: string;
     grantsDirectory: string;
+    resourcesDirectory: string;
     subscribe: string;
   };
 
@@ -105,5 +106,21 @@ export interface Translations {
   // Countries (static "All" label only; dynamic countries use tCountry)
   countries: {
     all: string;
+  };
+
+  // Resources page
+  resources: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    resourcesCount: string;
+    noResults: string;
+    noResultsHint: string;
+    visitWebsite: string;
+    allResources: string;
+    memberBanner: string;
+    memberBannerCta: string;
+    loadMore: string;
+    remaining: string;
   };
 }

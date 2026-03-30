@@ -4,6 +4,7 @@ export const ka: Translations = {
   nav: {
     home: "მთავარი",
     grantsDirectory: "გრანტების კატალოგი",
+    resourcesDirectory: "რესურსები",
     subscribe: "გამოწერა",
   },
   hero: {
@@ -101,5 +102,19 @@ export const ka: Translations = {
   },
   countries: {
     all: "ყველა ქვეყანა",
+  },
+  resources: {
+    title: "დონორებისა და ფონდების კატალოგი",
+    subtitle: "558 შემოწმებული დონორი, ფონდი და მხარდამჭერი ორგანიზაცია. მოძებნეთ კატეგორიის მიხედვით, დაუკავშირდით პირდაპირ.",
+    searchPlaceholder: "მოძებნეთ რესურსები სახელით, აღწერით...",
+    resourcesCount: "რესურსი",
+    noResults: "რესურსები ვერ მოიძებნა",
+    noResultsHint: "სცადეთ ფილტრების ან საძიებო მოთხოვნის შეცვლა მეტი შედეგის სანახავად.",
+    visitWebsite: "ვებსაიტის ნახვა",
+    allResources: "ყველა რესურსი",
+    memberBanner: "ეს კატალოგი GrantKit-ის წევრებისთვისაა. ჯერ არ ხართ წევრი?",
+    memberBannerCta: "გამოწერა Gumroad-ზე",
+    loadMore: "მეტის ჩატვირთვა",
+    remaining: "დარჩენილია",
   },
 };

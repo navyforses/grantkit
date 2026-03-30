@@ -1,0 +1,62 @@
+[
+  {
+    "id": "res_521",
+    "name": "Welcome House / CBF NC",
+    "description": "~$10/დღე ან უფასო. ვებფორმა. თავშესაფრის სტატუსი პლუსია.",
+    "eligibility": "ეკლესიის ქსელი ლტოლვ./იმიგრანტებისთვის.. B-2: 🟢"
+  },
+  {
+    "id": "res_522",
+    "name": "The Carying Place — ქერი",
+    "description": "არაპირდაპ.. Leslie Covington. ეკლესიის ქსელში მასპინძლობა?",
+    "eligibility": "16-კვირიანი პროგრ. ეკლესიის ქსელი ვრცელი.. B-2: 🟡"
+  },
+  {
+    "id": "res_523",
+    "name": "Peace Presbyterian — ქერი",
+    "description": "Case-by-case. ვებიდან mercy ministry-ს.",
+    "eligibility": "Mercy ministry. კრიზისში ოჯახები.. B-2: 🟡"
+  },
+  {
+    "id": "res_524",
+    "name": "Family Promise Triangle",
+    "description": "უფასო. დარეკეთ პირდაპირ (არა Coordinated Entry).",
+    "eligibility": "ბავშვიანი ოჯახები. 30+ პარტნ. ეკლესია.. B-2: 🟡"
+  },
+  {
+    "id": "res_525",
+    "name": "Families Moving Forward",
+    "description": "უფასო. Entry Point Durham: (984) 287-8313.",
+    "eligibility": "ბავშვიანი ოჯახები. 20 ერთეული.. B-2: 🟡"
+  },
+  {
+    "id": "res_526",
+    "name": "Triangle Mutual Aid",
+    "description": "უფასო. ელ-ფოსტა.",
+    "eligibility": "საზოგადოებრივი ორგანიზაცია.. B-2: 🟢"
+  },
+  {
+    "id": "res_527",
+    "name": "Durham Mutual Aid + 2-1-1",
+    "description": "უფასო. ★ დარეკეთ 2-1-1 (24/7).",
+    "eligibility": "საზოგადოებრივი. 2-1-1: საცხოვრ.+კვება+სოც.. B-2: 🟢"
+  },
+  {
+    "id": "res_528",
+    "name": "Salvation Army (რალი+დარემი)",
+    "description": "ფინანსური დახმ.. დარეკეთ. მხოლოდ ფინანსური!",
+    "eligibility": "საგანგებო ფინ. დახმ. ⚠️ არა თავშესაფარი!. B-2: 🟡"
+  },
+  {
+    "id": "res_529",
+    "name": "Jewish Family Services",
+    "description": "ფინანსური დახმ.. დარეკეთ. საქმეთა მმართველის დანიშვნა.",
+    "eligibility": "ყველა რწმენა. საქმეთა მმართველი.. B-2: 🟡"
+  },
+  {
+    "id": "res_530",
+    "name": "Joe's House (დირექტორია)",
+    "description": "უფასო სერვისი. Duke Medical Center + თარიღები.",
+    "eligibility": "ნებისმიერი დიაგნოზი.. B-2: 🟢"
+  }
+]

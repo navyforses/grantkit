@@ -4,6 +4,7 @@ export const ru: Translations = {
   nav: {
     home: "Главная",
     grantsDirectory: "Каталог грантов",
+    resourcesDirectory: "Ресурсы",
     subscribe: "Подписаться",
   },
   hero: {
@@ -101,5 +102,19 @@ export const ru: Translations = {
   },
   countries: {
     all: "Все страны",
+  },
+  resources: {
+    title: "Каталог доноров и фондов",
+    subtitle: "558 проверенных доноров, фондов и организаций поддержки. Ищите по категории, связывайтесь напрямую.",
+    searchPlaceholder: "Поиск ресурсов по названию, описанию...",
+    resourcesCount: "ресурсов",
+    noResults: "Ресурсы не найдены",
+    noResultsHint: "Попробуйте изменить фильтры или поисковый запрос.",
+    visitWebsite: "Посетить сайт",
+    allResources: "Все ресурсы",
+    memberBanner: "Этот каталог для участников GrantKit. Ещё не участник?",
+    memberBannerCta: "Подписаться на Gumroad",
+    loadMore: "Загрузить ещё",
+    remaining: "осталось",
   },
 };

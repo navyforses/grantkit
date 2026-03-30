@@ -4,6 +4,7 @@ export const fr: Translations = {
   nav: {
     home: "Accueil",
     grantsDirectory: "Répertoire des subventions",
+    resourcesDirectory: "Ressources",
     subscribe: "S'abonner",
   },
   hero: {
@@ -101,5 +102,19 @@ export const fr: Translations = {
   },
   countries: {
     all: "Tous les pays",
+  },
+  resources: {
+    title: "Répertoire des donateurs et fondations",
+    subtitle: "558 donateurs, fondations et organisations de soutien vérifiés. Recherchez par catégorie, contactez directement.",
+    searchPlaceholder: "Rechercher des ressources par nom, description...",
+    resourcesCount: "ressources",
+    noResults: "Aucune ressource trouvée",
+    noResultsHint: "Essayez d'ajuster vos filtres ou votre recherche pour voir plus de résultats.",
+    visitWebsite: "Visiter le site",
+    allResources: "Toutes les ressources",
+    memberBanner: "Ce répertoire est réservé aux membres GrantKit. Pas encore membre ?",
+    memberBannerCta: "S'abonner sur Gumroad",
+    loadMore: "Charger plus",
+    remaining: "restants",
   },
 };

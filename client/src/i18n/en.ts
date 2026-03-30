@@ -4,6 +4,7 @@ export const en: Translations = {
   nav: {
     home: "Home",
     grantsDirectory: "Grants Directory",
+    resourcesDirectory: "Resources",
     subscribe: "Subscribe",
   },
   hero: {
@@ -101,5 +102,19 @@ export const en: Translations = {
   },
   countries: {
     all: "All Countries",
+  },
+  resources: {
+    title: "Donor & Foundation Directory",
+    subtitle: "558 verified donors, foundations, and support organizations. Search by category, contact directly.",
+    searchPlaceholder: "Search resources by name, description...",
+    resourcesCount: "resources",
+    noResults: "No resources found",
+    noResultsHint: "Try adjusting your filters or search query to see more results.",
+    visitWebsite: "Visit Website",
+    allResources: "All Resources",
+    memberBanner: "This directory is for GrantKit members. Not a member yet?",
+    memberBannerCta: "Subscribe on Gumroad",
+    loadMore: "Load more",
+    remaining: "remaining",
   },
 };

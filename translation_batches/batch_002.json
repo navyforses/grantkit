@@ -1,0 +1,62 @@
+[
+  {
+    "id": "res_021",
+    "name": "Good RX",
+    "description": "Save 80% on Prescriptions",
+    "eligibility": ""
+  },
+  {
+    "id": "res_022",
+    "name": "Coalition Against Pediatric Pain",
+    "description": "პედიატრიული ტკივილი.",
+    "eligibility": ""
+  },
+  {
+    "id": "res_023",
+    "name": "GSK",
+    "description": "GSK For You",
+    "eligibility": ""
+  },
+  {
+    "id": "res_024",
+    "name": "Raising Special Kids",
+    "description": "Refugee and Asylum Mentorship",
+    "eligibility": ""
+  },
+  {
+    "id": "res_025",
+    "name": "Lilly Cares Foundation",
+    "description": "Medications",
+    "eligibility": ""
+  },
+  {
+    "id": "res_026",
+    "name": "Boomer Esiason Foundation",
+    "description": "Scholarship/CF",
+    "eligibility": ""
+  },
+  {
+    "id": "res_027",
+    "name": "Dental Lifeline Network",
+    "description": "Donated Dental",
+    "eligibility": ""
+  },
+  {
+    "id": "res_028",
+    "name": "Oley Foundation",
+    "description": "Joan Bishop Award",
+    "eligibility": ""
+  },
+  {
+    "id": "res_029",
+    "name": "Insider Rx",
+    "description": "Compare Prices",
+    "eligibility": ""
+  },
+  {
+    "id": "res_030",
+    "name": "The Avalon Foundation",
+    "description": "PainBox Program",
+    "eligibility": ""
+  }
+]

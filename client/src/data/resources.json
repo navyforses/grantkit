@@ -1,0 +1,6039 @@
+[
+  {
+    "id": "res_001",
+    "name": "United Healthcare Children's Foundation",
+    "category": "medical",
+    "description": "UHCCF Medical Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://uhccf.org",
+      "email": "uhccfcustomerservice@uhc.com",
+      "phone": "(855) 698-4223"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_002",
+    "name": "Rx Outreach",
+    "category": "medical",
+    "description": "Affordable Medication",
+    "eligibility": "",
+    "contact": {
+      "website": "https://rxoutreach.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_003",
+    "name": "Shriners Hospitals for Children",
+    "category": "medical",
+    "description": "Quality Care",
+    "eligibility": "",
+    "contact": {
+      "website": "https://shrinerschildrens.org",
+      "phone": "800-237-5055"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_004",
+    "name": "Easter Seals",
+    "category": "medical",
+    "description": "Employment and Job Training",
+    "eligibility": "",
+    "contact": {
+      "website": "https://easterseals.com",
+      "phone": "800-221-6827"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_005",
+    "name": "Addi's Faith Foundation",
+    "category": "medical",
+    "description": "Prosthetic Eye Funding",
+    "eligibility": "",
+    "contact": {
+      "website": "https://addisfaith.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_006",
+    "name": "Making Headway Foundation",
+    "category": "medical",
+    "description": "Individual or Group Therapy",
+    "eligibility": "",
+    "contact": {
+      "website": "https://makingheadway.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_007",
+    "name": "Child Neurology Foundation",
+    "category": "medical",
+    "description": "Family Support Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://childneurologyfoundation.org",
+      "email": "info@childneurologyfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_008",
+    "name": "National Neutropenia Network",
+    "category": "medical",
+    "description": "Emergency Cards",
+    "eligibility": "",
+    "contact": {
+      "website": "https://neutropenia.ca"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_009",
+    "name": "All Kids are Perfect",
+    "category": "medical",
+    "description": "AKAP Way Pediatric PT",
+    "eligibility": "",
+    "contact": {
+      "website": "https://allkidsareperfect.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_010",
+    "name": "KinActive Kids",
+    "category": "medical",
+    "description": "KinActive Kids Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://kinactivekids.org",
+      "email": "info@kinactivekids.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_011",
+    "name": "Cora Foundation",
+    "category": "medical",
+    "description": "Walking with Cora Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://walkingwithcora.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_012",
+    "name": "Show Hope",
+    "category": "medical",
+    "description": "Medical Care Grants for Adopted",
+    "eligibility": "",
+    "contact": {
+      "website": "https://showhope.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_013",
+    "name": "The Assistance Fund",
+    "category": "medical",
+    "description": "Infantile Spasms Fund",
+    "eligibility": "",
+    "contact": {
+      "website": "https://theassistancefund.org",
+      "phone": "855-845-3663"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_014",
+    "name": "Patient Advocate Foundation",
+    "category": "medical",
+    "description": "PAF Services",
+    "eligibility": "",
+    "contact": {
+      "website": "https://patientadvocate.org",
+      "email": "help@patientadvocate.org",
+      "phone": "800-532-5274"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_015",
+    "name": "EveryLife Foundation",
+    "category": "medical",
+    "description": "RAREis Scholarship/Mentorship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://everylifefoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_016",
+    "name": "Family Voices",
+    "category": "medical",
+    "description": "Resources for Families",
+    "eligibility": "",
+    "contact": {
+      "website": "https://familyvoices.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_017",
+    "name": "Children's Hemiplegia & Stroke Assoc.",
+    "category": "medical",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://chasa.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_018",
+    "name": "St. Jude Children's Research Hospital",
+    "category": "medical",
+    "description": "Care & Treatment",
+    "eligibility": "",
+    "contact": {
+      "website": "https://stjude.org",
+      "phone": "800-822-6344"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_019",
+    "name": "Novartis Patient Assistance",
+    "category": "medical",
+    "description": "Pharmaceutical",
+    "eligibility": "",
+    "contact": {
+      "website": "https://pap.novartis"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_020",
+    "name": "Cynthia Solomon Holmes Foundation",
+    "category": "medical",
+    "description": "Rare Disease Day",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_021",
+    "name": "Good RX",
+    "category": "medical",
+    "description": "Save 80% on Prescriptions",
+    "eligibility": "",
+    "contact": {
+      "website": "https://goodrx.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_022",
+    "name": "Coalition Against Pediatric Pain",
+    "category": "medical",
+    "description": "პედიატრიული ტკივილი.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://tcapp.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_023",
+    "name": "GSK",
+    "category": "medical",
+    "description": "GSK For You",
+    "eligibility": "",
+    "contact": {
+      "website": "https://gskforyou.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_024",
+    "name": "Raising Special Kids",
+    "category": "medical",
+    "description": "Refugee and Asylum Mentorship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://raisingspecialkids.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_025",
+    "name": "Lilly Cares Foundation",
+    "category": "medical",
+    "description": "Medications",
+    "eligibility": "",
+    "contact": {
+      "website": "https://lillycares.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_026",
+    "name": "Boomer Esiason Foundation",
+    "category": "medical",
+    "description": "Scholarship/CF",
+    "eligibility": "",
+    "contact": {
+      "website": "https://esiason.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_027",
+    "name": "Dental Lifeline Network",
+    "category": "medical",
+    "description": "Donated Dental",
+    "eligibility": "",
+    "contact": {
+      "website": "https://dentallifeline.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_028",
+    "name": "Oley Foundation",
+    "category": "medical",
+    "description": "Joan Bishop Award",
+    "eligibility": "",
+    "contact": {
+      "website": "https://oley.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_029",
+    "name": "Insider Rx",
+    "category": "medical",
+    "description": "Compare Prices",
+    "eligibility": "",
+    "contact": {
+      "website": "https://insiderrx.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_030",
+    "name": "The Avalon Foundation",
+    "category": "medical",
+    "description": "PainBox Program",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_031",
+    "name": "Good Days",
+    "category": "medical",
+    "description": "My Good Days",
+    "eligibility": "",
+    "contact": {
+      "website": "https://mygooddays.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_032",
+    "name": "Little Baby Face Foundation",
+    "category": "medical",
+    "description": "Face Surgery",
+    "eligibility": "",
+    "contact": {
+      "website": "https://littlebabyface.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_033",
+    "name": "NORD",
+    "category": "medical",
+    "description": "იშვიათი დაავადებების ორგანიზაცია.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://rarediseases.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_034",
+    "name": "Merck Helps",
+    "category": "medical",
+    "description": "Merck Patient Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://merckhelps.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_035",
+    "name": "Music Movement",
+    "category": "medical",
+    "description": "Therapy Grants",
+    "eligibility": "",
+    "contact": {
+      "website": "https://musicmovement.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_036",
+    "name": "Grottoes of North America",
+    "category": "medical",
+    "description": "Dental Program",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_037",
+    "name": "Maryam Parman Foundation",
+    "category": "medical",
+    "description": "Nursing/Therapy/Devices",
+    "eligibility": "",
+    "contact": {
+      "website": "https://maryamparman.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_038",
+    "name": "Medicine Assistance Tool",
+    "category": "medical",
+    "description": "მედიკამენტების დახმარების ძიების ინსტრუმენტი!",
+    "eligibility": "",
+    "contact": {
+      "website": "https://medicineassistancetool.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_039",
+    "name": "Blink Health",
+    "category": "medical",
+    "description": "Lower Prices",
+    "eligibility": "",
+    "contact": {
+      "website": "https://blinkhealth.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_040",
+    "name": "Begin Again Foundation",
+    "category": "medical",
+    "description": "Butterfly Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://beginagainfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_041",
+    "name": "Move for Jenn Foundation",
+    "category": "medical",
+    "description": "Prosthesis",
+    "eligibility": "",
+    "contact": {
+      "website": "https://moveforjenn.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_042",
+    "name": "NeedyMeds",
+    "category": "medical",
+    "description": "Healthcare Savings",
+    "eligibility": "",
+    "contact": {
+      "website": "https://needymeds.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_043",
+    "name": "Pacific Dental Services",
+    "category": "medical",
+    "description": "Dentists for Special",
+    "eligibility": "",
+    "contact": {
+      "website": "https://pdsfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_044",
+    "name": "My Gym Foundation",
+    "category": "medical",
+    "description": "Apply for a Gift",
+    "eligibility": "",
+    "contact": {
+      "website": "https://mygymfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_045",
+    "name": "Angelman Syndrome Foundation",
+    "category": "medical",
+    "description": "ASF Family Fund",
+    "eligibility": "",
+    "contact": {
+      "website": "https://angelman.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_046",
+    "name": "Severe Chronic Neutropenia Registry",
+    "category": "medical",
+    "description": "Family Day",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_047",
+    "name": "Blessed Gates",
+    "category": "medical",
+    "description": "Free Clinic Resources",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_048",
+    "name": "Little Miss Hannah",
+    "category": "medical",
+    "description": "Family Support/Rare Disease",
+    "eligibility": "",
+    "contact": {
+      "website": "https://littlemisshannah.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_049",
+    "name": "Colorado Fund for Muscular Dystrophy",
+    "category": "medical",
+    "description": "Fund for MD",
+    "eligibility": "",
+    "contact": {
+      "website": "https://coloradomda.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_050",
+    "name": "The Ray Tye Medical Foundation",
+    "category": "medical",
+    "description": "Medical Aid",
+    "eligibility": "",
+    "contact": {
+      "website": "https://raytye.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_051",
+    "name": "Sophia's Voice",
+    "category": "medical",
+    "description": "Financial Assistance for Medical",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_052",
+    "name": "Children's Craniofacial Association",
+    "category": "medical",
+    "description": "Care Package",
+    "eligibility": "",
+    "contact": {
+      "website": "https://ccakids.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_053",
+    "name": "CHARGE Syndrome Foundation",
+    "category": "medical",
+    "description": "Sibling Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://chargesyndrome.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_054",
+    "name": "Beckwith Weidemann Foundation",
+    "category": "medical",
+    "description": "Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://beckwith-wiedemann.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_055",
+    "name": "HelpRx",
+    "category": "medical",
+    "description": "Discount Search",
+    "eligibility": "",
+    "contact": {
+      "website": "https://helprx.info"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_056",
+    "name": "Joshua Harr Shane Foundation",
+    "category": "medical",
+    "description": "Major Illnesses Support",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_057",
+    "name": "Family Voices (MA)",
+    "category": "medical",
+    "description": "შშმ ბავშვთა ოჯახების ქსელი. MA ფილიალი!",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_058",
+    "name": "CHASA (Hemiplegia & Stroke)",
+    "category": "medical",
+    "description": "ჰემიპლეგია + ინსულტი. ნევროლოგიურად რელევანტური",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_059",
+    "name": "GoodRx + NeedyMeds",
+    "category": "medical",
+    "description": "მედიკამენტების ფასდაკლება!",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_060",
+    "name": "National Stem Cell Foundation — Pediatric Promise Fund",
+    "category": "medical",
+    "description": "პირდაპირი მკურნალობის ხარჯები, თანაგადახდა, გამოქვითვა Duke PTCT-ში",
+    "eligibility": "B-2 Visa: ✅ დიახ — საერთაშორისო ოჯახებს ემსახურება",
+    "contact": {
+      "website": "https://nationalstemcellfoundation.org",
+      "phone": "(502) 379-8544"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_061",
+    "name": "Oracle Health Foundation (ყოფილი First Hand Foundation)",
+    "category": "medical",
+    "description": "კლინიკური პროცედურები, აღჭურვილობა, მგზავრობა/საცხოვრებელი",
+    "eligibility": "B-2 Visa: ✅ დიახ — 33 ქვეყანა",
+    "contact": {
+      "website": "https://oracle.com",
+      "email": "casegrants_ww@oracle.com",
+      "phone": "(816) 573-6050"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_062",
+    "name": "Help Hope Live — ფისკალური სპონსორობა",
+    "category": "medical",
+    "description": "სამედიცინო ხარჯები ტრანსპლანტაციისთვის, უჯრედული თერაპია",
+    "eligibility": "B-2 Visa: ✅ სავარაუდოდ — მოქალაქეობის მოთხოვნა არ არის",
+    "contact": {
+      "website": "https://helphopelive.org",
+      "phone": "800-642-8399"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_063",
+    "name": "საქართველოს მთავრობა — რეფერალური სერვისის პროგრამა",
+    "category": "medical",
+    "description": "სრული მკურნალობის ხარჯები საზღვარგარეთ",
+    "eligibility": "B-2 Visa: ✅ დიახ — ქართველი მოქალაქეებისთვის",
+    "contact": {
+      "website": "https://mfa.gov",
+      "email": "washingtonconsulate@mfa.gov.ge",
+      "phone": "(202) 387-2390"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_064",
+    "name": "Ronald McDonald House — Triangle (საცხოვრებლის მხარდაჭერა)",
+    "category": "medical",
+    "description": "უფასო საცხოვრებელი, კვება, სარეცხი, Wi-Fi, პარკინგი",
+    "eligibility": "B-2 Visa: ✅ დიახ — 82+ ქვეყანა",
+    "contact": {
+      "website": "https://RMHCTriangle.org",
+      "email": "Info@RMHCTriangle.org",
+      "phone": "(919) 286-9305"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_065",
+    "name": "GiveSendGo (ქრისტიანული Crowdfunding) 🆕",
+    "category": "medical",
+    "description": "0% პლატფორმის საკომისიო. ფრანგული ბანკის ანგარიშით გამოტანა შესაძლებელია",
+    "eligibility": "B-2 Visa: ✅ დიახ — აშშ ორგანიზატორი არ სჭირდება! ფრანგული ბანკი",
+    "contact": {
+      "website": "https://givesendgo.com",
+      "email": "support@givesendgo.com"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_066",
+    "name": "FundRazr 🆕",
+    "category": "medical",
+    "description": "0% პლატფორმის საკომისიო. ყველაზე ნაკლებად შეზღუდული B-2 ვიზასთან",
+    "eligibility": "B-2 Visa: ✅ დიახ — არ სჭირდება SSN, აშშ ბანკის ანგ.",
+    "contact": {
+      "website": "https://fundrazr.com"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_067",
+    "name": "NMDP (ყოფილი Be The Match)",
+    "category": "medical",
+    "description": "ტრანსპლანტაციასთან დაკავშირებული ხარჯები",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "website": "https://nmdp.org",
+      "email": "patientgrants@nmdp.org",
+      "phone": "(888) 999-6743"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_068",
+    "name": "Duke PTCT ოჯახის მხარდაჭერის პროგრამა",
+    "category": "medical",
+    "description": "ფინანსური კოორდინაცია, საცხოვრ., კვება, მგზავრობა\n🆕 EAP ოჯახებს ნაწილობრივი ანაზღაურება მიუღიათ!",
+    "eligibility": "B-2 Visa: ✅ სავარაუდოდ",
+    "contact": {
+      "website": "https://duke.edu",
+      "email": "ptctfamilysupport@duke.edu",
+      "phone": "919.613.7800"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_069",
+    "name": "Children's Flight of Hope — უფასო ავიაბილეთები",
+    "category": "medical",
+    "description": "კომერციული ავიაბილეთები ბავშვისთვის + 1 თანმხლები",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "website": "https://cfoh.org",
+      "email": "missions@cfoh.org",
+      "phone": "919-466-8593"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_070",
+    "name": "National Foundation for Transplants (NFT) ❌დაიხურა 2024!",
+    "category": "medical",
+    "description": "❌ სამუდამოდ დაიხურა 2024 წლიდან",
+    "eligibility": "B-2 Visa: ❌ არააქტ.",
+    "contact": {},
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_071",
+    "name": "აშშ-ში საქართველოს ასოციაცია",
+    "category": "medical",
+    "description": "საზოგადოებრივი შეგროვება, დონორებთან კავშირი, მცირე გრანტები",
+    "eligibility": "B-2 Visa: ✅ დიახ",
+    "contact": {
+      "website": "https://georgianassociation.org"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_072",
+    "name": "ქართუ ფონდი (საქართველო)",
+    "category": "medical",
+    "description": "ჯანდაცვის ინფრასტრუქტურა — განსაკუთრებული შემთხვევა",
+    "eligibility": "B-2 Visa: ✅ დიახ",
+    "contact": {},
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_073",
+    "name": "Hope for HIE",
+    "category": "medical",
+    "description": "რესურსების ნავიგაცია, კლინიცისტებთან კავშირი",
+    "eligibility": "B-2 Visa: ✅ დიახ — მსოფლიო",
+    "contact": {
+      "website": "https://hopeforhie.org",
+      "email": "Outreach@hopeforhie.org",
+      "phone": "248-574-8099"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_074",
+    "name": "American Transplant Foundation",
+    "category": "medical",
+    "description": "პოსტ-ტრანსპლანტაციის საცხოვრ. ხარჯები (მედიკამენტები, ქირა)",
+    "eligibility": "B-2 Visa: ✅ დიახ — სტატუსი არ კითხულობს",
+    "contact": {
+      "website": "https://americantransplantfoundation.org",
+      "email": "support@americantransplantfoundation.org",
+      "phone": "303-757-0959"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_075",
+    "name": "ქართული სახელმწიფო საქველმოქმედო ფონდები",
+    "category": "medical",
+    "description": "მკურნალობის თანადაფინანსება საზღვარგარეთ",
+    "eligibility": "B-2 Visa: ✅ დიახ",
+    "contact": {},
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_076",
+    "name": "Aubrey Rose Foundation 🆕",
+    "category": "medical",
+    "description": "სამედიცინო ხარჯები ბავშვებისთვის საზღვარგარეთ",
+    "eligibility": "B-2 Visa: ✅ დიახ — 3 საერთაშორისო ოჯახს დახმარებია",
+    "contact": {
+      "website": "https://aubreyrosefoundation.org"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_077",
+    "name": "Danielle's Foundation 🆕",
+    "category": "medical",
+    "description": "ტვინის ტრავმა / დაზიანება",
+    "eligibility": "B-2 Visa: ❓ მოქალაქეობის ბარიერი არ დადასტურებულა",
+    "contact": {
+      "website": "https://daniellesfoundation.org",
+      "phone": "800-511-2283"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_078",
+    "name": "Tvistomi Association (Brooklyn, NY) 🆕",
+    "category": "medical",
+    "description": "სოციალური, სამედიცინო და იურიდიული დახმარება ქართველებისთვის აშშ-ში",
+    "eligibility": "B-2 Visa: ✅ დიახ — ქართული თემი",
+    "contact": {
+      "website": "https://tvistomi.org",
+      "phone": "(888) 232-8855"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_079",
+    "name": "Bone Marrow & Cancer Foundation 🆕",
+    "category": "medical",
+    "description": "Lifeline Fund: მედიკამ., ტრანსპ., საცხოვრ. + უფასო Airbnb",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი — მოქალაქეობის შეზღუდვა არ არის",
+    "contact": {
+      "website": "https://bonemarrow.org",
+      "phone": "800-365-1336"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_080",
+    "name": "Healing the Children 🆕",
+    "category": "medical",
+    "description": "ბავშვები აშშ-ში სამედ. მომსახურება",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "website": "https://healingthechildren.org",
+      "phone": "(973) 949-5034"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_081",
+    "name": "Catholic Charities — Raleigh ეპარქია 🆕",
+    "category": "medical",
+    "description": "საგანგებო ფინ. დახმარება, იმიგრაციის სერვისები",
+    "eligibility": "B-2 Visa: ✅ დიახ — იმიგრაციის სტატუსს არ ამოწმებენ",
+    "contact": {
+      "website": "https://ccdiocese.org",
+      "phone": "(919) 832-0225"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_082",
+    "name": "Children's Miracle Network — Duke 🆕",
+    "category": "medical",
+    "description": "Duke Children's Hospital-ის CMN თავი",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი — Duke-ის გადაწყვეტილებით",
+    "contact": {
+      "website": "https://cmn.org"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_083",
+    "name": "Team Luke Hope for Minds 🆕",
+    "category": "medical",
+    "description": "შეძენილი პედიატრიული ტვინის ტრავმა (HIE!)",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი — 47 შტატი",
+    "contact": {
+      "website": "https://teamlukehopeforminds.org"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_084",
+    "name": "ქართული მართლმადიდებლური სამრევლოები 🆕",
+    "category": "medical",
+    "description": "საგანგებო შეგროვება ეკლესიის მეშვეობით",
+    "eligibility": "B-2 Visa: ✅ დიახ — თემური",
+    "contact": {
+      "phone": "(919) 781-4548"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_085",
+    "name": "⭐ Duke Marcus Center — კლინიკური კვლევა 🆕❗",
+    "category": "medical",
+    "description": "თუ ალექსანდრა აქტ. კლინ. კვლევაში ჩაირიცხება, პროცედურის ღირებულება = $0!",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი — სპეც. კრიტერიუმები",
+    "contact": {
+      "website": "https://dm.duke",
+      "email": "cordbloodtherapyinfo@dm.duke.edu",
+      "phone": "(844) 800-2673"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_086",
+    "name": "Children's Organ Transplant Association (COTA)",
+    "category": "medical",
+    "description": "პედიატრიული ტრანსპლანტაციის შეგროვება, კორდული სისხლი ჩამონათვალში",
+    "eligibility": "B-2 Visa: ❌ სავარაუდოდ არა",
+    "contact": {
+      "website": "https://cota.org",
+      "email": "COTA@cota.org",
+      "phone": "800-366-2682"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_087",
+    "name": "Samaritan's Purse — ბავშვთა სამედიცინო პროგრამები",
+    "category": "medical",
+    "description": "საერთაშორისო ბავშვების მკურნალობა აშშ-ში",
+    "eligibility": "B-2 Visa: ✅ დიახ — საერთაშორისო",
+    "contact": {
+      "website": "https://samaritanspurse.org"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_088",
+    "name": "National BMT Link — Lifeline Fund",
+    "category": "medical",
+    "description": "ძვლის ტვინი, ღეროვანი უჯრედი, კორდული სისხლის ტრანსპლანტაცია",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "website": "https://nbmtlink.org",
+      "email": "info@nbmtlink.org",
+      "phone": "(800) 546-5268"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_089",
+    "name": "Shriners Children's — საერთაშორისო პაციენტების პროგრამა",
+    "category": "medical",
+    "description": "ცერებრალური დამბლა, ნევროლოგიური მდგომარეობები",
+    "eligibility": "B-2 Visa: ✅ დიახ — 130+ ქვეყანა",
+    "contact": {
+      "website": "https://shrinerschildrens.org",
+      "phone": "855-823-7855"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_090",
+    "name": "American Friends of Georgia",
+    "category": "medical",
+    "description": "ჰუმანიტარული პროგრამები საქართველოსთვის",
+    "eligibility": "B-2 Visa: ✅ დიახ",
+    "contact": {
+      "website": "https://afgeorgia.org"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_091",
+    "name": "Global Medical Relief Fund (GMRF) 🆕",
+    "category": "medical",
+    "description": "მკურნალობა, მგზავრობა, საცხოვრ., რეაბილიტაცია აშშ-ში",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი — 40+ ქვეყანა",
+    "contact": {
+      "website": "https://gmrfchildren.org",
+      "phone": "718-448-6984"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_092",
+    "name": "დარჰამის სარწმუნოებრივი ორგ. 🆕",
+    "category": "medical",
+    "description": "მცირე საგანგებო სამედ./საცხოვრ. დახმარება",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "phone": "(919) 668-2640"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_093",
+    "name": "BMT InfoNet — Patient Assistance Fund 🆕",
+    "category": "medical",
+    "description": "ერთჯერადი გრანტი: საცხოვრ., ტრანსპ., საკვები",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი — აშშ-ში მცხოვრებელი",
+    "contact": {
+      "website": "https://bmtinfonet.org",
+      "email": "Marsha@bmtinfonet.org",
+      "phone": "888-597-7674"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_094",
+    "name": "Salvation Army Durham 🆕",
+    "category": "medical",
+    "description": "მოკრზალი საგანგებო დახმარება ($25–$500)",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "phone": "(919) 682-4108"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_095",
+    "name": "IOCC (საერთ. მართლმადიდ. საქველმოქმ.) 🆕",
+    "category": "medical",
+    "description": "არ აფინანსებს ინდივიდ. პროც., მაგრამ გადამისამართებს პარიშ-ებში",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "website": "https://iocc.org",
+      "phone": "877-803-4622"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_096",
+    "name": "Philoptochos Children's Medical Fund 🆕",
+    "category": "medical",
+    "description": "გრანტები არაკომერც. ორგ-ებს (არა პირებს)",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "website": "https://philoptochos.org",
+      "phone": "(212) 977-7310"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_097",
+    "name": "GiveSendGo Charities — GiverArmy 🆕",
+    "category": "medical",
+    "description": "501(c)(3) სამედიცინო დავალების გრანტები",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "website": "https://givesendgo.org"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_098",
+    "name": "Angel Flight / Mercy Medical Angels 🆕",
+    "category": "medical",
+    "description": "უფასო შიდა-ამერ. ფრენები (მხოლოდ ტრანსპ.)",
+    "eligibility": "B-2 Visa: ❓ გაურკვეველი",
+    "contact": {
+      "website": "https://angelflight.com"
+    },
+    "source": "duke_funding"
+  },
+  {
+    "id": "res_099",
+    "name": "SECU Family House (UNC)",
+    "category": "medical",
+    "description": "$54–72/ღამე. UNC მიმართვა საჭირო.",
+    "eligibility": "UNC Health პაციენტები.. B-2: 🟢",
+    "contact": {
+      "website": "https://secufh.org",
+      "phone": "(919) 932-8007",
+      "location": "123 Old Mason Farm Rd, Chapel Hill"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_100",
+    "name": "The Lodge at Duke Medical Center",
+    "category": "medical",
+    "description": "სპეციალური სამედიცინო ტარიფი (არა უფასო — ფასდაკლებით). დარეკეთ და მოითხოვეთ Duke Health-ის პაციენტის ტარიფი. ან დაჯავშნეთ Duke Health კონსიერჟის მეშვეობით: 919-684-5887.",
+    "eligibility": "Duke Health-ის პაციენტები და ოჯახები.. B-2: არა — პაციენტის სტატუსზეა დაფუძნებული.",
+    "contact": {
+      "website": "https://lodgedumc.com",
+      "email": "guestservices@lodgedumc.com",
+      "phone": "919-286-3111",
+      "location": "Duke-ის სამედიცინო ცენტრის კამპუსთან მიმდებარედ, Durham, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_101",
+    "name": "SECU Family House at UNC",
+    "category": "medical",
+    "description": "$54/ღამეში (სტანდარტი) ან $72/ღამეში (ლუქსი). საჭიროა UNC Health-ის მიმართვა. იკითხეთ Duke-ის სოც. მუშაკთან — შეუძლიათ თუ არა UNC-თან კოორდინაცია. ალტერნატივა: Duke IPS-მა (intps@duke.edu) შეიძლება დაეხმაროს.",
+    "eligibility": "UNC Health-ის ზრდასრული პაციენტები და ოჯახები. ალექსანდრა Duke-ში მკურნალობს, არა UNC-ში — საჭიროა UNC Health-ის მიმართვა. ჩეპელ ჰილიდან Duke-მდე ~7 მილი (~15 წთ).. B-2: არა — პაციენტის სტატუსზეა დაფუძნებული.",
+    "contact": {
+      "website": "https://secufh.org",
+      "phone": "(919) 932-8007",
+      "location": "123 Old Mason Farm Rd, Chapel Hill, NC 27517"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_102",
+    "name": "Help Hope Live",
+    "category": "financial",
+    "description": "კატასტროფული სამედიცინო სიტუაციებისთვის tax-deductible fundraising პლატფორმა. GoFundMe-სგან განსხვავებით, დონორები tax deduction-ს იღებენ. 40+ წელი გამოცდილება.",
+    "eligibility": "B-2 Visa: შესაძლოა",
+    "contact": {
+      "website": "https://helphopelive.org",
+      "email": "help@helphopelive.org",
+      "phone": "800-642-8399"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_103",
+    "name": "Special Angels Foundation",
+    "category": "financial",
+    "description": "Grant Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://specialangelsfoundation.org",
+      "email": "specialangelsfoundation@gmail.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_104",
+    "name": "FRIENDS OF KAREN",
+    "category": "financial",
+    "description": "Family Support - Emotional",
+    "eligibility": "",
+    "contact": {
+      "website": "https://friendsofkaren.org",
+      "email": "info@friendsofkaren.org",
+      "phone": "800-637-2774"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_105",
+    "name": "Association of Horizon, Inc",
+    "category": "financial",
+    "description": "Horizon Connects Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://associationofhorizon.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_106",
+    "name": "Miracles For Kids",
+    "category": "financial",
+    "description": "Lifeline – Bill Pay",
+    "eligibility": "",
+    "contact": {
+      "website": "https://miraclesforkids.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_107",
+    "name": "Alyssa V Phillips Foundation",
+    "category": "financial",
+    "description": "Foundation Fund",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_108",
+    "name": "Friends of Man",
+    "category": "financial",
+    "description": "National Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://friendsofman.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_109",
+    "name": "Elderly or Disabled Living (EDL)",
+    "category": "financial",
+    "description": "Financial Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://edliving.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_110",
+    "name": "Joseph Groh Foundation",
+    "category": "financial",
+    "description": "Assistance Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://josephgroh.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_111",
+    "name": "Ragan's Hope",
+    "category": "financial",
+    "description": "Family Support",
+    "eligibility": "",
+    "contact": {
+      "website": "https://raganshope.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_112",
+    "name": "Light for Levi Foundation",
+    "category": "financial",
+    "description": "Grant Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://lightforlevi.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_113",
+    "name": "Tyler Schrenk Foundation",
+    "category": "financial",
+    "description": "Demonstrating Independence",
+    "eligibility": "",
+    "contact": {
+      "website": "https://tylerschrenkfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_114",
+    "name": "Lion's Hope Nonprofit",
+    "category": "financial",
+    "description": "Financial Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://lionshope.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_115",
+    "name": "Modest Needs Foundation",
+    "category": "financial",
+    "description": "Modest Needs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://modestneeds.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_116",
+    "name": "Ryans Hope AZ",
+    "category": "financial",
+    "description": "Financial Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://ryanshopecharity.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_117",
+    "name": "Hope Floats Foundation",
+    "category": "financial",
+    "description": "Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://hopefloatsfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_118",
+    "name": "Dollar For Organization",
+    "category": "financial",
+    "description": "Relief from Hospital Bills",
+    "eligibility": "",
+    "contact": {
+      "website": "https://dollarfor.org",
+      "email": "team@dollarfor.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_119",
+    "name": "Travis Burkhart Foundation",
+    "category": "financial",
+    "description": "Request Assistance",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_120",
+    "name": "Joeys Friends Too",
+    "category": "financial",
+    "description": "Application",
+    "eligibility": "",
+    "contact": {
+      "website": "https://joeysfriendstoo.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_121",
+    "name": "June and Jessee Memorial Foundation",
+    "category": "financial",
+    "description": "Financial Support",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_122",
+    "name": "Aubrey Rose",
+    "category": "financial",
+    "description": "Financial Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://aubreyrose.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_123",
+    "name": "Pervis Jackson Jr Foundation",
+    "category": "financial",
+    "description": "Essential Mini Grants",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_124",
+    "name": "Joni and Friends",
+    "category": "financial",
+    "description": "Christian Fund for Disabled",
+    "eligibility": "",
+    "contact": {
+      "website": "https://joniandfriends.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_125",
+    "name": "Accessia Health",
+    "category": "financial",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://accessiahealth.org",
+      "email": "info@accessiahealth.org",
+      "phone": "800-366-7741"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_126",
+    "name": "W.O.B.E",
+    "category": "financial",
+    "description": "Grant Application",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_127",
+    "name": "NuPrisma",
+    "category": "financial",
+    "description": "NuPrisma Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://nuprisma.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_128",
+    "name": "Foreseeable Future Foundation",
+    "category": "financial",
+    "description": "Foreseeable Future Funding",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_129",
+    "name": "Mesa Angels Foundation",
+    "category": "financial",
+    "description": "Financial Assistance",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_130",
+    "name": "Patient Access Network Foundation",
+    "category": "financial",
+    "description": "Travel/Medical Grants",
+    "eligibility": "",
+    "contact": {
+      "website": "https://panfoundation.org",
+      "phone": "866-316-7263"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_131",
+    "name": "The Special Needs Trust",
+    "category": "financial",
+    "description": "Trust/Scholarships",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_132",
+    "name": "Garage 10",
+    "category": "financial",
+    "description": "Financial Gift",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_133",
+    "name": "THE SIDNEY R. BAER, JR. FOUNDATION",
+    "category": "financial",
+    "description": "Financial & Services",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_134",
+    "name": "Holton's Heroes",
+    "category": "financial",
+    "description": "Hero Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://holtonsheroes.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_135",
+    "name": "Ariana Rye Foundation",
+    "category": "financial",
+    "description": "Apply for Help",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_136",
+    "name": "The Dane Foundation",
+    "category": "financial",
+    "description": "Quality-of-Life Support",
+    "eligibility": "",
+    "contact": {
+      "website": "https://thedanefoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_137",
+    "name": "J-Rob Foundation",
+    "category": "financial",
+    "description": "JRob Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://jrobfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_138",
+    "name": "Maggie Welby Foundation",
+    "category": "financial",
+    "description": "Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://maggiewelby.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_139",
+    "name": "Kya's Krusade",
+    "category": "financial",
+    "description": "Financial Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://kyaskrusade.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_140",
+    "name": "Salvation Army — რალი + დარემი",
+    "category": "financial",
+    "description": "საგანგებო ფინანსური დახმარება (არა თავშესაფარი). დარეკეთ და იკითხეთ საგანგებო ფინანსური დახმარება, რომელიც მოკლევადიანი ქირის ან Airbnb-ს გადახდაში დაგეხმარებათ.",
+    "eligibility": "საგანგებო ფინანსური დახმარება ქირის/Airbnb-ს გადასახადისთვის. ⚠️ არ დაუკავშირდეთ თავშესაფრისთვის — კონგრეგატული გარემო სამედიცინოდ მყიფე ჩვილისთვის შეუფერებელია.. B-2: უცნობია — დასაზუსტებელი",
+    "contact": {
+      "phone": "(919) 834-6733",
+      "location": "რალი + დარემი, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_141",
+    "name": "Ronald McDonald House Durham",
+    "category": "housing",
+    "description": "46 ოთახი. Duke-დან <1 მილი. სრულიად უფასო. 43 შტატი + 9 ქვეყანა. კვება, პარკინგი, შატლი, Wi-Fi.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://rmhctriangle.org",
+      "phone": "(919) 286-9305"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_142",
+    "name": "MBA Opens Doors Foundation",
+    "category": "housing",
+    "description": "Mortgage & Rental Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://mbaopensdoors.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_143",
+    "name": "Healthcare Hospitality Network",
+    "category": "housing",
+    "description": "Medical Lodging",
+    "eligibility": "",
+    "contact": {
+      "website": "https://hhnetwork.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_144",
+    "name": "Believe in Tomorrow",
+    "category": "housing",
+    "description": "Respite Housing",
+    "eligibility": "",
+    "contact": {
+      "website": "https://believeintomorrow.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_145",
+    "name": "Ronald McDonald House Charities",
+    "category": "housing",
+    "description": "House and Family Room",
+    "eligibility": "",
+    "contact": {
+      "website": "https://rmhc.org",
+      "email": "info@rmhc.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_146",
+    "name": "Ronald McDonald House",
+    "category": "housing",
+    "description": "უფასო საცხოვრებელი! Boston + Durham",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_147",
+    "name": "Ronald McDonald House ჩეპელ ჰილი",
+    "category": "housing",
+    "description": "უფასო. მიმართვა კლინიკური/სოციალური მუშაკის მხრიდან. იგივე პროცესი რაც დარემის RMH-ში.",
+    "eligibility": "მძიმედ ავადმყოფი ბავშვი, რომელიც მკურნალობს UNC-ში ან ადგილობრივ საავადმყოფოებში. მიმართვის პროცესი დარემის მსგავსია.. B-2: არა — ბავშვის მკურნალობაზეა დაფუძნებული.",
+    "contact": {
+      "website": "https://rmhctriangle.org",
+      "phone": "919-913-2040",
+      "location": "101 Old Mason Farm Rd, Chapel Hill, NC 27517"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_148",
+    "name": "Ronald McDonald House WakeMed-ში",
+    "category": "housing",
+    "description": "უფასო. მიმართვა კლინიკური/სოციალური მუშაკის მხრიდან.",
+    "eligibility": "ბავშვი მკურნალობს WakeMed-ში ან ადგილობრივ საავადმყოფოებში.. B-2: არა — ბავშვის მკურნალობაზეა დაფუძნებული.",
+    "contact": {
+      "website": "https://rmhctriangle.org",
+      "phone": "(919) 948-9877",
+      "location": "3000 New Bern Ave, Raleigh, NC 27610"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_149",
+    "name": "Grey Stone Church — იმედის სახლი (House of Hope)",
+    "category": "housing",
+    "description": "უფასო (რელიგიური მისია). ვებგვერდზე არის \"register/connect\" ფორმა intake-სთვის. ასევე შეგიძლიათ პირდაპირ დაურეკოთ. აუხსენით სამედიცინო სიტუაცია Duke-ში. იკითხეთ ხელმისაწვდომობა 2026 წლის მაისისთვის. აღწერილია \"transplant suite\" ტიპის განთავსებაც.",
+    "eligibility": "მძიმედ ავადმყოფი პაციენტები და ოჯახები, რომლებიც ცხოვრობენ Duke-ის სამედიცინო ცენტრიდან >50 მილის მოშორებით. შექმნილია Duke-ის პაციენტებისთვის. ფოკუსი ტრანსპლანტზე ხშირად ჩანს. ⚠️ Photo ID შეიძლება მოითხოვონ.. B-2: ნაკლებად სავარაუდო — რელიგიური პროგრამა ფოკუსირებულია სამედიცინო საჭიროებაზე, არა იმიგრაციის სტატუსზე.",
+    "contact": {
+      "website": "https://gsdurham.com",
+      "email": "socialmedia@gsdurham.com",
+      "phone": "919-286-2281",
+      "location": "2601 Hillsborough Rd, Durham, NC 27705 (Duke-ის მახლობლად)"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_150",
+    "name": "SECU Caring House (Duke-ის კიბოს ინსტიტუტი)",
+    "category": "housing",
+    "description": "$45/ღამეში (შემცირებული; რეალური ღირებულება ~$100/ღამეში, დონორები ფარავენ). 18 სტუმრის ოთახი, პირადი აბაზანით, სარეცხით, სრული სამზარეულოთი.. მიმართვა Duke-ის კლინიკური სოც. მუშაკის ან პაციენტის რესურსების მენეჯერის მხრიდან.",
+    "eligibility": "ამჟამად ემსახურება Duke-ის კიბოს ინსტიტუტის ზრდასრულ ამბულატორიულ პაციენტებს და მომვლელებს. საჭიროა კლინიკური სოც. მუშაკის მიმართვა.. B-2: არა — პაციენტის სტატუსზეა დაფუძნებული.",
+    "contact": {
+      "website": "https://caringhouse.org",
+      "email": "development@caringhouse.org",
+      "phone": "(919) 490-5449",
+      "location": "2625 Pickett Road, Durham, NC 27705"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_151",
+    "name": "Best Nest პაციენტის საცხოვრებელი",
+    "category": "housing",
+    "description": "შემცირებული ტარიფი (არა უფასო). დაუკავშირდით პირდაპირ ვებგვერდის მეშვეობით. ახსენეთ Duke EAP მკურნალობა.",
+    "eligibility": "ტრანსპლანტაციის პაციენტები, კიბოს პაციენტები და სხვა პაციენტები. Duke-ის მახლობლად. მინ. 3 ღამე, 90+ დღეც შესაძლებელი. ბინა-სტილის: სამზარეულო/სარეცხი აქვთ.. B-2: უცნობია — დაუკავშირდით დასაზუსტებლად.",
+    "contact": {
+      "website": "https://bestnestchs.com",
+      "email": "info@bestnestchs.com",
+      "phone": "(919) 891-0024",
+      "location": "Duke-ის უნივერსიტეტის საავადმყოფოსთან ახლოს, Durham, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_152",
+    "name": "Airbnb.org Open Homes (სამედიცინო ვიზიტები)",
+    "category": "housing",
+    "description": "უფასო (მასპინძლები აჩუქებენ ღამისთევას). 1) უნდა იყოთ მიმართული არაკომერციული პარტნიორის მიერ — თვითმიმართვა შეუძლებელია\n2) დაუკავშირდით Bone Marrow & Cancer Foundation-ს (800) 365-1336 — აუხსენით სიტუაცია, თუნდაც ალექსანდრას კიბო არ აქვს, იკითხეთ გამონაკლისი ან სხვა პარტნიორ ორგანიზაციასთან გადამისამართება\n3) ან სთხოვეთ Duke-ის სოც. მუშაკს Airbnb.org მიმართვის გაგზავნა\n4) ღამისთევა ჩვეულებრივ 1-2 კვირა",
+    "eligibility": "უნდა იყოთ მიმართული არაკომერციული პარტნიორი ორგანიზაციის მიერ. სამედიცინო პაციენტები და მკურნალობისთვის მოგზაურობის ოჯახები. თავშესაფრის მაძიებლებიც უფლებამოსილი არიან.. B-2: არა — პროგრამა სპეციალურად ემსახურება ლტოლვილებს და თავშესაფრის მაძიებლებს, ასევე სამედიცინო პაციენტებს.",
+    "contact": {
+      "website": "https://airbnb.org",
+      "email": "contact@airbnb.org",
+      "phone": "(800) 365-1336",
+      "location": "რალი-დარემი-ქერის რეგიონი, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_153",
+    "name": "Safe Families for Children — რალი-დარემი",
+    "category": "housing",
+    "description": "უფასო (მოხალისე მასპინძელი ოჯახები). ★ თვითმიმართვა მიღებულია! დარეკეთ (919) 346-7051. აუხსენით რომ ხართ სამედიცინო კრიზისში მყოფი ოჯახი. მნიშვნელოვანი შენიშვნა: პროგრამა ტრადიციულად ბავშვების დროებით განთავსებაზეა ორიენტირებული, არა მთელი ოჯახის — მაგრამ იკითხეთ რა მხარდაჭერა შეუძლიათ თქვენი უნიკალური სამედიცინო სიტუაციისთვის.",
+    "eligibility": "კრიზისში მყოფი იზოლირებული ოჯახები. მოხალისე ოჯახები უზრუნველყოფენ დროებით მასპინძლობას.. B-2: არა — აშკარად აცხადებენ რომ ემსახურებიან ყველა საზოგადოების წევრს იმიგრაციის სტატუსის მიუხედავად!",
+    "contact": {
+      "website": "https://safefamiliesrdu.com",
+      "phone": "(919) 346-7051",
+      "location": "10701 Glenwood Ave, Raleigh, NC 27617"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_154",
+    "name": "Family Promise of the Triangle",
+    "category": "housing",
+    "description": "უფასო (საგანგებო თავშესაფარი და გარდამავალი საცხოვრებელი). დარემის ოლქი: დარეკეთ Entry Point Durham (984) 287-8313\nვეიკის ოლქი: მიდით Oak City Cares, 1430 S. Wilmington St., Raleigh, NC 27603\nაუხსენით დროებითი სამედიცინო საცხოვრებლის საჭიროება.",
+    "eligibility": "უსახლკარობის ან რისკის ქვეშ მყოფი ბავშვიანი ოჯახები. საგანგებო თავშესაფარი 8-12 კვირით.. B-2: უცნობია — დაუკავშირდით დასაზუსტებლად. ისინი კრიზისში მყოფ ოჯახებს ემსახურებიან.",
+    "contact": {
+      "website": "https://familypromisetriangle.org",
+      "phone": "(984) 287-8313",
+      "location": "903 Method Road, Raleigh, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_155",
+    "name": "Hearts and Hope Foundation — House of Hearts and Hope",
+    "category": "housing",
+    "description": "უფასო (\"no cost\" — მედია რეპორტაჟით დადასტურებული). პირდაპირი კონტაქტი ელ-ფოსტით/ტელეფონით. მოამზადეთ ბავშვის სამედიცინო დოკუმენტაცია და Duke EAP-ის დადასტურება. Facebook-ითაც შესაძლებელია კონტაქტი.",
+    "eligibility": "ოჯახები, რომელთა ბავშვი მკურნალობს Triangle-ის პედიატრიულ ცენტრში (Duke/UNC Children's). დროითი ლიმიტი არ აქვთ (\"we don't put a time period on it\"). Durham-ში აქვთ სახლი.. B-2: არ ჩანს ბარიერი — ფოკუსი ბავშვის მკურნალობაზეა. მოამზადეთ პასპორტები + სამედიცინო ვიზიტის დადასტურება.",
+    "contact": {
+      "email": "heartsandhopefdn@gmail.com",
+      "phone": "(704) 489-8940",
+      "location": "Durham, NC (Duke/UNC Children's-ის მახლობლად)"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_156",
+    "name": "Watts Street Baptist Church — W.E. Stanley Mission House",
+    "category": "housing",
+    "description": "უფასო (\"provides free housing accommodations\"). ორი გზა: 1) Duke Concierge/Host Homes არხით გადამისამართება, ან 2) პირდაპირი კონტაქტი მისიის სახლის საკონტაქტო პირებთან (Becky Dodson / Ginny Wiggins).",
+    "eligibility": "პაციენტები, რომლებიც იღებენ outpatient care-ს და მათი ოჯახები. მუშაობს Duke-ის Host Homes Program-თან კოორდინაციით.. B-2: არ ჩანს ბარიერი. მნიშვნელოვანია წესების დაცვა და იდენტიფიკაცია.",
+    "contact": {
+      "website": "https://becky.dodson",
+      "email": "becky.dodson704@outlook.com",
+      "phone": "919-688-1366",
+      "location": "800 Watts St, Durham, NC 27701"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_157",
+    "name": "Duke PTCT Family Support Program",
+    "category": "duke_services",
+    "description": "Duke-ის ოჯახის მხარდაჭერის პროგრამა ტრანსპლანტაციისა და უჯრედოვანი თერაპიისთვის. 1997 წლიდან მუშაობს. Parent's Guide to Cord Blood ადასტურებს: \"ზოგიერთმა მშობელმა ნაწილობრივი ანაზღაურება მიიღო ამ პროგრამიდან.\" უფასო კვება, აქტივობები, caregiver მხარდაჭერა.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://dukeptctfamilysupport.org",
+      "email": "ptct-referrals@duke.edu",
+      "phone": "919-668-1100"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_158",
+    "name": "Duke Charity Care / Financial Assistance",
+    "category": "duke_services",
+    "description": "Duke-ის სტანდარტული ფინანსური დახმარების პროგრამა. შემოსავლის მიხედვით ფასდაკლება ან სრული ჩამოწერა. ზოგიერთმა საერთაშორისო ოჯახმა $7,000-$13,000 გადაიხადა $15,000-ის ნაცვლად.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://dukehealth.org/paying-for-care/financial-assistance"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_159",
+    "name": "დეტალები",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_160",
+    "name": "$15,000 USD / ინფუზია (2 დოზა = $30,000). მოიცავს მომზადებას და მიწოდებას ინფუზიის კლინიკაში. კორდული სისხლის ერთეული ოჯახების მიერ არის შენახული და Duke-ს უფასოდ მიეწოდება.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_161",
+    "name": "წინასწარი სრული გადახდა დაგეგმვამდე. არანაირი დოკუმენტირებული payment plan, ვაუჩერი ან ფასდაკლება არ არსებობს.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_162",
+    "name": "არ ფარავს (EAP ექსპერიმენტული სტატუსი). მგზავრობა/საცხოვრებელი დამატებით.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_163",
+    "name": "~464 ბავშვი ნამკურნალი 2021-ის შუალედამდე (17,000+ განხილულიდან). ASD ამოღებულია 2022 ბოლოს. CP/HIE გრძელდება.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_164",
+    "name": "დიახ — პროგრამა გლობალურ ოჯახებს ემსახურება. დამატებითი ბარიერები: $15k წინასწარი, ვალუტის კონვერტაცია, საერთაშორისო მგზავრობა, ვიზა/ლოგისტიკა, ბავშვის ასაკობრივი ფანჯარა.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_165",
+    "name": "Duke PTCT Family Support — ნაწილობრივი ანაზღაურება (case-by-case). Duke Health ბილინგისგან განცალკევებული ორგანიზაცია. სოც. მუშაკები ეხმარებიან.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_166",
+    "name": "სრული ვაუჩერი, რუტინული payment plan, ან Duke-შიდა სტიპენდია/სკოლარშიპი EAP-ისთვის. Marcus Center-ის საიტი ფინანსურ დეტალებს საჯაროდ არ აქვეყნებს.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_167",
+    "name": "არაფერი ორგანიზაცია (NSCF, COTA, NFT, NMDP) არ აფინანსებს EAP ინფუზიებს პირდაპირ. NSCF მხოლოდ კლინიკურ კვლევებს აფინანსებს. COTA/NFT/NMDP — თრანსპლანტაცია, არა რეგენერაციული ინფუზია.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_168",
+    "name": "ბავშვი / ოჯახი",
+    "category": "duke_services",
+    "description": "ქვეყანა & მდგომარეობა. მიზანი / შეგროვებული. მეთოდი",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_169",
+    "name": "Harris Longbottom 🇬🇧",
+    "category": "duke_services",
+    "description": "ინგლისი. ჰემიპლეგიური CP (პრენატ. ინსულტი/HIE-ის მსგავსი)\nEAP #763 ბავშვი\nდონორ-და (sibling) კორდ. სისხლი\n2 დოზა დაგეგმილი. მიზანი: £12,000\nშეგროვდა: £16,471+\n(~$15k/დოზა × 2). 🏃 პირადი კვირითი მარათონები (6+ კვირა) + GoFundMe\nმგზავრ./საცხოვრ. თავად დაფინანსდა",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_170",
+    "name": "Gavin Pigott 🇺🇸",
+    "category": "duke_services",
+    "description": "აშშ. შერეულ-ტონური კვადრიპლეგიური CP + დისტონია + კორტიკ. მხედველ. დაზიანება (HIE/პრემატურ.იდან)\nდონორის კორდ. სისხლი. მიზანი: $22,000\n(მკურნ. + მგზავრ.)\nშეგროვდა: $8,800+. GoFundMe მარტო\nსხვა წყარო არ არის ნახსენები",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_171",
+    "name": "Luca Lisson",
+    "category": "duke_services",
+    "description": "CP + მხედველ./განვითარების შეფერხება (ტვინის დაზიანება)\n2 რაუნდი რეკომენდებული. ~$30,000+\n(2 რაუნდი). GoFundMe\n\"სიცოცხლის შანსი\" ფრეიმინგი",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_172",
+    "name": "Matthew Pecor 🇺🇸",
+    "category": "duke_services",
+    "description": "აშშ / Torrington, CT\nაუტიზმი\n2 მკურნალობა. ~$30,000 ჯამი\nშეგროვდა: ~$1,800. GoFundMe + ზაფხულის საზოგად. შეგროვება",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_173",
+    "name": "Ava Johnson 🇺🇸",
+    "category": "duke_services",
+    "description": "აშშ. ჰემიპლეგიური CP\nin-utero ინსულტი/IVH-იდან. EAP private-pay. GoFundMe \"ავას ანგელოზები\"",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_174",
+    "name": "სხვა დოკუმენტ.",
+    "category": "duke_services",
+    "description": "Gentry Williams (CP, 2019), Evelyn (CP, 2023), Maisie (HIE, 2024), Nicholas (HIE, 2021), Ariana Rye Foundation (პოსტ-ტრაილი 2022, $15k cash/credit). $15k–$30k თითო. ყველა GoFundMe + თემური აპელები",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_175",
+    "name": "📊 2020 Cytotherapy კვლევა",
+    "category": "duke_services",
+    "description": "10 Duke-სპეციფიკური აუტიზმის კამპანიის ანალიზი. ემოციური ნარატივები, ბავშვის ფოტო/ვიდეო, \"ტვინის რეპარაცია\" ფრეიმინგი. Duke კამპანიები ნაკლებად ჰიპერბოლურები.. peer-reviewed. აკადემიური ანალიზი",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_176",
+    "name": "მიზნები: $15,000–$35,000 (1–2 ინფუზია + ნაწილობრივი მგზავრობა). ბევრი 50–100%+ აგროვებს მცირე დონაციებით. ასობით კამპანია არსებობს (VICE/Niche 2021: \"სავსეა თხოვნებით\").",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_177",
+    "name": "ემოციური პირადი ნარატივი + ბავშვის ფოტო/ვიდეო (ყოველდღიური გამოწვევებიდან \"უკეთეს მომავალმდე\")",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_178",
+    "name": "Duke/Kurtzberg-ის \"კვლევაზე\" მიბმა — \"ტვინის რეპარაცია\", \"ერთადერთი იმედი\" მოტორ./მეტყველების გაუმჯობესებისთვის (evidence-based ფრეიმინგი ტრაილებიდან)",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_179",
+    "name": "გადაუდებელობა/urgency (ასაკი <3–5 იდეალური; მოსალოდნელი ფანჯარა/ვადა)",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_180",
+    "name": "პროგრესის განახლებები + გამჭვირვალობა ხარჯებზე (\"$15k მკურნალობა მარტო; მგზავრ. დამატ.\")",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_181",
+    "name": "პირადი ჩელენჯები (მარათონები, სათემო ღონისძიებები) ზრდის გაზიარებას/დონაციებს (Harris მაგალითი!)",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_182",
+    "name": "EAP სტატუსი",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_183",
+    "name": "❌ EAP არ აფინანსებს",
+    "category": "duke_services",
+    "description": "მხოლოდ კლინიკურ კვლევებს Duke PTCT-ში (თანაგადახდა/გამოქვითვა). არა ფასიან რეგენერაციულ ინფუზიას (EAP). წყარო: NSCF საიტი/პროექტები (2021–2025).",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_184",
+    "name": "ნაწილობრივი ანაზღაურება (case-by-case). Duke Health ბილინგისგან განცალკევებული ორგანიზაცია. სოც. მუშაკები ეხმარებიან EAP ოჯახებს. დოკუმენტურად დადასტურებულია Parent's Guide to Cord Blood (2021/2022)-ში.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_185",
+    "name": "კლინიკური სოც. მუშაკები + ფინანსური კოორდინატორები (Marcus Center/PTCT მეშვეობით) ეხმარებიან განაცხადებში ნაწილ. ანაზღაურ., დაზღვევის აპელებში, გარე რესურსებთან ნავიგაციაში. ოჯახებს სკრინინგის დროს ენიშნებათ.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_186",
+    "name": "არანაირი დოკუმენტირებული ან შეთავაზებული EAP-ისთვის (წინასწარი გადახდა დაგეგმვამდე სავალდებულო).",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_187",
+    "name": "იშვიათად ან არადოკუმენტირებული. \"ზოგიერთმა ოჯახებმა ფინ. დახმარება მიიღეს\" — გენერალური ჩანაწერი, მაგრამ მიბმული ნაწილობრ. Duke ანაზღაურებასთან.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_188",
+    "name": "არანაირი დედიკირებული EAP სტიპენდია/სკოლარშიპი საჯაროდ გამოცხადებული. Marcus Center-ის საიტი EAP ფინანსებს საჯაროდ არ აქვეყნებს (სკრინინგის/მოსალოდნელი სიის მეშვეობით მუშავდება).",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_189",
+    "name": "Marcus Center / Duke PTCT სოც. მუშაკს ადრე დაუკავშირდით მოსალოდნელ სიაშის სკრინინგის დროს case-by-case განხილვისთვის. 📧 ptctfamilysupport@duke.edu | ☎ 919.613.7800",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_190",
+    "name": "National Foundation for Transplants (NFT) სამუდამოდ დაიხურა 2024 წლიდან. ტიერ 2-ში არსებული #9 აღარ აქტუალურია — განაცხადი აღარ მიიღება.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_191",
+    "name": "Duke-ის შემოსავლებაზე დაფუძნებული DUHS income-based charity care პოლიტიკა (≤200% FPL = 100%-მდე waiver) ტექნიკურად არსებობს, მაგრამ ოჯახებს ეუბნებიან რომ EAP სხვაგვარად მოქმედებს. Duke-ის PRMO-სთან პირდაპირი დამუშავება = საუკეთესო მიდგომა.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_192",
+    "name": "Help Hope Live და COTA სტრუქტურულად გამოყენებადია EAP-ისთვის, მაგრამ არანაირი დადასტურებული Duke EAP შემთხვევა ნაპოვნი არ არის. თეორიულად შესაძლებელია — აქტიურად გამოსაცდელი.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_193",
+    "name": "Jazmynn Allen 🇺🇸 🆕",
+    "category": "duke_services",
+    "description": "აშშ, Georgia\nHIE / CP. GoFundMe\n$15,000 მიზანი. მარტი 2026",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_194",
+    "name": "აშშ ოჯახები 🆕",
+    "category": "duke_services",
+    "description": "აშშ: Michigan, Texas, Minnesota, Washington\nHIE და CP ოჯახები. 5 აქტიური GoFundMe\n2024–2026. 2024–2026",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_195",
+    "name": "იაპონია 🇯🇵 🆕",
+    "category": "duke_services",
+    "description": "იაპონია\nსხვადასხვა დიაგნოზები. 16 პაციენტი\n1 ბანკიდან\nდეკ. 2025-მდე. დეკ. 2025-მდე",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_196",
+    "name": "Kira Crawford 🇨🇦 🆕",
+    "category": "duke_services",
+    "description": "კანადა. დაფინანსების\nდეტალები არ არის. 2019",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_197",
+    "name": "Armaan 🇨🇦 🆕",
+    "category": "duke_services",
+    "description": "კანადა. დაფინანსების\nდეტალები არ არის. 2019",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_198",
+    "name": "Jay Shetty 🇬🇧 🆕",
+    "category": "duke_services",
+    "description": "გაერთ. სამეფო (UK)\nკლინიკური ტრაილი. კლინ. ტრაილი\n(არა EAP). 2017",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_199",
+    "name": "Maia Friedlander 🇳🇿 🆕",
+    "category": "duke_services",
+    "description": "ახალი ზელანდია. დაფინანსების\nდეტალები არ არის. 2008",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_200",
+    "name": "$20,000 – $26,000 მინიმუმი საერთაშორისო ოჯახებისთვის ($15K საფასური + კორდ. სისხლის გადაზიდვა + მგზავრობა/საცხოვრებელი). ყველაფერი წინასწარი, დაზღვევის გარეშე.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_201",
+    "name": "ყველაზე აქტიური საერთაშ. პარტნიორი. 1 ბანკიდან 16 პაციენტი 2025 დეკ.-მდე. ბანკები აქტიურად ეხმარებიან ხარჯების ნავიგაციაში.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_202",
+    "name": "მინიმუმ 2 დოკუმენტ. შემთხვევა: Kira Crawford (2019), Armaan (2019). კანადური კორდ. სისხლის ბანკები აქტიურად ეხმარებიან.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_203",
+    "name": "Jay Shetty (2017 კლინ. ტრაილი) + Harris Longbottom (2025–2026 EAP). UK კორდ. სისხლის ბანკები აქტიურად.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_204",
+    "name": "Maia Friedlander (2008) — ადრეული შემთხვევა ყველაზე შორიდან.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_205",
+    "name": "Declan Rutkowski 🇬🇧 🆕🆕",
+    "category": "duke_services",
+    "description": "ინგლისი. HIE/სპასტიკური CP\nასაკი ~3 წლი\nდედამ: Stephanie. მიზანი: $15,000\nშეგროვდა: $16,700\n106 დონორი\n✅ გადაჭარბებული!. GoFundMe: \"Help Declan Thrive with Stem Cell Therapy\"\nკამპანიაში პირდაპირ: \"სრულიად out-of-pocket და მინიმუმ $15,000\"",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_206",
+    "name": "Noah Gore 🇨🇦 🆕🆕",
+    "category": "duke_services",
+    "description": "კანადა, Coquitlam BC\nCP (PVL პრემატურულობიდან)\n25 კვირაში დაბადებული ტრიპლეტი. მიზანი: $75,000 CAD\nშეგროვდა: $40,037 CAD\n285 დონორი (53%). GoFundMe\nგანახლებაში დადასტურდა: \"საკმარისი თანხა შევაგროვეთ 1-ლი მკურნალობისთვის\"",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_207",
+    "name": "Grace Rosewood 🇺🇸 🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ, Pasadena CA\nCP ჯანდაზოფილება (cleft palate ოპერაციისას 9 თვე-ზე)\n3 ინფუზია 2012–2013. crowdfunding\n(თანხა არ დაზუსტებული). crowdfunding + კორდ. სისხლი დაბანკებული დაბადებისას\ncompassionate use (EAP-ის წინ)",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_208",
+    "name": "Isaiah Bingham 🇺🇸 🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ, Swartz Creek MI\nკორდ. სისხლის ტრანსპლანტაცია Duke-ში. Help Hope Live კამპანია\n(თანხა არ დაზუსტებული). 🆕 Help Hope Live ფისკალური სპონსორობა\n(გადასახადისგან თავისუფალი დონაციები)",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_209",
+    "name": "Isabella Barney 🇺🇸 🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. აპრაქსია\nკერძო დაბანკებული კორდ. სისხლი. კერძო დაბანკებული. კერძო CB + Yahoo News/Americord გაშუქება",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_210",
+    "name": "Ella Schafluetzel 🇺🇸 🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. CP. GoFundMe + თემური. GoFundMe + სათემო lemonade stand 🍋\nჰიბრიდული მოდელი",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_211",
+    "name": "Isla 🇬🇧 🆕🆕",
+    "category": "duke_services",
+    "description": "UK. CP\nJustGiving კამპანია. მიზანი: £25,000. JustGiving (🇬🇧 პლატფორმა)",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_212",
+    "name": "Jack Leahy 🆕🆕",
+    "category": "duke_services",
+    "description": "CP\nDuke-ის 2-წლიანი ლოდინის სია. GoFundMe. GoFundMe\nსაზღვარგარეთ მკურნალობა დაგეგმა დალოდინისას",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_213",
+    "name": "იაპონური ოჯახი 🇯🇵 🆕🆕",
+    "category": "duke_services",
+    "description": "იაპონია. HIE\n7 წლის ვაჟი\n3.5 წელი ელოდებოდა COVID-ის გამო\nდაის CB StemCell Institute იაპონიაში. $15K + ტრანსპაციფიკური მგზავრობა\n(ჯამური არ გამჯღავნდა). უცნობი",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_214",
+    "name": "Jay Shetty 🇬🇧 (დეტალური) 🆕🆕",
+    "category": "duke_services",
+    "description": "UK. მძიმე CP\nმშობლები: Raj & Shilpa Shetty\nPhase 1 sibling CB ტრაილი\nძმა Kairav სპეციალურად დაიბადა CB-ისთვის. £105,000 შეგროვდა\n(~$130,000+ USD)\nყველაზე დეტალური. Cells4Life პარტნიორობა\nWimbledon Gazette გაშუქება\nITV News\nმრავალარხიანი კამპანია",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_215",
+    "name": "Sun et al., Stem Cells Translational Medicine, 2017: დოზის-დამოკიდებული სარგებელი. ≥ 20M უჯრედები/კგ = მნიშვნელოვნად გაუმჯობესებული მოტორული ფუნქცია და ტვინის კავშირურობა.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_216",
+    "name": "ACT კვლევა (180 ბავშვი, Journal of Pediatrics, 2020): ვერ მიაღწია პირველადი endpoint (სოციალიზაციის უნარები). შედეგად: აუტიზმი ამოღებულია EAP-დან 2022 ბოლოს.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_217",
+    "name": "🚨 პროგრამა გაფართოებულია: CP პაციენტებს ახლა შეუძლიათ გამოიყენონ არანათესავი (allogeneic) კორდ. სისხლი Duke-ის Carolinas Cord Blood Bank-იდან. აღარ სჭირდებათ კერძოდ დაბანკებული CB! CB ერთეული უფასოა, მხოლოდ $15K საავადმყოფო საფასური.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_218",
+    "name": "FDA რეგულაციით EAP სპონსორს შეუძლია პირდაპირი ხარჯების ანაზღაურება. $15K მოიცავს: სკრინინგს, CB ტესტირებას, ინფუზიას პრე-მედიკამენტებით, დაკვირვებას, follow-up 2 წელი. CB ერთეული ამ საფასურში არ შედის.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_219",
+    "name": "Duke-ის ექსკლუზიური ლიცენზირება Cryo-Cell International-თან (2021 ხელშეკრულებისთვის დამოუკიდებელი ინფუზიის კლინიკების გასახსნელად) გაუქმდა 2025 წლის 17 მაისს. Cryo-Cell $100M არბიტრაჯის ზარალს ითხოვს. STAT News: \"გამაფრთხილებელი ამბავი\" (cautionary tale).",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_220",
+    "name": "ავსტრალიის Cerebral Palsy Alliance: \"ასობით ოჯახებმა ათასობით დოლარი დახარჯეს საზღვარგარეთ.\" პირველი ავსტრალიური შიდა compassionate-use CB ინფუზია CP-ისთვის = აპრ. 2025, Monash Children's Hospital, Melbourne.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_221",
+    "name": "Dr. Kurtzberg-მა Cord:Use-სგან (მოგვიანებით Cryo-Cell-მა შეიძინა) მიღებული ანაზღაურებები მიმართა Duke PTCT Family Support Program-ში. ეს ადასტურებს პროგრამის დაფინანსების წყაროს.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_222",
+    "name": "Parent's Guide to Cord Blood Foundation-ის თანაავტორობით სტატია: მოითხოვეს \"ახალი ტიპის ჯანდაცვის დაზღვევა რომელიც დაფარავს სტემ-უჯრედ. თერაპიის პაციენტებს რომელთაც შესაძლოა საზღვრებს გადაკვეთონ\" — ეს პოლიტიკა ჯერ არ არსებობს.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_223",
+    "name": "მგზავრობა",
+    "category": "duke_services",
+    "description": "CB გადაზიდვა. სამედ. Duke-ში. ჯამური შეფასება",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_224",
+    "name": "1000",
+    "category": "duke_services",
+    "description": "3000. 0. 4000",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_225",
+    "name": "3300",
+    "category": "duke_services",
+    "description": "$2,275*. 0. 5575",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_226",
+    "name": "$7,800+",
+    "category": "duke_services",
+    "description": "$3,000*. 0. $10,800+",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_227",
+    "name": "$1,200–$2,000",
+    "category": "duke_services",
+    "description": "3000. $7,000–$15,000. $11,200–$20,000",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_228",
+    "name": "8400",
+    "category": "duke_services",
+    "description": "$2,800*. 9450. 20650",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_229",
+    "name": "Cells4Life (UK), Cell Care/Cells for Life (ავსტ/კანადა), StemCell Institute (იაპონია) — ზოგიერთ ბანკმა კურიერის $2K–$3K ხარჯი აიღო",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_230",
+    "name": "საქართველოში კერძო CB ბანკები არ არსებობს → CB გადაზიდვა არ არის რელევანტური. თუმცა ივნ. 2024-იდან Duke CCBB allogeneic CB = უფასოა! შეფასება რუმინეთის მოდელთან მიახლოებული: ~$20,650+",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_231",
+    "name": "🟡 პარტნიორობა Duke PTCT-თან",
+    "category": "duke_services",
+    "description": "230+ ბავშვს დაეხმარა კლინ. კვლევებში მონაწილეობისთვის. ფარავს copays/deductibles. მაგრამ: პრიმარულად კლინ. კვლევების პაციენტებს, არა სპეციფიკურად EAP-ს. თუმცა: ტიერ 1-ში არის და ღირს დარეკვა.",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_232",
+    "name": "🟡 თეორიულად შესაძლებელი",
+    "category": "duke_services",
+    "description": "1,500+ პაციენტს დაეხმარა ჯამურად. Duke PTCT საიტზე პარტნიორად არის ნაჩვენები. fundraising ინფრასტრუქტურა + $10K challenge grant. მაგრამ: ელიგიბილობა მოითხოვს \"სიცოცხლის გადამრჩენ\" ტრანსპლანტაციას — CP EAP ინფუზია შესაძლოა გაურკვეველი.",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_233",
+    "name": "✅ დადასტურებული!",
+    "category": "duke_services",
+    "description": "🚨 Isaiah Bingham (Swartz Creek MI) = პირველი დადასტ. HHL + Duke CB შემთხვევა! ფისკალური სპონსორობა (გადასახადისგან თავისუფალი დონაციები). ეს აძლიერებს HHL-ს ტიერ 1-ში პოზიციას ალექსანდრასთვის.",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_234",
+    "name": "❌ სამუდამოდ დაიხურა 2024",
+    "category": "duke_services",
+    "description": "განაცხადი აღარ მიიღება. $98M+ შეგროვებული თრანსპლ. ოჯახებისთვის ხანდაზმული. ამოშალეთ ყველა სიიდან.",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_235",
+    "name": "❌ ინფრასტრუქტურა მარტო",
+    "category": "duke_services",
+    "description": "$15M+ Duke-ს, Marcus Center-ის სახელი. კვლევის ინფრასტრუქტურა მარტო. არ ასუბსიდირებს ინდ. პაციენტებს. 🚨 ცნობილია: შეჩერებულია რეგენერაც. მედიცინის გრანტების გაცემა შეწყვიტა = Duke-ის პროგრამაზე ფინანს. ზეწოლა.",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_236",
+    "name": "Duke University Health System Financial Assistance პირდაპირ ამბობს: \"ტრანსპლანტაციის, ექსპერიმენტული და ელექტიური სერვისები არ არის უფლებამოსიანი ფინანს. დახმარების ფასდაკლებისთვის.\" ეს ნიშნავს რომ EAP ექსპერიმენტულია → სტანდარტული sliding-scale (≤200% FPL = 100% waiver) არ ვრცელდება.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_237",
+    "name": "$15K წინასწარი სავალდებულოა ვიზიტის დაგეგმვამდე. Duke-ის სტანდარტული 72-თვიანი უპროცენტო payment plan ($10K+ ბალანსისთვის) EAP-ს არ ეხება prepayment მოთხოვნის გამო.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_238",
+    "name": "2014 სტატიაში Dr. Kurtzberg ახსენებს Duke-ის \"საქველმოქმედო პროგრამას რომელიც დაფარავს ჯანდაცვის ხარჯებს უფლებამოსიანი ოჯახებისთვის.\" ეს DUHS-ის სტანდარტული პოლიტიკისგან განსხვავებულია თუ არა — გაურკვეველია. PTCT Family Support = ფუნქციური workaround.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_239",
+    "name": "Duke PTCT-ის სოც. მუშაკები, დაზღვ. კოორდინატორი და საცხოვრებელის კოორდინატორი ეხმარება რესურსებთან ნავიგაციაში. Ronald McDonald House of Durham (კამპუსზე, 46 ოთახი) მინიმ. ღამის შემოწირულობა + Duke ფასდაკლებული სასტუმრო ტარიფები.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_240",
+    "name": "თანამიმდევრულობით, დოკუმენტ. შემთხვევებიდან",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_241",
+    "name": "შეამოწმეთ ელიგიბილობა marcuscenter.duke.edu/clinical-trials/current-trials — თუ კლინ. კვლევაში ჩაირიცხება = ყველა ხარჯი დაფარული + მგზავრობის სტიპენდია. $15K პრობლემა სრულიად მოგვარებულია!",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_242",
+    "name": "EAP მიღებისთანავე დაუკავშირდით ptctfamilysupport@duke.edu / 919-668-1128. ნაწილობრივი ანაზღაურება + საგანგებო ფინ. დახმარება.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_243",
+    "name": "კამპანია $15K მიზნით, Duke & EAP სახელდებით, ბავშვის მდგომარეობის დეტალური აღწერით. ადგილობრივი სათემო ღონისძიებებთან დააწყვილეთ. Allen ოჯახის ჰიბრიდული მოდელი = ონლაინ + ოფლაინ შემოსავლები.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_244",
+    "name": "helphopelive.org — ფისკალური სპონსორობა = დონაციები გადასახადისგან თავისუფალი. Isaiah Bingham პრეცედენტი ადასტურებს Duke CB-ისთვის გამოყენებადობას.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_245",
+    "name": "cota.org — გარკვევეთ კვალიფიცირდება თუ არა fundraising ინფრასტრუქტურისთვის + $10K challenge grant.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_246",
+    "name": "Duke სოც. მუშაკისგან RMHC-ში რეფერალი = საცხოვრებელის ხარჯები მინიმ. შემოწირულობაზე დაყვანილი.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_247",
+    "name": "ჰკითხეთ CB ბანკს დაფარავს თუ არა გადაზიდვის ხარჯებს ($2K–$3K). Cells4Life (UK), Cell Care (ავსტრალია/კანადა), StemCell Institute (იაპონია) = დადასტ. პრეცედენტები.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_248",
+    "name": "Kai 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. სპასტიკური კვადრიპლეგიური CP + კორნეალ. მხედველობის დაზიანება\n4 სულიანი ოჯახი\n12–24 თვე ნეიროპლასტიკურობის ფანჯარა. მიზანი: $100,000\n(EAP $15K + თერაპია + მგზავრ. + აღჭურვილობა). GoFundMe (თემური კრაუდფანდინგი)\n\"all-in\" მიდგომა",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_249",
+    "name": "Everett Staruk 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. PMD (Pelizaeus-Merzbacher Disease)\nლეიკოდისტროფია\nსტემ-უჯრედული ტრანსპლ. მიელინის აღსადგენად. $100,775 შეგროვდა\n✅ სრულად დაფინანსდა!. COTA (100% ფონდები სამედ. ხარჯებზე)\n+ \"Team Everett Yard Sale\"\n+ თემური ღონისძიებები",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_250",
+    "name": "Nasir Holman 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ, Durham NC. მწვავე ლიმფობლასტური ლეიკემია\nსტემ-უჯრედული ტრანსპლანტაცია Duke-ში\nსამედ. ხარჯები $500,000+ პროგნოზირებული. მიზანი: $40,000\n(ჯამური ბილი $500K+). COTA მოხალისეები Durham-ში\nDuke-ის ექიმების \"პირველი რეფერალი\"",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_251",
+    "name": "Len Taing 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. ლეიკემია / ინსულტი\nფილტვის ტრანსპლ. წინა ძვლის ტვინის ტრანსპლ. + ინსულტის შემდეგ\nDurham-ში ცხოვრება სავალდებულო. $3,000/თვე ხარჯები\n(ქირა Durham-ში + მედიკამენტები). Help Hope Live\n(ფისკალური ანგარიშვალდებულობა)",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_252",
+    "name": "Carson Smith 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. ფილტვის ჰიპერტენზია / PVOD\n(Pulmonary Veno-Occlusive Disease). $200,000+ შეგროვდა\n✅ წარმატებული!. COTA (თემური fundraising)",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_253",
+    "name": "Patrick Twins 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. ნევროლოგიური დეფიციტი\n(პოსტ-ტრანსპლანტაციის გართულებები)\nტყუპები. $2,000,000 ბილი\n(ნაწილობრივ დაფარული დაზღვ./COTA). COTA (თემური fundraising)\n+ დაზღვევა",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_254",
+    "name": "წარმატებული კამპანიები $15K Duke საფასურს აერთიანებს ინტენსიურ follow-up თერაპიასთან + აღჭურვილობასთან. ეს აფართოებს აპელაციას დონორებისთვის, რომლებიც სკეპტიკურად უყურებენ ერთ \"ექსპერიმენტულ\" ინფუზიას, მაგრამ მზად არიან მხარი დააფინანსონ \"სიარულის/კომუნიკაციის გზა\" (pathway to walking/communication). Kai-ს $100K კამპანია = საუკეთესო მაგალითი.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_255",
+    "name": "NSCF Patient Advocacy Fund (PAF) 225+ ბავშვს დაეხმარა 2025-ისთვის Duke-ის კლინ. კვლევებში. ფარავს deductibles/co-pays სამედ. უფლებამოსიანი ბავშვებისთვის. პრიმარულად კლინ. კვლევების პაციენტებისთვის, მაგრამ ancillary support EAP-ისთვისაც შესაძლებელია (Kurtzberg-ის \"დაჩქარებული იშვიათ დაავადების\" ინიციატივის ფარგლებში).",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_256",
+    "name": "$15M-დან $41M-მდე გრანტი Duke-სთვის. Marcus Center for Cellular Cures = მათი დაფინანსებით დასახელებულია. მხოლოდ კვლევის ინფრასტრუქტურა — არ ასუბსიდირებს ინდივიდუალურ პაციენტებს. (წინა: შეაჩერებულია რეგენერაც. მედიც. გრანტების გაცემა.)",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_257",
+    "name": "1️⃣ \"კრიტიკული ფანჯარა\" = ბავშვი ნეიროპლასტიკურობის პიკზე არის, $15K-ის დაგვიანება = პოტენციალის სამუდამო დაკარგვა.\n2️⃣ \"ექსპერიმენტული, მაგრამ დამტკიცებული\" პარადოქსი = Duke Phase I/II შედეგების ციტირება (მოტორული გაუმჯობესება CP-ში).\n3️⃣ Cost-recovery გამჭვირვალობა = $15K არაა მოგება, არამედ ლაბორატორიის + ექიმების ხარჯების ანაზღაურება.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_258",
+    "name": "2021 ლიცენზია მიზანი: კვირაში 5x მეტი პაციენტის მიღება (17,000 ლოდინის სიიდან). თუმცა $15K = საჯარო ყურადღების ცენტრში — \"პატერნალიზმის\" კრიტიკამდე მიიყვანა. კომერციული სუბიექტი \"ექსპერიმენტულ\" სივრცეში, მაგრამ cost-recovery მოდელი იგივე დარჩა.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_259",
+    "name": "ავსტრალიაში Cell Care + Cerebral Palsy Alliance პარტნიორობით: უფასო CB შეგროვება + შენახვა CP-ის დიან ახალშობილებისთვის. ეს უზრუნველყოფს ბიოლოგიური მასალის ხელმისაწვდომობას Duke-ში მომავალი მგზავრობისთვის, თუმცა $15K ინსტიტუციური საფასური არ იფარება.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_260",
+    "name": "Sammy 🇬🇧 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "🇬🇧 UK. CP\nძმა Leo-ს შენახული კორდ. სისხლი\nმარტში დაჯავშნული. EAP საფასური + ტრანსატლანტ. ფრენები + საცხოვრ.. GoFundMe: \"Help Sammy access lifechanging stem cell in the US\"",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_261",
+    "name": "Suzie 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. Late Infantile NCL (Batten Disease)\nკომპლექსური სტემ-უჯრ. ტრანსპლ.\nDr. Kurtzberg-თან. 6-თვიანი რელოკაციის ხარჯები\n🟢 დაზღვ. სამედ. პროცედურას ფარავს!. GoFundMe\ngofundme.com/f/28489bwk",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_262",
+    "name": "Avonlea Rose 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. გულის გაჩერება / ტვინის დაზიანება\nCHOP პაციენტი\nKurtzberg-თან კონსულტაცია. EAP თერაპია + მგზავრობა. GoFundMe: \"Join the journey of endless love\"\nდაბანკებული CB",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_263",
+    "name": "Ayla 🇺🇸 🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. CP\nდის Emma-ს კორდ. სისხლი\nსამედ. განხილვა გავლილი ✅. EAP + ანონიმური დონორი\n$10K-მდე matching! 🌟. GoFundMe: \"Ayla's Journey\"\n+ $10K ანონ. მეჩინგი",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_264",
+    "name": "Audrey 🇺🇸 ⚠️🆕🆕🆕",
+    "category": "duke_services",
+    "description": "აშშ. აუტიზმი (ASD)\nKurtzberg-ის კვლევაზე მიუთითებს\nმაგრამ Duke აღარ მიიღებს ASD-ს!. $16,825 შეგროვდა. GoFundMe: \"Audrey stem cells autism\"\n→ პანამა Stem Cell Inst.",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_265",
+    "name": "Mathis 🇳🇱/🇧🇪 🚨🆕🆕🆕",
+    "category": "duke_services",
+    "description": "🇳🇱 ნიდერლ./ბელგია. CP\nდის CB შვეიცარიაში დაბანკებული\nDuke-მა CB უარყო!. არ მიღწეულა —\nDuke-მა CB უარყო!. GoFundMe: \"Please help Mathis develop into a healthy boy\"",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_266",
+    "name": "2022 ბოლოს ASD ამოღების ფინ. შედეგი: 278/464 ბავშვიდან 60% ASD იყო! ეს ნიშნავს $15K საფასურების მოცულობის 60%-იანი შემცირება. მარკეტის გადანაცვლება: ASD ოჯახები ახლა პანამის/სხვა for-profit კლინიკებში მიდიან (Audrey = მაგალითი). ამერიკული ფილანთრ. კაპიტალი უცხოურ კლინიკებში ექსპორტდება.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_267",
+    "name": "FDA რეგულაციებით: EAP სპონსორმა (Duke) ვალდებულია წარადგინოს ფორმალური cost-recovery გეგმა, რომელსაც დამოუკიდებელი სერტიფიცირებული CPA (აუდიტორი) ამოწმებს. ეს უზრუნველყოფს რომ $15K = პირდაპირი ხარჯების ანაზღაურება, არახელოვნური მოგება. Cryo-Cell-ს FDA არ უშვებს EAP IND აპლიკაციის აღებას.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_268",
+    "name": "Hope for HIE Foundation = ვიტალური საინფორმაციო clearinghouse სადაც მშობლები განიხილავენ Duke EAP-ის ლოგისტიკას, ხარჯებს და კრაუდფანდინგის რეალობას. რეგიონული ფონდებიც: South-Central Catastrophic Illness Fund, South-Central Transplant Fund, Great Lakes Transplant Fund = შესაძლო რესურსები ოჯახებისთვის.",
+    "category": "duke_services",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "duke_eap_exp"
+  },
+  {
+    "id": "res_269",
+    "name": "PTCT Family Support (Caroline Sweezy)",
+    "category": "duke_services",
+    "description": "უფასო. პირდაპირი ზარი. Buddy პროგრ. + ფინ. დახმარება.",
+    "eligibility": "Duke-ის პაციენტები. 1997 წ. cord blood ერთეულისთვის.. B-2: 🟢",
+    "contact": {
+      "website": "https://caroline.sweezy",
+      "email": "caroline.sweezy@duke.edu",
+      "phone": "(919) 668-1128",
+      "location": "1400 Morreene Rd, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_270",
+    "name": "Duke IPS (საერთაშორისო სერვისი)",
+    "category": "duke_services",
+    "description": "უფასო სერვისი. ელ-ფოსტა: ჩამოსვლა, ფინანსები, B-2, საცხოვრ.",
+    "eligibility": "Duke-ის საერთაშორისო პაციენტები.. B-2: 🟢",
+    "contact": {
+      "website": "https://duke.edu",
+      "email": "intps@duke.edu",
+      "phone": "919-688-2640",
+      "location": "2301 Erwin Rd, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_271",
+    "name": "Duke Host Homes Program",
+    "category": "duke_services",
+    "description": "მინიმალური. Duke Concierge-ს მეშვეობით.",
+    "eligibility": "Duke პაციენტები. კერძო სახლები.. B-2: 🟢",
+    "contact": {
+      "website": "https://duke.edu",
+      "email": "conciergeservices@duke.edu",
+      "phone": "919-681-4947",
+      "location": "Durham, NC"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_272",
+    "name": "Duke კონსიერჟი / საქმეთა მართვა",
+    "category": "duke_services",
+    "description": "უფასო სერვისი. კურცბერგის კოორდინატორი → სოც. მუშაკი.",
+    "eligibility": "Duke პაციენტები. კონსიერჟი + Marcus Center.. B-2: 🟢",
+    "contact": {
+      "website": "https://dm.duke",
+      "email": "cordbloodtherapyinfo@dm.duke.edu",
+      "phone": "919-402-6668",
+      "location": "Duke University Hospital"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_273",
+    "name": "Small Steps in Speech",
+    "category": "assistive_tech",
+    "description": "Grant for Communication Disorders",
+    "eligibility": "",
+    "contact": {
+      "website": "https://smallstepsinspeech.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_274",
+    "name": "Wolf Pups On Wheels",
+    "category": "assistive_tech",
+    "description": "Grants for Kids with Disabilities",
+    "eligibility": "",
+    "contact": {
+      "website": "https://wolfpupsonwheels.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_275",
+    "name": "WolfPups On Wheels, Inc.",
+    "category": "assistive_tech",
+    "description": "WolfPups on Wheels Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://wolfpupsonwheels.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_276",
+    "name": "McLindon Family Foundation",
+    "category": "assistive_tech",
+    "description": "Adaptive Bikes",
+    "eligibility": "",
+    "contact": {
+      "website": "https://mclindonfamilyfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_277",
+    "name": "321foundation",
+    "category": "assistive_tech",
+    "description": "iPad Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://321foundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_278",
+    "name": "Sweet Julia Grace Foundation",
+    "category": "assistive_tech",
+    "description": "Raindancer/TrackChair/Holiday",
+    "eligibility": "",
+    "contact": {
+      "website": "https://sweetjuliagrace.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_279",
+    "name": "Connecticut Tech Act Project",
+    "category": "assistive_tech",
+    "description": "Bridging the Digital Divide",
+    "eligibility": "",
+    "contact": {
+      "website": "https://cttechact.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_280",
+    "name": "Wheels of Happiness",
+    "category": "assistive_tech",
+    "description": "Quality of Life",
+    "eligibility": "",
+    "contact": {
+      "website": "https://wheelsofhappiness.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_281",
+    "name": "Triumph Foundation",
+    "category": "assistive_tech",
+    "description": "Equipment & Supply Exchange",
+    "eligibility": "",
+    "contact": {
+      "website": "https://triumph-foundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_282",
+    "name": "May we help",
+    "category": "assistive_tech",
+    "description": "Adaptive Equipment",
+    "eligibility": "",
+    "contact": {
+      "website": "https://maywehelpinc.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_283",
+    "name": "Orange Effect Foundation",
+    "category": "assistive_tech",
+    "description": "Speech/AAC Funding",
+    "eligibility": "",
+    "contact": {
+      "website": "https://orangeeffect.org",
+      "email": "info@orangeeffect.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_284",
+    "name": "Laughing At My Nightmare, Inc.",
+    "category": "assistive_tech",
+    "description": "Tech-Cessibility Grants",
+    "eligibility": "",
+    "contact": {
+      "website": "https://laughingatmynightmare.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_285",
+    "name": "Kourageous Karter Foundation",
+    "category": "assistive_tech",
+    "description": "TREXO Robotics Gait Trainer",
+    "eligibility": "",
+    "contact": {
+      "website": "https://kouragouskarter.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_286",
+    "name": "Wheelchairs 4 Kids",
+    "category": "assistive_tech",
+    "description": "Let's Roll",
+    "eligibility": "",
+    "contact": {
+      "website": "https://wheelchairs4kids.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_287",
+    "name": "Wheelchair Foundation",
+    "category": "assistive_tech",
+    "description": "Wheelchair Donation",
+    "eligibility": "",
+    "contact": {
+      "website": "https://wheelchairfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_288",
+    "name": "Kids Mobility Network",
+    "category": "assistive_tech",
+    "description": "Therapeutic Equipment",
+    "eligibility": "",
+    "contact": {
+      "website": "https://kidsmobilitynetwork.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_289",
+    "name": "The Parker Lee Project",
+    "category": "assistive_tech",
+    "description": "Supplies Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://theparkerproject.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_290",
+    "name": "The Orange Effect Foundation",
+    "category": "assistive_tech",
+    "description": "Orange Effect (Speech/AAC)",
+    "eligibility": "",
+    "contact": {
+      "website": "https://orangeeffect.org",
+      "email": "info@orangeeffect.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_291",
+    "name": "Healthcare Equipment Recycling",
+    "category": "assistive_tech",
+    "description": "HERO Cares",
+    "eligibility": "",
+    "contact": {
+      "website": "https://heroforall.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_292",
+    "name": "Lilly's Voice",
+    "category": "assistive_tech",
+    "description": "AAC Communication",
+    "eligibility": "",
+    "contact": {
+      "website": "https://lillysvoice.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_293",
+    "name": "LittleWins",
+    "category": "assistive_tech",
+    "description": "Equipment Trading/Donation",
+    "eligibility": "",
+    "contact": {
+      "website": "https://littlewins.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_294",
+    "name": "LifeNets",
+    "category": "assistive_tech",
+    "description": "Wheelchair Project",
+    "eligibility": "",
+    "contact": {
+      "website": "https://lifenets.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_295",
+    "name": "Hero Healthcare Equipment Recycling",
+    "category": "assistive_tech",
+    "description": "HERO Cares",
+    "eligibility": "",
+    "contact": {
+      "website": "https://heroforall.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_296",
+    "name": "Adaptivemall.com",
+    "category": "assistive_tech",
+    "description": "Kiddie Pool Equipment Funding",
+    "eligibility": "",
+    "contact": {
+      "website": "https://adaptivemall.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_297",
+    "name": "Chase Warrior Foundation",
+    "category": "assistive_tech",
+    "description": "Adaptive Equipment",
+    "eligibility": "",
+    "contact": {
+      "website": "https://chasewarriorfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_298",
+    "name": "Computer Banc",
+    "category": "assistive_tech",
+    "description": "Purchase Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://computerbanc.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_299",
+    "name": "Gifts of Mobility Foundation",
+    "category": "assistive_tech",
+    "description": "Gifts of Mobility",
+    "eligibility": "",
+    "contact": {
+      "website": "https://giftsofmobility.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_300",
+    "name": "Ramps.org",
+    "category": "assistive_tech",
+    "description": "Community Ramp Building",
+    "eligibility": "",
+    "contact": {
+      "website": "https://ramps.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_301",
+    "name": "Surfgimp Foundation",
+    "category": "assistive_tech",
+    "description": "Adaptive Equipment/Funding",
+    "eligibility": "",
+    "contact": {
+      "website": "https://surfgimp.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_302",
+    "name": "Hope Haven International",
+    "category": "assistive_tech",
+    "description": "Wheelchair Application",
+    "eligibility": "",
+    "contact": {
+      "website": "https://hopehavenintl.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_303",
+    "name": "Sunshine on a Ranney Day",
+    "category": "assistive_tech",
+    "description": "Modifications & Services",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_304",
+    "name": "Whirlwind Wheelchair",
+    "category": "assistive_tech",
+    "description": "Roughrider",
+    "eligibility": "",
+    "contact": {
+      "website": "https://whirlwindwheelchair.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_305",
+    "name": "Chive Charities",
+    "category": "assistive_tech",
+    "description": "Grant Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://chivecharities.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_306",
+    "name": "Victoria's Victory Foundation",
+    "category": "scholarships",
+    "description": "Victory Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://victoriasvictoryfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_307",
+    "name": "Bold.org",
+    "category": "scholarships",
+    "description": "Dylan's Journey Memorial Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://bold.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_308",
+    "name": "Access Scholarships",
+    "category": "scholarships",
+    "description": "Arthur E. Copeland Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://accessscholarships.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_309",
+    "name": "Mays Mission for the Handicapped",
+    "category": "scholarships",
+    "description": "Scholarships / Camperships",
+    "eligibility": "",
+    "contact": {
+      "website": "https://maysmission.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_310",
+    "name": "Karman Healthcare Inc.",
+    "category": "scholarships",
+    "description": "Scholarships",
+    "eligibility": "",
+    "contact": {
+      "website": "https://karmanhealthcare.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_311",
+    "name": "ABC Law Centers",
+    "category": "scholarships",
+    "description": "Birth Injury Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://abclawcenters.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_312",
+    "name": "AvaCare Medical",
+    "category": "scholarships",
+    "description": "Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://avacaremedical.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_313",
+    "name": "AAHD",
+    "category": "scholarships",
+    "description": "Frederick J. Krause Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://aahd.us"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_314",
+    "name": "American Library Association",
+    "category": "scholarships",
+    "description": "ALA Century Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://ala.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_315",
+    "name": "Lime Connect",
+    "category": "scholarships",
+    "description": "Multiple Scholarships",
+    "eligibility": "",
+    "contact": {
+      "website": "https://limeconnect.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_316",
+    "name": "RubysRainbow.org",
+    "category": "scholarships",
+    "description": "Ruby's Rainbow Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://rubysrainbow.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_317",
+    "name": "Be Perfect Foundation",
+    "category": "scholarships",
+    "description": "Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://beperfectfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_318",
+    "name": "Dreams Come True",
+    "category": "scholarships",
+    "description": "Moore Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://dreamscometrue.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_319",
+    "name": "ABC Medical",
+    "category": "scholarships",
+    "description": "ABC Medical Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://abc-med.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_320",
+    "name": "PATH-WAY Foundation",
+    "category": "scholarships",
+    "description": "Academic Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://pathwayfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_321",
+    "name": "The Jared Monroe Foundation",
+    "category": "scholarships",
+    "description": "Scholarship",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_322",
+    "name": "Angel Flight Northeast",
+    "category": "travel",
+    "description": "ბოსტონში ბაზირებული! 450+ პილოტი. \"არასოდეს უთქვამს უარი.\" JetBlue/Cape Air პარტნიორობა. მოქალაქეობა არ სჭირდება.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://angelflightne.org",
+      "email": "angelflight@angelflightne.org",
+      "phone": "(800) 549-9980"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_323",
+    "name": "Patient AirLift Services (PALS)",
+    "category": "travel",
+    "description": "აღმოსავლეთ სანაპირო. 5 სამუშაო დღე ადრე საკმარისი. Boston-Durham = მათი ზონა.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://palservices.org",
+      "phone": "631-694-7257"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_324",
+    "name": "Children's Flight of Hope",
+    "category": "travel",
+    "description": "NC-ში დაფუძნებული. American Airlines/Southwest. ბავშვი + 1 მშობელი. 14 დღე ადრე.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://childrensflightofhope.org",
+      "email": "missions@cfoh.org",
+      "phone": "919-466-8593"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_325",
+    "name": "Mercy Medical Angels",
+    "category": "travel",
+    "description": "ყველაზე დიდი საქველმოქმედო სამედიცინო ტრანსპორტი. ავიაბილეთი + Uber/Lyft ვაუჩერი + საწვავი.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://mercymedical.org",
+      "phone": "(800) 296-3797"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_326",
+    "name": "Miracle Flights",
+    "category": "travel",
+    "description": "კომერციული ბილეთი ბავშვი + 2 მშობელი. პრობლემა: IRS საგადასახადო დოკუმენტი.",
+    "eligibility": "B-2 Visa: შეამოწმე",
+    "contact": {
+      "website": "https://miracleflights.org",
+      "email": "flightspecialist@miracleflights.org",
+      "phone": "(800) 359-1711"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_327",
+    "name": "Just4Children (UK)",
+    "category": "international",
+    "description": "UK ქველმოქმედება, რომელიც ბავშვთა ცხოვრების ხარისხის გაუმჯობესებაზე მუშაობს. Jay Shetty-ს ოჯახს დაეხმარა Duke-ზე წასვლაში — £105,000 fundraising პლატფორმა მისცა (tax-efficient). არ აძლევს პირდაპირ გრანტს, მაგრამ fundraising ინფრასტრუქტურას უზრუნველყოფს.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://just4children.org",
+      "email": "info@just4children.org",
+      "phone": "011 250 0498"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_328",
+    "name": "Ray Tye Medical Aid Foundation",
+    "category": "international",
+    "description": "ბოსტონთან ახლოს (Braintree, MA). არადაზღვეული, ფინანსურად გაჭირვებული ადამიანებისთვის. საერთაშორისო პაციენტები: ეგვიპტე, ბელიზი, ანტიგუა. მოქალაქეობა არ სჭირდება.",
+    "eligibility": "B-2 Visa: შესაძლოა",
+    "contact": {
+      "website": "https://rtmaf.org",
+      "email": "rtmaf.info@gmail.com",
+      "phone": "(781) 356-4300"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_329",
+    "name": "Oracle Health Foundation",
+    "category": "international",
+    "description": "Oracle-ის ფონდი. პედიატრიული გრანტი $17,000-მდე. საერთაშორისო მიიღება. პრობლემა: \"ექსპერიმენტულ მკურნალობას\" გამორიცხავს. მაგრამ EAP = FDA-ავტორიზებული, არა ექსპერიმენტული trial.",
+    "eligibility": "B-2 Visa: შესაძლოა",
+    "contact": {
+      "website": "https://oraclehealthfoundation.org",
+      "email": "grants@firsthandfoundation.org",
+      "phone": "816-201-1569"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_330",
+    "name": "COTA (Children's Organ Transplant Assoc.)",
+    "category": "international",
+    "description": "ორგანო/ძვლის ტვინი/cord blood ტრანსპლანტაციის ოჯახებისთვის. $10,000 challenge grant + tax-exempt fundraising ინფრასტრუქტურა. არ არის დადასტურებული Duke EAP case, მაგრამ cord blood მათ მისიაშია.",
+    "eligibility": "B-2 Visa: შესაძლოა",
+    "contact": {
+      "website": "https://cota.org",
+      "phone": "800-366-2682"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_331",
+    "name": "COTA",
+    "category": "international",
+    "description": "Cord blood transplant ოჯახებისთვის. $10K challenge grant + fundraising",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_332",
+    "name": "Catholic Charities — რალის ეპარქია (დარემის ოფისი)",
+    "category": "social_services",
+    "description": "ფინანსური დახმარება ხელმისაწვდომია. დაუკავშირდით დარემის ოფისს პირდაპირ. აუხსენით სამედიცინო სიტუაცია, ვიზის სტატუსი და საცხოვრებლის საჭიროება. ისინი უზრუნველყოფენ იმიგრაციის სერვისებს და ოჯახის დახმარებას.",
+    "eligibility": "ემსახურება დარემს და მიმდებარე ოლქებს. იმიგრაციის სერვისები ხელმისაწვდომია. ეხმარება ოჯახებს სტატუსის მიუხედავად.. B-2: არა — Catholic Charities ყველას ემსახურება, მათ შორის იმიგრანტებს სტატუსის მიუხედავად.",
+    "contact": {
+      "website": "https://catholiccharitiesraleigh.org",
+      "phone": "919-286-1964",
+      "location": "Durham, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_333",
+    "name": "Cells4Life (UK)",
+    "category": "other",
+    "description": "UK cord blood ბანკი, რომელმაც Jay Shetty-ს ოჯახს დაეხმარა: fundraising გაძლიერება, სოციალური მედია, cord blood-ის ლოჯისტიკა Duke-ში გაგზავნა. Just4Children-თან პარტნიორობა.",
+    "eligibility": "B-2 Visa: დიახ ✓",
+    "contact": {
+      "website": "https://cells4life.com",
+      "email": "info@cells4life.co.uk",
+      "phone": "011 438 0201"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_334",
+    "name": "FamiCord Group (პოლონეთი/ევროპა)",
+    "category": "other",
+    "description": "ევროპული cord blood ბანკი. 2019 წლიდან აქვთ საკუთარი EAP CP-სთვის ლუბლინში (პოლონეთი). FamiCord კლიენტებისთვის უფასო, სხვებისთვის €3,000-€4,000. Duke-ის $15K-ის მაგივრად!",
+    "eligibility": "B-2 Visa: ევროპული alt.",
+    "contact": {
+      "website": "https://famicord.com"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_335",
+    "name": "საქართველოს საკონსულო NYC",
+    "category": "other",
+    "description": "მოიცავს MA-ს. გადაუდებელი ხაზი. სამედიცინო სიტუაციაში დახმარება.",
+    "eligibility": "B-2 Visa: შესაძლოა",
+    "contact": {
+      "website": "https://georgiaembassyusa.org",
+      "email": "newyork.con@mfa.gov.ge",
+      "phone": "(917) 334-0870"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_336",
+    "name": "Georgian Association in US",
+    "category": "other",
+    "description": "1932 წლიდან. ქართველების ასოციაცია აშშ-ში. GoFundMe გავრცელება.",
+    "eligibility": "B-2 Visa: amplification",
+    "contact": {
+      "website": "https://georgianassociation.org",
+      "email": "magazine@georgianassociation.org"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_337",
+    "name": "IOCC (მართლმადიდებ. ქველმოქმ.)",
+    "category": "other",
+    "description": "მართლმადიდებელ ეპისკოპოსთა ჰუმანიტარული სააგენტო. ქართული ეკლესიასთან პარტნიორობა.",
+    "eligibility": "B-2 Visa: შესაძლოა",
+    "contact": {
+      "website": "https://iocc.org"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_338",
+    "name": "Marcus Foundation (Atlanta)",
+    "category": "other",
+    "description": "$15M+ Duke-ის cord blood კვლევისთვის. \"Marcus Center for Cellular Cures\" მათ სახელზეა. მაგრამ: ინდივიდუალურ ოჯახებს არ აფინანსებენ. 2022-დან regenerative medicine გრანტები შეწყვიტეს.",
+    "eligibility": "B-2 Visa: ვერა ❌",
+    "contact": {
+      "website": "https://marcusfoundation.org",
+      "phone": "404-240-7700"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_339",
+    "name": "Julian Robertson Foundation",
+    "category": "other",
+    "description": "Duke cord blood clinical trials-ის principal funder. \"Robertson Cell and Translational Therapy Program.\" მხოლოდ კვლევის დაფინანსება.",
+    "eligibility": "B-2 Visa: ვერა ❌",
+    "contact": {},
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_340",
+    "name": "Let's Cure CP / CureCP",
+    "category": "other",
+    "description": "მშობლების მიერ დაფუძნებული 501(c)(3). CP stem cell კვლევის დაფინანსება. ინდივიდუალურ ოჯახებს არ აფინანსებენ.",
+    "eligibility": "B-2 Visa: ვერა ❌",
+    "contact": {
+      "website": "https://curecp.org",
+      "email": "info@curecp.org"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_341",
+    "name": "Cryo-Cell International",
+    "category": "other",
+    "description": "Duke-თან ჰქონდათ ექსკლუზიური ლიცენზია 2021-2025. Duke-მა გაწყვიტა 2025 მაისში. არ აფინანსებდნენ ინდივიდუალურ ოჯახებს.",
+    "eligibility": "B-2 Visa: ვერა ❌",
+    "contact": {
+      "website": "https://cryo-cell.com"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_342",
+    "name": "CBR / Cord Blood Registry",
+    "category": "other",
+    "description": "$100K გრანტი Cord Blood Association Foundation-ს (კვლევა). Newborn Possibilities Program = უფასო banking, არა მკურნალობის ხარჯი.",
+    "eligibility": "B-2 Visa: ვერა ❌",
+    "contact": {
+      "website": "https://cordblood.com"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_343",
+    "name": "ViaCord",
+    "category": "other",
+    "description": "Sibling Connection Program = უფასო banking. ზოგიერთმა cord blood ბანკმა shipping-ის ხარჯი დაფარა ($2-3K), მაგრამ ახლა ნაკლებად.",
+    "eligibility": "B-2 Visa: ვერა ❌",
+    "contact": {
+      "website": "https://viacord.com"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_344",
+    "name": "FB: Stem Cells for HIE",
+    "category": "other",
+    "description": "~4,200 წევრი. HIE ოჯახები cord blood თერაპიის გამოცდილებას უზიარებენ. fundraising tips, Duke EAP გამოცდილება.",
+    "eligibility": "B-2 Visa: networking",
+    "contact": {
+      "website": "https://facebook.com/groups/"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_345",
+    "name": "FB: Duke Cord Blood Parents",
+    "category": "other",
+    "description": "~4,900 წევრი. Duke-სთან დაკავშირებული cord blood მშობლების ჯგუფი.",
+    "eligibility": "B-2 Visa: networking",
+    "contact": {
+      "website": "https://facebook.com/groups/"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_346",
+    "name": "Parent's Guide to Cord Blood Foundation",
+    "category": "other",
+    "description": "ყველაზე ავტორიტეტული დამოუკიდებელი წყარო Duke EAP-ის შესახებ. Frances Verter, PhD. Duke EAP ხარჯების case studies. Dr. Kurtzberg-თან თანამშრომლობა.",
+    "eligibility": "B-2 Visa: ინფორმაცია",
+    "contact": {
+      "website": "https://parentsguidecordblood.org",
+      "email": "info@parentsguidecordblood.org"
+    },
+    "source": "guide_v1"
+  },
+  {
+    "id": "res_347",
+    "name": "New Directions Travel",
+    "category": "other",
+    "description": "Tour Scholarships",
+    "eligibility": "",
+    "contact": {
+      "website": "https://newdirectionstravel.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_348",
+    "name": "Tucson Alliance for Autism",
+    "category": "other",
+    "description": "Evaluations and Assessments",
+    "eligibility": "",
+    "contact": {
+      "website": "https://tucsonallianceforautism.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_349",
+    "name": "SIT Service Dogs",
+    "category": "other",
+    "description": "Service Dogs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://sitservicedogs.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_350",
+    "name": "Songs of Love Foundation",
+    "category": "other",
+    "description": "A Song for Your Kid",
+    "eligibility": "",
+    "contact": {
+      "website": "https://songsoflove.org",
+      "email": "info@songsoflove.org",
+      "phone": "800-960-7664"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_351",
+    "name": "SPARK for Autism",
+    "category": "other",
+    "description": "SPARK Autism Research",
+    "eligibility": "",
+    "contact": {
+      "website": "https://sparkforautism.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_352",
+    "name": "Community Connections Inc.",
+    "category": "other",
+    "description": "Day Habilitation",
+    "eligibility": "",
+    "contact": {
+      "website": "https://communityconnectionsinc.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_353",
+    "name": "Spectrum Sailing Holland",
+    "category": "other",
+    "description": "Sailing Event",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_354",
+    "name": "Joys of Living Assistance Dogs",
+    "category": "other",
+    "description": "Facility Dog Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://joalad.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_355",
+    "name": "Austin Hatcher Foundation",
+    "category": "other",
+    "description": "Counseling",
+    "eligibility": "",
+    "contact": {
+      "website": "https://austinhatcherfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_356",
+    "name": "Southwest Human Development",
+    "category": "other",
+    "description": "Let's Talk Dads",
+    "eligibility": "",
+    "contact": {
+      "website": "https://swhd.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_357",
+    "name": "United Special Sportsman Alliance",
+    "category": "other",
+    "description": "Special Kids Wish 2025",
+    "eligibility": "",
+    "contact": {
+      "website": "https://unitedspecialsportsmanalliance.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_358",
+    "name": "Autismazing.org",
+    "category": "other",
+    "description": "Amazing Futures Grants",
+    "eligibility": "",
+    "contact": {
+      "website": "https://autismazing.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_359",
+    "name": "Feel Better Friends",
+    "category": "other",
+    "description": "Request a Doll",
+    "eligibility": "",
+    "contact": {
+      "website": "https://feelbetterfriends.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_360",
+    "name": "Acoustics for Autism",
+    "category": "other",
+    "description": "PROJECT iAm",
+    "eligibility": "",
+    "contact": {
+      "website": "https://acousticsforautism.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_361",
+    "name": "Flying Horse Farms",
+    "category": "other",
+    "description": "Retreats / Residential Camp",
+    "eligibility": "",
+    "contact": {
+      "website": "https://flyinghorsefarms.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_362",
+    "name": "Council of Citizens with Low Vision",
+    "category": "other",
+    "description": "Scholarships",
+    "eligibility": "",
+    "contact": {
+      "website": "https://cclvi.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_363",
+    "name": "Special Love for Children with Cancer",
+    "category": "other",
+    "description": "VOICE Program",
+    "eligibility": "",
+    "contact": {
+      "website": "https://speciallove.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_364",
+    "name": "National Federation of the Blind",
+    "category": "other",
+    "description": "Free White Cane",
+    "eligibility": "",
+    "contact": {
+      "website": "https://nfb.org",
+      "phone": "410-659-9314"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_365",
+    "name": "Kids Wish Network",
+    "category": "other",
+    "description": "Wish Granting & Heroes",
+    "eligibility": "",
+    "contact": {
+      "website": "https://kidswishnetwork.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_366",
+    "name": "The Original 1800-Charity Cars",
+    "category": "other",
+    "description": "მანქანა. US resident.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://800charitycars.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_367",
+    "name": "Canine Partners for Life",
+    "category": "other",
+    "description": "Service Dog",
+    "eligibility": "",
+    "contact": {
+      "website": "https://k94life.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_368",
+    "name": "Camp Accomplish",
+    "category": "other",
+    "description": "Day/Overnight/Camps",
+    "eligibility": "",
+    "contact": {
+      "website": "https://campaccomplish.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_369",
+    "name": "New Hope Assistance Dogs Inc",
+    "category": "other",
+    "description": "Assistance Dog",
+    "eligibility": "",
+    "contact": {
+      "website": "https://newhopedogs.net"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_370",
+    "name": "Little Angels Service Dogs",
+    "category": "other",
+    "description": "Mobility Dogs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://littleangelsservicedogs.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_371",
+    "name": "Nathaniel's Hope",
+    "category": "other",
+    "description": "Buddy Break",
+    "eligibility": "",
+    "contact": {
+      "website": "https://nathanielshope.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_372",
+    "name": "NEADS World Class Service Dogs",
+    "category": "other",
+    "description": "Service Dog",
+    "eligibility": "",
+    "contact": {
+      "website": "https://neads.org",
+      "phone": "978-422-9064"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_373",
+    "name": "Vital Options International",
+    "category": "other",
+    "description": "Selma Schimmel Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://vitaloptions.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_374",
+    "name": "Sertoma",
+    "category": "other",
+    "description": "Hearing Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://sertoma.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_375",
+    "name": "MagicMobility Vans",
+    "category": "other",
+    "description": "Supporting Mobility",
+    "eligibility": "",
+    "contact": {
+      "website": "https://magicmobilityvans.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_376",
+    "name": "Challenged Athletes Foundation",
+    "category": "other",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://challengedathletes.org",
+      "phone": "858-866-0959"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_377",
+    "name": "CC4C",
+    "category": "other",
+    "description": "TRIBE 4 Moms/Dads",
+    "eligibility": "",
+    "contact": {
+      "website": "https://cc4c.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_378",
+    "name": "AG Bell",
+    "category": "other",
+    "description": "Parent Support/Scholarships",
+    "eligibility": "",
+    "contact": {
+      "website": "https://agbell.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_379",
+    "name": "Gary Sinise Foundation",
+    "category": "other",
+    "description": "R.I.S.E./H.O.P.E.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://garysinisefoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_380",
+    "name": "Canine Companions",
+    "category": "other",
+    "description": "Service Dogs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://canine.org",
+      "phone": "800-572-2275"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_381",
+    "name": "Autism Care Today",
+    "category": "other",
+    "description": "SOS/Military/General Grant",
+    "eligibility": "",
+    "contact": {
+      "website": "https://autismcaretoday.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_382",
+    "name": "Leader Dogs For The Blind",
+    "category": "other",
+    "description": "უსინათლოთა.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://leaderdog.org",
+      "phone": "888-777-5332"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_383",
+    "name": "Service Dog Project",
+    "category": "other",
+    "description": "Service Dog",
+    "eligibility": "",
+    "contact": {
+      "website": "https://servicedogproject.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_384",
+    "name": "BraunAbility",
+    "category": "other",
+    "description": "Van Grants/Financing",
+    "eligibility": "",
+    "contact": {
+      "website": "https://braunability.com",
+      "phone": "800-488-0359"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_385",
+    "name": "Team Catapult",
+    "category": "other",
+    "description": "Guide/Workout",
+    "eligibility": "",
+    "contact": {
+      "website": "https://teamcatapult.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_386",
+    "name": "A Moment of Magic",
+    "category": "other",
+    "description": "A Moment of Magic",
+    "eligibility": "",
+    "contact": {
+      "website": "https://amomentofmagic.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_387",
+    "name": "Canines for Disabled Kids",
+    "category": "other",
+    "description": "Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://caninesforkids.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_388",
+    "name": "Can Do Canines",
+    "category": "other",
+    "description": "Assistance Dogs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://candocanines.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_389",
+    "name": "Casey Cares",
+    "category": "other",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://caseycares.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_390",
+    "name": "Kidd's Kids",
+    "category": "other",
+    "description": "KIDD'S KIDS TRIP",
+    "eligibility": "",
+    "contact": {
+      "website": "https://kiddskids.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_391",
+    "name": "Beam",
+    "category": "other",
+    "description": "Wellness Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://beam.community"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_392",
+    "name": "Starlight Children's Foundation",
+    "category": "other",
+    "description": "Hospital Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://starlight.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_393",
+    "name": "Impossible Dream",
+    "category": "other",
+    "description": "მედია.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://impossibledream.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_394",
+    "name": "Hunt of a Lifetime Foundation",
+    "category": "other",
+    "description": "Hunt of a Lifetime",
+    "eligibility": "",
+    "contact": {
+      "website": "https://huntofalifetime.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_395",
+    "name": "High Fives Foundation",
+    "category": "other",
+    "description": "Empowerment Fund",
+    "eligibility": "",
+    "contact": {
+      "website": "https://highfivesfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_396",
+    "name": "Chariots 4 Hope",
+    "category": "other",
+    "description": "Adaptive Sports Camps",
+    "eligibility": "",
+    "contact": {
+      "website": "https://chariots4hope.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_397",
+    "name": "Enchanted Peach Children's Foundation",
+    "category": "other",
+    "description": "Family Focus/Orchard",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_398",
+    "name": "Cherished Creations",
+    "category": "other",
+    "description": "Special Requests",
+    "eligibility": "",
+    "contact": {
+      "website": "https://cherishedcreationsusa.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_399",
+    "name": "Specialty Kids Fund",
+    "category": "other",
+    "description": "Request a Van",
+    "eligibility": "",
+    "contact": {
+      "website": "https://specialtykidsfund.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_400",
+    "name": "Air Care Alliance",
+    "category": "other",
+    "description": "Public Benefit Flying",
+    "eligibility": "",
+    "contact": {
+      "website": "https://aircarealliance.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_401",
+    "name": "Air Charity Network",
+    "category": "other",
+    "description": "უფასო ფრენები.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://aircharitynetwork.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_402",
+    "name": "Canine Assistants",
+    "category": "other",
+    "description": "Service Dog",
+    "eligibility": "",
+    "contact": {
+      "website": "https://canineassistants.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_403",
+    "name": "Jay's House Inc",
+    "category": "other",
+    "description": "Support Services",
+    "eligibility": "",
+    "contact": {
+      "website": "https://jayshouse.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_404",
+    "name": "Avery's Angels",
+    "category": "other",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://averysangels.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_405",
+    "name": "A Mother's Rest",
+    "category": "other",
+    "description": "A Mothers Rest",
+    "eligibility": "",
+    "contact": {
+      "website": "https://amothersrest.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_406",
+    "name": "The Shannon Foundation",
+    "category": "other",
+    "description": "Shannon Foundation",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_407",
+    "name": "Rising Kites",
+    "category": "other",
+    "description": "Rising Kites Bags",
+    "eligibility": "",
+    "contact": {
+      "website": "https://risingkites.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_408",
+    "name": "Team IMPACT",
+    "category": "other",
+    "description": "Team IMPACT",
+    "eligibility": "",
+    "contact": {
+      "website": "https://goteamimpact.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_409",
+    "name": "Guide Dogs of America",
+    "category": "other",
+    "description": "Guide/Service Dogs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://guidedogsofamerica.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_410",
+    "name": "Footprints In The Sky",
+    "category": "other",
+    "description": "Request a Flight",
+    "eligibility": "",
+    "contact": {
+      "website": "https://footprintsinthesky.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_411",
+    "name": "Autism Spectrum Disorder Foundation",
+    "category": "other",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://myasdf.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_412",
+    "name": "Icing Smiles",
+    "category": "other",
+    "description": "Icing Smiles",
+    "eligibility": "",
+    "contact": {
+      "website": "https://icingsmiles.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_413",
+    "name": "SeriousFun Children's Network",
+    "category": "other",
+    "description": "Serious Camps",
+    "eligibility": "",
+    "contact": {
+      "website": "https://seriousfunnetwork.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_414",
+    "name": "Granted Wish Foundation",
+    "category": "other",
+    "description": "Wish Request",
+    "eligibility": "",
+    "contact": {
+      "website": "https://grantedwish.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_415",
+    "name": "Autism Community in Action",
+    "category": "other",
+    "description": "TACA Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://tacanow.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_416",
+    "name": "Doug Flutie Jr. Foundation",
+    "category": "other",
+    "description": "Financial/STARS",
+    "eligibility": "",
+    "contact": {
+      "website": "https://flutiefoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_417",
+    "name": "GiGi's Playhouse",
+    "category": "other",
+    "description": "GiGi Fit/Kitchen",
+    "eligibility": "",
+    "contact": {
+      "website": "https://gigisplayhouse.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_418",
+    "name": "Be An Angel",
+    "category": "other",
+    "description": "Camp Be An Angel",
+    "eligibility": "",
+    "contact": {
+      "website": "https://beanangel.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_419",
+    "name": "Love Them All Foundation",
+    "category": "other",
+    "description": "Annual Charity",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_420",
+    "name": "One Simple Wish",
+    "category": "other",
+    "description": "One Simple Wish",
+    "eligibility": "",
+    "contact": {
+      "website": "https://onesimplewish.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_421",
+    "name": "Online Car Donation",
+    "category": "other",
+    "description": "Charity Car Donation",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_422",
+    "name": "Wishers and Dreamers",
+    "category": "other",
+    "description": "Wishers and Dreamers",
+    "eligibility": "",
+    "contact": {
+      "website": "https://wishersanddreamers.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_423",
+    "name": "Wings of Hope",
+    "category": "other",
+    "description": "Wings of Hope",
+    "eligibility": "",
+    "contact": {
+      "website": "https://wingsofhope.ngo"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_424",
+    "name": "VSP Vision",
+    "category": "other",
+    "description": "Eyes of Hope",
+    "eligibility": "",
+    "contact": {
+      "website": "https://vspvision.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_425",
+    "name": "Patient AirLift Services",
+    "category": "other",
+    "description": "Free Medical Flights",
+    "eligibility": "",
+    "contact": {
+      "website": "https://palservices.org",
+      "email": "info@palservices.org",
+      "phone": "631-694-7257"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_426",
+    "name": "Paws 4 Autism",
+    "category": "other",
+    "description": "PAWS Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://paws4autism.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_427",
+    "name": "Paws with a Cause",
+    "category": "other",
+    "description": "Assistance Dog",
+    "eligibility": "",
+    "contact": {
+      "website": "https://pawswithacause.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_428",
+    "name": "Beads of Courage",
+    "category": "other",
+    "description": "Beads at Home",
+    "eligibility": "",
+    "contact": {
+      "website": "https://beadsofcourage.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_429",
+    "name": "Mimi's Mission",
+    "category": "other",
+    "description": "Autism Resources",
+    "eligibility": "",
+    "contact": {
+      "website": "https://mimismission.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_430",
+    "name": "MyGoal",
+    "category": "other",
+    "description": "Scholarship/Grants",
+    "eligibility": "",
+    "contact": {
+      "website": "https://mygoalautism.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_431",
+    "name": "MJB Foundation",
+    "category": "other",
+    "description": "Events by MJBF",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_432",
+    "name": "Let's Build Beds",
+    "category": "other",
+    "description": "Let's Build Beds",
+    "eligibility": "",
+    "contact": {
+      "website": "https://letsbuildbed.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_433",
+    "name": "CAST for Kids Foundation",
+    "category": "other",
+    "description": "C.A.S.T. for Kids",
+    "eligibility": "",
+    "contact": {
+      "website": "https://castforkids.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_434",
+    "name": "Paralyzed Veterans of America",
+    "category": "other",
+    "description": "Sports/Recreation",
+    "eligibility": "",
+    "contact": {
+      "website": "https://pva.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_435",
+    "name": "Air & Space Forces Association",
+    "category": "other",
+    "description": "Transportation",
+    "eligibility": "",
+    "contact": {
+      "website": "https://afa.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_436",
+    "name": "DAV",
+    "category": "other",
+    "description": "Transportation Network",
+    "eligibility": "",
+    "contact": {
+      "website": "https://dav.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_437",
+    "name": "Varghese Summersett",
+    "category": "other",
+    "description": "Autism Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://versustexas.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_438",
+    "name": "Sunshine Foundation",
+    "category": "other",
+    "description": "Dream Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://sunshinefoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_439",
+    "name": "Dogs4Diabetics",
+    "category": "other",
+    "description": "Dogs4Diabetics",
+    "eligibility": "",
+    "contact": {
+      "website": "https://dogs4diabetics.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_440",
+    "name": "Make-A-Wish America",
+    "category": "other",
+    "description": "Wish Granting",
+    "eligibility": "",
+    "contact": {
+      "website": "https://wish.org",
+      "phone": "800-722-9474"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_441",
+    "name": "I GOT LEGS",
+    "category": "other",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://igotlegs.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_442",
+    "name": "Benefit4Kids",
+    "category": "other",
+    "description": "Wish Application",
+    "eligibility": "",
+    "contact": {
+      "website": "https://benefit4kids.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_443",
+    "name": "Association for Autism",
+    "category": "other",
+    "description": "Daniel Braun Scholarship",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_444",
+    "name": "The Arya Foundation",
+    "category": "other",
+    "description": "Holiday Adaptive Toys",
+    "eligibility": "",
+    "contact": {
+      "website": "https://thearyafoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_445",
+    "name": "The Ability Center",
+    "category": "other",
+    "description": "Agility/Advocacy",
+    "eligibility": "",
+    "contact": {
+      "website": "https://abilitycenter.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_446",
+    "name": "American Council of the Blind",
+    "category": "other",
+    "description": "Accessibility",
+    "eligibility": "",
+    "contact": {
+      "website": "https://acb.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_447",
+    "name": "Assoc. for Education & Rehabilitation",
+    "category": "other",
+    "description": "AER Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://aerbvi.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_448",
+    "name": "National Autism Association",
+    "category": "other",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://nationalautismassociation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_449",
+    "name": "Special Needs Resource Project",
+    "category": "other",
+    "description": "რესურსები.",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_450",
+    "name": "Athletes Helping Athletes",
+    "category": "other",
+    "description": "Honorary Captains",
+    "eligibility": "",
+    "contact": {
+      "website": "https://athleteshelpingathletes.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_451",
+    "name": "Bert's Big Adventure",
+    "category": "other",
+    "description": "Walt Disney World",
+    "eligibility": "",
+    "contact": {
+      "website": "https://bertsbigadventure.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_452",
+    "name": "Kyle Pease Foundation",
+    "category": "other",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://kylepeasefoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_453",
+    "name": "Home School Legal Defense",
+    "category": "other",
+    "description": "Annual Group Grants",
+    "eligibility": "",
+    "contact": {
+      "website": "https://hslda.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_454",
+    "name": "Dream Factory Inc",
+    "category": "other",
+    "description": "Children Dream Factory",
+    "eligibility": "",
+    "contact": {
+      "website": "https://dreamfactoryinc.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_455",
+    "name": "Angel Flight West",
+    "category": "other",
+    "description": "Free Medical Flights",
+    "eligibility": "",
+    "contact": {
+      "website": "https://angelflightwest.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_456",
+    "name": "ADI - Assistance Dogs International",
+    "category": "other",
+    "description": "Assistance Dogs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://assistancedogsinternational.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_457",
+    "name": "The Children's Dream Fund",
+    "category": "other",
+    "description": "Dream Grants",
+    "eligibility": "",
+    "contact": {
+      "website": "https://childrensdreamfund.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_458",
+    "name": "Down Syndrome Association of CT",
+    "category": "other",
+    "description": "Prenatal Testing",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_459",
+    "name": "Red Treehouse",
+    "category": "other",
+    "description": "Resources by Condition",
+    "eligibility": "",
+    "contact": {
+      "website": "https://redtreehouse.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_460",
+    "name": "Circle Tail, Inc.",
+    "category": "other",
+    "description": "Seizure Response Dogs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://circletail.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_461",
+    "name": "Casey's Circle",
+    "category": "other",
+    "description": "Multiple Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://caseys-circle.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_462",
+    "name": "Catch-A-Dream Foundation",
+    "category": "other",
+    "description": "Catch-A-Dream",
+    "eligibility": "",
+    "contact": {
+      "website": "https://catchadream.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_463",
+    "name": "Deepwood Foundation",
+    "category": "other",
+    "description": "Community Assistance",
+    "eligibility": "",
+    "contact": {
+      "website": "https://deepwoodfoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_464",
+    "name": "Double H Ranch",
+    "category": "other",
+    "description": "ბანაკი.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://doublehranch.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_465",
+    "name": "Special Wants",
+    "category": "other",
+    "description": "Special Holiday Wants",
+    "eligibility": "",
+    "contact": {
+      "website": "https://specialwants.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_466",
+    "name": "Share A Vision",
+    "category": "other",
+    "description": "Recreational Fund",
+    "eligibility": "",
+    "contact": {
+      "website": "https://shareavision.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_467",
+    "name": "Crescent Moon Cares",
+    "category": "other",
+    "description": "Special Needs Programs",
+    "eligibility": "",
+    "contact": {
+      "website": "https://crescentmooncares.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_468",
+    "name": "Cochlear Americas",
+    "category": "other",
+    "description": "Scholarships",
+    "eligibility": "",
+    "contact": {
+      "website": "https://cochlear.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_469",
+    "name": "Help America Hear",
+    "category": "other",
+    "description": "Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://helpamericahear.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_470",
+    "name": "Lighthouse Guild",
+    "category": "other",
+    "description": "Scholarships",
+    "eligibility": "",
+    "contact": {
+      "website": "https://lighthouseguild.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_471",
+    "name": "THE GOHAWKEYE FOUNDATION",
+    "category": "other",
+    "description": "Sports/Equipment",
+    "eligibility": "",
+    "contact": {
+      "website": "https://gohawkeye.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_472",
+    "name": "Live Like Jake Foundation",
+    "category": "other",
+    "description": "Swimming Lessons",
+    "eligibility": "",
+    "contact": {
+      "website": "https://livelikejake.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_473",
+    "name": "IFB Solutions",
+    "category": "other",
+    "description": "S.E.E. Camp H2O",
+    "eligibility": "",
+    "contact": {
+      "website": "https://ifbsolutions.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_474",
+    "name": "Miracles in Motion Dance",
+    "category": "other",
+    "description": "MIM Dance Classes",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_475",
+    "name": "The Asperger Autism Network",
+    "category": "other",
+    "description": "Daniel Braun Camp",
+    "eligibility": "",
+    "contact": {
+      "website": "https://aane.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_476",
+    "name": "AMBUCS",
+    "category": "other",
+    "description": "Scholarships for Therapists",
+    "eligibility": "",
+    "contact": {
+      "website": "https://ambucs.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_477",
+    "name": "Askate Foundation",
+    "category": "other",
+    "description": "Askate and Create",
+    "eligibility": "",
+    "contact": {
+      "website": "https://askatefoundation.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_478",
+    "name": "Special Spectator",
+    "category": "other",
+    "description": "Special Spectators",
+    "eligibility": "",
+    "contact": {
+      "website": "https://specialspectators.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_479",
+    "name": "Colin Farrell Foundation",
+    "category": "other",
+    "description": "Camp Solas",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_480",
+    "name": "PHARM Dog",
+    "category": "other",
+    "description": "Dogs for Farmer",
+    "eligibility": "",
+    "contact": {},
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_481",
+    "name": "Living Proof Advocacy",
+    "category": "other",
+    "description": "Mental Health Fund",
+    "eligibility": "",
+    "contact": {
+      "website": "https://livingproofadvocacy.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_482",
+    "name": "Zac Speaks",
+    "category": "other",
+    "description": "ბანაკი.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://zacspeaks.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_483",
+    "name": "'Ween Dream",
+    "category": "other",
+    "description": "ჰელოუინი.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://weendream.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_484",
+    "name": "Autistic People of Color Fund",
+    "category": "other",
+    "description": "აუტიზმი.",
+    "eligibility": "",
+    "contact": {
+      "website": "https://autismandrace.com"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_485",
+    "name": "Army Women's Foundation",
+    "category": "other",
+    "description": "Scholarship",
+    "eligibility": "",
+    "contact": {
+      "website": "https://awfdn.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_486",
+    "name": "Deliver the Dream",
+    "category": "other",
+    "description": "HOPE at Home/Family Fun",
+    "eligibility": "",
+    "contact": {
+      "website": "https://deliverthedream.org"
+    },
+    "source": "napa_guide_v1"
+  },
+  {
+    "id": "res_487",
+    "name": "IOCC (მართლმადიდ. ქველმოქ.)",
+    "category": "other",
+    "description": "მართლმადიდებელ ეპისკოპოსთა ჰუმანიტარული სააგენტო",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_488",
+    "name": "Parent's Guide to Cord Blood",
+    "category": "other",
+    "description": "ყველაზე ავტორიტეტული წყარო Duke EAP-ის შესახებ",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_489",
+    "name": "რაოდენობა",
+    "category": "other",
+    "description": "რას აფინანსებენ",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_490",
+    "name": "~45",
+    "category": "other",
+    "description": "სამედიცინო მკურნალობა, დიაგნოსტიკა, სპეციალიზებული მომსახურება",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_491",
+    "name": "~40",
+    "category": "other",
+    "description": "პირდაპირი ფინანსური დახმარება, ბილების გადახდა, გრანტები",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_492",
+    "name": "~20",
+    "category": "other",
+    "description": "უფასო ფრენები სამედიცინო მკურნალობისთვის (Boston→Durham)",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_493",
+    "name": "~30",
+    "category": "other",
+    "description": "Wheelchair, ადაპტური აღჭურვილობა, სტანდერი, მობილობა",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_494",
+    "name": "~12",
+    "category": "other",
+    "description": "PT, OT, ინტენსიური თერაპია, მუსიკათერაპია",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_495",
+    "name": "~25",
+    "category": "other",
+    "description": "საგანმანათლებო სტიპენდიები — ასაკობრივად არარელევანტური",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_496",
+    "name": "~80",
+    "category": "other",
+    "description": "აუტიზმის, ბანაკების, სპორტის, დიაბეტის, სმენის ორგანიზაციები — არარელევანტური",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_497",
+    "name": "~304",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_498",
+    "name": "დეტალური აღწერა",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_499",
+    "name": "7+ ორგანიზაცია უზრუნველყოფს უფასო ფრენებს სამედიცინო მკურნალობისთვის. Boston→Durham მარშრუტი კარგად დაფარულია.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_500",
+    "name": "Marcus ($15M+), Robertson, CureCP, Cryo-Cell, CBR, ViaCord — არცერთი არ აფინანსებს ინდივიდუალურ ოჯახებს. მათი ფული კვლევა/ინსტიტუციაშია.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_501",
+    "name": "ბევრი ფონდი გამორიცხავს \"experimental\" მკურნალობას. Duke EAP = FDA-authorized, არა experimental trial — ეს უნდა იყოს არგუმენტი ყველა განაცხადში.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_502",
+    "name": "FamiCord (პოლონეთი) — €3-4K vs Duke $15K. Schengen ვიზა არ სჭირდება. Plan B საფრანგეთში დაბრუნების შემდეგ.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_503",
+    "name": "304 ორგანიზაციიდან მხოლოდ ~38 (ანუ 12.5%) არის HIGH პრიორიტეტი. დანარჩენი აუტიზმის, სმენის, უსინათლოთა ორგანიზაციები არარელევანტურია.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_504",
+    "name": "Jay Shetty ოჯახი = ყველაზე დოკუმენტირებული საერთაშორისო Duke EAP case. Just4Children + Cells4Life მოდელი მუშაობს.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_505",
+    "name": "Ronald McDonald House (Durham + Boston), Healthcare Hospitality Network, Believe in Tomorrow — საერთაშორისო ოჯახები მიიღება.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_506",
+    "name": "GoodRx, NeedyMeds, Rx Outreach, Medicine Assistance Tool — Levetiracetam-ის და სხვა seizure მედიკამენტების ხარჯების შემცირება.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_507",
+    "name": "FB ჯგუფები (9,000+ წევრი), Parent's Guide to Cord Blood, ქართული დიასპორა — პირდაპირი გამოცდილება სხვა ოჯახებისგან.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_508",
+    "name": "დაფინანსების ეკოსისტემაში არავითარი ორგანიზაცია არ აფინანსებს პირდაპირ EAP მკურნალობას. დაფინანსება მოითხოვს მრავალ წყაროდან პარალელურად: Crowdfunding + ფონდები + ფრენა + საცხოვრებელი + დიასპორა.",
+    "category": "other",
+    "description": "",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_509",
+    "name": "ორგანიზაცია",
+    "category": "other",
+    "description": "რას აკეთებს",
+    "eligibility": "",
+    "contact": {},
+    "source": "map_guide_v2"
+  },
+  {
+    "id": "res_510",
+    "name": "The Cary Condo / AKAP Way სტიპენდია",
+    "category": "other",
+    "description": "სტიპენდიით უფასო. ელ-ფოსტა ორივეზე. AKAP Way სტიპენდია.",
+    "eligibility": "AKAP ოჯახები. ადაპტირებული კონდო.. B-2: 🟡",
+    "contact": {
+      "email": "Carycondonc@gmail.com",
+      "phone": "984-255-4105",
+      "location": "მორისვილი, NC"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_511",
+    "name": "Ronald McDonald House დარემი",
+    "category": "other",
+    "description": "უფასო ($25 შემოწ.). Duke სოც. მუშაკი → RMH ვებფორმა. AKAP პარტნ.!",
+    "eligibility": "Duke ბავშვი ≤18, ოჯახი >50 მილი. 46 ოთახი.. B-2: 🟢",
+    "contact": {
+      "website": "https://RMHCTriangle.org",
+      "email": "Info@RMHCTriangle.org",
+      "phone": "919-286-9305",
+      "location": "506 Alexander Ave, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_512",
+    "name": "Hearts and Hope Foundation",
+    "category": "other",
+    "description": "უფასო. ელ-ფოსტა/ტელ. სამედ. დოკუმენტაცია + Duke EAP.",
+    "eligibility": "Duke/UNC ოჯახები. დროითი ლიმიტი არ აქვთ!. B-2: 🟢",
+    "contact": {
+      "email": "heartsandhopefdn@gmail.com",
+      "phone": "(704) 489-8940",
+      "location": "Durham, NC"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_513",
+    "name": "W.E. Stanley Mission House",
+    "category": "other",
+    "description": "უფასო. Duke Concierge (919-681-4947) ან პირდაპირი.",
+    "eligibility": "Outpatient პაციენტები. Duke Host Homes ქსელი.. B-2: 🟢",
+    "contact": {
+      "website": "https://becky.dodson",
+      "email": "becky.dodson704@outlook.com",
+      "phone": "919-688-1366",
+      "location": "800 Watts St, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_514",
+    "name": "Doopa's House of Care",
+    "category": "other",
+    "description": "ხელმისაწვდომი. ვებფორმა. HIE/EAP უფლებამოსილება იკითხეთ.",
+    "eligibility": "კიბო/ტრანსპლანტ. 55 ოთახი, რიგის გარეშე!. B-2: 🟢",
+    "contact": {
+      "website": "https://doopashouseofcare.com/contact-us",
+      "location": "Durham, NC"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_515",
+    "name": "World Relief Durham",
+    "category": "other",
+    "description": "უფასო. დარეკეთ. თავშესაფრის სტატუსი = პირდაპირი.",
+    "eligibility": "ლტოლვილ/იმიგრანტები. თავშესაფრის მაძიებ. = უფლებამოს.!. B-2: 🟢",
+    "contact": {
+      "website": "https://worldrelief.org/durham",
+      "phone": "(919) 286-3496",
+      "location": "801 Gilbert St, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_516",
+    "name": "Church World Service (CWS)",
+    "category": "other",
+    "description": "უფასო. დარეკეთ/მიწერეთ. თავშესაფრის სტატუსი.",
+    "eligibility": "ლტოლვ./ჰუმანიტ. იმიგრანტები.. B-2: 🟢",
+    "contact": {
+      "website": "https://cwsglobal.org",
+      "email": "immigrationRDU@cwsglobal.org",
+      "phone": "(919) 680-4310",
+      "location": "112 S Duke St, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_517",
+    "name": "Grey Stone Church — იმედის სახლი",
+    "category": "other",
+    "description": "უფასო. ვებფორმა ან ტელეფონი. ⚠️ Photo ID.",
+    "eligibility": "Duke პაციენტები >50 მილი. 3 ახალი სახლი 2025.. B-2: 🟢",
+    "contact": {
+      "website": "https://gsdurham.com",
+      "email": "socialmedia@gsdurham.com",
+      "phone": "919-286-2281",
+      "location": "2601 Hillsborough Rd, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_518",
+    "name": "Safe Families for Children RDU",
+    "category": "other",
+    "description": "უფასო. თვითმიმართვა! დარეკეთ პირდაპირ.",
+    "eligibility": "კრიზისში ოჯახები. ყველა იმიგრ. სტატუსი!. B-2: 🟢",
+    "contact": {
+      "website": "https://safefamiliesrdu.com",
+      "phone": "(919) 346-7051",
+      "location": "10701 Glenwood Ave, Raleigh"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_519",
+    "name": "Catholic Charities დარემი + რალი",
+    "category": "other",
+    "description": "ფინანსური დახმ.. პირდაპირი ზარი. იმიგრაციის სერვისებიც.",
+    "eligibility": "ყველა, მათ შორის იმიგრანტები.. B-2: 🟢",
+    "contact": {
+      "website": "https://catholiccharitiesraleigh.org",
+      "phone": "919-286-1964",
+      "location": "902 Broad St, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_520",
+    "name": "Airbnb.org Open Homes",
+    "category": "other",
+    "description": "უფასო. Duke სოც. მუშაკი ან BMCF. თავშესაფრ. პროგრ.!",
+    "eligibility": "არაკომ. მიმართვით. ⚠️ BMCF IRS 1040!. B-2: 🟢",
+    "contact": {
+      "website": "https://airbnb.org",
+      "email": "contact@airbnb.org",
+      "phone": "(800) 365-1336",
+      "location": "ონლაინ"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_521",
+    "name": "Welcome House / CBF NC",
+    "category": "other",
+    "description": "~$10/დღე ან უფასო. ვებფორმა. თავშესაფრის სტატუსი პლუსია.",
+    "eligibility": "ეკლესიის ქსელი ლტოლვ./იმიგრანტებისთვის.. B-2: 🟢",
+    "contact": {
+      "website": "https://welcomehouseraleigh.org",
+      "location": "რალი-ტრიანგლი"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_522",
+    "name": "The Carying Place — ქერი",
+    "category": "other",
+    "description": "არაპირდაპ.. Leslie Covington. ეკლესიის ქსელში მასპინძლობა?",
+    "eligibility": "16-კვირიანი პროგრ. ეკლესიის ქსელი ვრცელი.. B-2: 🟡",
+    "contact": {
+      "website": "https://leslie.covington",
+      "email": "leslie.covington@thecaryingplace.org",
+      "phone": "(919) 462-1800",
+      "location": "Cary, NC"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_523",
+    "name": "Peace Presbyterian — ქერი",
+    "category": "other",
+    "description": "Case-by-case. ვებიდან mercy ministry-ს.",
+    "eligibility": "Mercy ministry. კრიზისში ოჯახები.. B-2: 🟡",
+    "contact": {
+      "website": "https://peacepca.org",
+      "location": "Cary, NC"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_524",
+    "name": "Family Promise Triangle",
+    "category": "other",
+    "description": "უფასო. დარეკეთ პირდაპირ (არა Coordinated Entry).",
+    "eligibility": "ბავშვიანი ოჯახები. 30+ პარტნ. ეკლესია.. B-2: 🟡",
+    "contact": {
+      "website": "https://familypromisetriangle.org",
+      "email": "info@familypromisetriangle.org",
+      "phone": "(919) 832-6024",
+      "location": "903 Method Rd, Raleigh"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_525",
+    "name": "Families Moving Forward",
+    "category": "other",
+    "description": "უფასო. Entry Point Durham: (984) 287-8313.",
+    "eligibility": "ბავშვიანი ოჯახები. 20 ერთეული.. B-2: 🟡",
+    "contact": {
+      "website": "https://fmfnc.org",
+      "email": "contact@fmfnc.org",
+      "phone": "(919) 683-5878",
+      "location": "300 N Queen St, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_526",
+    "name": "Triangle Mutual Aid",
+    "category": "other",
+    "description": "უფასო. ელ-ფოსტა.",
+    "eligibility": "საზოგადოებრივი ორგანიზაცია.. B-2: 🟢",
+    "contact": {
+      "website": "https://TriangleMutualAid.org",
+      "email": "info@TriangleMutualAid.org",
+      "location": "რალი-დარემი"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_527",
+    "name": "Durham Mutual Aid + 2-1-1",
+    "category": "other",
+    "description": "უფასო. ★ დარეკეთ 2-1-1 (24/7).",
+    "eligibility": "საზოგადოებრივი. 2-1-1: საცხოვრ.+კვება+სოც.. B-2: 🟢",
+    "contact": {
+      "website": "https://durham.mutual",
+      "email": "durham.mutual.aid@gmail.com",
+      "phone": "(919) 460-8687",
+      "location": "რალი-დარემი"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_528",
+    "name": "Salvation Army (რალი+დარემი)",
+    "category": "other",
+    "description": "ფინანსური დახმ.. დარეკეთ. მხოლოდ ფინანსური!",
+    "eligibility": "საგანგებო ფინ. დახმ. ⚠️ არა თავშესაფარი!. B-2: 🟡",
+    "contact": {
+      "phone": "(919) 834-6733",
+      "location": "რალი + დარემი"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_529",
+    "name": "Jewish Family Services",
+    "category": "other",
+    "description": "ფინანსური დახმ.. დარეკეთ. საქმეთა მმართველის დანიშვნა.",
+    "eligibility": "ყველა რწმენა. საქმეთა მმართველი.. B-2: 🟡",
+    "contact": {
+      "website": "https://raleighcaryjfs.org",
+      "phone": "(919) 676-2200",
+      "location": "8210 Creedmoor Rd, Raleigh"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_530",
+    "name": "Joe's House (დირექტორია)",
+    "category": "other",
+    "description": "უფასო სერვისი. Duke Medical Center + თარიღები.",
+    "eligibility": "ნებისმიერი დიაგნოზი.. B-2: 🟢",
+    "contact": {
+      "website": "https://joeshouse.org",
+      "email": "info@joeshouse.org",
+      "phone": "877-563-7468",
+      "location": "ონლაინ"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_531",
+    "name": "HHN (Healthcare Hospitality Network)",
+    "category": "other",
+    "description": "უფასო სერვისი. ვებ ლოკატორი.",
+    "eligibility": "200+ ობიექტი. ZIP: 27705/27511.. B-2: 🟢",
+    "contact": {
+      "website": "https://hhnetwork.org",
+      "location": "ონლაინ"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_532",
+    "name": "Harper's Home (მშენებარე?)",
+    "category": "other",
+    "description": "მოცურებითი. იკითხეთ გახსნის თარიღი.",
+    "eligibility": "Duke Children's ოჯახები. 8 ერთეული.. B-2: 🟡",
+    "contact": {
+      "website": "https://harpershomenc.org",
+      "email": "admin@harpershomenc.org",
+      "phone": "(919) 610-0049",
+      "location": "2101 Strebor St, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_533",
+    "name": "Duke სამედ.-იურიდიული პარტნიორობა",
+    "category": "other",
+    "description": "უფასო. Duke-ის მიმართვით.",
+    "eligibility": "Duke პედ. პაციენტები.. B-2: 🟢",
+    "contact": {
+      "phone": "919-688-6396",
+      "location": "Duke Law, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_534",
+    "name": "RMH ჩეპელ ჰილი",
+    "category": "other",
+    "description": "უფასო. სოც. მუშაკის მიმართვა.",
+    "eligibility": "UNC/ადგილობრ. საავადმყ. ბავშვი.. B-2: 🟢",
+    "contact": {
+      "website": "https://rmhctriangle.org",
+      "phone": "919-913-2040",
+      "location": "101 Old Mason Farm Rd, Chapel Hill"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_535",
+    "name": "RMH WakeMed",
+    "category": "other",
+    "description": "უფასო. სოც. მუშაკის მიმართვა.",
+    "eligibility": "WakeMed/ადგილ. ⚠️ Background check!. B-2: 🟡",
+    "contact": {
+      "website": "https://rmhctriangle.org",
+      "phone": "(919) 948-9877",
+      "location": "3000 New Bern Ave, Raleigh"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_536",
+    "name": "SECU Caring House (Duke Cancer)",
+    "category": "other",
+    "description": "$45/ღამე. Duke სოც. მუშაკის მიმართვა.",
+    "eligibility": "Duke კიბოს ზრდასრ. ⚠️ არა პედ.. B-2: 🟢",
+    "contact": {
+      "website": "https://secucaringhouse.org",
+      "phone": "(919) 490-5449",
+      "location": "2625 Pickett Rd, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_537",
+    "name": "Best Nest პაციენტის საცხოვრ.",
+    "category": "other",
+    "description": "შემცირებული. ვებგვერდიდან. Duke EAP ახსენეთ.",
+    "eligibility": "ტრანსპლანტ./კიბო. მინ. 3 ღამე.. B-2: 🟡",
+    "contact": {
+      "website": "https://bestnestchs.com",
+      "email": "info@bestnestchs.com",
+      "phone": "(919) 891-0024",
+      "location": "Durham (Duke-ის ახლოს)"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_538",
+    "name": "Lodge at Duke Medical Center",
+    "category": "other",
+    "description": "სამედ. ფასდაკლ.. კონსიერჟი: 919-684-5887.",
+    "eligibility": "Duke პაციენტები. უფასო შატლი.. B-2: 🟢",
+    "contact": {
+      "website": "https://lodgeatdumc.com",
+      "phone": "833-313-2165",
+      "location": "Duke კამპუსი, Durham"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_539",
+    "name": "JB Duke Hotel",
+    "category": "other",
+    "description": "სამედ. ტარიფი. სამედ. ტარიფი მოითხოვეთ.",
+    "eligibility": "Duke პაციენტები.. B-2: 🟢",
+    "contact": {
+      "phone": "844-490-7100",
+      "location": "Duke კამპუსი"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_540",
+    "name": "გახანგრძლივებ. სასტუმროები",
+    "category": "other",
+    "description": "$50–80/ღამე. Duke კონსიერჟის სია.",
+    "eligibility": "Duke პაციენტები.. B-2: 🟢",
+    "contact": {
+      "phone": "919-383-8033",
+      "location": "დარემი/ქერის მახლობ."
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_541",
+    "name": "ავეჯიანი ქირა (Carolina Furn.)",
+    "category": "other",
+    "description": "$1,750–4,200. ყველას დაუკავშირდით.",
+    "eligibility": "სამედ. ოჯახებისთვის.. B-2: 🟢",
+    "contact": {
+      "website": "https://carolinafurnishedrentals.com",
+      "phone": "(919) 421-1962",
+      "location": "ქერი/დარემი"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_542",
+    "name": "Hospitality Homes (ბოსტონი)",
+    "category": "other",
+    "description": "—. NC კონტაქტებისთვის დარეკეთ.",
+    "eligibility": "ბოსტონის პროგრამა.. B-2: 🟢",
+    "contact": {
+      "website": "https://hosp.org",
+      "phone": "888-595-4678",
+      "location": "Boston, MA"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_543",
+    "name": "NC DHHS / FIF / Arc of NC",
+    "category": "other",
+    "description": "უფასო სერვისი. FIF-ს დარეკეთ საზოგ. რესურსებისთვის.",
+    "eligibility": "⚠️ B-2 ვიზისთვის შეზღუდული!. B-2: 🔴",
+    "contact": {
+      "website": "https://fifnc.org",
+      "email": "info@fifnc.org",
+      "phone": "(919) 251-8368",
+      "location": "NC სახელმწიფო"
+    },
+    "source": "housing_star"
+  },
+  {
+    "id": "res_544",
+    "name": "Duke Health კონსიერჟ სერვისი და საქმეების მართვა",
+    "category": "other",
+    "description": "მიმართვის სერვისი (აკავშირებს ფასდაკლებულ/უფასო ვარიანტებთან). 1) დაუკავშირდით დოქტ. კურცბერგის კოორდინატორს\n2) სთხოვეთ Duke-ის სოც. მუშაკს მიმართვების გაგზავნა\n3) Duke-ის კონსიერჟს შეუძლია სამედიცინო ტარიფების მოწყობა\n★ ახალი — Host Homes Program: private homes-ში განთავსება \"nominal need-based fee\"-ით\n★ ახალი — PTCT Family Support: ფინანსური მხარდაჭერა + სერვისები no charge! თქვენი Duke EAP პროგრამა (cord blood) ახლოს დგას ამ ეკოსისტემასთან",
+    "eligibility": "უნდა იყოთ Duke Health-ის პაციენტი. დოქტ. კურცბერგის გუნდს აქვს 'ოჯახის მხარდაჭერის პროგრამა სამედიცინო საჭიროებების მიღმა'.. B-2: არა — Duke-ში პაციენტის სტატუსზეა დაფუძნებული.",
+    "contact": {
+      "website": "https://duke.edu",
+      "email": "conciergeservices@duke.edu",
+      "phone": "919-402-6668",
+      "location": "Duke University Hospital, Durham, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_545",
+    "name": "All Kids Are Perfect (AKAP)",
+    "category": "other",
+    "description": "არ ეხება (თერაპიის პროვაიდერია, არა საცხოვრებლის). დაუკავშირდით დანა ბროტონს პირდაპირ. იკითხეთ:\n1) აქვთ თუ არა საცხოვრებლის პარტნიორობები შტატგარეშე ოჯახებისთვის?\n2) შეუძლიათ თუ არა ადგილობრივი მასპინძელი ოჯახების ან ეკლესიების რეკომენდაცია?\n3) აქვთ თუ არა წარსული ოჯახების საზოგადოებრივი ქსელი, რომლებმაც შეიძლება იმასპინძლონ?",
+    "eligibility": "AKAP Way არის მათი 501(c)(3) არაკომერციული ორგანიზაცია, რომელიც ფიზ. თერაპიის სტიპენდიებს გასცემს. ბევრი შტატგარეშე ოჯახი ესწრება ინტენსიურებს.. B-2: არ ეხება",
+    "contact": {
+      "website": "https://allkidsperfect.com",
+      "email": "Dana@allkidsperfect.com",
+      "phone": "984-255-4105",
+      "location": "100 Ridgeview Dr, Ste #102, Cary, NC 27511"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_546",
+    "name": "გახანგრძლივებული ყოფნის სასტუმროები — Duke-ის სამედიცინო ტარიფი",
+    "category": "other",
+    "description": "$50-80/ღამეში (სამედიცინო ტარიფი, არა უფასო). დაუკავშირდით Duke Health კონსიერჟს სამედიცინო ტარიფებიანი პარტნიორი სასტუმროების სრული სიისთვის. ახსენეთ Duke EAP პაციენტი.",
+    "eligibility": "Duke Health-ის პაციენტები. დარეკეთ და მოითხოვეთ სამედიცინო/პაციენტის ტარიფი.. B-2: არა — პაციენტის სტატუსზეა დაფუძნებული.",
+    "contact": {
+      "phone": "919-684-5887",
+      "location": "რამდენიმე ადგილმდებარეობა დარემი/ქერის მახლობლად"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_547",
+    "name": "Hospitality Homes (ბოსტონში დაფუძნებული მოდელი)",
+    "category": "other",
+    "description": "უფასო (რეკომენდირებული $25/ღამეში შემოწირულობა, არასოდეს მოითხოვება). პირდაპირ არ ეხება დარემს. თუმცა:\n1) დაუკავშირდით და იკითხეთ იციან თუ არა ჩრდ. კაროლინაში მსგავსი პროგრამების შესახებ\n2) იკითხეთ შეუძლიათ თუ არა Triangle-ის რეგიონში მასპინძელი ოჯახების ქსელთან დაკავშირება\n3) მათ ადრეც დაუხმარებიათ საერთაშორისო ოჯახებისთვის",
+    "eligibility": "ეს ბოსტონის რეგიონის პროგრამაა. თუმცა, მან შთააგონა მსგავსი პროგრამები სხვა ქალაქებში.. B-2: არა — ისინი საერთაშორისო პაციენტებს ემსახურებიან.",
+    "contact": {
+      "website": "https://hosp.org",
+      "phone": "888-595-4678",
+      "location": "Boston, MA (არა დარემში — მოდელის მითითება)"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_548",
+    "name": "Duke-ის სამედიცინო-იურიდიული პარტნიორობა ოჯახებისთვის",
+    "category": "other",
+    "description": "უფასო იურიდიული მომსახურება. სთხოვეთ Duke-ის პროვაიდერს მიმართვის გაკეთება. ისინი ეხმარებიან შეღავათებში, საცხოვრებლის უფლებებში და იმიგრაციასთან დაკავშირებულ იურიდიულ საკითხებში.",
+    "eligibility": "დაბალშემოსავლიანი პედიატრიული პაციენტების ოჯახები. მკურნალობის პერიოდში უნდა ცხოვრობდეთ დარემის, ვეიკის ან მიმდებარე ოლქებში.. B-2: სასარგებლო — ისინი სპეციალურად მიმართავენ ჯანმრთელობის არასამედიცინო ბარიერებს, მათ შორის საცხოვრებელს და იმიგრაციას.",
+    "contact": {
+      "phone": "919-688-6396",
+      "location": "Duke University School of Law, Durham, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_549",
+    "name": "Harper's Home",
+    "category": "other",
+    "description": "მოცურებითი ტარიფი (უფასოდან მინიმალურამდე). დაუკავშირდით და იკითხეთ გახსნის სავარაუდო თარიღი. თუ მზად იქნება მაისისთვის, ეს შესანიშნავი ვარიანტია.",
+    "eligibility": "Duke Children's-ის ოჯახები. 8 მოკლევადიანი საცხოვრებელი ერთეული. ჯერ კიდევ მშენებარეა — შესაძლოა არ იყოს მზად 2026 წლის აპრილ-მაისისთვის.. B-2: უცნობია — ჯერ არ ფუნქციონირებს",
+    "contact": {
+      "website": "https://harpershomenc.org",
+      "email": "admin@harpershomenc.org",
+      "phone": "(919) 610-0049",
+      "location": "2101 Strebor Street, Durham, NC 27705"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_550",
+    "name": "Joe's House — სამედიცინო საცხოვრებლის დირექტორია",
+    "category": "other",
+    "description": "უფასო სერვისი (\"No restrictions\" — ელიგიბლობის შეზღუდვის გარეშე). დაუკავშირდით და მიუთითეთ Duke University Medical Center, თარიღები (აპრილი 21 — მაისი 29), და რომ გჭირდებათ უფასო/დაბალფასიანი ვარიანტები.",
+    "eligibility": "ნებისმიერი დიაგნოზი (\"any diagnosis\"). ლოჯინგ დირექტორია, რომელიც ეხმარება სამედიცინო პაციენტებს დაბალფასიანი საცხოვრებლის პოვნაში.. B-2: არა — შეზღუდვა არ აქვთ",
+    "contact": {
+      "website": "https://joeshouse.org",
+      "email": "info@joeshouse.org",
+      "phone": "877-563-7468",
+      "location": "ონლაინ (ეძებს Duke-ის გარშემო ვარიანტებს)"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_551",
+    "name": "Welcome House Raleigh / CBF NC ეკლესიების ქსელი",
+    "category": "other",
+    "description": "~$10/დღეში ან უფასო. დაუკავშირდით ვებგვერდის მეშვეობით. აუხსენით თავშესაფრის მაძიებლის სტატუსი საფრანგეთში და სამედიცინო მიზანი აშშ-ში.",
+    "eligibility": "ტრიანგლის ეკლესიები, რომლებიც სახლებს და ეკლესიის შენობებს ხსნიან ლტოლვილებისა და იმიგრანტებისთვის. თქვენ, როგორც საფრანგეთში თავშესაფრის მაძიებლები სამედიცინო მკურნალობისთვის ჩამოსული ოჯახი, შესაძლოა უფლებამოსილი იყოთ.. B-2: არა — სპეციალურად ლტოლვილებისა და იმიგრანტებისთვისაა.",
+    "contact": {
+      "website": "https://welcomehouseraleigh.org",
+      "location": "რალი-ტრიანგლის რეგიონი, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_552",
+    "name": "Peace Presbyterian Church — ქერი",
+    "category": "other",
+    "description": "უცნობია (case-by-case). დაუკავშირდით mercy ministry-ს ვებგვერდის მეშვეობით. აუხსენით სამედიცინო კრიზისი — ქერიშია, AKAP თერაპიის ახლოს.",
+    "eligibility": "Mercy ministry — კრიზისში მყოფი ოჯახები. თანამგრძნობი, ინდივიდუალური მიდგომა. ფინანსურ მხარდაჭერას და პრაქტიკულ დახმარებას სთავაზობს საზოგადოების წევრებს.. B-2: ნაკლებად სავარაუდო — ეკლესიის საქველმოქმედო პროგრამაა.",
+    "contact": {
+      "website": "https://peacepca.org",
+      "location": "Cary, NC"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_553",
+    "name": "Church World Service (CWS) — Durham",
+    "category": "other",
+    "description": "უფასო (ჰუმანიტარული იმიგრანტების სერვისები). დარეკეთ (919) 680-4310 ან მიწერეთ immigrationRDU@cwsglobal.org. აუხსენით თავშესაფრის მაძიებლის სტატუსი და დროებითი სამედიცინო საცხოვრებლის საჭიროება.",
+    "eligibility": "ლტოლვილებისა და ჰუმანიტარული იმიგრანტების მომსახურება — საცხოვრებლის მიმართვები, საქმეთა მართვა, დასაქმების სერვისი. ემსახურება ოჯახებს რელიგიის მიუხედავად.. B-2: არა — ლტოლვილთა და იმიგრანტთა მომსახურებისთვისაა!",
+    "contact": {
+      "website": "https://cwsglobal.org",
+      "email": "immigrationRDU@cwsglobal.org",
+      "phone": "(919) 680-4310",
+      "location": "112 South Duke Street, Durham, NC 27701"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_554",
+    "name": "Raleigh-Cary Jewish Family Services",
+    "category": "other",
+    "description": "ფინანსური დახმარება (ქირა, კომუნალური, საგანგებო). დარეკეთ პირდაპირ. აუხსენით სამედიცინო სიტუაცია. იკითხეთ საქმეთა მმართველის დანიშვნა + საგანგებო ფინანსური დახმარება საცხოვრებლისთვის.",
+    "eligibility": "საქმეთა მართვა და დროებითი ფინანსური დახმარება. ემსახურება ყველა რწმენის ადამიანს. საქმეთა მმართველი დაგეხმარებათ სხვა საცხოვრებლის რესურსებში ნავიგაციაში.. B-2: უცნობია — დასაზუსტებელი",
+    "contact": {
+      "website": "https://raleighcaryjfs.org",
+      "phone": "(919) 676-2200",
+      "location": "8210 Creedmoor Rd, Suite 104, Raleigh, NC 27613"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_555",
+    "name": "Healthcare Hospitality Network (HHN)",
+    "category": "other",
+    "description": "უფასო სერვისი. გამოიყენეთ ვებ ლოკატორი. მოძებნეთ ZIP: 27705 (Durham) და 27511 (Cary). RMH დარემი სავარაუდოდ HHN წევრია — მაგრამ სხვა ვარიანტებიც შეიძლება გამოჩნდეს.",
+    "eligibility": "200+ არაკომერციული საცხოვრებლის ობიექტის ეროვნული ქსელი სამედიცინო მოგზაურობის ოჯახებისთვის. მოძებნეთ ZIP კოდით Durham ან Cary-ს მახლობლად.. B-2: არა",
+    "contact": {
+      "website": "https://hhnetwork.org",
+      "location": "ონლაინ (ეროვნული)"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_556",
+    "name": "ავეჯიანი მოკლევადიანი ქირის კომპანიები (Cary/Durham)",
+    "category": "other",
+    "description": "$1,750–$4,200 (5-6 კვირა, მოლაპარაკებით). დაუკავშირდით ყველას პარალელურად. ახსენეთ სამედიცინო სიტუაცია. მოითხოვეთ სამედიცინო/სიძნელის ფასდაკლება. Carolina Furnished Rentals სპეციალურად სამედიცინო ოჯახებს ემსახურება.",
+    "eligibility": "სამედიცინო ოჯახებისთვის ადაპტირებული. ავეჯიანი ბინები, სრული სამზარეულოთი. 30+ დღიანი ფასდაკლებები.. B-2: არა — პასპორტი + გადახდის მეთოდი საჭიროა",
+    "contact": {
+      "website": "https://carolinafurnishedrentals.com",
+      "phone": "(919) 421-1962",
+      "location": "ქერი/დარემის რეგიონი"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_557",
+    "name": "Durham Mutual Aid + Duke Mutual Aid + RUMAH + 2-1-1",
+    "category": "other",
+    "description": "უფასო. ★ დარეკეთ 2-1-1 (211) — ისინი მიმართვებს გასცემენ საცხოვრებლის, კვების და სოციალური სერვისების შესახებ ტრიანგლის რეგიონში. ასევე მიწერეთ Durham Mutual Aid-ს ელ-ფოსტაზე.",
+    "eligibility": "ადგილობრივი ურთიერთდახმარების ქსელები. 2-1-1 (United Way) — კრიტიკული რესურსი, საცხოვრებლის, კვების და სოციალური სერვისების მიმართვები. RUMAH-ს აქვს სრული Triangle NC Resource Directory.. B-2: არა",
+    "contact": {
+      "website": "https://durham.mutual",
+      "email": "durham.mutual.aid@gmail.com",
+      "phone": "(919) 460-8687",
+      "location": "რალი-დარემის რეგიონი"
+    },
+    "source": "housing_resources"
+  },
+  {
+    "id": "res_558",
+    "name": "NC DHHS + Families In Focus + The Arc of NC",
+    "category": "other",
+    "description": "უფასო მიმართვის სერვისი. დარეკეთ FIF Durham-ს (919) 251-8368 — იკითხეთ საზოგადოებრივი რესურსების ხელმისაწვდომობა. NC DHHS Help Line-ს შეუძლია სახელმწიფო პროგრამებთან + საზოგადოებრივ პროგრამებთან + ფინანსურ წყაროებთან დაკავშირება.",
+    "eligibility": "NC DHHS Children with Special Health Care Needs Help Line — უფასო მიმართვის სერვისი. Families In Focus (FIF) Durham: ეხმარება განვითარების შეფერხების/ინვალიდობის მქონე ბავშვთა ოჯახებს. The Arc of NC: საცხოვრებლის რესურს-კოორდინატორები. ⚠️ უმეტესი NC პროგრამები მოქალაქეობას/მწვანე ბარათს მოითხოვს — B-2 ვიზისთვის შეზღუდულია.. B-2: ⚠️ შეზღუდული — უმეტესი NC სახელმწ. პროგრამები მოქალაქეობას ან მუდმივ ბინადრობას მოითხოვს.",
+    "contact": {
+      "website": "https://fifnc.org",
+      "email": "info@fifnc.org",
+      "phone": "(919) 251-8368",
+      "location": "NC (სახელმწიფო დონე)"
+    },
+    "source": "housing_resources"
+  }
+]
