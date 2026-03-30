@@ -1,14 +1,53 @@
 /*
  * FilterBar Component
- * Design: Structured Clarity — pill-shaped category tabs + country dropdown + type filter + sort
+ * Design: Structured Clarity — pill-shaped category tabs + advanced filters + sort
  * Sticky on scroll, clean horizontal layout with enhanced search UX
  */
 
-import { ArrowUpDown, Search, X } from "lucide-react";
+import { ArrowUpDown, ChevronDown, ChevronUp, Filter, Search, X } from "lucide-react";
+import { useState } from "react";
 import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export type SortValue = "name_asc" | "name_desc" | "category" | "country" | "newest";
+
+// Diagnosis options for filtering
+const DIAGNOSIS_OPTIONS = [
+  { value: "all", label: "All Conditions" },
+  { value: "Cancer", label: "Cancer" },
+  { value: "Rare Disease", label: "Rare Disease" },
+  { value: "Autism", label: "Autism / ASD" },
+  { value: "Cerebral Palsy", label: "Cerebral Palsy" },
+  { value: "Epilepsy", label: "Epilepsy" },
+  { value: "Down Syndrome", label: "Down Syndrome" },
+  { value: "Hearing", label: "Hearing Loss" },
+  { value: "Vision", label: "Vision Impairment" },
+  { value: "Diabetes", label: "Diabetes" },
+  { value: "Mental Health", label: "Mental Health" },
+  { value: "Spinal", label: "Spinal Cord Injury" },
+  { value: "Kidney", label: "Kidney Disease" },
+  { value: "Heart", label: "Heart Disease" },
+  { value: "Multiple Sclerosis", label: "Multiple Sclerosis" },
+  { value: "Alzheimer", label: "Alzheimer's" },
+  { value: "General", label: "General / Any" },
+];
+
+// Funding type options
+const FUNDING_TYPE_OPTIONS = [
+  { value: "all", label: "All Types" },
+  { value: "one_time", label: "One-Time" },
+  { value: "recurring", label: "Recurring" },
+  { value: "reimbursement", label: "Reimbursement" },
+  { value: "varies", label: "Varies" },
+];
+
+// B-2 Visa options
+const B2_VISA_OPTIONS = [
+  { value: "all", label: "All" },
+  { value: "yes", label: "B-2 Visa Eligible" },
+  { value: "no", label: "US Residents Only" },
+  { value: "uncertain", label: "Contact to Confirm" },
+];
 
 interface FilterBarProps {
   selectedCategory: CategoryValue;
@@ -22,6 +61,15 @@ interface FilterBarProps {
   onSearchChange?: (query: string) => void;
   sortBy?: SortValue;
   onSortChange?: (sort: SortValue) => void;
+  // New enrichment filters
+  fundingType?: string;
+  onFundingTypeChange?: (v: string) => void;
+  targetDiagnosis?: string;
+  onTargetDiagnosisChange?: (v: string) => void;
+  b2VisaEligible?: string;
+  onB2VisaChange?: (v: string) => void;
+  hasDeadline?: boolean;
+  onHasDeadlineChange?: (v: boolean) => void;
 }
 
 export default function FilterBar({
@@ -36,8 +84,25 @@ export default function FilterBar({
   onSearchChange,
   sortBy,
   onSortChange,
+  fundingType,
+  onFundingTypeChange,
+  targetDiagnosis,
+  onTargetDiagnosisChange,
+  b2VisaEligible,
+  onB2VisaChange,
+  hasDeadline,
+  onHasDeadlineChange,
 }: FilterBarProps) {
   const { t, tCategory, tCountry } = useLanguage();
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
+  // Count active advanced filters
+  const activeAdvancedCount = [
+    fundingType && fundingType !== "all",
+    targetDiagnosis && targetDiagnosis !== "all",
+    b2VisaEligible && b2VisaEligible !== "all",
+    hasDeadline,
+  ].filter(Boolean).length;
 
   return (
     <div className="sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200">
@@ -146,8 +211,118 @@ export default function FilterBar({
                 <option value="country">Country</option>
               </select>
             )}
+
+            {/* Advanced Filters Toggle */}
+            <button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${
+                activeAdvancedCount > 0
+                  ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              Filters
+              {activeAdvancedCount > 0 && (
+                <span className="bg-white/20 text-white text-xs px-1.5 py-0.5 rounded-full ml-0.5">
+                  {activeAdvancedCount}
+                </span>
+              )}
+              {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
           </div>
         </div>
+
+        {/* Advanced Filters Panel */}
+        {showAdvanced && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="flex flex-wrap gap-3 items-center">
+              {/* Diagnosis filter */}
+              {onTargetDiagnosisChange && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Condition</label>
+                  <select
+                    value={targetDiagnosis || "all"}
+                    onChange={(e) => onTargetDiagnosisChange(e.target.value)}
+                    className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  >
+                    {DIAGNOSIS_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Funding Type filter */}
+              {onFundingTypeChange && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Funding</label>
+                  <select
+                    value={fundingType || "all"}
+                    onChange={(e) => onFundingTypeChange(e.target.value)}
+                    className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  >
+                    {FUNDING_TYPE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* B-2 Visa filter */}
+              {onB2VisaChange && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">B-2 Visa</label>
+                  <select
+                    value={b2VisaEligible || "all"}
+                    onChange={(e) => onB2VisaChange(e.target.value)}
+                    className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  >
+                    {B2_VISA_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Has Deadline toggle */}
+              {onHasDeadlineChange && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Deadline</label>
+                  <button
+                    onClick={() => onHasDeadlineChange(!hasDeadline)}
+                    className={`text-sm px-3 py-1.5 rounded-lg border transition-all ${
+                      hasDeadline
+                        ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
+                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    {hasDeadline ? "Has Deadline ✓" : "Any Deadline"}
+                  </button>
+                </div>
+              )}
+
+              {/* Clear all advanced filters */}
+              {activeAdvancedCount > 0 && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-medium text-transparent">Clear</label>
+                  <button
+                    onClick={() => {
+                      onFundingTypeChange?.("all");
+                      onTargetDiagnosisChange?.("all");
+                      onB2VisaChange?.("all");
+                      onHasDeadlineChange?.(false);
+                    }}
+                    className="text-sm text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg border border-red-200 hover:border-red-300 transition-all flex items-center gap-1"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    Clear Filters
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -41,6 +41,11 @@ export default function Catalog() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortValue>("name_asc");
   const [page, setPage] = useState(1);
+  // Enrichment filters
+  const [fundingType, setFundingType] = useState("all");
+  const [targetDiagnosis, setTargetDiagnosis] = useState("all");
+  const [b2VisaEligible, setB2VisaEligible] = useState("all");
+  const [hasDeadline, setHasDeadline] = useState(false);
   const { t, tCategory, tCountry, language } = useLanguage();
   const { isAuthenticated, loading: authLoading } = useAuth();
 
@@ -64,10 +69,14 @@ export default function Catalog() {
       country: selectedCountry !== "all" ? selectedCountry : undefined,
       type: selectedType !== "all" ? selectedType : undefined,
       sortBy,
+      fundingType: fundingType !== "all" ? fundingType : undefined,
+      targetDiagnosis: targetDiagnosis !== "all" ? targetDiagnosis : undefined,
+      b2VisaEligible: b2VisaEligible !== "all" ? b2VisaEligible : undefined,
+      hasDeadline: hasDeadline || undefined,
       page: isActive ? page : 1,
       pageSize: isActive ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
-    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, page, isActive]
+    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, page, isActive]
   );
 
   const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
@@ -128,6 +137,14 @@ export default function Catalog() {
         email: g.email,
         amount: g.amount,
         status: g.status,
+        applicationProcess: g.applicationProcess,
+        deadline: g.deadline,
+        fundingType: g.fundingType,
+        targetDiagnosis: g.targetDiagnosis,
+        ageRange: g.ageRange,
+        geographicScope: g.geographicScope,
+        documentsRequired: g.documentsRequired,
+        b2VisaEligible: g.b2VisaEligible,
       };
     });
   }, [catalogData, language]);
@@ -182,6 +199,14 @@ export default function Catalog() {
         onSearchChange={(q) => { setSearchQuery(q); setPage(1); }}
         sortBy={sortBy}
         onSortChange={(s) => { setSortBy(s); setPage(1); }}
+        fundingType={fundingType}
+        onFundingTypeChange={(v) => { setFundingType(v); setPage(1); }}
+        targetDiagnosis={targetDiagnosis}
+        onTargetDiagnosisChange={(v) => { setTargetDiagnosis(v); setPage(1); }}
+        b2VisaEligible={b2VisaEligible}
+        onB2VisaChange={(v) => { setB2VisaEligible(v); setPage(1); }}
+        hasDeadline={hasDeadline}
+        onHasDeadlineChange={(v) => { setHasDeadline(v); setPage(1); }}
       />
 
       {/* Cards grid */}

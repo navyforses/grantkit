@@ -1,0 +1,15 @@
+{
+  "query": "SELECT \n  SUM(CASE WHEN eligibility LIKE '%B-2 Visa%' THEN 1 ELSE 0 END) as b2_visa_format,\n  SUM(CASE WHEN eligibility LIKE 'Ages%' THEN 1 ELSE 0 END) as ages_format,\n  SUM(CASE WHEN eligibility = '' OR eligibility IS NULL THEN 1 ELSE 0 END) as empty_eligibility\nFROM grants WHERE isActive=1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT \n  SUM(CASE WHEN eligibility LIKE '%B-2 Visa%' THEN 1 ELSE 0 END) as b2_visa_format,\n  SUM(CASE WHEN eligibility LIKE 'Ages%' THEN 1 ELSE 0 END) as ages_format,\n  SUM(CASE WHEN eligibility = '' OR eligibility IS NULL THEN 1 ELSE 0 END) as empty_eligibility\nFROM grants WHERE isActive=1;",
+  "rows": [
+    {
+      "b2_visa_format": "64",
+      "ages_format": "187",
+      "empty_eligibility": "305"
+    }
+  ],
+  "messages": [],
+  "stdout": "b2_visa_format\tages_format\tempty_eligibility\n64\t187\t305\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

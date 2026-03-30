@@ -429,6 +429,11 @@ export async function listGrants(options?: {
   country?: string;
   type?: string;
   sortBy?: string;
+  fundingType?: string;
+  targetDiagnosis?: string;
+  ageRange?: string;
+  b2VisaEligible?: string;
+  hasDeadline?: boolean;
   limit?: number;
   offset?: number;
   activeOnly?: boolean;
@@ -436,7 +441,26 @@ export async function listGrants(options?: {
   const db = await getDb();
   if (!db) return { grants: [], total: 0 };
 
-  const { search, language, category, country, type, sortBy = "name_asc", limit = 50, offset = 0, activeOnly = true } = options || {};
+  const { search, language, category, country, type, sortBy = "name_asc", fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, limit = 50, offset = 0, activeOnly = true } = options || {};
+
+  // Helper to add enrichment filter conditions
+  const addEnrichmentFilters = (conditions: any[]) => {
+    if (fundingType && fundingType !== "all") {
+      conditions.push(eq(grants.fundingType, fundingType));
+    }
+    if (targetDiagnosis && targetDiagnosis !== "all") {
+      conditions.push(like(grants.targetDiagnosis, `%${targetDiagnosis}%`));
+    }
+    if (ageRange && ageRange !== "all") {
+      conditions.push(eq(grants.ageRange, ageRange));
+    }
+    if (b2VisaEligible && b2VisaEligible !== "all") {
+      conditions.push(eq(grants.b2VisaEligible, b2VisaEligible));
+    }
+    if (hasDeadline === true) {
+      conditions.push(sql`${grants.deadline} IS NOT NULL AND ${grants.deadline} != '' AND ${grants.deadline} != 'Rolling/Open'`);
+    }
+  };
 
   // If searching with a non-English language, use a subquery approach to search translations too
   if (search && language && language !== "en") {
@@ -473,6 +497,7 @@ export async function listGrants(options?: {
     if (category && category !== "all") conditions.push(eq(grants.category, category));
     if (country && country !== "all") conditions.push(eq(grants.country, country));
     if (type && type !== "all") conditions.push(eq(grants.type, type as "grant" | "resource"));
+    addEnrichmentFilters(conditions);
 
     const whereClause = and(...conditions);
     const orderByClause = getOrderByClause(sortBy);
@@ -513,6 +538,8 @@ export async function listGrants(options?: {
   if (type && type !== "all") {
     conditions.push(eq(grants.type, type as "grant" | "resource"));
   }
+
+  addEnrichmentFilters(conditions);
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
   const orderByClause = getOrderByClause(sortBy);

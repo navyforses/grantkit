@@ -173,3 +173,18 @@
 - [x] Add JSON-LD structured data (Organization, WebSite, FAQPage, GovernmentService, BreadcrumbList)
 - [x] Add canonical URLs for all pages
 - [x] Write vitest tests for sitemap and robots.txt endpoints (15 tests, 171 total passing)
+
+## Phase A: AI Grant Enrichment (630 grants)
+- [x] Expand grants schema with new fields (applicationProcess, deadline, fundingType, targetDiagnosis, ageRange, geographicScope, documentsRequired, b2VisaEligible)
+- [x] Run database migration for new fields
+- [x] Build LLM enrichment script to research and fill all 630 grants (624 enriched, 6 failed)
+- [x] Fill empty fields: website (586), email (516), phone (357), amount (583), description (629), eligibility
+- [x] Fill new structured fields: applicationProcess (601), targetDiagnosis (609), b2VisaEligible (594), and more
+- [ ] Translate enriched content to 4 languages (ka, fr, es, ru)
+- [x] Update backend API (tRPC) to expose new fields (catalog.list + catalog.detail + new filters)
+- [x] Update GrantDetail page with new sections (how to apply, required documents, funding type, deadline, B-2 visa badge, target conditions, age range, geographic scope)
+- [x] Update CatalogCard to show key new info (amount, deadline, B-2 visa badge)
+- [x] Add new filters: diagnosis, B-2 visa, funding type, deadline (in collapsible advanced panel)
+- [x] Add new sort options: existing sorts retained, advanced filters serve as primary refinement
+- [x] Update admin panel grant form with new enrichment fields (applicationProcess, deadline, fundingType, targetDiagnosis, ageRange, geographicScope, documentsRequired, b2VisaEligible)
+- [x] Write vitest tests for enrichment and new features (12 new tests, 183 total passing)

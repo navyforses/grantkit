@@ -1,0 +1,70 @@
+{
+  "query": "SELECT itemId, name, organization, description FROM grants WHERE isActive=1 AND LENGTH(description) < 20 LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT itemId, name, organization, description FROM grants WHERE isActive=1 AND LENGTH(description) < 20 LIMIT 10;",
+  "rows": [
+    {
+      "itemId": "item_0003",
+      "name": "Acoustics for Autism",
+      "organization": "Acoustics for Autism",
+      "description": "PROJECT iAm"
+    },
+    {
+      "itemId": "item_0021",
+      "name": "Angelman Syndrome Foundation",
+      "organization": "Angelman Syndrome Foundation",
+      "description": "ASF Family Fund"
+    },
+    {
+      "itemId": "item_0025",
+      "name": "Assoc. for Education & Rehabilitation",
+      "organization": "Assoc. for Education & Rehabilitation",
+      "description": "AER Scholarship"
+    },
+    {
+      "itemId": "item_0029",
+      "name": "Autism Spectrum Disorder Foundation",
+      "organization": "Autism Spectrum Disorder Foundation",
+      "description": "Multiple Programs"
+    },
+    {
+      "itemId": "item_0033",
+      "name": "Beckwith Weidemann Foundation",
+      "organization": "Beckwith Weidemann Foundation",
+      "description": "Scholarship"
+    },
+    {
+      "itemId": "item_0034",
+      "name": "Begin Again Foundation",
+      "organization": "Begin Again Foundation",
+      "description": "Butterfly Program"
+    },
+    {
+      "itemId": "item_0040",
+      "name": "Blink Health",
+      "organization": "Blink Health",
+      "description": "Lower Prices"
+    },
+    {
+      "itemId": "item_0043",
+      "name": "Boomer Esiason Foundation",
+      "organization": "Boomer Esiason Foundation",
+      "description": "Scholarship/CF"
+    },
+    {
+      "itemId": "item_0054",
+      "name": "CHARGE Syndrome Foundation",
+      "organization": "CHARGE Syndrome Foundation",
+      "description": "Sibling Scholarship"
+    },
+    {
+      "itemId": "item_0062",
+      "name": "Children's Craniofacial Association",
+      "organization": "Children's Craniofacial Association",
+      "description": "Care Package"
+    }
+  ],
+  "messages": [],
+  "stdout": "itemId\tname\torganization\tdescription\nitem_0003\tAcoustics for Autism\tAcoustics for Autism\tPROJECT iAm\nitem_0021\tAngelman Syndrome Foundation\tAngelman Syndrome Foundation\tASF Family Fund\nitem_0025\tAssoc. for Education & Rehabilitation\tAssoc. for Education & Rehabilitation\tAER Scholarship\nitem_0029\tAutism Spectrum Disorder Foundation\tAutism Spectrum Disorder Foundation\tMultiple Programs\nitem_0033\tBeckwith Weidemann Foundation\tBeckwith Weidemann Foundation\tScholarship\nitem_0034\tBegin Again Foundation\tBegin Again Foundation\tButterfly Program\nitem_0040\tBlink Health\tBlink Health\tLower Prices\nitem_0043\tBoomer Esiason Foundation\tBoomer Esiason Foundation\tScholarship/CF\nitem_0054\tCHARGE Syndrome Foundation\tCHARGE Syndrome Foundation\tSibling Scholarship\nitem_0062\tChildren's Craniofacial Association\tChildren's Craniofacial Association\tCare Package\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

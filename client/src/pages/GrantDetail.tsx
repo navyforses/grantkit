@@ -14,12 +14,19 @@ import {
   BookmarkCheck,
   Building2,
   Calendar,
+  CheckCircle2,
+  Clock,
+  DollarSign,
+  FileText,
   Globe,
+  Heart,
   Loader2,
   Mail,
   MapPin,
   Phone,
+  Plane,
   Share2,
+  Stethoscope,
   Tag,
   Users,
 } from "lucide-react";
@@ -132,6 +139,15 @@ export default function GrantDetail() {
   const borderColor = getCategoryBorderColor(item.category);
   const primaryLink = item.website || "";
 
+  // Funding type label
+  const fundingTypeLabels: Record<string, string> = {
+    one_time: "One-Time",
+    recurring: "Recurring",
+    reimbursement: "Reimbursement",
+    varies: "Varies",
+    unknown: "—",
+  };
+
   const handleShare = () => {
     const url = window.location.href;
     if (navigator.share) {
@@ -154,6 +170,15 @@ export default function GrantDetail() {
     item.type === "grant" ? "grant" : "resource",
     "funding",
   ].filter(Boolean).join(", ");
+
+  // B-2 visa badge
+  const b2Badge = item.b2VisaEligible === "yes"
+    ? { label: "B-2 Visa Eligible", color: "bg-emerald-100 text-emerald-700 border-emerald-200" }
+    : item.b2VisaEligible === "no"
+    ? { label: "US Residents Only", color: "bg-red-50 text-red-600 border-red-200" }
+    : item.b2VisaEligible === "uncertain"
+    ? { label: "B-2 Visa: Contact to Confirm", color: "bg-amber-50 text-amber-700 border-amber-200" }
+    : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/30">
@@ -188,7 +213,7 @@ export default function GrantDetail() {
           </Link>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center gap-3 mb-2 flex-wrap">
                 <span className="text-2xl">{countryFlag}</span>
                 <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${getCategoryStyle(item.category)}`}>
                   {translatedCategory}
@@ -198,6 +223,12 @@ export default function GrantDetail() {
                 }`}>
                   {typeLabel}
                 </span>
+                {b2Badge && (
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border flex items-center gap-1 ${b2Badge.color}`}>
+                    <Plane className="w-3 h-3" />
+                    {b2Badge.label}
+                  </span>
+                )}
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
                 {content.name}
@@ -208,6 +239,27 @@ export default function GrantDetail() {
                   {item.organization}
                 </p>
               )}
+              {/* Quick stats row */}
+              <div className="flex items-center gap-4 mt-3 flex-wrap">
+                {item.amount && (
+                  <span className="inline-flex items-center gap-1.5 text-sm text-emerald-300 bg-emerald-500/10 px-3 py-1 rounded-full">
+                    <DollarSign className="w-3.5 h-3.5" />
+                    {item.amount}
+                  </span>
+                )}
+                {item.deadline && (
+                  <span className="inline-flex items-center gap-1.5 text-sm text-blue-200 bg-blue-500/10 px-3 py-1 rounded-full">
+                    <Clock className="w-3.5 h-3.5" />
+                    {item.deadline}
+                  </span>
+                )}
+                {item.fundingType && item.fundingType !== "unknown" && (
+                  <span className="inline-flex items-center gap-1.5 text-sm text-purple-200 bg-purple-500/10 px-3 py-1 rounded-full">
+                    <Tag className="w-3.5 h-3.5" />
+                    {fundingTypeLabels[item.fundingType] || item.fundingType}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               {isAuthenticated && (
@@ -272,12 +324,56 @@ export default function GrantDetail() {
               </motion.div>
             )}
 
+            {/* How to Apply card */}
+            {item.applicationProcess && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.15 }}
+                className="bg-white border border-gray-200 rounded-lg p-6"
+              >
+                <h2 className="text-lg font-semibold text-[#0f172a] mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                  How to Apply
+                </h2>
+                <p className="text-gray-700 leading-relaxed">
+                  {item.applicationProcess}
+                </p>
+              </motion.div>
+            )}
+
+            {/* Required Documents card */}
+            {item.documentsRequired && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                className="bg-white border border-gray-200 rounded-lg p-6"
+              >
+                <h2 className="text-lg font-semibold text-[#0f172a] mb-3 flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-gray-400" />
+                  Required Documents
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {item.documentsRequired.split(",").map((doc, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex items-center gap-1 text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 text-gray-400" />
+                      {doc.trim()}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
             {/* Related Grants */}
             {relatedItems.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
+                transition={{ duration: 0.3, delay: 0.25 }}
               >
                 <h2 className="text-lg font-semibold text-[#0f172a] mb-4">Related Grants</h2>
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -298,6 +394,12 @@ export default function GrantDetail() {
                             </h3>
                           </div>
                           <p className="text-xs text-gray-500 line-clamp-2">{rc.description}</p>
+                          {related.amount && (
+                            <p className="text-xs text-emerald-600 font-medium mt-1.5 flex items-center gap-1">
+                              <DollarSign className="w-3 h-3" />
+                              {related.amount}
+                            </p>
+                          )}
                         </div>
                       </Link>
                     );
@@ -326,6 +428,16 @@ export default function GrantDetail() {
                   </div>
                 </div>
 
+                {item.geographicScope && (
+                  <div className="flex items-start gap-3">
+                    <Globe className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-500">Geographic Scope</p>
+                      <p className="text-sm font-medium text-gray-900">{item.geographicScope}</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-start gap-3">
                   <Tag className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                   <div>
@@ -344,17 +456,70 @@ export default function GrantDetail() {
 
                 {item.amount && (
                   <div className="flex items-start gap-3">
-                    <Calendar className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <DollarSign className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-gray-500">Amount</p>
-                      <p className="text-sm font-medium text-emerald-600">{item.amount}</p>
+                      <p className="text-sm font-semibold text-emerald-600">{item.amount}</p>
+                    </div>
+                  </div>
+                )}
+
+                {item.fundingType && item.fundingType !== "unknown" && (
+                  <div className="flex items-start gap-3">
+                    <Heart className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-500">Funding Type</p>
+                      <p className="text-sm font-medium text-gray-900">{fundingTypeLabels[item.fundingType] || item.fundingType}</p>
+                    </div>
+                  </div>
+                )}
+
+                {item.deadline && (
+                  <div className="flex items-start gap-3">
+                    <Calendar className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-500">Deadline</p>
+                      <p className="text-sm font-medium text-gray-900">{item.deadline}</p>
+                    </div>
+                  </div>
+                )}
+
+                {item.targetDiagnosis && item.targetDiagnosis !== "General" && (
+                  <div className="flex items-start gap-3">
+                    <Stethoscope className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-500">Target Conditions</p>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {item.targetDiagnosis.split(",").slice(0, 5).map((d, i) => (
+                          <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
+                            {d.trim()}
+                          </span>
+                        ))}
+                        {item.targetDiagnosis.split(",").length > 5 && (
+                          <span className="text-xs text-gray-400">+{item.targetDiagnosis.split(",").length - 5} more</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {item.ageRange && item.ageRange !== "0-100" && (
+                  <div className="flex items-start gap-3">
+                    <Users className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-500">Age Range</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {item.ageRange === "0-18" ? "Children (0-18)" :
+                         item.ageRange === "18-100" ? "Adults (18+)" :
+                         `Ages ${item.ageRange}`}
+                      </p>
                     </div>
                   </div>
                 )}
 
                 {item.status && (
                   <div className="flex items-start gap-3">
-                    <Calendar className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-gray-500">Status</p>
                       <p className={`text-sm font-medium ${item.status === "Open" ? "text-emerald-600" : "text-gray-700"}`}>
@@ -417,6 +582,21 @@ export default function GrantDetail() {
                   </p>
                 )}
               </div>
+
+              {/* Apply button */}
+              {primaryLink && (
+                <a
+                  href={primaryLink.startsWith("http") ? primaryLink : `https://${primaryLink}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-4"
+                >
+                  <Button className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+                    <ArrowUpRight className="w-4 h-4" />
+                    Apply Now
+                  </Button>
+                </a>
+              )}
             </motion.div>
 
             {/* Bookmark CTA */}

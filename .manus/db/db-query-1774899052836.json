@@ -1,0 +1,17 @@
+{
+  "query": "SELECT \n  SUM(CASE WHEN LENGTH(description) < 20 THEN 1 ELSE 0 END) as very_short,\n  SUM(CASE WHEN LENGTH(description) BETWEEN 20 AND 50 THEN 1 ELSE 0 END) as short,\n  SUM(CASE WHEN LENGTH(description) BETWEEN 51 AND 150 THEN 1 ELSE 0 END) as medium,\n  SUM(CASE WHEN LENGTH(description) BETWEEN 151 AND 500 THEN 1 ELSE 0 END) as good,\n  SUM(CASE WHEN LENGTH(description) > 500 THEN 1 ELSE 0 END) as long_desc\nFROM grants WHERE isActive=1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT \n  SUM(CASE WHEN LENGTH(description) < 20 THEN 1 ELSE 0 END) as very_short,\n  SUM(CASE WHEN LENGTH(description) BETWEEN 20 AND 50 THEN 1 ELSE 0 END) as short,\n  SUM(CASE WHEN LENGTH(description) BETWEEN 51 AND 150 THEN 1 ELSE 0 END) as medium,\n  SUM(CASE WHEN LENGTH(description) BETWEEN 151 AND 500 THEN 1 ELSE 0 END) as good,\n  SUM(CASE WHEN LENGTH(description) > 500 THEN 1 ELSE 0 END) as long_desc\nFROM grants WHERE isActive=1;",
+  "rows": [
+    {
+      "very_short": "182",
+      "short": "110",
+      "medium": "83",
+      "good": "171",
+      "long_desc": "84"
+    }
+  ],
+  "messages": [],
+  "stdout": "very_short\tshort\tmedium\tgood\tlong_desc\n182\t110\t83\t171\t84\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

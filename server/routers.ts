@@ -124,11 +124,17 @@ export const appRouter = router({
         country: z.string().optional(),
         type: z.string().optional(),
         sortBy: z.string().optional(),
+        // New enrichment filters
+        fundingType: z.string().optional(),
+        targetDiagnosis: z.string().optional(),
+        ageRange: z.string().optional(),
+        b2VisaEligible: z.string().optional(),
+        hasDeadline: z.boolean().optional(),
         page: z.number().min(1).default(1),
         pageSize: z.number().min(1).max(100).default(20),
       }).optional())
       .query(async ({ input }) => {
-        const { search, language, category, country, type, sortBy, page = 1, pageSize = 20 } = input || {};
+        const { search, language, category, country, type, sortBy, fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, page = 1, pageSize = 20 } = input || {};
         const result = await listGrants({
           search,
           language,
@@ -136,6 +142,11 @@ export const appRouter = router({
           country,
           type,
           sortBy,
+          fundingType,
+          targetDiagnosis,
+          ageRange,
+          b2VisaEligible,
+          hasDeadline,
           limit: pageSize,
           offset: (page - 1) * pageSize,
           activeOnly: true,
@@ -160,6 +171,15 @@ export const appRouter = router({
             email: g.email || "",
             amount: g.amount || "",
             status: g.status || "",
+            // Enrichment fields
+            applicationProcess: g.applicationProcess || "",
+            deadline: g.deadline || "",
+            fundingType: g.fundingType || "",
+            targetDiagnosis: g.targetDiagnosis || "",
+            ageRange: g.ageRange || "",
+            geographicScope: g.geographicScope || "",
+            documentsRequired: g.documentsRequired || "",
+            b2VisaEligible: g.b2VisaEligible || "",
             translations: translations[g.itemId] || {},
           })),
           total: result.total,
@@ -195,6 +215,15 @@ export const appRouter = router({
             email: grant.email || "",
             amount: grant.amount || "",
             status: grant.status || "",
+            // Enrichment fields
+            applicationProcess: grant.applicationProcess || "",
+            deadline: grant.deadline || "",
+            fundingType: grant.fundingType || "",
+            targetDiagnosis: grant.targetDiagnosis || "",
+            ageRange: grant.ageRange || "",
+            geographicScope: grant.geographicScope || "",
+            documentsRequired: grant.documentsRequired || "",
+            b2VisaEligible: grant.b2VisaEligible || "",
           },
           translations,
           related: related.map(r => ({
@@ -554,6 +583,14 @@ export const appRouter = router({
         email: z.string().optional(),
         amount: z.string().optional(),
         status: z.string().optional(),
+        applicationProcess: z.string().optional(),
+        deadline: z.string().optional(),
+        fundingType: z.string().optional(),
+        targetDiagnosis: z.string().optional(),
+        ageRange: z.string().optional(),
+        geographicScope: z.string().optional(),
+        documentsRequired: z.string().optional(),
+        b2VisaEligible: z.string().optional(),
         notifySubscribers: z.boolean().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
@@ -625,6 +662,14 @@ export const appRouter = router({
         email: z.string().optional(),
         amount: z.string().optional(),
         status: z.string().optional(),
+        applicationProcess: z.string().optional(),
+        deadline: z.string().optional(),
+        fundingType: z.string().optional(),
+        targetDiagnosis: z.string().optional(),
+        ageRange: z.string().optional(),
+        geographicScope: z.string().optional(),
+        documentsRequired: z.string().optional(),
+        b2VisaEligible: z.string().optional(),
         isActive: z.boolean().optional(),
       }))
       .mutation(async ({ input }) => {

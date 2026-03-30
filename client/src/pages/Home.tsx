@@ -80,6 +80,14 @@ export default function Home() {
         email: g.email,
         amount: g.amount,
         status: g.status,
+        applicationProcess: g.applicationProcess,
+        deadline: g.deadline,
+        fundingType: g.fundingType,
+        targetDiagnosis: g.targetDiagnosis,
+        ageRange: g.ageRange,
+        geographicScope: g.geographicScope,
+        documentsRequired: g.documentsRequired,
+        b2VisaEligible: g.b2VisaEligible,
       };
     });
   }, [previewData, language]);

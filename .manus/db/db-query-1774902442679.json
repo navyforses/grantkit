@@ -1,0 +1,21 @@
+{
+  "query": "SELECT \n  COUNT(*) as total,\n  SUM(CASE WHEN website != '' AND website IS NOT NULL THEN 1 ELSE 0 END) as has_website,\n  SUM(CASE WHEN phone != '' AND phone IS NOT NULL THEN 1 ELSE 0 END) as has_phone,\n  SUM(CASE WHEN grantEmail != '' AND grantEmail IS NOT NULL THEN 1 ELSE 0 END) as has_email,\n  SUM(CASE WHEN amount != '' AND amount IS NOT NULL THEN 1 ELSE 0 END) as has_amount,\n  SUM(CASE WHEN LENGTH(description) > 50 THEN 1 ELSE 0 END) as has_good_desc,\n  SUM(CASE WHEN applicationProcess IS NOT NULL AND applicationProcess != '' THEN 1 ELSE 0 END) as has_app_process,\n  SUM(CASE WHEN targetDiagnosis IS NOT NULL AND targetDiagnosis != '' THEN 1 ELSE 0 END) as has_diagnosis,\n  SUM(CASE WHEN b2VisaEligible IS NOT NULL AND b2VisaEligible != '' THEN 1 ELSE 0 END) as has_b2visa\nFROM grants WHERE isActive = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT \n  COUNT(*) as total,\n  SUM(CASE WHEN website != '' AND website IS NOT NULL THEN 1 ELSE 0 END) as has_website,\n  SUM(CASE WHEN phone != '' AND phone IS NOT NULL THEN 1 ELSE 0 END) as has_phone,\n  SUM(CASE WHEN grantEmail != '' AND grantEmail IS NOT NULL THEN 1 ELSE 0 END) as has_email,\n  SUM(CASE WHEN amount != '' AND amount IS NOT NULL THEN 1 ELSE 0 END) as has_amount,\n  SUM(CASE WHEN LENGTH(description) > 50 THEN 1 ELSE 0 END) as has_good_desc,\n  SUM(CASE WHEN applicationProcess IS NOT NULL AND applicationProcess != '' THEN 1 ELSE 0 END) as has_app_process,\n  SUM(CASE WHEN targetDiagnosis IS NOT NULL AND targetDiagnosis != '' THEN 1 ELSE 0 END) as has_diagnosis,\n  SUM(CASE WHEN b2VisaEligible IS NOT NULL AND b2VisaEligible != '' THEN 1 ELSE 0 END) as has_b2visa\nFROM grants WHERE isActive = 1;",
+  "rows": [
+    {
+      "total": "630",
+      "has_website": "586",
+      "has_phone": "357",
+      "has_email": "516",
+      "has_amount": "583",
+      "has_good_desc": "629",
+      "has_app_process": "601",
+      "has_diagnosis": "609",
+      "has_b2visa": "594"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\thas_website\thas_phone\thas_email\thas_amount\thas_good_desc\thas_app_process\thas_diagnosis\thas_b2visa\n630\t586\t357\t516\t583\t629\t601\t609\t594\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

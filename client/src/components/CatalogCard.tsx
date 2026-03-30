@@ -5,7 +5,7 @@
  */
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, Bookmark, BookmarkCheck, ExternalLink, Globe, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Bookmark, BookmarkCheck, Clock, DollarSign, Globe, Mail, MapPin, Phone, Plane } from "lucide-react";
 import { Link } from "wouter";
 import { getCategoryStyle, getCategoryBorderColor, type CatalogItem } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -100,15 +100,28 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
             </p>
           )}
 
-          {/* Meta row */}
-          <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-gray-500 mb-3">
+          {/* Meta row: Location + Amount + Deadline + B-2 Visa */}
+          <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-sm text-gray-500 mb-3">
             <span className="flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-gray-400" />
               {translatedCountry}
             </span>
             {item.amount && (
-              <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
+              <span className="flex items-center gap-1 text-emerald-600 font-medium">
+                <DollarSign className="w-3.5 h-3.5" />
                 {item.amount}
+              </span>
+            )}
+            {item.deadline && (
+              <span className="flex items-center gap-1 text-gray-500">
+                <Clock className="w-3.5 h-3.5 text-gray-400" />
+                {item.deadline}
+              </span>
+            )}
+            {item.b2VisaEligible === "yes" && (
+              <span className="flex items-center gap-1 text-emerald-600 text-xs font-medium bg-emerald-50 px-2 py-0.5 rounded-full">
+                <Plane className="w-3 h-3" />
+                B-2 Visa OK
               </span>
             )}
           </div>

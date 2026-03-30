@@ -160,6 +160,14 @@ function GrantFormModal({
     email: string;
     amount: string;
     status: string;
+    applicationProcess?: string;
+    deadline?: string;
+    fundingType?: string;
+    targetDiagnosis?: string;
+    ageRange?: string;
+    geographicScope?: string;
+    documentsRequired?: string;
+    b2VisaEligible?: string;
   };
   onClose: () => void;
   onSave: (data: any) => void;
@@ -178,6 +186,14 @@ function GrantFormModal({
     email: initialData?.email || "",
     amount: initialData?.amount || "",
     status: initialData?.status || "",
+    applicationProcess: initialData?.applicationProcess || "",
+    deadline: initialData?.deadline || "",
+    fundingType: initialData?.fundingType || "",
+    targetDiagnosis: initialData?.targetDiagnosis || "",
+    ageRange: initialData?.ageRange || "",
+    geographicScope: initialData?.geographicScope || "",
+    documentsRequired: initialData?.documentsRequired || "",
+    b2VisaEligible: initialData?.b2VisaEligible || "",
   });
   const [notifySubscribers, setNotifySubscribers] = useState(mode === "create");
 
@@ -364,6 +380,117 @@ function GrantFormModal({
                 onChange={(e) => updateField("status", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
                 placeholder="Open, Closed, Rolling..."
+              />
+            </div>
+          </div>
+
+          {/* ===== Enrichment Fields ===== */}
+          <div className="border-t border-gray-100 pt-5 mt-2">
+            <h4 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Info className="w-4 h-4 text-[#1e3a5f]" />
+              Enrichment Details
+            </h4>
+
+            {/* Application Process */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Application Process</label>
+              <textarea
+                value={form.applicationProcess}
+                onChange={(e) => updateField("applicationProcess", e.target.value)}
+                rows={3}
+                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
+                placeholder="Step-by-step application process..."
+              />
+            </div>
+
+            {/* Row: Deadline + Funding Type */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Deadline</label>
+                <input
+                  type="text"
+                  value={form.deadline}
+                  onChange={(e) => updateField("deadline", e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  placeholder="Rolling, Dec 31, 2026..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Funding Type</label>
+                <select
+                  value={form.fundingType}
+                  onChange={(e) => updateField("fundingType", e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                >
+                  <option value="">Not specified</option>
+                  <option value="one_time">One-Time</option>
+                  <option value="recurring">Recurring</option>
+                  <option value="reimbursement">Reimbursement</option>
+                  <option value="varies">Varies</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Row: Target Diagnosis + Age Range */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Target Diagnosis / Condition</label>
+                <input
+                  type="text"
+                  value={form.targetDiagnosis}
+                  onChange={(e) => updateField("targetDiagnosis", e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  placeholder="Cancer, Rare Disease, Any..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Age Range</label>
+                <input
+                  type="text"
+                  value={form.ageRange}
+                  onChange={(e) => updateField("ageRange", e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  placeholder="All Ages, Children (0-17), Adults..."
+                />
+              </div>
+            </div>
+
+            {/* Row: Geographic Scope + B-2 Visa */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Geographic Scope</label>
+                <input
+                  type="text"
+                  value={form.geographicScope}
+                  onChange={(e) => updateField("geographicScope", e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  placeholder="Nationwide, State-specific..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">B-2 Visa Eligible</label>
+                <select
+                  value={form.b2VisaEligible}
+                  onChange={(e) => updateField("b2VisaEligible", e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                >
+                  <option value="">Not specified</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="uncertain">Uncertain</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Documents Required */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Documents Required</label>
+              <textarea
+                value={form.documentsRequired}
+                onChange={(e) => updateField("documentsRequired", e.target.value)}
+                rows={2}
+                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
+                placeholder="Medical records, proof of income, ID..."
               />
             </div>
           </div>

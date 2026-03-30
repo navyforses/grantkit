@@ -80,6 +80,17 @@ export const grants = mysqlTable("grants", {
   email: varchar("grantEmail", { length: 320 }),
   amount: text("amount"),
   status: text("status"),
+
+  // Enrichment fields (Phase A)
+  applicationProcess: text("applicationProcess"),
+  deadline: text("deadline"),
+  fundingType: varchar("fundingType", { length: 64 }),
+  targetDiagnosis: text("targetDiagnosis"),
+  ageRange: varchar("ageRange", { length: 32 }),
+  geographicScope: text("geographicScope"),
+  documentsRequired: text("documentsRequired"),
+  b2VisaEligible: varchar("b2VisaEligible", { length: 32 }),
+
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

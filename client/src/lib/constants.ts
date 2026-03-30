@@ -20,6 +20,15 @@ export interface CatalogItem {
   email: string;
   amount: string;
   status: string;
+  // Enrichment fields
+  applicationProcess: string;
+  deadline: string;
+  fundingType: string;
+  targetDiagnosis: string;
+  ageRange: string;
+  geographicScope: string;
+  documentsRequired: string;
+  b2VisaEligible: string;
 }
 
 // ===== Categories =====

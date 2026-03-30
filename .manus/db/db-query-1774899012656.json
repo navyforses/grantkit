@@ -1,0 +1,19 @@
+{
+  "query": "SELECT \n  COUNT(*) as total,\n  SUM(CASE WHEN website = '' OR website IS NULL THEN 1 ELSE 0 END) as no_website,\n  SUM(CASE WHEN phone = '' OR phone IS NULL THEN 1 ELSE 0 END) as no_phone,\n  SUM(CASE WHEN grantEmail = '' OR grantEmail IS NULL THEN 1 ELSE 0 END) as no_email,\n  SUM(CASE WHEN amount = '' OR amount IS NULL THEN 1 ELSE 0 END) as no_amount,\n  SUM(CASE WHEN eligibility = '' OR eligibility IS NULL THEN 1 ELSE 0 END) as no_eligibility,\n  SUM(CASE WHEN description = '' OR description IS NULL OR LENGTH(description) < 30 THEN 1 ELSE 0 END) as short_desc\nFROM grants WHERE isActive = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT \n  COUNT(*) as total,\n  SUM(CASE WHEN website = '' OR website IS NULL THEN 1 ELSE 0 END) as no_website,\n  SUM(CASE WHEN phone = '' OR phone IS NULL THEN 1 ELSE 0 END) as no_phone,\n  SUM(CASE WHEN grantEmail = '' OR grantEmail IS NULL THEN 1 ELSE 0 END) as no_email,\n  SUM(CASE WHEN amount = '' OR amount IS NULL THEN 1 ELSE 0 END) as no_amount,\n  SUM(CASE WHEN eligibility = '' OR eligibility IS NULL THEN 1 ELSE 0 END) as no_eligibility,\n  SUM(CASE WHEN description = '' OR description IS NULL OR LENGTH(description) < 30 THEN 1 ELSE 0 END) as short_desc\nFROM grants WHERE isActive = 1;",
+  "rows": [
+    {
+      "total": "630",
+      "no_website": "630",
+      "no_phone": "630",
+      "no_email": "630",
+      "no_amount": "630",
+      "no_eligibility": "305",
+      "short_desc": "278"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\tno_website\tno_phone\tno_email\tno_amount\tno_eligibility\tshort_desc\n630\t630\t630\t630\t630\t305\t278\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}
