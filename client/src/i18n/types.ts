@@ -2,8 +2,7 @@ export interface Translations {
   // Navbar
   nav: {
     home: string;
-    grantsDirectory: string;
-    resourcesDirectory: string;
+    catalog: string;
     subscribe: string;
   };
 
@@ -14,13 +13,13 @@ export interface Translations {
     titleAccent: string;
     subtitle: string;
     cta: string;
-    seeGrants: string;
+    seeCatalog: string;
     statCountries: string;
     statCountriesLabel: string;
     statMedical: string;
     statMedicalLabel: string;
-    statStartup: string;
-    statStartupLabel: string;
+    statFinancial: string;
+    statFinancialLabel: string;
     statUpdated: string;
     statUpdatedLabel: string;
   };
@@ -85,42 +84,36 @@ export interface Translations {
     rights: string;
   };
 
-  // Grants page
-  grants: {
+  // Catalog page (unified grants + resources)
+  catalog: {
+    title: string;
+    subtitle: string;
     memberBanner: string;
     memberBannerCta: string;
-    grantsCount: string;
+    itemsCount: string;
     noResults: string;
     noResultsHint: string;
+    clearFilters: string;
     apply: string;
     eligibility: string;
     searchPlaceholder: string;
-    source: string;
+    visitWebsite: string;
+    loadMore: string;
+    remaining: string;
+    typeAll: string;
+    typeGrant: string;
+    typeResource: string;
+    ctaTitle: string;
+    ctaSubtitle: string;
+    ctaButton: string;
   };
 
-  // Filter categories (static "All" label only; dynamic categories use tCategory)
+  // Filter labels
   categories: {
     all: string;
   };
 
-  // Countries (static "All" label only; dynamic countries use tCountry)
   countries: {
     all: string;
-  };
-
-  // Resources page
-  resources: {
-    title: string;
-    subtitle: string;
-    searchPlaceholder: string;
-    resourcesCount: string;
-    noResults: string;
-    noResultsHint: string;
-    visitWebsite: string;
-    allResources: string;
-    memberBanner: string;
-    memberBannerCta: string;
-    loadMore: string;
-    remaining: string;
   };
 }

@@ -8,30 +8,30 @@ import { motion } from "framer-motion";
 import { ArrowRight, Calendar, Clock, Globe, HelpCircle, Lock, Search, Shield, Zap } from "lucide-react";
 import { useState } from "react";
 import Footer from "@/components/Footer";
-import GrantCard from "@/components/GrantCard";
+import CatalogCard from "@/components/CatalogCard";
 import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
-import grantsData from "@/data/grants.json";
-import { type Grant } from "@/lib/constants";
+import catalogData from "@/data/catalog.json";
+import { type CatalogItem } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// Show first 5 grants from different categories for variety
-const allGrants = grantsData as Grant[];
-const previewGrants = (() => {
+// Show first 5 items from different categories for variety
+const allItems = catalogData as CatalogItem[];
+const previewItems = (() => {
   const seen = new Set<string>();
-  const result: Grant[] = [];
-  for (const g of allGrants) {
-    if (!seen.has(g.category)) {
-      result.push(g);
-      seen.add(g.category);
+  const result: CatalogItem[] = [];
+  for (const item of allItems) {
+    if (!seen.has(item.category)) {
+      result.push(item);
+      seen.add(item.category);
     }
     if (result.length >= 5) break;
   }
   // Fill remaining from the rest if needed
   if (result.length < 5) {
-    for (const g of allGrants) {
-      if (!result.includes(g)) {
-        result.push(g);
+    for (const item of allItems) {
+      if (!result.includes(item)) {
+        result.push(item);
         if (result.length >= 5) break;
       }
     }
@@ -90,10 +90,10 @@ export default function Home() {
               <div className="flex flex-wrap items-center gap-4">
                 <PricingCTA text={t.hero.cta} size="large" />
                 <a
-                  href="#preview"
+                  href="/catalog"
                   className="inline-flex items-center gap-2 text-sm font-medium text-blue-200 hover:text-white transition-colors"
                 >
-                  {t.hero.seeGrants}
+                  {t.hero.seeCatalog}
                   <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -110,7 +110,7 @@ export default function Home() {
             {[
               { icon: Globe, label: t.hero.statCountriesLabel, value: t.hero.statCountries },
               { icon: Shield, label: t.hero.statMedicalLabel, value: t.hero.statMedical },
-              { icon: Zap, label: t.hero.statStartupLabel, value: t.hero.statStartup },
+              { icon: Zap, label: t.hero.statFinancialLabel, value: t.hero.statFinancial },
               { icon: Calendar, label: t.hero.statUpdatedLabel, value: t.hero.statUpdated },
             ].map((stat) => (
               <div
@@ -226,8 +226,8 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
-            {previewGrants.map((grant, i) => (
-              <GrantCard key={grant.id} grant={grant} index={i} />
+            {previewItems.map((item, i) => (
+              <CatalogCard key={item.id} item={item} index={i} />
             ))}
           </div>
 

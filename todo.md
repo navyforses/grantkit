@@ -1,14 +1,9 @@
-# Multi-Language Feature TODO
+# Cleanup & Merge TODO
 
-- [ ] Create i18n translation system (LanguageContext)
-- [ ] Create English translation file (base)
-- [ ] Create French translation file
-- [ ] Create Spanish translation file
-- [ ] Create Russian translation file
-- [ ] Create Georgian translation file
-- [ ] Build LanguageSwitcher component for navbar
-- [ ] Integrate translations into Home page
-- [ ] Integrate translations into Grants page
-- [ ] Integrate translations into all components (Navbar, Footer, FilterBar, GrantCard, PricingCTA)
+- [ ] Audit resources.json — remove personal notes, non-org entries, status notes, financial calculations
+- [ ] Audit grants.json — remove any irrelevant entries
+- [ ] Merge cleaned data into one unified catalog
+- [ ] Re-sort and categorize properly
+- [ ] Update translations for merged dataset
+- [ ] Rebuild website with single catalog page
 - [ ] Test all languages
-- [ ] Save checkpoint and deliver

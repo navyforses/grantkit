@@ -5,9 +5,7 @@ import { es } from "@/i18n/es";
 import { ru } from "@/i18n/ru";
 import { ka } from "@/i18n/ka";
 import type { Translations } from "@/i18n/types";
-import grantTranslations from "@/data/grantTranslations.json";
-import grantContentTranslations from "@/data/grantContentTranslations.json";
-import resourceTranslations from "@/data/resourceTranslations.json";
+import catalogTranslations from "@/data/catalogTranslations.json";
 
 export type Language = "en" | "fr" | "es" | "ru" | "ka";
 
@@ -28,7 +26,6 @@ export const LANGUAGES: LanguageOption[] = [
 
 const translations: Record<Language, Translations> = { en, fr, es, ru, ka };
 
-type TranslationLookup = Record<string, Record<string, string>>;
 type ContentLookup = Record<string, Record<string, { name: string; description: string; eligibility: string }>>;
 
 interface TranslatedContent {
@@ -37,44 +34,34 @@ interface TranslatedContent {
   eligibility: string;
 }
 
+// Category translation map
+const CATEGORY_LABELS: Record<string, Record<Language, string>> = {
+  medical_treatment: { en: "Medical & Treatment", fr: "Médical & Traitement", es: "Médico & Tratamiento", ru: "Медицина и лечение", ka: "სამედიცინო & მკურნალობა" },
+  financial_assistance: { en: "Financial Assistance", fr: "Aide financière", es: "Asistencia financiera", ru: "Финансовая помощь", ka: "ფინანსური დახმარება" },
+  assistive_technology: { en: "Assistive Technology", fr: "Technologie d'assistance", es: "Tecnología de asistencia", ru: "Вспомогательные технологии", ka: "დამხმარე ტექნოლოგია" },
+  social_services: { en: "Social Services", fr: "Services sociaux", es: "Servicios sociales", ru: "Социальные услуги", ka: "სოციალური სერვისები" },
+  scholarships: { en: "Scholarships", fr: "Bourses", es: "Becas", ru: "Стипендии", ka: "სტიპენდიები" },
+  housing: { en: "Housing", fr: "Logement", es: "Vivienda", ru: "Жильё", ka: "საცხოვრებელი" },
+  travel_transport: { en: "Travel & Transport", fr: "Voyage & Transport", es: "Viaje & Transporte", ru: "Путешествия и транспорт", ka: "მოგზაურობა & ტრანსპორტი" },
+  international: { en: "International", fr: "International", es: "Internacional", ru: "Международные", ka: "საერთაშორისო" },
+  other: { en: "Other", fr: "Autre", es: "Otro", ru: "Другое", ka: "სხვა" },
+};
+
+const COUNTRY_LABELS: Record<string, Record<Language, string>> = {
+  US: { en: "United States", fr: "États-Unis", es: "Estados Unidos", ru: "США", ka: "აშშ" },
+  International: { en: "International", fr: "International", es: "Internacional", ru: "Международный", ka: "საერთაშორისო" },
+};
+
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: Translations;
   tCategory: (category: string) => string;
-  tType: (type: string) => string;
-  tSituation: (situation: string) => string;
   tCountry: (country: string) => string;
-  tGrantContent: (grantId: number, fallback: TranslatedContent) => TranslatedContent;
-  /** Translate resource category slug to localized label */
-  tResourceCategory: (category: string) => string;
-  /** Get translated resource content (name, description, eligibility) by resource ID */
-  tResourceContent: (resourceId: string, fallback: TranslatedContent) => TranslatedContent;
+  tCatalogContent: (itemId: string, fallback: TranslatedContent) => TranslatedContent;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-function createTranslator(lookup: TranslationLookup, lang: Language) {
-  return (key: string): string => {
-    const entry = lookup[key];
-    if (entry && entry[lang]) return entry[lang];
-    return key;
-  };
-}
-
-// Resource category translation map
-const RESOURCE_CATEGORY_LABELS: Record<string, Record<Language, string>> = {
-  medical: { en: "Medical", fr: "Médical", es: "Médico", ru: "Медицинские", ka: "სამედიცინო" },
-  duke_services: { en: "Duke Services", fr: "Services Duke", es: "Servicios Duke", ru: "Услуги Duke", ka: "Duke სერვისები" },
-  financial: { en: "Financial", fr: "Financier", es: "Financiero", ru: "Финансовые", ka: "ფინანსური" },
-  assistive_tech: { en: "Assistive Technology", fr: "Technologie d'assistance", es: "Tecnología de asistencia", ru: "Вспомогательные технологии", ka: "დამხმარე ტექნოლოგია" },
-  housing: { en: "Housing", fr: "Logement", es: "Vivienda", ru: "Жильё", ka: "საცხოვრებელი" },
-  scholarships: { en: "Scholarships", fr: "Bourses", es: "Becas", ru: "Стипендии", ka: "სტიპენდიები" },
-  travel: { en: "Travel", fr: "Voyage", es: "Viaje", ru: "Путешествия", ka: "მოგზაურობა" },
-  international: { en: "International", fr: "International", es: "Internacional", ru: "Международные", ka: "საერთაშორისო" },
-  social_services: { en: "Social Services", fr: "Services sociaux", es: "Servicios sociales", ru: "Социальные услуги", ka: "სოციალური სერვისები" },
-  other: { en: "Other", fr: "Autre", es: "Otro", ru: "Другое", ka: "სხვა" },
-};
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
@@ -90,53 +77,28 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const t = translations[language];
 
-  const tCategory = useMemo(
-    () => createTranslator(grantTranslations.categories as TranslationLookup, language),
-    [language]
-  );
-  const tType = useMemo(
-    () => createTranslator(grantTranslations.types as TranslationLookup, language),
-    [language]
-  );
-  const tSituation = useMemo(
-    () => createTranslator(grantTranslations.situations as TranslationLookup, language),
-    [language]
-  );
-  const tCountry = useMemo(
-    () => createTranslator(grantTranslations.countries as TranslationLookup, language),
-    [language]
-  );
-
-  const tGrantContent = useCallback(
-    (grantId: number, fallback: TranslatedContent): TranslatedContent => {
-      if (language === "en") return fallback;
-      const grantTrans = (grantContentTranslations as ContentLookup)[String(grantId)];
-      if (!grantTrans) return fallback;
-      const langTrans = grantTrans[language];
-      if (!langTrans) return fallback;
-      return {
-        name: langTrans.name || fallback.name,
-        description: langTrans.description || fallback.description,
-        eligibility: langTrans.eligibility || fallback.eligibility,
-      };
-    },
-    [language]
-  );
-
-  const tResourceCategory = useCallback(
+  const tCategory = useCallback(
     (category: string): string => {
-      const labels = RESOURCE_CATEGORY_LABELS[category];
+      const labels = CATEGORY_LABELS[category];
       return labels?.[language] || category;
     },
     [language]
   );
 
-  const tResourceContent = useCallback(
-    (resourceId: string, fallback: TranslatedContent): TranslatedContent => {
+  const tCountry = useCallback(
+    (country: string): string => {
+      const labels = COUNTRY_LABELS[country];
+      return labels?.[language] || country;
+    },
+    [language]
+  );
+
+  const tCatalogContent = useCallback(
+    (itemId: string, fallback: TranslatedContent): TranslatedContent => {
       if (language === "en") return fallback;
-      const resTrans = (resourceTranslations as ContentLookup)[resourceId];
-      if (!resTrans) return fallback;
-      const langTrans = resTrans[language];
+      const itemTrans = (catalogTranslations as ContentLookup)[itemId];
+      if (!itemTrans) return fallback;
+      const langTrans = itemTrans[language];
       if (!langTrans) return fallback;
       return {
         name: langTrans.name || fallback.name,
@@ -149,11 +111,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   return (
     <LanguageContext.Provider
-      value={{
-        language, setLanguage, t,
-        tCategory, tType, tSituation, tCountry, tGrantContent,
-        tResourceCategory, tResourceContent,
-      }}
+      value={{ language, setLanguage, t, tCategory, tCountry, tCatalogContent }}
     >
       {children}
     </LanguageContext.Provider>

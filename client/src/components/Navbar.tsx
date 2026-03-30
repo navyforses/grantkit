@@ -36,20 +36,12 @@ export default function Navbar() {
             {t.nav.home}
           </Link>
           <Link
-            href="/grants"
+            href="/catalog"
             className={`text-sm font-medium transition-colors ${
-              location === "/grants" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
+              location === "/catalog" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            {t.nav.grantsDirectory}
-          </Link>
-          <Link
-            href="/resources"
-            className={`text-sm font-medium transition-colors ${
-              location === "/resources" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            {t.nav.resourcesDirectory}
+            {t.nav.catalog}
           </Link>
           <div className="hidden sm:block">
             <PricingCTA text={t.nav.subscribe} size="default" />

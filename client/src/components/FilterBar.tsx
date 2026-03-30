@@ -1,20 +1,20 @@
 /*
  * FilterBar Component
- * Design: Structured Clarity — pill-shaped category tabs + country dropdown
+ * Design: Structured Clarity — pill-shaped category tabs + country dropdown + type filter
  * Sticky on scroll, clean horizontal layout
- * Uses dynamic translations from grantTranslations.json
  */
 
-import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue } from "@/lib/constants";
+import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FilterBarProps {
   selectedCategory: CategoryValue;
   selectedCountry: CountryValue;
+  selectedType: TypeValue;
   onCategoryChange: (category: CategoryValue) => void;
   onCountryChange: (country: CountryValue) => void;
-  grantCount: number;
-  /** Optional: search query */
+  onTypeChange: (type: TypeValue) => void;
+  itemCount: number;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
 }
@@ -22,16 +22,18 @@ interface FilterBarProps {
 export default function FilterBar({
   selectedCategory,
   selectedCountry,
+  selectedType,
   onCategoryChange,
   onCountryChange,
-  grantCount,
+  onTypeChange,
+  itemCount,
   searchQuery,
   onSearchChange,
 }: FilterBarProps) {
   const { t, tCategory, tCountry } = useLanguage();
 
   return (
-    <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <div className="sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <div className="container py-4">
         {/* Search bar */}
         {onSearchChange && (
@@ -40,7 +42,7 @@ export default function FilterBar({
               type="text"
               value={searchQuery || ""}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={t.grants.searchPlaceholder || "Search grants..."}
+              placeholder={t.catalog.searchPlaceholder}
               className="w-full sm:max-w-md text-sm border border-gray-200 rounded-lg px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] placeholder:text-gray-400"
             />
           </div>
@@ -68,11 +70,24 @@ export default function FilterBar({
             })}
           </div>
 
-          {/* Country filter + count */}
+          {/* Type filter + Country filter + count */}
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500 whitespace-nowrap">
-              <span className="font-semibold text-[#0f172a]">{grantCount}</span> {t.grants.grantsCount}
+              <span className="font-semibold text-[#0f172a]">{itemCount}</span> {t.catalog.itemsCount}
             </span>
+
+            {/* Type filter */}
+            <select
+              value={selectedType}
+              onChange={(e) => onTypeChange(e.target.value as TypeValue)}
+              className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+            >
+              <option value="all">{t.catalog.typeAll}</option>
+              <option value="grant">{t.catalog.typeGrant}</option>
+              <option value="resource">{t.catalog.typeResource}</option>
+            </select>
+
+            {/* Country filter */}
             <select
               value={selectedCountry}
               onChange={(e) => onCountryChange(e.target.value as CountryValue)}
