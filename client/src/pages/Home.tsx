@@ -25,34 +25,11 @@ import Footer from "@/components/Footer";
 import CatalogCard from "@/components/CatalogCard";
 import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
-import catalogData from "@/data/catalog.json";
 import { type CatalogItem } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-
-// Show first 5 items from different categories for variety
-const allItems = catalogData as CatalogItem[];
-const previewItems = (() => {
-  const seen = new Set<string>();
-  const result: CatalogItem[] = [];
-  for (const item of allItems) {
-    if (!seen.has(item.category)) {
-      result.push(item);
-      seen.add(item.category);
-    }
-    if (result.length >= 5) break;
-  }
-  if (result.length < 5) {
-    for (const item of allItems) {
-      if (!result.includes(item)) {
-        result.push(item);
-        if (result.length >= 5) break;
-      }
-    }
-  }
-  return result;
-})();
+import { useMemo } from "react";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 24 },
@@ -74,7 +51,38 @@ export default function Home() {
   const [pricingPlan, setPricingPlan] = useState<"monthly" | "annual">("monthly");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  // Fetch preview items from database
+  const { data: previewData } = trpc.catalog.list.useQuery(
+    { pageSize: 5, page: 1 },
+    { retry: false }
+  );
+  const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
+
+  const previewItems: CatalogItem[] = useMemo(() => {
+    if (!previewData?.grants) return [];
+    return previewData.grants.map((g) => {
+      const trans = (g as any).translations?.[language];
+      return {
+        id: g.id,
+        name: trans?.name || g.name,
+        organization: g.organization,
+        description: trans?.description || g.description,
+        category: g.category,
+        type: g.type as "grant" | "resource",
+        country: g.country,
+        eligibility: trans?.eligibility || g.eligibility,
+        website: g.website,
+        phone: g.phone,
+        email: g.email,
+        amount: g.amount,
+        status: g.status,
+      };
+    });
+  }, [previewData, language]);
+
+  const totalGrants = countData?.total || 643;
 
   const newsletterMutation = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => {

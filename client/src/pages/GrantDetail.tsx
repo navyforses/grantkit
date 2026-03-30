@@ -1,6 +1,7 @@
 /*
  * Grant Detail Page — Full information view for a single grant/resource
  * Design: Structured Clarity — clean layout with all grant info, related items, and bookmark
+ * Data sourced from database via tRPC
  */
 
 import { useMemo } from "react";
@@ -14,6 +15,7 @@ import {
   Building2,
   Calendar,
   Globe,
+  Loader2,
   Mail,
   MapPin,
   Phone,
@@ -24,22 +26,24 @@ import {
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import catalogData from "@/data/catalog.json";
-import { type CatalogItem, getCategoryStyle, getCategoryBorderColor } from "@/lib/constants";
+import { getCategoryStyle, getCategoryBorderColor } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
-const allItems = catalogData as CatalogItem[];
-
 export default function GrantDetail() {
   const params = useParams<{ id: string }>();
   const [, navigate] = useLocation();
-  const { t, tCategory, tCountry, tCatalogContent } = useLanguage();
+  const { t, tCategory, tCountry, language } = useLanguage();
   const { isAuthenticated } = useAuth();
 
-  const item = useMemo(() => allItems.find((i) => i.id === params.id), [params.id]);
+  // Fetch grant detail from database
+  const itemId = params.id || "";
+  const { data: detailData, isLoading } = trpc.catalog.detail.useQuery(
+    { itemId },
+    { enabled: !!itemId, retry: false }
+  );
 
   // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
@@ -47,7 +51,7 @@ export default function GrantDetail() {
     retry: false,
   });
   const savedSet = useMemo(() => new Set(savedData?.grantIds || []), [savedData]);
-  const isSaved = item ? savedSet.has(item.id) : false;
+  const isSaved = detailData?.grant ? savedSet.has(detailData.grant.id) : false;
 
   const utils = trpc.useUtils();
   const toggleSave = trpc.grants.toggleSave.useMutation({
@@ -72,15 +76,21 @@ export default function GrantDetail() {
     },
   });
 
-  // Related grants: same category, different item
-  const relatedItems = useMemo(() => {
-    if (!item) return [];
-    return allItems
-      .filter((i) => i.id !== item.id && i.category === item.category)
-      .slice(0, 4);
-  }, [item]);
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50/30">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
-  if (!item) {
+  // Not found
+  if (!detailData?.grant) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50/30">
         <Navbar />
@@ -101,11 +111,17 @@ export default function GrantDetail() {
     );
   }
 
-  const content = tCatalogContent(item.id, {
-    name: item.name,
-    description: item.description,
-    eligibility: item.eligibility || "",
-  });
+  const item = detailData.grant;
+  const translations = detailData.translations || {};
+  const relatedItems = detailData.related || [];
+
+  // Get translated content
+  const trans = language !== "en" ? translations[language] : null;
+  const content = {
+    name: trans?.name || item.name,
+    description: trans?.description || item.description,
+    eligibility: trans?.eligibility || item.eligibility,
+  };
 
   const translatedCategory = tCategory(item.category);
   const translatedCountry = tCountry(item.country);
@@ -233,11 +249,11 @@ export default function GrantDetail() {
                 <h2 className="text-lg font-semibold text-[#0f172a] mb-4">Related Grants</h2>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {relatedItems.map((related) => {
-                    const rc = tCatalogContent(related.id, {
-                      name: related.name,
-                      description: related.description,
-                      eligibility: related.eligibility || "",
-                    });
+                    const rTrans = language !== "en" ? (related as any).translations?.[language] : null;
+                    const rc = {
+                      name: rTrans?.name || related.name,
+                      description: rTrans?.description || related.description,
+                    };
                     const rFlag = related.country === "US" ? "🇺🇸" : "🌐";
                     return (
                       <Link key={related.id} href={`/grant/${related.id}`}>

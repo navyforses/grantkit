@@ -2,7 +2,13 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
-import { updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats, getUserById, getSavedGrantIds, toggleSavedGrant, subscribeNewsletter, completeOnboarding } from "./db";
+import {
+  updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats,
+  getUserById, getSavedGrantIds, toggleSavedGrant, subscribeNewsletter,
+  completeOnboarding, listGrants, getGrantByItemId, getGrantTranslations,
+  getBulkGrantTranslations, createGrant, updateGrant, deleteGrant,
+  hardDeleteGrant, upsertGrantTranslations, getGrantStats, getRelatedGrants,
+} from "./db";
 import { sendSubscriptionEmail, sendAdminNewSubscriberNotification } from "./emailService";
 import { z } from "zod";
 
@@ -99,6 +105,114 @@ export const appRouter = router({
       }),
   }),
 
+  // ===== Catalog (public/protected grant queries) =====
+  catalog: router({
+    // List grants with search, filter, sort, pagination
+    list: publicProcedure
+      .input(z.object({
+        search: z.string().optional(),
+        category: z.string().optional(),
+        country: z.string().optional(),
+        type: z.string().optional(),
+        sortBy: z.string().optional(),
+        page: z.number().min(1).default(1),
+        pageSize: z.number().min(1).max(100).default(20),
+      }).optional())
+      .query(async ({ input }) => {
+        const { search, category, country, type, sortBy, page = 1, pageSize = 20 } = input || {};
+        const result = await listGrants({
+          search,
+          category,
+          country,
+          type,
+          sortBy,
+          limit: pageSize,
+          offset: (page - 1) * pageSize,
+          activeOnly: true,
+        });
+
+        // Get translations for all returned grants
+        const itemIds = result.grants.map(g => g.itemId);
+        const translations = await getBulkGrantTranslations(itemIds);
+
+        return {
+          grants: result.grants.map(g => ({
+            id: g.itemId,
+            name: g.name,
+            organization: g.organization || "",
+            description: g.description || "",
+            category: g.category,
+            type: g.type,
+            country: g.country,
+            eligibility: g.eligibility || "",
+            website: g.website || "",
+            phone: g.phone || "",
+            email: g.email || "",
+            amount: g.amount || "",
+            status: g.status || "",
+            translations: translations[g.itemId] || {},
+          })),
+          total: result.total,
+          page,
+          pageSize,
+          totalPages: Math.ceil(result.total / pageSize),
+        };
+      }),
+
+    // Get a single grant by itemId
+    detail: publicProcedure
+      .input(z.object({ itemId: z.string() }))
+      .query(async ({ input }) => {
+        const grant = await getGrantByItemId(input.itemId);
+        if (!grant) return null;
+
+        const translations = await getGrantTranslations(input.itemId);
+        const related = await getRelatedGrants(input.itemId, grant.category, 4);
+        const relatedTranslations = await getBulkGrantTranslations(related.map(r => r.itemId));
+
+        return {
+          grant: {
+            id: grant.itemId,
+            name: grant.name,
+            organization: grant.organization || "",
+            description: grant.description || "",
+            category: grant.category,
+            type: grant.type,
+            country: grant.country,
+            eligibility: grant.eligibility || "",
+            website: grant.website || "",
+            phone: grant.phone || "",
+            email: grant.email || "",
+            amount: grant.amount || "",
+            status: grant.status || "",
+          },
+          translations,
+          related: related.map(r => ({
+            id: r.itemId,
+            name: r.name,
+            organization: r.organization || "",
+            description: r.description || "",
+            category: r.category,
+            type: r.type,
+            country: r.country,
+            eligibility: r.eligibility || "",
+            website: r.website || "",
+            phone: r.phone || "",
+            email: r.email || "",
+            amount: r.amount || "",
+            status: r.status || "",
+            translations: relatedTranslations[r.itemId] || {},
+          })),
+        };
+      }),
+
+    // Get total count of active grants
+    count: publicProcedure.query(async () => {
+      const stats = await getGrantStats();
+      return { total: stats.active, grants: stats.grants, resources: stats.resources };
+    }),
+  }),
+
   // ===== Newsletter =====
   newsletter: router({
     subscribe: publicProcedure
@@ -122,6 +236,11 @@ export const appRouter = router({
     // Get subscription statistics overview
     stats: adminProcedure.query(async () => {
       return await getSubscriptionStats();
+    }),
+
+    // Get grant statistics
+    grantStats: adminProcedure.query(async () => {
+      return await getGrantStats();
     }),
 
     // List all users with search, filter, and pagination
@@ -205,6 +324,155 @@ export const appRouter = router({
           }
         }
 
+        return { success: true };
+      }),
+
+    // ===== Grant Management =====
+
+    // List all grants (including inactive) for admin
+    grants: adminProcedure
+      .input(z.object({
+        search: z.string().optional(),
+        category: z.string().optional(),
+        country: z.string().optional(),
+        type: z.string().optional(),
+        page: z.number().min(1).default(1),
+        pageSize: z.number().min(1).max(100).default(20),
+      }).optional())
+      .query(async ({ input }) => {
+        const { search, category, country, type, page = 1, pageSize = 20 } = input || {};
+        const result = await listGrants({
+          search,
+          category,
+          country,
+          type,
+          limit: pageSize,
+          offset: (page - 1) * pageSize,
+          activeOnly: false, // Admin sees all
+        });
+
+        return {
+          grants: result.grants.map(g => ({
+            id: g.id,
+            itemId: g.itemId,
+            name: g.name,
+            organization: g.organization || "",
+            category: g.category,
+            type: g.type,
+            country: g.country,
+            isActive: g.isActive,
+            createdAt: g.createdAt,
+            updatedAt: g.updatedAt,
+          })),
+          total: result.total,
+          page,
+          pageSize,
+          totalPages: Math.ceil(result.total / pageSize),
+        };
+      }),
+
+    // Get a single grant with all details for editing
+    grantDetail: adminProcedure
+      .input(z.object({ itemId: z.string() }))
+      .query(async ({ input }) => {
+        const grant = await getGrantByItemId(input.itemId);
+        if (!grant) return null;
+
+        const translations = await getGrantTranslations(input.itemId);
+
+        return {
+          id: grant.id,
+          itemId: grant.itemId,
+          name: grant.name,
+          organization: grant.organization || "",
+          description: grant.description || "",
+          category: grant.category,
+          type: grant.type,
+          country: grant.country,
+          eligibility: grant.eligibility || "",
+          website: grant.website || "",
+          phone: grant.phone || "",
+          email: grant.email || "",
+          amount: grant.amount || "",
+          status: grant.status || "",
+          isActive: grant.isActive,
+          translations,
+        };
+      }),
+
+    // Create a new grant
+    createGrant: adminProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        organization: z.string().optional(),
+        description: z.string().optional(),
+        category: z.string(),
+        type: z.enum(["grant", "resource"]),
+        country: z.string(),
+        eligibility: z.string().optional(),
+        website: z.string().optional(),
+        phone: z.string().optional(),
+        email: z.string().optional(),
+        amount: z.string().optional(),
+        status: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await createGrant(input);
+        return { success: true, itemId: result.itemId };
+      }),
+
+    // Update an existing grant
+    updateGrant: adminProcedure
+      .input(z.object({
+        itemId: z.string(),
+        name: z.string().optional(),
+        organization: z.string().optional(),
+        description: z.string().optional(),
+        category: z.string().optional(),
+        type: z.enum(["grant", "resource"]).optional(),
+        country: z.string().optional(),
+        eligibility: z.string().optional(),
+        website: z.string().optional(),
+        phone: z.string().optional(),
+        email: z.string().optional(),
+        amount: z.string().optional(),
+        status: z.string().optional(),
+        isActive: z.boolean().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { itemId, ...data } = input;
+        await updateGrant(itemId, data);
+        return { success: true };
+      }),
+
+    // Update grant translations
+    updateGrantTranslations: adminProcedure
+      .input(z.object({
+        itemId: z.string(),
+        translations: z.record(z.string(), z.object({
+          name: z.string().optional(),
+          description: z.string().optional(),
+          eligibility: z.string().optional(),
+        })),
+      }))
+      .mutation(async ({ input }) => {
+        await upsertGrantTranslations(input.itemId, input.translations);
+        return { success: true };
+      }),
+
+    // Delete a grant (soft delete)
+    deleteGrant: adminProcedure
+      .input(z.object({ itemId: z.string() }))
+      .mutation(async ({ input }) => {
+        await deleteGrant(input.itemId);
+        return { success: true };
+      }),
+
+    // Hard delete a grant (permanent)
+    hardDeleteGrant: adminProcedure
+      .input(z.object({ itemId: z.string() }))
+      .mutation(async ({ input }) => {
+        await hardDeleteGrant(input.itemId);
         return { success: true };
       }),
   }),

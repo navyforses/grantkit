@@ -1,4 +1,4 @@
-import { boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar, uniqueIndex } from "drizzle-orm/mysql-core";
+import { boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar, uniqueIndex, index } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -60,3 +60,53 @@ export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
 
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;
+
+/**
+ * Grants catalog — all grants and resources stored in the database.
+ * Replaces the static catalog.json file.
+ */
+export const grants = mysqlTable("grants", {
+  id: int("id").autoincrement().primaryKey(),
+  itemId: varchar("itemId", { length: 64 }).notNull().unique(),
+  name: text("name").notNull(),
+  organization: text("organization"),
+  description: text("description"),
+  category: varchar("category", { length: 64 }).notNull(),
+  type: mysqlEnum("grantType", ["grant", "resource"]).default("grant").notNull(),
+  country: varchar("country", { length: 64 }).notNull(),
+  eligibility: text("eligibility"),
+  website: text("website"),
+  phone: varchar("phone", { length: 128 }),
+  email: varchar("grantEmail", { length: 320 }),
+  amount: text("amount"),
+  status: text("status"),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => [
+  index("grants_category_idx").on(table.category),
+  index("grants_country_idx").on(table.country),
+  index("grants_type_idx").on(table.type),
+]);
+
+export type Grant = typeof grants.$inferSelect;
+export type InsertGrant = typeof grants.$inferInsert;
+
+/**
+ * Grant translations — multilingual content for each grant.
+ * Stores translated name, description, and eligibility per language.
+ */
+export const grantTranslations = mysqlTable("grant_translations", {
+  id: int("id").autoincrement().primaryKey(),
+  grantItemId: varchar("grantItemId", { length: 64 }).notNull(),
+  language: varchar("language", { length: 10 }).notNull(),
+  name: text("name"),
+  description: text("description"),
+  eligibility: text("eligibility"),
+}, (table) => [
+  uniqueIndex("grant_lang_idx").on(table.grantItemId, table.language),
+  index("grant_translations_lang_idx").on(table.language),
+]);
+
+export type GrantTranslation = typeof grantTranslations.$inferSelect;
+export type InsertGrantTranslation = typeof grantTranslations.$inferInsert;

@@ -107,3 +107,16 @@
 - [x] Onboarding completed DB field + tRPC endpoint
 - [x] i18n translations for all Phase 2 sections (5 languages)
 - [x] Write vitest tests for newsletter and onboarding (62 tests total passing)
+
+## Admin Panel: Grant Management (CRUD)
+- [x] Create grants database table with all catalog fields
+- [x] Migrate existing JSON catalog data to database (643 grants + 2572 translations)
+- [x] Build admin tRPC endpoints: list, create, update, delete grants
+- [x] Build admin UI: grants list with search, filter, pagination
+- [x] Build admin UI: add new grant form/modal
+- [x] Build admin UI: edit grant form/modal
+- [x] Build admin UI: delete grant with confirmation (soft + hard delete)
+- [x] Update catalog page to fetch grants from database instead of JSON
+- [x] Update grant detail page to fetch from database
+- [x] Update homepage preview to use database grants
+- [x] Write vitest tests for grant CRUD endpoints (91 tests total passing)

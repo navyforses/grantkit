@@ -1,6 +1,7 @@
 /*
  * User Dashboard — Personalized hub for saved grants, subscription status, and quick actions
  * Design: Structured Clarity — clean card-based layout
+ * Data sourced from database via tRPC
  */
 
 import { useMemo } from "react";
@@ -26,16 +27,13 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { getLoginUrl } from "@/const";
-import catalogData from "@/data/catalog.json";
-import { type CatalogItem, getCategoryStyle, getCategoryBorderColor } from "@/lib/constants";
+import { getCategoryStyle, getCategoryBorderColor } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-const allItems = catalogData as CatalogItem[];
 
 export default function Dashboard() {
   const { user, loading, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
-  const { t, tCategory, tCountry, tCatalogContent } = useLanguage();
+  const { t, tCategory, tCountry, language } = useLanguage();
 
   // Subscription status
   const { data: subData } = trpc.subscription.status.useQuery(undefined, {
@@ -49,12 +47,37 @@ export default function Dashboard() {
     retry: false,
   });
 
+  // Fetch saved grant details from database
+  const savedGrantIds = useMemo(() => savedData?.grantIds || [], [savedData]);
+
+  // Fetch catalog to get details for saved grants
+  // We'll use catalog.list with a special approach - fetch all saved items
+  const { data: catalogData } = trpc.catalog.list.useQuery(
+    { pageSize: 100, page: 1 },
+    { enabled: isAuthenticated && savedGrantIds.length > 0, retry: false }
+  );
+
+  // Get total count
+  const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
+
+  // Filter catalog results to only show saved items
   const savedItems = useMemo(() => {
-    if (!savedData?.grantIds) return [];
-    return savedData.grantIds
-      .map((id) => allItems.find((item) => item.id === id))
-      .filter(Boolean) as CatalogItem[];
-  }, [savedData]);
+    if (!catalogData?.grants || savedGrantIds.length === 0) return [];
+    const savedSet = new Set(savedGrantIds);
+    return catalogData.grants
+      .filter((g) => savedSet.has(g.id))
+      .map((g) => {
+        const trans = (g as any).translations?.[language];
+        return {
+          id: g.id,
+          name: trans?.name || g.name,
+          description: trans?.description || g.description,
+          category: g.category,
+          country: g.country,
+          type: g.type,
+        };
+      });
+  }, [catalogData, savedGrantIds, language]);
 
   const utils = trpc.useUtils();
   const toggleSave = trpc.grants.toggleSave.useMutation({
@@ -186,11 +209,6 @@ export default function Dashboard() {
               ) : (
                 <div className="space-y-3">
                   {savedItems.map((item) => {
-                    const content = tCatalogContent(item.id, {
-                      name: item.name,
-                      description: item.description,
-                      eligibility: item.eligibility || "",
-                    });
                     const flag = item.country === "US" ? "🇺🇸" : "🌐";
                     return (
                       <motion.div
@@ -207,10 +225,10 @@ export default function Dashboard() {
                               <div className="flex items-center gap-2 mb-1">
                                 <span className="text-lg">{flag}</span>
                                 <h3 className="font-medium text-[#0f172a] text-sm leading-snug hover:text-[#1e3a5f] transition-colors line-clamp-1">
-                                  {content.name}
+                                  {item.name}
                                 </h3>
                               </div>
-                              <p className="text-xs text-gray-500 line-clamp-1 ml-7">{content.description}</p>
+                              <p className="text-xs text-gray-500 line-clamp-1 ml-7">{item.description}</p>
                               <div className="flex items-center gap-3 mt-2 ml-7">
                                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${getCategoryStyle(item.category)}`}>
                                   {tCategory(item.category)}
@@ -264,7 +282,7 @@ export default function Dashboard() {
               ) : (
                 <div>
                   <p className="text-sm text-gray-500 mb-4">
-                    Subscribe to unlock full access to 643+ grants and resources.
+                    Subscribe to unlock full access to {countData?.total || "643"}+ grants and resources.
                   </p>
                   <Link href="/#pricing">
                     <Button size="sm" className="w-full bg-[#22c55e] hover:bg-[#16a34a] gap-1.5">
@@ -325,11 +343,11 @@ export default function Dashboard() {
               <h3 className="text-sm font-semibold text-blue-200/70 uppercase tracking-wider mb-4">Your Activity</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-2xl font-bold">{savedItems.length}</p>
+                  <p className="text-2xl font-bold">{savedGrantIds.length}</p>
                   <p className="text-xs text-blue-200/70">Saved Grants</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">643</p>
+                  <p className="text-2xl font-bold">{countData?.total || "643"}</p>
                   <p className="text-xs text-blue-200/70">Total Available</p>
                 </div>
               </div>

@@ -29,6 +29,13 @@
       "when": 1774890395388,
       "tag": "0003_late_phalanx",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1774891550770,
+      "tag": "0004_bouncy_shatterstar",
+      "breakpoints": true
     }
   ]
 }

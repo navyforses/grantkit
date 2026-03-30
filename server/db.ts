@@ -1,6 +1,7 @@
-import { eq, and, or, like, desc, count } from "drizzle-orm";
+import { eq, and, or, like, desc, asc, count, sql, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, savedGrants, newsletterSubscribers } from "../drizzle/schema";
+import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations } from "../drizzle/schema";
+import type { Grant, InsertGrant, GrantTranslation } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -291,4 +292,309 @@ export async function getSubscriptionStats() {
     }
   }
   return stats;
+}
+
+// ===== Grant CRUD helpers =====
+
+/** List grants with search, filter, sort, and pagination */
+export async function listGrants(options?: {
+  search?: string;
+  category?: string;
+  country?: string;
+  type?: string;
+  sortBy?: string;
+  limit?: number;
+  offset?: number;
+  activeOnly?: boolean;
+}) {
+  const db = await getDb();
+  if (!db) return { grants: [], total: 0 };
+
+  const { search, category, country, type, sortBy = "name_asc", limit = 50, offset = 0, activeOnly = true } = options || {};
+
+  const conditions: any[] = [];
+
+  if (activeOnly) {
+    conditions.push(eq(grants.isActive, true));
+  }
+
+  if (search) {
+    conditions.push(
+      or(
+        like(grants.name, `%${search}%`),
+        like(grants.organization, `%${search}%`),
+        like(grants.description, `%${search}%`)
+      )
+    );
+  }
+
+  if (category && category !== "all") {
+    conditions.push(eq(grants.category, category));
+  }
+
+  if (country && country !== "all") {
+    conditions.push(eq(grants.country, country));
+  }
+
+  if (type && type !== "all") {
+    conditions.push(eq(grants.type, type as "grant" | "resource"));
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  // Determine sort order
+  let orderByClause;
+  switch (sortBy) {
+    case "name_desc":
+      orderByClause = desc(grants.name);
+      break;
+    case "category":
+      orderByClause = asc(grants.category);
+      break;
+    case "country":
+      orderByClause = asc(grants.country);
+      break;
+    case "newest":
+      orderByClause = desc(grants.createdAt);
+      break;
+    case "name_asc":
+    default:
+      orderByClause = asc(grants.name);
+      break;
+  }
+
+  const [grantList, countResult] = await Promise.all([
+    db
+      .select()
+      .from(grants)
+      .where(whereClause)
+      .orderBy(orderByClause)
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ count: count() })
+      .from(grants)
+      .where(whereClause),
+  ]);
+
+  return {
+    grants: grantList,
+    total: countResult[0]?.count ?? 0,
+  };
+}
+
+/** Get a single grant by itemId */
+export async function getGrantByItemId(itemId: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.select().from(grants).where(eq(grants.itemId, itemId)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+/** Get translations for a grant */
+export async function getGrantTranslations(itemId: string) {
+  const db = await getDb();
+  if (!db) return {};
+
+  const result = await db
+    .select()
+    .from(grantTranslations)
+    .where(eq(grantTranslations.grantItemId, itemId));
+
+  const translations: Record<string, { name: string; description: string; eligibility: string }> = {};
+  for (const row of result) {
+    translations[row.language] = {
+      name: row.name || "",
+      description: row.description || "",
+      eligibility: row.eligibility || "",
+    };
+  }
+  return translations;
+}
+
+/** Get translations for multiple grants at once */
+export async function getBulkGrantTranslations(itemIds: string[]) {
+  const db = await getDb();
+  if (!db || itemIds.length === 0) return {};
+
+  const result = await db
+    .select()
+    .from(grantTranslations)
+    .where(inArray(grantTranslations.grantItemId, itemIds));
+
+  const translations: Record<string, Record<string, { name: string; description: string; eligibility: string }>> = {};
+  for (const row of result) {
+    if (!translations[row.grantItemId]) {
+      translations[row.grantItemId] = {};
+    }
+    translations[row.grantItemId][row.language] = {
+      name: row.name || "",
+      description: row.description || "",
+      eligibility: row.eligibility || "",
+    };
+  }
+  return translations;
+}
+
+/** Create a new grant */
+export async function createGrant(data: {
+  name: string;
+  organization?: string;
+  description?: string;
+  category: string;
+  type: "grant" | "resource";
+  country: string;
+  eligibility?: string;
+  website?: string;
+  phone?: string;
+  email?: string;
+  amount?: string;
+  status?: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Generate a unique itemId
+  const countResult = await db.select({ count: count() }).from(grants);
+  const nextNum = (countResult[0]?.count ?? 0) + 1;
+  const itemId = `item_${String(nextNum).padStart(4, "0")}`;
+
+  await db.insert(grants).values({
+    itemId,
+    name: data.name,
+    organization: data.organization || "",
+    description: data.description || "",
+    category: data.category,
+    type: data.type,
+    country: data.country,
+    eligibility: data.eligibility || "",
+    website: data.website || "",
+    phone: data.phone || "",
+    email: data.email || "",
+    amount: data.amount || "",
+    status: data.status || "",
+    isActive: true,
+  });
+
+  return { itemId };
+}
+
+/** Update an existing grant */
+export async function updateGrant(itemId: string, data: {
+  name?: string;
+  organization?: string;
+  description?: string;
+  category?: string;
+  type?: "grant" | "resource";
+  country?: string;
+  eligibility?: string;
+  website?: string;
+  phone?: string;
+  email?: string;
+  amount?: string;
+  status?: string;
+  isActive?: boolean;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const updateSet: Record<string, unknown> = {};
+  if (data.name !== undefined) updateSet.name = data.name;
+  if (data.organization !== undefined) updateSet.organization = data.organization;
+  if (data.description !== undefined) updateSet.description = data.description;
+  if (data.category !== undefined) updateSet.category = data.category;
+  if (data.type !== undefined) updateSet.grantType = data.type;
+  if (data.country !== undefined) updateSet.country = data.country;
+  if (data.eligibility !== undefined) updateSet.eligibility = data.eligibility;
+  if (data.website !== undefined) updateSet.website = data.website;
+  if (data.phone !== undefined) updateSet.phone = data.phone;
+  if (data.email !== undefined) updateSet.grantEmail = data.email;
+  if (data.amount !== undefined) updateSet.amount = data.amount;
+  if (data.status !== undefined) updateSet.status = data.status;
+  if (data.isActive !== undefined) updateSet.isActive = data.isActive;
+
+  if (Object.keys(updateSet).length === 0) return;
+
+  await db.update(grants).set(updateSet).where(eq(grants.itemId, itemId));
+}
+
+/** Delete a grant (soft delete — set isActive to false) */
+export async function deleteGrant(itemId: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.update(grants).set({ isActive: false }).where(eq(grants.itemId, itemId));
+}
+
+/** Hard delete a grant and its translations */
+export async function hardDeleteGrant(itemId: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.delete(grantTranslations).where(eq(grantTranslations.grantItemId, itemId));
+  await db.delete(grants).where(eq(grants.itemId, itemId));
+}
+
+/** Upsert grant translations */
+export async function upsertGrantTranslations(itemId: string, translations: Record<string, { name?: string; description?: string; eligibility?: string }>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  for (const [lang, content] of Object.entries(translations)) {
+    await db.insert(grantTranslations).values({
+      grantItemId: itemId,
+      language: lang,
+      name: content.name || "",
+      description: content.description || "",
+      eligibility: content.eligibility || "",
+    }).onDuplicateKeyUpdate({
+      set: {
+        name: content.name || "",
+        description: content.description || "",
+        eligibility: content.eligibility || "",
+      },
+    });
+  }
+}
+
+/** Get grant stats for admin dashboard */
+export async function getGrantStats() {
+  const db = await getDb();
+  if (!db) return { total: 0, active: 0, inactive: 0, grants: 0, resources: 0 };
+
+  const [totalResult, activeResult, typeResult] = await Promise.all([
+    db.select({ count: count() }).from(grants),
+    db.select({ count: count() }).from(grants).where(eq(grants.isActive, true)),
+    db.select({ type: grants.type, count: count() }).from(grants).where(eq(grants.isActive, true)).groupBy(grants.type),
+  ]);
+
+  const total = totalResult[0]?.count ?? 0;
+  const active = activeResult[0]?.count ?? 0;
+  let grantsCount = 0;
+  let resourcesCount = 0;
+  for (const row of typeResult) {
+    if (row.type === "grant") grantsCount = Number(row.count);
+    if (row.type === "resource") resourcesCount = Number(row.count);
+  }
+
+  return { total, active, inactive: total - active, grants: grantsCount, resources: resourcesCount };
+}
+
+/** Get related grants by category (excluding the current one) */
+export async function getRelatedGrants(itemId: string, category: string, limit = 4) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select()
+    .from(grants)
+    .where(and(
+      eq(grants.category, category),
+      eq(grants.isActive, true),
+      sql`${grants.itemId} != ${itemId}`
+    ))
+    .limit(limit);
+
+  return result;
 }

@@ -2,6 +2,7 @@
  * Catalog Page — Unified Grants & Resources Directory
  * Design: Structured Clarity — dense card grid with sticky filters
  * Content locked behind authentication + active subscription
+ * Data sourced from database via tRPC
  */
 
 import { useMemo, useState } from "react";
@@ -10,18 +11,15 @@ import FilterBar, { type SortValue } from "@/components/FilterBar";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
-import catalogData from "@/data/catalog.json";
 import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, LogIn } from "lucide-react";
+import { Lock, LogIn, Loader2 } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 
-const allItems = catalogData as CatalogItem[];
-const ITEMS_PER_PAGE = 30;
-// Show only 3 preview items for non-subscribers
+const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
 
 export default function Catalog() {
@@ -30,14 +28,39 @@ export default function Catalog() {
   const [selectedType, setSelectedType] = useState<TypeValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortValue>("name_asc");
-  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
-  const { t, tCatalogContent } = useLanguage();
+  const [page, setPage] = useState(1);
+  const { t, tCategory, tCountry, language } = useLanguage();
   const { isAuthenticated, loading: authLoading } = useAuth();
 
   const { data: subStatus, isLoading: subLoading } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
   });
+
+  const isActive = subStatus?.isActive || false;
+  const isAuthLoading = authLoading || (isAuthenticated && subLoading);
+
+  // Stabilize query input
+  const catalogInput = useMemo(
+    () => ({
+      search: searchQuery || undefined,
+      category: selectedCategory !== "all" ? selectedCategory : undefined,
+      country: selectedCountry !== "all" ? selectedCountry : undefined,
+      type: selectedType !== "all" ? selectedType : undefined,
+      sortBy,
+      page: isActive ? page : 1,
+      pageSize: isActive ? PAGE_SIZE : PREVIEW_ITEMS,
+    }),
+    [searchQuery, selectedCategory, selectedCountry, selectedType, sortBy, page, isActive]
+  );
+
+  const { data: catalogData, isLoading: catalogLoading } = trpc.catalog.list.useQuery(catalogInput, {
+    retry: false,
+    placeholderData: (prev: any) => prev,
+  });
+
+  // Get total count for display
+  const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
   // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
@@ -69,61 +92,41 @@ export default function Catalog() {
     },
   });
 
-  const isActive = subStatus?.isActive || false;
-  const isLoading = authLoading || (isAuthenticated && subLoading);
-
-  const filtered = useMemo(() => {
-    const query = searchQuery.toLowerCase().trim();
-    let items = allItems.filter((item) => {
-      if (selectedCategory !== "all" && item.category !== selectedCategory) return false;
-      if (selectedCountry !== "all" && item.country !== selectedCountry) return false;
-      if (selectedType !== "all" && item.type !== selectedType) return false;
-      if (query) {
-        const content = tCatalogContent(item.id, {
-          name: item.name,
-          description: item.description,
-          eligibility: item.eligibility || "",
-        });
-        const searchable = [
-          item.name,
-          item.description,
-          item.organization,
-          item.eligibility,
-          content.name,
-          content.description,
-          content.eligibility,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        if (!searchable.includes(query)) return false;
-      }
-      return true;
+  // Map DB results to CatalogItem shape for CatalogCard
+  const displayItems: CatalogItem[] = useMemo(() => {
+    if (!catalogData?.grants) return [];
+    return catalogData.grants.map((g) => {
+      // Use translations for current language if available
+      const trans = (g as any).translations?.[language];
+      return {
+        id: g.id,
+        name: trans?.name || g.name,
+        organization: g.organization,
+        description: trans?.description || g.description,
+        category: g.category,
+        type: g.type as "grant" | "resource",
+        country: g.country,
+        eligibility: trans?.eligibility || g.eligibility,
+        website: g.website,
+        phone: g.phone,
+        email: g.email,
+        amount: g.amount,
+        status: g.status,
+      };
     });
+  }, [catalogData, language]);
 
-    // Sort
-    items = [...items].sort((a, b) => {
-      switch (sortBy) {
-        case "name_asc":
-          return a.name.localeCompare(b.name);
-        case "name_desc":
-          return b.name.localeCompare(a.name);
-        case "category":
-          return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
-        case "country":
-          return a.country.localeCompare(b.country) || a.name.localeCompare(b.name);
-        default:
-          return 0;
-      }
-    });
+  const totalItems = catalogData?.total || 0;
+  const totalPages = catalogData?.totalPages || 1;
+  const isLoading = isAuthLoading || catalogLoading;
 
-    return items;
-  }, [selectedCategory, selectedCountry, selectedType, searchQuery, sortBy, tCatalogContent]);
-
-  // If not active subscriber, only show preview items
-  const displayItems = isActive ? filtered : filtered.slice(0, PREVIEW_ITEMS);
-  const visibleItems = isActive ? displayItems.slice(0, visibleCount) : displayItems;
-  const hasMore = isActive && visibleCount < filtered.length;
+  const resetFilters = () => {
+    setSelectedCategory("all");
+    setSelectedCountry("all");
+    setSelectedType("all");
+    setSearchQuery("");
+    setPage(1);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/30">
@@ -141,19 +144,19 @@ export default function Catalog() {
         </div>
       </div>
 
-      {/* Filter bar - always visible */}
+      {/* Filter bar */}
       <FilterBar
         selectedCategory={selectedCategory}
         selectedCountry={selectedCountry}
         selectedType={selectedType}
-        onCategoryChange={(c) => { setSelectedCategory(c); setVisibleCount(ITEMS_PER_PAGE); }}
-        onCountryChange={(c) => { setSelectedCountry(c); setVisibleCount(ITEMS_PER_PAGE); }}
-        onTypeChange={(t) => { setSelectedType(t); setVisibleCount(ITEMS_PER_PAGE); }}
-        itemCount={filtered.length}
+        onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
+        onCountryChange={(c) => { setSelectedCountry(c); setPage(1); }}
+        onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
+        itemCount={totalItems}
         searchQuery={searchQuery}
-        onSearchChange={(q) => { setSearchQuery(q); setVisibleCount(ITEMS_PER_PAGE); }}
+        onSearchChange={(q) => { setSearchQuery(q); setPage(1); }}
         sortBy={sortBy}
-        onSortChange={setSortBy}
+        onSortChange={(s) => { setSortBy(s); setPage(1); }}
       />
 
       {/* Cards grid */}
@@ -165,10 +168,10 @@ export default function Catalog() {
           </div>
         ) : (
           <>
-            {visibleItems.length > 0 ? (
+            {displayItems.length > 0 ? (
               <>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {visibleItems.map((item, i) => (
+                  {displayItems.map((item, i) => (
                     <CatalogCard
                       key={item.id}
                       item={item}
@@ -180,14 +183,44 @@ export default function Catalog() {
                   ))}
                 </div>
 
-                {/* Load more - only for active subscribers */}
-                {hasMore && (
-                  <div className="mt-8 text-center">
+                {/* Pagination — only for active subscribers */}
+                {isActive && totalPages > 1 && (
+                  <div className="mt-8 flex items-center justify-center gap-2">
                     <button
-                      onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
-                      className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-[#1e3a5f] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all"
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      disabled={page === 1}
+                      className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
-                      {t.catalog.loadMore} ({filtered.length - visibleCount} {t.catalog.remaining})
+                      Previous
+                    </button>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                        let pageNum: number;
+                        if (totalPages <= 7) pageNum = i + 1;
+                        else if (page <= 4) pageNum = i + 1;
+                        else if (page >= totalPages - 3) pageNum = totalPages - 6 + i;
+                        else pageNum = page - 3 + i;
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => setPage(pageNum)}
+                            className={`w-9 h-9 text-sm rounded-lg transition-colors ${
+                              page === pageNum
+                                ? "bg-[#1e3a5f] text-white font-semibold"
+                                : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <button
+                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={page === totalPages}
+                      className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    >
+                      Next
                     </button>
                   </div>
                 )}
@@ -196,12 +229,7 @@ export default function Catalog() {
               <div className="text-center py-20">
                 <p className="text-gray-500 text-lg mb-2">{t.catalog.noResults}</p>
                 <button
-                  onClick={() => {
-                    setSelectedCategory("all");
-                    setSelectedCountry("all");
-                    setSelectedType("all");
-                    setSearchQuery("");
-                  }}
+                  onClick={resetFilters}
                   className="text-sm text-[#1e3a5f] hover:underline"
                 >
                   {t.catalog.clearFilters}
