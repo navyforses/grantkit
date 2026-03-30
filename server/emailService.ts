@@ -2,7 +2,8 @@
  * Email Notification Service
  *
  * Sends transactional emails to users via Resend API.
- * Handles subscription status change notifications with branded HTML templates.
+ * Handles subscription status change notifications, new grant alerts,
+ * and newsletter campaigns with branded HTML templates.
  */
 
 import { Resend } from "resend";
@@ -28,6 +29,23 @@ interface SendEmailResult {
   error?: string;
 }
 
+export interface GrantEmailData {
+  itemId: string;
+  name: string;
+  organization: string;
+  category: string;
+  country: string;
+  description: string;
+  amount?: string;
+}
+
+export interface BatchSendResult {
+  totalRecipients: number;
+  successCount: number;
+  failCount: number;
+  errors: string[];
+}
+
 // ===== Resend Client =====
 
 let _resend: Resend | null = null;
@@ -46,11 +64,13 @@ function getResendClient(): Resend | null {
 // ===== Email Templates =====
 
 const BRAND_COLOR = "#6C3AED"; // Purple
+const BRAND_GREEN = "#16a34a";
 const BRAND_NAME = "GrantKit";
 const FROM_EMAIL = "onboarding@resend.dev"; // Resend default sender for testing
 const SUPPORT_EMAIL = "support@grantkit.io";
+const SITE_URL = "https://grantkit-ne96tb4y.manus.space";
 
-function baseTemplate(title: string, content: string): string {
+function baseTemplate(title: string, content: string, footerExtra?: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,6 +101,7 @@ function baseTemplate(title: string, content: string): string {
               <p style="margin:0;color:#71717a;font-size:13px;text-align:center;">
                 &copy; ${new Date().getFullYear()} ${BRAND_NAME}. All rights reserved.<br/>
                 <a href="mailto:${SUPPORT_EMAIL}" style="color:${BRAND_COLOR};text-decoration:none;">Contact Support</a>
+                ${footerExtra || ""}
               </p>
             </td>
           </tr>
@@ -117,7 +138,7 @@ function getEmailContent(type: SubscriptionEmailType, recipientName: string): {
             </ul>
           </div>
           <div style="text-align:center;margin:32px 0 16px;">
-            <a href="https://grantkit-ne96tb4y.manus.space/catalog" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Explore Grants Now</a>
+            <a href="${SITE_URL}/catalog" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Explore Grants Now</a>
           </div>
         `),
       };
@@ -139,7 +160,7 @@ function getEmailContent(type: SubscriptionEmailType, recipientName: string): {
             Changed your mind? You can resubscribe anytime from your profile page.
           </p>
           <div style="text-align:center;margin:32px 0 16px;">
-            <a href="https://grantkit-ne96tb4y.manus.space/profile" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Resubscribe</a>
+            <a href="${SITE_URL}/profile" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Resubscribe</a>
           </div>
         `),
       };
@@ -158,7 +179,7 @@ function getEmailContent(type: SubscriptionEmailType, recipientName: string): {
             </p>
           </div>
           <div style="text-align:center;margin:32px 0 16px;">
-            <a href="https://grantkit-ne96tb4y.manus.space/profile" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Resume Subscription</a>
+            <a href="${SITE_URL}/profile" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Resume Subscription</a>
           </div>
         `),
       };
@@ -199,11 +220,89 @@ function getEmailContent(type: SubscriptionEmailType, recipientName: string): {
             </p>
           </div>
           <div style="text-align:center;margin:32px 0 16px;">
-            <a href="https://grantkit-ne96tb4y.manus.space/catalog" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Explore Grants</a>
+            <a href="${SITE_URL}/catalog" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Explore Grants</a>
           </div>
         `),
       };
   }
+}
+
+// ===== New Grant Notification Template =====
+
+function buildGrantCard(grant: GrantEmailData): string {
+  const categoryColors: Record<string, string> = {
+    "Medical & Health": "#dc2626",
+    "Research & Innovation": "#2563eb",
+    "Startup & Business": "#16a34a",
+    "Education & Training": "#9333ea",
+    "Community & Social": "#ea580c",
+    "Technology & Digital": "#0891b2",
+  };
+  const badgeColor = categoryColors[grant.category] || BRAND_COLOR;
+
+  return `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;">
+      <tr>
+        <td style="padding:20px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td>
+                <span style="display:inline-block;background-color:${badgeColor}15;color:${badgeColor};font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.5px;">${grant.category}</span>
+                <span style="display:inline-block;background-color:#f4f4f5;color:#71717a;font-size:11px;font-weight:500;padding:3px 10px;border-radius:12px;margin-left:6px;">${grant.country}</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top:10px;">
+                <a href="${SITE_URL}/grant/${grant.itemId}" style="color:#18181b;font-size:16px;font-weight:600;text-decoration:none;">${grant.name}</a>
+              </td>
+            </tr>
+            ${grant.organization ? `<tr><td style="padding-top:4px;"><span style="color:#71717a;font-size:13px;">${grant.organization}</span></td></tr>` : ""}
+            <tr>
+              <td style="padding-top:8px;">
+                <p style="margin:0;color:#52525b;font-size:14px;line-height:1.5;">${grant.description.length > 150 ? grant.description.substring(0, 150) + "..." : grant.description}</p>
+              </td>
+            </tr>
+            ${grant.amount ? `<tr><td style="padding-top:8px;"><span style="color:${BRAND_GREEN};font-size:13px;font-weight:600;">Amount: ${grant.amount}</span></td></tr>` : ""}
+            <tr>
+              <td style="padding-top:12px;">
+                <a href="${SITE_URL}/grant/${grant.itemId}" style="color:${BRAND_COLOR};font-size:13px;font-weight:600;text-decoration:none;">View Details &rarr;</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>`;
+}
+
+export function buildNewGrantsEmailHtml(
+  grants: GrantEmailData[],
+  unsubscribeUrl: string
+): string {
+  const grantCards = grants.map(buildGrantCard).join("");
+
+  const content = `
+    <h2 style="margin:0 0 8px;color:#18181b;font-size:22px;font-weight:600;">New Grants Added!</h2>
+    <p style="margin:0 0 24px;color:#52525b;font-size:15px;line-height:1.6;">
+      We've just added <strong>${grants.length} new grant${grants.length > 1 ? "s" : ""}</strong> to the GrantKit database. Here's a quick look:
+    </p>
+    ${grantCards}
+    <div style="text-align:center;margin:28px 0 16px;">
+      <a href="${SITE_URL}/catalog" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">Browse All Grants</a>
+    </div>
+    <p style="margin:24px 0 0;color:#a1a1aa;font-size:12px;text-align:center;line-height:1.5;">
+      You're receiving this because you subscribed to GrantKit newsletter updates.
+    </p>`;
+
+  const footerExtra = `<br/><a href="${unsubscribeUrl}" style="color:#a1a1aa;text-decoration:underline;font-size:12px;">Unsubscribe</a>`;
+
+  return baseTemplate("New Grants on GrantKit", content, footerExtra);
+}
+
+export function buildNewGrantsSubject(grantCount: number): string {
+  if (grantCount === 1) {
+    return "A new grant has been added to GrantKit!";
+  }
+  return `${grantCount} new grants just added to GrantKit!`;
 }
 
 // ===== Public API =====
@@ -290,4 +389,105 @@ export async function sendAdminNewSubscriberNotification(
     console.error("[Email] Error sending admin notification:", message);
     return { success: false, error: message };
   }
+}
+
+/**
+ * Send new grant notification email to a single recipient
+ */
+export async function sendNewGrantNotification(
+  recipientEmail: string,
+  grants: GrantEmailData[],
+  unsubscribeToken: string
+): Promise<SendEmailResult> {
+  const resend = getResendClient();
+  if (!resend) {
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const unsubscribeUrl = `${SITE_URL}/api/newsletter/unsubscribe?token=${unsubscribeToken}`;
+    const subject = buildNewGrantsSubject(grants.length);
+    const html = buildNewGrantsEmailHtml(grants, unsubscribeUrl);
+
+    const { data, error } = await resend.emails.send({
+      from: `${BRAND_NAME} <${FROM_EMAIL}>`,
+      to: [recipientEmail],
+      subject,
+      html,
+    });
+
+    if (error) {
+      console.error(`[Email] Failed to send grant notification to ${recipientEmail}:`, error);
+      return { success: false, error: error.message };
+    }
+
+    console.log(`[Email] Sent grant notification to ${recipientEmail} (id: ${data?.id})`);
+    return { success: true, messageId: data?.id };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error(`[Email] Error sending grant notification to ${recipientEmail}:`, message);
+    return { success: false, error: message };
+  }
+}
+
+/**
+ * Send new grant notifications to all active newsletter subscribers in batches.
+ * Uses a small delay between sends to avoid rate limiting.
+ */
+export async function sendBatchNewGrantNotifications(
+  subscribers: Array<{ email: string; unsubscribeToken: string }>,
+  grants: GrantEmailData[],
+  onProgress?: (sent: number, total: number) => void
+): Promise<BatchSendResult> {
+  const result: BatchSendResult = {
+    totalRecipients: subscribers.length,
+    successCount: 0,
+    failCount: 0,
+    errors: [],
+  };
+
+  if (subscribers.length === 0) {
+    return result;
+  }
+
+  const BATCH_SIZE = 5; // Send 5 at a time
+  const DELAY_MS = 500; // 500ms between batches
+
+  for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
+    const batch = subscribers.slice(i, i + BATCH_SIZE);
+
+    const batchResults = await Promise.allSettled(
+      batch.map((sub) =>
+        sendNewGrantNotification(sub.email, grants, sub.unsubscribeToken)
+      )
+    );
+
+    for (const res of batchResults) {
+      if (res.status === "fulfilled" && res.value.success) {
+        result.successCount++;
+      } else {
+        result.failCount++;
+        const errMsg =
+          res.status === "rejected"
+            ? String(res.reason)
+            : res.value.error || "Unknown error";
+        result.errors.push(errMsg);
+      }
+    }
+
+    if (onProgress) {
+      onProgress(Math.min(i + BATCH_SIZE, subscribers.length), subscribers.length);
+    }
+
+    // Delay between batches (skip for last batch)
+    if (i + BATCH_SIZE < subscribers.length) {
+      await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
+    }
+  }
+
+  console.log(
+    `[Email] Batch send complete: ${result.successCount}/${result.totalRecipients} successful, ${result.failCount} failed`
+  );
+
+  return result;
 }

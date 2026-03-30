@@ -1,7 +1,8 @@
 import { eq, and, or, like, desc, asc, count, sql, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations } from "../drizzle/schema";
+import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations, notificationHistory } from "../drizzle/schema";
 import type { Grant, InsertGrant, GrantTranslation } from "../drizzle/schema";
+import * as crypto from "crypto";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -257,6 +258,129 @@ export async function subscribeNewsletter(email: string, userId?: number): Promi
 
   await db.insert(newsletterSubscribers).values({ email, userId });
   return { success: true };
+}
+
+/** Get all active newsletter subscribers with unsubscribe tokens */
+export async function getActiveNewsletterSubscribers(): Promise<Array<{ id: number; email: string; unsubscribeToken: string }>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ id: newsletterSubscribers.id, email: newsletterSubscribers.email })
+    .from(newsletterSubscribers)
+    .where(eq(newsletterSubscribers.isActive, true));
+
+  return result.map((sub) => ({
+    id: sub.id,
+    email: sub.email,
+    // Generate a deterministic token from email for unsubscribe links
+    unsubscribeToken: crypto.createHash("sha256").update(sub.email + "_grantkit_unsub").digest("hex").substring(0, 32),
+  }));
+}
+
+/** Get newsletter subscriber count */
+export async function getNewsletterSubscriberCount(): Promise<{ active: number; total: number }> {
+  const db = await getDb();
+  if (!db) return { active: 0, total: 0 };
+
+  const [totalResult, activeResult] = await Promise.all([
+    db.select({ count: count() }).from(newsletterSubscribers),
+    db.select({ count: count() }).from(newsletterSubscribers).where(eq(newsletterSubscribers.isActive, true)),
+  ]);
+
+  return {
+    total: totalResult[0]?.count ?? 0,
+    active: activeResult[0]?.count ?? 0,
+  };
+}
+
+/** Unsubscribe a newsletter subscriber by token (hashed email) */
+export async function unsubscribeByToken(token: string): Promise<{ success: boolean; email?: string }> {
+  const db = await getDb();
+  if (!db) return { success: false };
+
+  // Find the subscriber whose email hashes to this token
+  const allActive = await db
+    .select({ id: newsletterSubscribers.id, email: newsletterSubscribers.email })
+    .from(newsletterSubscribers)
+    .where(eq(newsletterSubscribers.isActive, true));
+
+  const match = allActive.find((sub) => {
+    const hash = crypto.createHash("sha256").update(sub.email + "_grantkit_unsub").digest("hex").substring(0, 32);
+    return hash === token;
+  });
+
+  if (!match) return { success: false };
+
+  await db.update(newsletterSubscribers)
+    .set({ isActive: false, unsubscribedAt: new Date() })
+    .where(eq(newsletterSubscribers.id, match.id));
+
+  return { success: true, email: match.email };
+}
+
+/** Create a notification history record */
+export async function createNotificationRecord(data: {
+  subject: string;
+  grantItemIds: string[];
+  recipientCount: number;
+  sentBy: number;
+}): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(notificationHistory).values({
+    subject: data.subject,
+    grantItemIds: JSON.stringify(data.grantItemIds),
+    recipientCount: data.recipientCount,
+    sentBy: data.sentBy,
+    status: "sending",
+  });
+
+  return Number(result[0].insertId);
+}
+
+/** Update a notification history record after sending */
+export async function updateNotificationRecord(id: number, data: {
+  successCount: number;
+  failCount: number;
+  status: "completed" | "failed";
+}): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  await db.update(notificationHistory)
+    .set({
+      successCount: data.successCount,
+      failCount: data.failCount,
+      status: data.status,
+      completedAt: new Date(),
+    })
+    .where(eq(notificationHistory.id, id));
+}
+
+/** Get notification history for admin */
+export async function getNotificationHistory(limit = 20): Promise<Array<{
+  id: number;
+  subject: string;
+  grantItemIds: string;
+  recipientCount: number;
+  successCount: number;
+  failCount: number;
+  status: string;
+  sentAt: Date;
+  completedAt: Date | null;
+}>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select()
+    .from(notificationHistory)
+    .orderBy(desc(notificationHistory.sentAt))
+    .limit(limit);
+
+  return result;
 }
 
 // ===== Onboarding helpers =====

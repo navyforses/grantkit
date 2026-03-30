@@ -8,8 +8,15 @@ import {
   completeOnboarding, listGrants, getGrantByItemId, getGrantTranslations,
   getBulkGrantTranslations, createGrant, updateGrant, deleteGrant,
   hardDeleteGrant, upsertGrantTranslations, getGrantStats, getRelatedGrants,
+  getActiveNewsletterSubscribers, getNewsletterSubscriberCount,
+  unsubscribeByToken, createNotificationRecord, updateNotificationRecord,
+  getNotificationHistory,
 } from "./db";
-import { sendSubscriptionEmail, sendAdminNewSubscriberNotification } from "./emailService";
+import {
+  sendSubscriptionEmail, sendAdminNewSubscriberNotification,
+  sendBatchNewGrantNotifications, buildNewGrantsSubject,
+  type GrantEmailData,
+} from "./emailService";
 import { z } from "zod";
 
 export const appRouter = router({
@@ -221,6 +228,13 @@ export const appRouter = router({
         const userId = ctx.user?.id;
         return await subscribeNewsletter(input.email, userId);
       }),
+
+    // Unsubscribe via token (called from email link)
+    unsubscribe: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ input }) => {
+        return await unsubscribeByToken(input.token);
+      }),
   }),
 
   // ===== Onboarding =====
@@ -242,6 +256,90 @@ export const appRouter = router({
     grantStats: adminProcedure.query(async () => {
       return await getGrantStats();
     }),
+
+    // Get newsletter subscriber stats
+    newsletterStats: adminProcedure.query(async () => {
+      return await getNewsletterSubscriberCount();
+    }),
+
+    // Get notification history
+    notificationHistory: adminProcedure
+      .input(z.object({ limit: z.number().min(1).max(50).default(20) }).optional())
+      .query(async ({ input }) => {
+        const limit = input?.limit ?? 20;
+        return await getNotificationHistory(limit);
+      }),
+
+    // Send new grant notification to all subscribers
+    sendNewGrantNotification: adminProcedure
+      .input(z.object({
+        grantItemIds: z.array(z.string()).min(1).max(20),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        // Fetch grant details for the email
+        const grantDataPromises = input.grantItemIds.map(async (itemId) => {
+          const grant = await getGrantByItemId(itemId);
+          if (!grant) return null;
+          return {
+            itemId: grant.itemId,
+            name: grant.name,
+            organization: grant.organization || "",
+            category: grant.category,
+            country: grant.country,
+            description: grant.description || "",
+            amount: grant.amount || "",
+          } as GrantEmailData;
+        });
+
+        const grantsData = (await Promise.all(grantDataPromises)).filter(
+          (g): g is GrantEmailData => g !== null
+        );
+
+        if (grantsData.length === 0) {
+          return { success: false, error: "No valid grants found" };
+        }
+
+        // Get all active subscribers
+        const subscribers = await getActiveNewsletterSubscribers();
+        if (subscribers.length === 0) {
+          return { success: false, error: "No active subscribers" };
+        }
+
+        // Create notification history record
+        const subject = buildNewGrantsSubject(grantsData.length);
+        const notifId = await createNotificationRecord({
+          subject,
+          grantItemIds: input.grantItemIds,
+          recipientCount: subscribers.length,
+          sentBy: ctx.user.id,
+        });
+
+        // Send emails in background (don't block the response)
+        sendBatchNewGrantNotifications(
+          subscribers.map((s) => ({ email: s.email, unsubscribeToken: s.unsubscribeToken })),
+          grantsData
+        ).then(async (result) => {
+          await updateNotificationRecord(notifId, {
+            successCount: result.successCount,
+            failCount: result.failCount,
+            status: result.failCount > result.successCount ? "failed" : "completed",
+          });
+        }).catch(async (err) => {
+          console.error("[Notification] Batch send failed:", err);
+          await updateNotificationRecord(notifId, {
+            successCount: 0,
+            failCount: subscribers.length,
+            status: "failed",
+          });
+        });
+
+        return {
+          success: true,
+          notificationId: notifId,
+          recipientCount: subscribers.length,
+          grantCount: grantsData.length,
+        };
+      }),
 
     // List all users with search, filter, and pagination
     users: adminProcedure
@@ -415,9 +513,58 @@ export const appRouter = router({
         email: z.string().optional(),
         amount: z.string().optional(),
         status: z.string().optional(),
+        notifySubscribers: z.boolean().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await createGrant(input);
+      .mutation(async ({ input, ctx }) => {
+        const { notifySubscribers, ...grantData } = input;
+        const result = await createGrant(grantData);
+
+        // Auto-notify subscribers if requested
+        if (notifySubscribers) {
+          const grant = await getGrantByItemId(result.itemId);
+          if (grant) {
+            const subscribers = await getActiveNewsletterSubscribers();
+            if (subscribers.length > 0) {
+              const grantEmailData: GrantEmailData = {
+                itemId: grant.itemId,
+                name: grant.name,
+                organization: grant.organization || "",
+                category: grant.category,
+                country: grant.country,
+                description: grant.description || "",
+                amount: grant.amount || "",
+              };
+
+              const subject = buildNewGrantsSubject(1);
+              const notifId = await createNotificationRecord({
+                subject,
+                grantItemIds: [result.itemId],
+                recipientCount: subscribers.length,
+                sentBy: ctx.user.id,
+              });
+
+              // Send in background
+              sendBatchNewGrantNotifications(
+                subscribers.map((s) => ({ email: s.email, unsubscribeToken: s.unsubscribeToken })),
+                [grantEmailData]
+              ).then(async (batchResult) => {
+                await updateNotificationRecord(notifId, {
+                  successCount: batchResult.successCount,
+                  failCount: batchResult.failCount,
+                  status: batchResult.failCount > batchResult.successCount ? "failed" : "completed",
+                });
+              }).catch(async (err) => {
+                console.error("[Notification] Auto-notify failed:", err);
+                await updateNotificationRecord(notifId, {
+                  successCount: 0,
+                  failCount: subscribers.length,
+                  status: "failed",
+                });
+              });
+            }
+          }
+        }
+
         return { success: true, itemId: result.itemId };
       }),
 

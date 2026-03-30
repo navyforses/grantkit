@@ -1,6 +1,6 @@
 /*
  * Admin Panel — GrantKit
- * Features: User management, Grant CRUD management with tabs
+ * Features: User management, Grant CRUD management, Newsletter notifications
  */
 
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -9,6 +9,7 @@ import { trpc } from "@/lib/trpc";
 import { CATEGORIES } from "@/lib/constants";
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -32,6 +33,12 @@ import {
   X,
   Check,
   AlertTriangle,
+  Mail,
+  Send,
+  Bell,
+  CheckCircle,
+  XOctagon,
+  Loader2,
 } from "lucide-react";
 
 // ===== Stat Card =====
@@ -43,7 +50,7 @@ function StatCard({
 }: {
   icon: React.ElementType;
   label: string;
-  value: number;
+  value: number | string;
   color: string;
 }) {
   return (
@@ -105,6 +112,23 @@ const categoryLabels: Record<string, string> = {
   other: "Other",
 };
 
+// ===== Notification Status Badge =====
+function NotifStatusBadge({ status }: { status: string }) {
+  const config: Record<string, { bg: string; text: string; icon: React.ElementType }> = {
+    sending: { bg: "bg-blue-50", text: "text-blue-700", icon: Loader2 },
+    completed: { bg: "bg-emerald-50", text: "text-emerald-700", icon: CheckCircle },
+    failed: { bg: "bg-red-50", text: "text-red-700", icon: XOctagon },
+  };
+  const c = config[status] || config.sending;
+  const Icon = c.icon;
+  return (
+    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${c.bg} ${c.text}`}>
+      <Icon className={`w-3 h-3 ${status === "sending" ? "animate-spin" : ""}`} />
+      {status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
+  );
+}
+
 // ===== Grant Form Modal =====
 function GrantFormModal({
   mode,
@@ -147,13 +171,14 @@ function GrantFormModal({
     amount: initialData?.amount || "",
     status: initialData?.status || "",
   });
+  const [notifySubscribers, setNotifySubscribers] = useState(mode === "create");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === "edit" && initialData?.itemId) {
       onSave({ itemId: initialData.itemId, ...form });
     } else {
-      onSave(form);
+      onSave({ ...form, notifySubscribers });
     }
   };
 
@@ -169,10 +194,7 @@ function GrantFormModal({
           <h3 className="text-lg font-semibold text-[#0f172a]">
             {mode === "create" ? "Add New Grant" : "Edit Grant"}
           </h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-          >
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
@@ -305,11 +327,11 @@ function GrantFormModal({
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
               <input
-                type="email"
+                type="text"
                 value={form.email}
                 onChange={(e) => updateField("email", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                placeholder="contact@example.com"
+                placeholder="contact@..."
               />
             </div>
           </div>
@@ -323,7 +345,7 @@ function GrantFormModal({
                 value={form.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                placeholder="+1 (555) 123-4567"
+                placeholder="+1 (555) ..."
               />
             </div>
             <div>
@@ -333,27 +355,48 @@ function GrantFormModal({
                 value={form.status}
                 onChange={(e) => updateField("status", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                placeholder="e.g., Open, Rolling, Deadline..."
+                placeholder="Open, Closed, Rolling..."
               />
             </div>
           </div>
 
+          {/* Notify Subscribers (only for create mode) */}
+          {mode === "create" && (
+            <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-100">
+              <input
+                type="checkbox"
+                id="notifySubscribers"
+                checked={notifySubscribers}
+                onChange={(e) => setNotifySubscribers(e.target.checked)}
+                className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+              />
+              <label htmlFor="notifySubscribers" className="text-sm text-purple-800">
+                <span className="font-medium">Notify newsletter subscribers</span>
+                <span className="text-purple-600 block text-xs mt-0.5">
+                  Send email notification about this new grant to all active subscribers
+                </span>
+              </label>
+            </div>
+          )}
+
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+          <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+              className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isPending || !form.name.trim()}
-              className="px-5 py-2.5 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50"
             >
               {isPending ? (
                 <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : mode === "create" ? (
+                <Plus className="w-4 h-4" />
               ) : (
                 <Check className="w-4 h-4" />
               )}
@@ -366,7 +409,7 @@ function GrantFormModal({
   );
 }
 
-// ===== Delete Confirmation Modal =====
+// ===== Delete Confirm Modal =====
 function DeleteConfirmModal({
   grantName,
   onConfirm,
@@ -385,29 +428,171 @@ function DeleteConfirmModal({
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
             <AlertTriangle className="w-5 h-5 text-red-500" />
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">Delete Grant</h3>
-            <p className="text-sm text-gray-500">This action cannot be undone</p>
-          </div>
+          <h3 className="text-lg font-semibold text-[#0f172a]">Delete Grant</h3>
         </div>
         <p className="text-sm text-gray-600 mb-6">
-          Are you sure you want to deactivate <strong>{grantName}</strong>? It will be hidden from the catalog but can be restored later.
+          Are you sure you want to permanently delete <strong>"{grantName}"</strong>? This action cannot be undone.
         </p>
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+            className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={isPending}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50"
           >
-            {isPending && <RefreshCw className="w-4 h-4 animate-spin" />}
+            {isPending ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
             Delete
           </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== Send Notification Modal =====
+function SendNotificationModal({
+  onClose,
+  onSend,
+  isPending,
+}: {
+  onClose: () => void;
+  onSend: (grantItemIds: string[]) => void;
+  isPending: boolean;
+}) {
+  const [grantSearch, setGrantSearch] = useState("");
+  const [selectedGrants, setSelectedGrants] = useState<Array<{ itemId: string; name: string }>>([]);
+
+  // Search recent grants to select from
+  const { data: recentGrants } = trpc.admin.grants.useQuery({
+    search: grantSearch,
+    page: 1,
+    pageSize: 10,
+  });
+
+  const toggleGrant = (grant: { itemId: string; name: string }) => {
+    setSelectedGrants((prev) => {
+      const exists = prev.find((g) => g.itemId === grant.itemId);
+      if (exists) return prev.filter((g) => g.itemId !== grant.itemId);
+      if (prev.length >= 20) return prev; // max 20
+      return [...prev, grant];
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center">
+              <Send className="w-4 h-4 text-purple-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-[#0f172a]">Send Grant Notification</h3>
+              <p className="text-xs text-gray-500">Select grants to notify subscribers about</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+            <X className="w-5 h-5 text-gray-400" />
+          </button>
+        </div>
+
+        {/* Selected Grants */}
+        {selectedGrants.length > 0 && (
+          <div className="px-6 py-3 border-b border-gray-100 bg-purple-50/50">
+            <p className="text-xs font-medium text-purple-700 mb-2">
+              Selected ({selectedGrants.length}/20):
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {selectedGrants.map((g) => (
+                <span
+                  key={g.itemId}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-white text-purple-700 rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50"
+                  onClick={() => toggleGrant(g)}
+                >
+                  {g.name.length > 30 ? g.name.substring(0, 30) + "..." : g.name}
+                  <X className="w-3 h-3" />
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Search */}
+        <div className="px-6 py-3 border-b border-gray-100">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search grants to include..."
+              value={grantSearch}
+              onChange={(e) => setGrantSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+            />
+          </div>
+        </div>
+
+        {/* Grant List */}
+        <div className="flex-1 overflow-y-auto px-6 py-2">
+          {recentGrants?.grants.map((g) => {
+            const isSelected = selectedGrants.some((s) => s.itemId === g.itemId);
+            return (
+              <div
+                key={g.itemId}
+                onClick={() => toggleGrant({ itemId: g.itemId, name: g.name })}
+                className={`flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer transition-colors mb-1 ${
+                  isSelected ? "bg-purple-50 border border-purple-200" : "hover:bg-gray-50 border border-transparent"
+                }`}
+              >
+                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${
+                  isSelected ? "bg-purple-600 border-purple-600" : "border-gray-300"
+                }`}>
+                  {isSelected && <Check className="w-3 h-3 text-white" />}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-gray-900 truncate">{g.name}</p>
+                  <p className="text-xs text-gray-400">
+                    {categoryLabels[g.category] || g.category} · {g.country === "US" ? "🇺🇸 US" : "🌍 Intl"}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+          {recentGrants?.grants.length === 0 && (
+            <div className="py-8 text-center">
+              <p className="text-sm text-gray-400">No grants found</p>
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+          <p className="text-xs text-gray-500">
+            {selectedGrants.length === 0
+              ? "Select at least one grant"
+              : `${selectedGrants.length} grant${selectedGrants.length > 1 ? "s" : ""} selected`}
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onClose}
+              className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => onSend(selectedGrants.map((g) => g.itemId))}
+              disabled={isPending || selectedGrants.length === 0}
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors disabled:opacity-50"
+            >
+              {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              Send to Subscribers
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -417,68 +602,54 @@ function DeleteConfirmModal({
 // ===== Main Admin Component =====
 export default function Admin() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
-  const [activeTab, setActiveTab] = useState<"users" | "grants">("users");
+  const utils = trpc.useUtils();
 
-  // Users state
+  // Tab state
+  const [activeTab, setActiveTab] = useState<"users" | "grants" | "newsletter">("users");
+
+  // Users tab state
   const [userSearch, setUserSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [userPage, setUserPage] = useState(1);
-  const userPageSize = 15;
+  const userPageSize = 20;
 
-  // Grants state
+  // Grants tab state
   const [grantSearch, setGrantSearch] = useState("");
   const [grantCategoryFilter, setGrantCategoryFilter] = useState("all");
   const [grantPage, setGrantPage] = useState(1);
-  const grantPageSize = 15;
+  const grantPageSize = 20;
   const [showGrantForm, setShowGrantForm] = useState(false);
   const [editingGrant, setEditingGrant] = useState<any>(null);
   const [deletingGrant, setDeletingGrant] = useState<{ itemId: string; name: string } | null>(null);
 
-  // Stabilize query inputs
-  const userQueryInput = useMemo(
-    () => ({ search: userSearch || undefined, statusFilter, page: userPage, pageSize: userPageSize }),
-    [userSearch, statusFilter, userPage, userPageSize]
-  );
+  // Newsletter tab state
+  const [showSendNotification, setShowSendNotification] = useState(false);
 
-  const grantQueryInput = useMemo(
-    () => ({
-      search: grantSearch || undefined,
-      category: grantCategoryFilter !== "all" ? grantCategoryFilter : undefined,
-      page: grantPage,
-      pageSize: grantPageSize,
-    }),
-    [grantSearch, grantCategoryFilter, grantPage, grantPageSize]
-  );
+  // ===== Queries =====
+  const { data: stats } = trpc.admin.stats.useQuery();
+  const { data: grantStats } = trpc.admin.grantStats.useQuery();
+  const { data: newsletterStats } = trpc.admin.newsletterStats.useQuery();
+  const { data: notifHistory } = trpc.admin.notificationHistory.useQuery({ limit: 20 });
 
-  const utils = trpc.useUtils();
-
-  // User queries
-  const { data: stats, isLoading: statsLoading } = trpc.admin.stats.useQuery(undefined, {
-    enabled: isAuthenticated && user?.role === "admin",
-    retry: false,
+  const { data: usersData, isLoading: usersLoading } = trpc.admin.users.useQuery({
+    search: userSearch || undefined,
+    statusFilter: statusFilter !== "all" ? statusFilter : undefined,
+    page: userPage,
+    pageSize: userPageSize,
   });
 
-  const { data: usersData, isLoading: usersLoading } = trpc.admin.users.useQuery(userQueryInput, {
-    enabled: isAuthenticated && user?.role === "admin" && activeTab === "users",
-    retry: false,
+  const { data: grantsData, isLoading: grantsLoading } = trpc.admin.grants.useQuery({
+    search: grantSearch || undefined,
+    category: grantCategoryFilter !== "all" ? grantCategoryFilter : undefined,
+    page: grantPage,
+    pageSize: grantPageSize,
   });
 
-  // Grant queries
-  const { data: grantStats } = trpc.admin.grantStats.useQuery(undefined, {
-    enabled: isAuthenticated && user?.role === "admin",
-    retry: false,
-  });
-
-  const { data: grantsData, isLoading: grantsLoading } = trpc.admin.grants.useQuery(grantQueryInput, {
-    enabled: isAuthenticated && user?.role === "admin" && activeTab === "grants",
-    retry: false,
-  });
-
-  // Mutations
+  // ===== Mutations =====
   const updateRoleMutation = trpc.admin.updateRole.useMutation({
     onSuccess: () => {
       utils.admin.users.invalidate();
-      utils.admin.stats.invalidate();
+      toast.success("User role updated");
     },
   });
 
@@ -486,14 +657,17 @@ export default function Admin() {
     onSuccess: () => {
       utils.admin.users.invalidate();
       utils.admin.stats.invalidate();
+      toast.success("Subscription status updated");
     },
   });
 
   const createGrantMutation = trpc.admin.createGrant.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       utils.admin.grants.invalidate();
       utils.admin.grantStats.invalidate();
+      utils.admin.notificationHistory.invalidate();
       setShowGrantForm(false);
+      toast.success("Grant created successfully");
     },
   });
 
@@ -502,6 +676,7 @@ export default function Admin() {
       utils.admin.grants.invalidate();
       utils.admin.grantStats.invalidate();
       setEditingGrant(null);
+      toast.success("Grant updated");
     },
   });
 
@@ -510,6 +685,22 @@ export default function Admin() {
       utils.admin.grants.invalidate();
       utils.admin.grantStats.invalidate();
       setDeletingGrant(null);
+      toast.success("Grant deleted");
+    },
+  });
+
+  const sendNotificationMutation = trpc.admin.sendNewGrantNotification.useMutation({
+    onSuccess: (data) => {
+      utils.admin.notificationHistory.invalidate();
+      setShowSendNotification(false);
+      if (data.success) {
+        toast.success(`Notification sent to ${data.recipientCount} subscribers for ${data.grantCount} grant(s)`);
+      } else {
+        toast.error(data.error || "Failed to send notification");
+      }
+    },
+    onError: (err) => {
+      toast.error("Failed to send notification: " + err.message);
     },
   });
 
@@ -551,6 +742,17 @@ export default function Admin() {
     });
   };
 
+  const formatDateTime = (date: Date | string | null) => {
+    if (!date) return "—";
+    return new Date(date).toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const handleRefresh = () => {
     utils.admin.invalidate();
   };
@@ -572,7 +774,6 @@ export default function Admin() {
       status: "",
     });
 
-    // Fetch full details
     try {
       const detail = await utils.admin.grantDetail.fetch({ itemId: grant.itemId });
       if (detail) {
@@ -634,10 +835,11 @@ export default function Admin() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
           <StatCard icon={Users} label="Total Users" value={stats?.total ?? 0} color="bg-[#1e3a5f]" />
           <StatCard icon={UserCheck} label="Active Subs" value={stats?.active ?? 0} color="bg-emerald-500" />
           <StatCard icon={Database} label="Total Grants" value={grantStats?.active ?? 0} color="bg-indigo-500" />
+          <StatCard icon={Mail} label="Subscribers" value={newsletterStats?.active ?? 0} color="bg-purple-500" />
           <StatCard icon={XCircle} label="Cancelled" value={stats?.cancelled ?? 0} color="bg-red-500" />
           <StatCard icon={Clock} label="Past Due" value={stats?.pastDue ?? 0} color="bg-amber-500" />
           <StatCard icon={CreditCard} label="No Sub" value={stats?.none ?? 0} color="bg-gray-400" />
@@ -670,6 +872,22 @@ export default function Admin() {
               activeTab === "grants" ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
             }`}>
               {grantStats?.active ?? 0}
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveTab("newsletter")}
+            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+              activeTab === "newsletter"
+                ? "bg-[#1e3a5f] text-white"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            <Mail className="w-4 h-4" />
+            Newsletter
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+              activeTab === "newsletter" ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
+            }`}>
+              {newsletterStats?.active ?? 0}
             </span>
           </button>
         </div>
@@ -989,6 +1207,122 @@ export default function Admin() {
             )}
           </div>
         )}
+
+        {/* ===== NEWSLETTER TAB ===== */}
+        {activeTab === "newsletter" && (
+          <div className="space-y-6">
+            {/* Newsletter Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Active Subscribers</p>
+                    <p className="text-2xl font-bold text-[#0f172a]">{newsletterStats?.active ?? 0}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400">
+                  {newsletterStats?.total ?? 0} total ({(newsletterStats?.total ?? 0) - (newsletterStats?.active ?? 0)} unsubscribed)
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Notifications Sent</p>
+                    <p className="text-2xl font-bold text-[#0f172a]">{notifHistory?.length ?? 0}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400">
+                  {notifHistory?.filter((n) => n.status === "completed").length ?? 0} completed, {notifHistory?.filter((n) => n.status === "failed").length ?? 0} failed
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm flex items-center justify-center">
+                <button
+                  onClick={() => setShowSendNotification(true)}
+                  className="inline-flex items-center gap-3 px-6 py-3 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-xl transition-colors shadow-sm"
+                >
+                  <Send className="w-5 h-5" />
+                  Send Grant Notification
+                </button>
+              </div>
+            </div>
+
+            {/* Notification History */}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="text-base font-semibold text-[#0f172a]">Notification History</h2>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50/50">
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Subject</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Grants</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Recipients</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Success</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Status</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Sent At</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {!notifHistory?.length ? (
+                      <tr>
+                        <td colSpan={6} className="px-5 py-12 text-center">
+                          <Mail className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                          <p className="text-sm text-gray-400">No notifications sent yet</p>
+                          <p className="text-xs text-gray-300 mt-1">Click "Send Grant Notification" to get started</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      notifHistory.map((n) => {
+                        let grantCount = 0;
+                        try {
+                          grantCount = JSON.parse(n.grantItemIds).length;
+                        } catch { grantCount = 0; }
+
+                        return (
+                          <tr key={n.id} className="hover:bg-gray-50/50 transition-colors">
+                            <td className="px-5 py-3.5">
+                              <p className="text-sm font-medium text-gray-900 truncate max-w-[250px]">{n.subject}</p>
+                            </td>
+                            <td className="px-5 py-3.5">
+                              <span className="text-sm text-gray-600">{grantCount}</span>
+                            </td>
+                            <td className="px-5 py-3.5">
+                              <span className="text-sm text-gray-600">{n.recipientCount}</span>
+                            </td>
+                            <td className="px-5 py-3.5">
+                              <span className="text-sm">
+                                <span className="text-emerald-600">{n.successCount}</span>
+                                {n.failCount > 0 && (
+                                  <span className="text-red-500 ml-1">/ {n.failCount} failed</span>
+                                )}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3.5">
+                              <NotifStatusBadge status={n.status} />
+                            </td>
+                            <td className="px-5 py-3.5">
+                              <span className="text-sm text-gray-500">{formatDateTime(n.sentAt)}</span>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Modals */}
@@ -1017,6 +1351,14 @@ export default function Admin() {
           onConfirm={() => deleteGrantMutation.mutate({ itemId: deletingGrant.itemId })}
           onCancel={() => setDeletingGrant(null)}
           isPending={deleteGrantMutation.isPending}
+        />
+      )}
+
+      {showSendNotification && (
+        <SendNotificationModal
+          onClose={() => setShowSendNotification(false)}
+          onSend={(grantItemIds) => sendNotificationMutation.mutate({ grantItemIds })}
+          isPending={sendNotificationMutation.isPending}
         />
       )}
     </div>

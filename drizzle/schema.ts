@@ -110,3 +110,23 @@ export const grantTranslations = mysqlTable("grant_translations", {
 
 export type GrantTranslation = typeof grantTranslations.$inferSelect;
 export type InsertGrantTranslation = typeof grantTranslations.$inferInsert;
+
+/**
+ * Newsletter notification history — tracks sent email campaigns.
+ * Records each batch of new-grant notification emails sent to subscribers.
+ */
+export const notificationHistory = mysqlTable("notification_history", {
+  id: int("id").autoincrement().primaryKey(),
+  subject: text("subject").notNull(),
+  grantItemIds: text("grantItemIds").notNull(), // JSON array of grant itemIds included
+  recipientCount: int("recipientCount").notNull().default(0),
+  successCount: int("successCount").notNull().default(0),
+  failCount: int("failCount").notNull().default(0),
+  status: mysqlEnum("notifStatus", ["sending", "completed", "failed"]).default("sending").notNull(),
+  sentBy: int("sentBy"), // admin user ID who triggered the send
+  sentAt: timestamp("sentAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+});
+
+export type NotificationHistory = typeof notificationHistory.$inferSelect;
+export type InsertNotificationHistory = typeof notificationHistory.$inferInsert;

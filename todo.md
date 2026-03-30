@@ -120,3 +120,13 @@
 - [x] Update grant detail page to fetch from database
 - [x] Update homepage preview to use database grants
 - [x] Write vitest tests for grant CRUD endpoints (91 tests total passing)
+
+## Email Notifications: New Grant Alerts
+- [x] Create HTML email template for new grant notifications
+- [x] Build sendNewGrantNotification function in email service
+- [x] Add newsletter notification tRPC endpoint for admin (send to all subscribers)
+- [x] Add auto-notify option when admin creates a new grant
+- [x] Build admin UI: newsletter management tab with send notification button
+- [x] Add unsubscribe link in emails + unsubscribe endpoint
+- [x] Track notification history (sent date, grant count, recipient count)
+- [x] Write vitest tests for new grant notification logic (118 tests total passing)
