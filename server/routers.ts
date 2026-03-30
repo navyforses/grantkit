@@ -2,7 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
-import { updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats, getUserById } from "./db";
+import { updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats, getUserById, getSavedGrantIds, toggleSavedGrant } from "./db";
 import { sendSubscriptionEmail, sendAdminNewSubscriberNotification } from "./emailService";
 import { z } from "zod";
 
@@ -45,7 +45,7 @@ export const appRouter = router({
         sendSubscriptionEmail(
           { email: ctx.user.email, name: ctx.user.name },
           "cancelled"
-        ).catch((err) => console.error("[Email] Cancel notification failed:", err));
+        ).catch((err: unknown) => console.error("[Email] Cancel notification failed:", err));
       }
 
       return { success: true };
@@ -71,14 +71,31 @@ export const appRouter = router({
           sendSubscriptionEmail(
             { email: ctx.user.email, name: ctx.user.name },
             "activated"
-          ).catch((err) => console.error("[Email] Activation notification failed:", err));
+          ).catch((err: unknown) => console.error("[Email] Activation notification failed:", err));
 
           sendAdminNewSubscriberNotification(
             { email: ctx.user.email, name: ctx.user.name }
-          ).catch((err) => console.error("[Email] Admin notification failed:", err));
+          ).catch((err: unknown) => console.error("[Email] Admin notification failed:", err));
         }
 
         return { success: true };
+      }),
+  }),
+
+  // ===== Saved Grants =====
+  grants: router({
+    // Get list of saved grant IDs for current user
+    savedList: protectedProcedure.query(async ({ ctx }) => {
+      const grantIds = await getSavedGrantIds(ctx.user.id);
+      return { grantIds };
+    }),
+
+    // Toggle save/unsave a grant
+    toggleSave: protectedProcedure
+      .input(z.object({ grantId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        const result = await toggleSavedGrant(ctx.user.id, input.grantId);
+        return result;
       }),
   }),
 
@@ -166,7 +183,7 @@ export const appRouter = router({
             sendSubscriptionEmail(
               { email: user.email, name: user.name },
               emailType
-            ).catch((err) => console.error("[Email] Admin status change notification failed:", err));
+            ).catch((err: unknown) => console.error("[Email] Admin status change notification failed:", err));
           }
         }
 

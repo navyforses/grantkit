@@ -3,6 +3,7 @@
  * Design: Structured Clarity — simple, clean footer with essential links
  */
 
+import { Link } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
@@ -23,22 +24,22 @@ export default function Footer() {
           </div>
 
           {/* Links */}
-          <div className="flex items-center gap-6 text-sm">
-            <a href="mailto:hello@grantkit.co" className="hover:text-white transition-colors">
+          <div className="flex items-center gap-6 text-sm flex-wrap justify-center">
+            <Link href="/contact" className="hover:text-white transition-colors">
               {t.footer.contact}
-            </a>
+            </Link>
             <span className="text-gray-600">|</span>
-            <a href="/privacy" className="hover:text-white transition-colors">
+            <Link href="/privacy" className="hover:text-white transition-colors">
               {t.legal.privacyTitle}
-            </a>
+            </Link>
             <span className="text-gray-600">|</span>
-            <a href="/terms" className="hover:text-white transition-colors">
+            <Link href="/terms" className="hover:text-white transition-colors">
               {t.legal.termsTitle}
-            </a>
+            </Link>
             <span className="text-gray-600">|</span>
-            <a href="/refund" className="hover:text-white transition-colors">
+            <Link href="/refund" className="hover:text-white transition-colors">
               {t.legal?.refundTitle || "Refund Policy"}
-            </a>
+            </Link>
             <span className="text-gray-600">|</span>
             <span className="text-gray-500 text-xs">
               {t.footer.paddle}

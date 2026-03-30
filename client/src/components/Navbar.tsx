@@ -9,7 +9,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { LogIn, LogOut, User, Shield } from "lucide-react";
+import { LayoutDashboard, LogIn, LogOut, User, Shield } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 export default function Navbar() {
@@ -63,6 +63,17 @@ export default function Navbar() {
             <>
               {isAuthenticated ? (
                 <div className="flex items-center gap-3">
+                  {/* Dashboard link */}
+                  <Link
+                    href="/dashboard"
+                    className={`inline-flex items-center gap-1 text-sm font-medium transition-colors ${
+                      location === "/dashboard" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span className="hidden sm:inline">Dashboard</span>
+                  </Link>
+
                   {/* Show subscribe button only if not active subscriber */}
                   {!subStatus?.isActive && (
                     <div className="hidden sm:block">

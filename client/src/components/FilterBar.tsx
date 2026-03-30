@@ -1,11 +1,14 @@
 /*
  * FilterBar Component
- * Design: Structured Clarity — pill-shaped category tabs + country dropdown + type filter
+ * Design: Structured Clarity — pill-shaped category tabs + country dropdown + type filter + sort
  * Sticky on scroll, clean horizontal layout
  */
 
+import { ArrowUpDown } from "lucide-react";
 import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+export type SortValue = "name_asc" | "name_desc" | "category" | "country";
 
 interface FilterBarProps {
   selectedCategory: CategoryValue;
@@ -17,6 +20,8 @@ interface FilterBarProps {
   itemCount: number;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
+  sortBy?: SortValue;
+  onSortChange?: (sort: SortValue) => void;
 }
 
 export default function FilterBar({
@@ -29,6 +34,8 @@ export default function FilterBar({
   itemCount,
   searchQuery,
   onSearchChange,
+  sortBy,
+  onSortChange,
 }: FilterBarProps) {
   const { t, tCategory, tCountry } = useLanguage();
 
@@ -70,8 +77,8 @@ export default function FilterBar({
             })}
           </div>
 
-          {/* Type filter + Country filter + count */}
-          <div className="flex items-center gap-3">
+          {/* Type filter + Country filter + Sort + count */}
+          <div className="flex items-center gap-3 flex-wrap">
             <span className="text-sm text-gray-500 whitespace-nowrap">
               <span className="font-semibold text-[#0f172a]">{itemCount}</span> {t.catalog.itemsCount}
             </span>
@@ -102,6 +109,20 @@ export default function FilterBar({
                 );
               })}
             </select>
+
+            {/* Sort */}
+            {onSortChange && (
+              <select
+                value={sortBy || "name_asc"}
+                onChange={(e) => onSortChange(e.target.value as SortValue)}
+                className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              >
+                <option value="name_asc">A → Z</option>
+                <option value="name_desc">Z → A</option>
+                <option value="category">Category</option>
+                <option value="country">Country</option>
+              </select>
+            )}
           </div>
         </div>
       </div>

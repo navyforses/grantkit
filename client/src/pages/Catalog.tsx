@@ -6,7 +6,7 @@
 
 import { useMemo, useState } from "react";
 import CatalogCard from "@/components/CatalogCard";
-import FilterBar from "@/components/FilterBar";
+import FilterBar, { type SortValue } from "@/components/FilterBar";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
@@ -15,8 +15,9 @@ import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, LogIn, CreditCard } from "lucide-react";
+import { Lock, LogIn } from "lucide-react";
 import { getLoginUrl } from "@/const";
+import { toast } from "sonner";
 
 const allItems = catalogData as CatalogItem[];
 const ITEMS_PER_PAGE = 30;
@@ -28,13 +29,44 @@ export default function Catalog() {
   const [selectedCountry, setSelectedCountry] = useState<CountryValue>("all");
   const [selectedType, setSelectedType] = useState<TypeValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortValue>("name_asc");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const { t, tCatalogContent } = useLanguage();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   const { data: subStatus, isLoading: subLoading } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
+  });
+
+  // Saved grants
+  const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
+    enabled: isAuthenticated,
+    retry: false,
+  });
+  const savedSet = useMemo(() => new Set(savedData?.grantIds || []), [savedData]);
+
+  const utils = trpc.useUtils();
+  const toggleSave = trpc.grants.toggleSave.useMutation({
+    onMutate: async ({ grantId }) => {
+      await utils.grants.savedList.cancel();
+      const prev = utils.grants.savedList.getData();
+      utils.grants.savedList.setData(undefined, (old) => {
+        if (!old) return { grantIds: [grantId] };
+        const ids = old.grantIds.includes(grantId)
+          ? old.grantIds.filter((id) => id !== grantId)
+          : [...old.grantIds, grantId];
+        return { grantIds: ids };
+      });
+      return { prev };
+    },
+    onError: (_err: unknown, _vars: unknown, ctx: { prev?: { grantIds: string[] } } | undefined) => {
+      if (ctx?.prev) utils.grants.savedList.setData(undefined, ctx.prev);
+      toast.error("Failed to save grant");
+    },
+    onSettled: () => {
+      utils.grants.savedList.invalidate();
+    },
   });
 
   const isActive = subStatus?.isActive || false;
@@ -42,7 +74,7 @@ export default function Catalog() {
 
   const filtered = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    return allItems.filter((item) => {
+    let items = allItems.filter((item) => {
       if (selectedCategory !== "all" && item.category !== selectedCategory) return false;
       if (selectedCountry !== "all" && item.country !== selectedCountry) return false;
       if (selectedType !== "all" && item.type !== selectedType) return false;
@@ -68,7 +100,25 @@ export default function Catalog() {
       }
       return true;
     });
-  }, [selectedCategory, selectedCountry, selectedType, searchQuery, tCatalogContent]);
+
+    // Sort
+    items = [...items].sort((a, b) => {
+      switch (sortBy) {
+        case "name_asc":
+          return a.name.localeCompare(b.name);
+        case "name_desc":
+          return b.name.localeCompare(a.name);
+        case "category":
+          return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
+        case "country":
+          return a.country.localeCompare(b.country) || a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+
+    return items;
+  }, [selectedCategory, selectedCountry, selectedType, searchQuery, sortBy, tCatalogContent]);
 
   // If not active subscriber, only show preview items
   const displayItems = isActive ? filtered : filtered.slice(0, PREVIEW_ITEMS);
@@ -102,6 +152,8 @@ export default function Catalog() {
         itemCount={filtered.length}
         searchQuery={searchQuery}
         onSearchChange={(q) => { setSearchQuery(q); setVisibleCount(ITEMS_PER_PAGE); }}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
       />
 
       {/* Cards grid */}
@@ -117,7 +169,14 @@ export default function Catalog() {
               <>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {visibleItems.map((item, i) => (
-                    <CatalogCard key={item.id} item={item} index={i} />
+                    <CatalogCard
+                      key={item.id}
+                      item={item}
+                      index={i}
+                      isSaved={savedSet.has(item.id)}
+                      isAuthenticated={isAuthenticated}
+                      onToggleSave={(grantId) => toggleSave.mutate({ grantId })}
+                    />
                   ))}
                 </div>
 

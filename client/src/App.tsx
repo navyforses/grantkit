@@ -8,7 +8,10 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { usePaddleInit } from "./hooks/usePaddle";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
+import GrantDetail from "./pages/GrantDetail";
 import Profile from "./pages/Profile";
+import Dashboard from "./pages/Dashboard";
+import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
@@ -19,7 +22,10 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/catalog" component={Catalog} />
+      <Route path="/grant/:id" component={GrantDetail} />
       <Route path="/profile" component={Profile} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/contact" component={Contact} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
       <Route path="/refund" component={Refund} />

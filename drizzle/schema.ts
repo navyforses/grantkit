@@ -1,4 +1,4 @@
-import { boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar, uniqueIndex } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -26,3 +26,19 @@ export const users = mysqlTable("users", {
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+
+/**
+ * Saved/bookmarked grants for users.
+ * Each row represents a user saving a specific grant from the catalog.
+ */
+export const savedGrants = mysqlTable("saved_grants", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  grantId: varchar("grantId", { length: 64 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex("user_grant_idx").on(table.userId, table.grantId),
+]);
+
+export type SavedGrant = typeof savedGrants.$inferSelect;
+export type InsertSavedGrant = typeof savedGrants.$inferInsert;

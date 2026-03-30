@@ -84,3 +84,15 @@
 - [x] Add welcome email on first subscription activation
 - [x] Add admin notification on new subscriber
 - [x] Write vitest tests for email notification logic (49 tests total passing)
+
+## Phase 1: Professional Improvements
+- [x] Grant detail page (/grant/:id) with full info, related grants, back navigation
+- [x] Saved/bookmarked grants feature (database table + UI bookmark button)
+- [x] User Dashboard page with saved grants, subscription status, quick actions
+- [x] Catalog sorting (A-Z, Z-A, by category, by country)
+- [x] Contact page with contact form (sends via notifyOwner)
+- [x] CatalogCard clickable — navigates to grant detail page
+- [x] Bookmark button on CatalogCard and GrantDetail page
+- [x] Dashboard link in Navbar for authenticated users
+- [x] Contact link in Footer (replaces mailto)
+- [x] Write vitest tests for grants.savedList and grants.toggleSave (55 tests total passing)

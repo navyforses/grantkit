@@ -1,6 +1,6 @@
 import { eq, and, or, like, desc, count } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, savedGrants } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -133,6 +133,45 @@ export async function getUserByPaddleCustomerId(customerId: string) {
 
   const result = await db.select().from(users).where(eq(users.paddleCustomerId, customerId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
+}
+
+// ===== Saved Grants helpers =====
+
+export async function getSavedGrantIds(userId: number): Promise<string[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ grantId: savedGrants.grantId })
+    .from(savedGrants)
+    .where(eq(savedGrants.userId, userId))
+    .orderBy(desc(savedGrants.createdAt));
+
+  return result.map((r) => r.grantId);
+}
+
+export async function toggleSavedGrant(userId: number, grantId: string): Promise<{ saved: boolean }> {
+  const db = await getDb();
+  if (!db) return { saved: false };
+
+  // Check if already saved
+  const existing = await db
+    .select()
+    .from(savedGrants)
+    .where(and(eq(savedGrants.userId, userId), eq(savedGrants.grantId, grantId)))
+    .limit(1);
+
+  if (existing.length > 0) {
+    // Remove
+    await db.delete(savedGrants).where(
+      and(eq(savedGrants.userId, userId), eq(savedGrants.grantId, grantId))
+    );
+    return { saved: false };
+  } else {
+    // Add
+    await db.insert(savedGrants).values({ userId, grantId });
+    return { saved: true };
+  }
 }
 
 // ===== Admin helpers =====
