@@ -69,7 +69,7 @@ export const es: Translations = {
     title: "Preguntas frecuentes",
     items: [
       { q: "¿Con qué frecuencia se actualiza?", a: "Mensualmente, con notificaciones por correo cuando se agregan nuevas subvenciones. Monitoreamos continuamente los programas de subvenciones." },
-      { q: "¿Puedo cancelar en cualquier momento?", a: "Sí, puedes cancelar tu suscripción en cualquier momento a través de Gumroad. Sin preguntas ni cargos ocultos." },
+      { q: "¿Puedo cancelar en cualquier momento?", a: "Sí, puedes cancelar tu suscripción en cualquier momento desde tu cuenta. Sin preguntas ni cargos ocultos." },
       { q: "¿Qué países están cubiertos?", a: "Cubrimos principalmente subvenciones de EE.UU., con subvenciones internacionales también incluidas." },
       { q: "¿Qué condiciones están cubiertas?", a: "Nuestra base de datos incluye subvenciones para cáncer, autismo, parálisis cerebral, lesiones medulares, enfermedades raras y mucho más." },
       { q: "¿Es para organizaciones o individuos?", a: "Ambos. Nuestra base de datos incluye subvenciones para individuos, familias, cuidadores y personas con discapacidades." },
@@ -82,14 +82,14 @@ export const es: Translations = {
   },
   footer: {
     contact: "Contacto",
-    gumroad: "Gumroad",
+    paddle: "Pagos por Paddle",
     rights: "Todos los derechos reservados.",
   },
   catalog: {
     title: "Catálogo de subvenciones y recursos",
     subtitle: "Explore 643 subvenciones, fundaciones y recursos de apoyo. Filtre por categoría, tipo o país.",
     memberBanner: "Este catálogo es para miembros de GrantKit. ¿Aún no eres miembro?",
-    memberBannerCta: "Suscribirse en Gumroad",
+    memberBannerCta: "Suscribirse ahora",
     itemsCount: "entradas",
     noResults: "No se encontraron resultados",
     noResultsHint: "Intenta ajustar tus filtros o búsqueda para ver más resultados.",

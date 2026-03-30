@@ -80,7 +80,7 @@ export interface Translations {
   // Footer
   footer: {
     contact: string;
-    gumroad: string;
+    paddle: string;
     rights: string;
   };
 

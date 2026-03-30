@@ -3,7 +3,6 @@
  * Design: Structured Clarity — simple, clean footer with essential links
  */
 
-import { GUMROAD_URL } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
@@ -28,14 +27,10 @@ export default function Footer() {
             <a href="mailto:hello@grantkit.co" className="hover:text-white transition-colors">
               {t.footer.contact}
             </a>
-            <a
-              href={GUMROAD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-            >
-              {t.footer.gumroad}
-            </a>
+            <span className="text-gray-600">|</span>
+            <span className="text-gray-500 text-xs">
+              {t.footer.paddle}
+            </span>
           </div>
 
           {/* Copyright */}

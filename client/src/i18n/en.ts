@@ -69,7 +69,7 @@ export const en: Translations = {
     title: "Frequently asked questions",
     items: [
       { q: "How often is it updated?", a: "Monthly, with email notifications when new grants are added. We continuously monitor grant programs across all covered countries." },
-      { q: "Can I cancel anytime?", a: "Yes, you can cancel your subscription anytime through Gumroad. No questions asked, no hidden fees." },
+      { q: "Can I cancel anytime?", a: "Yes, you can cancel your subscription anytime from your account. No questions asked, no hidden fees." },
       { q: "What countries are covered?", a: "We cover grants primarily from the USA, with international grants also included. New countries are added regularly." },
       { q: "What conditions are covered?", a: "Our database includes grants for cancer, autism, cerebral palsy, spinal cord injuries, rare diseases, visual impairment, and many more conditions." },
       { q: "Is this for organizations or individuals?", a: "Both. Our database includes grants for individuals, families seeking medical treatment, caregivers, and those with disabilities." },
@@ -82,14 +82,14 @@ export const en: Translations = {
   },
   footer: {
     contact: "Contact",
-    gumroad: "Gumroad",
+    paddle: "Payments by Paddle",
     rights: "All rights reserved.",
   },
   catalog: {
     title: "Grants & Resources Catalog",
     subtitle: "Browse 643 curated grants, foundations, and support resources. Filter by category, type, or country.",
     memberBanner: "This catalog is for GrantKit members. Not a member yet?",
-    memberBannerCta: "Subscribe on Gumroad",
+    memberBannerCta: "Subscribe Now",
     itemsCount: "entries",
     noResults: "No results found",
     noResultsHint: "Try adjusting your filters or search query to see more results.",

@@ -4,7 +4,6 @@
  * Single unified catalog combining grants + resources
  */
 
-export const GUMROAD_URL = "https://YOURUSERNAME.gumroad.com/l/grantkit";
 
 // ===== Unified Catalog Item =====
 export interface CatalogItem {

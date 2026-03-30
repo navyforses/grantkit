@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { usePaddleInit } from "./hooks/usePaddle";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
 
@@ -19,6 +20,11 @@ function Router() {
   );
 }
 
+function PaddleInitializer() {
+  usePaddleInit();
+  return null;
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -26,6 +32,7 @@ function App() {
         <LanguageProvider>
           <TooltipProvider>
             <Toaster />
+            <PaddleInitializer />
             <Router />
           </TooltipProvider>
         </LanguageProvider>
