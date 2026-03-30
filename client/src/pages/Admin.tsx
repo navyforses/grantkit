@@ -41,6 +41,11 @@ import {
   Loader2,
   Download,
   FileSpreadsheet,
+  Upload,
+  FileUp,
+  AlertCircle,
+  CheckCircle2,
+  Info,
 } from "lucide-react";
 
 // ===== Stat Card =====
@@ -630,6 +635,14 @@ export default function Admin() {
   // Export state
   const [isExporting, setIsExporting] = useState(false);
 
+  // Import state
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importStep, setImportStep] = useState<"upload" | "preview" | "importing" | "done">("upload");
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importPreview, setImportPreview] = useState<any>(null);
+  const [importResult, setImportResult] = useState<any>(null);
+  const [isImporting, setIsImporting] = useState(false);
+
   // ===== Queries =====
   const { data: stats } = trpc.admin.stats.useQuery();
   const { data: grantStats } = trpc.admin.grantStats.useQuery();
@@ -693,6 +706,9 @@ export default function Admin() {
       toast.success("Grant deleted");
     },
   });
+
+  const parseImportMutation = trpc.admin.parseImport.useMutation();
+  const executeImportMutation = trpc.admin.executeImport.useMutation();
 
   const sendNotificationMutation = trpc.admin.sendNewGrantNotification.useMutation({
     onSuccess: (data) => {
@@ -844,6 +860,67 @@ export default function Admin() {
     } finally {
       setIsExporting(false);
     }
+  };
+
+  // ===== Import Helpers =====
+  const handleImportFileSelect = async (file: File) => {
+    setImportFile(file);
+    setIsImporting(true);
+
+    try {
+      // Read file as base64
+      const arrayBuffer = await file.arrayBuffer();
+      const base64 = btoa(
+        new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
+      );
+
+      const format = file.name.toLowerCase().endsWith(".csv") ? "csv" as const : "excel" as const;
+
+      const result = await parseImportMutation.mutateAsync({
+        content: base64,
+        filename: file.name,
+        format,
+      });
+
+      setImportPreview(result);
+      setImportStep("preview");
+    } catch (err) {
+      toast.error("Failed to parse file: " + (err instanceof Error ? err.message : "Unknown error"));
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const handleExecuteImport = async () => {
+    if (!importPreview?.grants?.length) return;
+    setIsImporting(true);
+    setImportStep("importing");
+
+    try {
+      const result = await executeImportMutation.mutateAsync({
+        grants: importPreview.grants,
+      });
+
+      setImportResult(result);
+      setImportStep("done");
+      utils.admin.grants.invalidate();
+      utils.admin.grantStats.invalidate();
+      toast.success(`Imported ${result.created} new, updated ${result.updated} existing grants`);
+    } catch (err) {
+      toast.error("Import failed: " + (err instanceof Error ? err.message : "Unknown error"));
+      setImportStep("preview");
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const resetImport = () => {
+    setShowImportModal(false);
+    setImportStep("upload");
+    setImportFile(null);
+    setImportPreview(null);
+    setImportResult(null);
+    setIsImporting(false);
   };
 
   // Auth guard
@@ -1231,6 +1308,14 @@ export default function Admin() {
                     Excel
                   </button>
                   <button
+                    onClick={() => { resetImport(); setShowImportModal(true); }}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#1e3a5f] bg-white border border-[#1e3a5f]/30 hover:bg-[#1e3a5f]/5 rounded-lg transition-colors"
+                    title="Import grants from CSV/Excel"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Import
+                  </button>
+                  <button
                     onClick={() => setShowGrantForm(true)}
                     className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors"
                   >
@@ -1522,6 +1607,276 @@ export default function Admin() {
           onSend={(grantItemIds) => sendNotificationMutation.mutate({ grantItemIds })}
           isPending={sendNotificationMutation.isPending}
         />
+      )}
+
+      {/* Import Modal */}
+      {showImportModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[#1e3a5f]/10 flex items-center justify-center">
+                  <FileUp className="w-5 h-5 text-[#1e3a5f]" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-[#0f172a]">Import Grants</h3>
+                  <p className="text-xs text-gray-400">
+                    {importStep === "upload" && "Upload a CSV or Excel file"}
+                    {importStep === "preview" && "Review parsed data before importing"}
+                    {importStep === "importing" && "Importing grants..."}
+                    {importStep === "done" && "Import completed"}
+                  </p>
+                </div>
+              </div>
+              <button onClick={resetImport} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Step 1: Upload */}
+              {importStep === "upload" && (
+                <div className="space-y-6">
+                  {/* Drop zone */}
+                  <div
+                    className="border-2 border-dashed border-gray-200 rounded-xl p-10 text-center hover:border-[#1e3a5f]/40 transition-colors cursor-pointer"
+                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-[#1e3a5f]", "bg-[#1e3a5f]/5"); }}
+                    onDragLeave={(e) => { e.currentTarget.classList.remove("border-[#1e3a5f]", "bg-[#1e3a5f]/5"); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove("border-[#1e3a5f]", "bg-[#1e3a5f]/5");
+                      const file = e.dataTransfer.files[0];
+                      if (file) handleImportFileSelect(file);
+                    }}
+                    onClick={() => {
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.accept = ".csv,.xlsx,.xls";
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) handleImportFileSelect(file);
+                      };
+                      input.click();
+                    }}
+                  >
+                    {isImporting ? (
+                      <>
+                        <Loader2 className="w-10 h-10 text-[#1e3a5f] mx-auto mb-3 animate-spin" />
+                        <p className="text-sm font-medium text-gray-700">Parsing file...</p>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                        <p className="text-sm font-medium text-gray-700 mb-1">Drop your CSV or Excel file here</p>
+                        <p className="text-xs text-gray-400">or click to browse</p>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Format guide */}
+                  <div className="bg-blue-50 rounded-xl p-4">
+                    <div className="flex items-start gap-3">
+                      <Info className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
+                      <div className="text-sm text-blue-700">
+                        <p className="font-medium mb-2">Expected columns:</p>
+                        <p className="text-xs leading-relaxed">
+                          <strong>Required:</strong> Name, Category, Country<br />
+                          <strong>Optional:</strong> Item ID (for updates), Organization, Description, Type, Eligibility, Website, Phone, Email, Amount, Status<br />
+                          <strong>Translations:</strong> EN Name, EN Description, KA Name, KA Description, FR Name, etc.
+                        </p>
+                        <p className="text-xs mt-2 text-blue-500">
+                          Tip: Export existing grants first to see the exact format.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 2: Preview */}
+              {importStep === "preview" && importPreview && (
+                <div className="space-y-4">
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-emerald-50 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-emerald-700">{importPreview.validRows}</p>
+                      <p className="text-xs text-emerald-600">Valid Rows</p>
+                    </div>
+                    <div className="bg-amber-50 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-amber-700">{importPreview.skippedRows}</p>
+                      <p className="text-xs text-amber-600">Skipped</p>
+                    </div>
+                    <div className="bg-red-50 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-red-700">{importPreview.errors.length + (importPreview.duplicateErrors?.length || 0)}</p>
+                      <p className="text-xs text-red-600">Errors</p>
+                    </div>
+                  </div>
+
+                  {/* Errors */}
+                  {(importPreview.errors.length > 0 || importPreview.duplicateErrors?.length > 0) && (
+                    <div className="bg-red-50 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="w-4 h-4 text-red-500" />
+                        <p className="text-sm font-medium text-red-700">Validation Errors</p>
+                      </div>
+                      <div className="max-h-32 overflow-y-auto space-y-1">
+                        {[...importPreview.errors, ...(importPreview.duplicateErrors || [])].slice(0, 20).map((err: any, i: number) => (
+                          <p key={i} className="text-xs text-red-600">
+                            Row {err.row}: [{err.field}] {err.message}
+                          </p>
+                        ))}
+                        {(importPreview.errors.length + (importPreview.duplicateErrors?.length || 0)) > 20 && (
+                          <p className="text-xs text-red-400 italic">...and {importPreview.errors.length + (importPreview.duplicateErrors?.length || 0) - 20} more</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Preview table */}
+                  {importPreview.grants.length > 0 && (
+                    <div className="border border-gray-200 rounded-xl overflow-hidden">
+                      <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
+                        <p className="text-xs font-medium text-gray-500">Preview (first 10 rows)</p>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-xs">
+                          <thead>
+                            <tr className="bg-gray-50/50">
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">#</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">Name</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">Category</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">Country</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">Type</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">Translations</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {importPreview.grants.slice(0, 10).map((g: any, i: number) => (
+                              <tr key={i} className="hover:bg-gray-50/50">
+                                <td className="px-3 py-2 text-gray-400">{i + 1}</td>
+                                <td className="px-3 py-2 text-gray-900 font-medium truncate max-w-[200px]">
+                                  {g.itemId && <span className="text-blue-500 mr-1" title="Will update existing">↻</span>}
+                                  {g.name}
+                                </td>
+                                <td className="px-3 py-2 text-gray-600">{g.category}</td>
+                                <td className="px-3 py-2 text-gray-600">{g.country}</td>
+                                <td className="px-3 py-2 text-gray-600">{g.type}</td>
+                                <td className="px-3 py-2 text-gray-500">
+                                  {Object.keys(g.translations).length > 0
+                                    ? Object.keys(g.translations).map(l => l.toUpperCase()).join(", ")
+                                    : "-"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      {importPreview.grants.length > 10 && (
+                        <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-400 text-center">
+                          ...and {importPreview.grants.length - 10} more rows
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {importFile && (
+                    <div className="flex items-center gap-2 text-xs text-gray-400">
+                      <FileSpreadsheet className="w-4 h-4" />
+                      <span>{importFile.name} ({(importFile.size / 1024).toFixed(1)} KB)</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Step 3: Importing */}
+              {importStep === "importing" && (
+                <div className="text-center py-12">
+                  <Loader2 className="w-10 h-10 text-[#1e3a5f] mx-auto mb-4 animate-spin" />
+                  <p className="text-sm font-medium text-gray-700">Importing {importPreview?.grants?.length} grants...</p>
+                  <p className="text-xs text-gray-400 mt-1">This may take a moment</p>
+                </div>
+              )}
+
+              {/* Step 4: Done */}
+              {importStep === "done" && importResult && (
+                <div className="space-y-4">
+                  <div className="text-center py-6">
+                    <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+                    <p className="text-lg font-semibold text-gray-900">Import Complete</p>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-emerald-50 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-emerald-700">{importResult.created}</p>
+                      <p className="text-xs text-emerald-600">Created</p>
+                    </div>
+                    <div className="bg-blue-50 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-blue-700">{importResult.updated}</p>
+                      <p className="text-xs text-blue-600">Updated</p>
+                    </div>
+                    <div className="bg-red-50 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-red-700">{importResult.errors?.length || 0}</p>
+                      <p className="text-xs text-red-600">Failed</p>
+                    </div>
+                  </div>
+
+                  {importResult.errors?.length > 0 && (
+                    <div className="bg-red-50 rounded-xl p-4">
+                      <p className="text-sm font-medium text-red-700 mb-2">Failed Entries:</p>
+                      <div className="max-h-32 overflow-y-auto space-y-1">
+                        {importResult.errors.map((err: any, i: number) => (
+                          <p key={i} className="text-xs text-red-600">
+                            #{err.index + 1} "{err.name}": {err.error}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+              <button
+                onClick={resetImport}
+                className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                {importStep === "done" ? "Close" : "Cancel"}
+              </button>
+              <div className="flex gap-2">
+                {importStep === "preview" && (
+                  <>
+                    <button
+                      onClick={() => { setImportStep("upload"); setImportPreview(null); setImportFile(null); }}
+                      className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      Upload Different File
+                    </button>
+                    <button
+                      onClick={handleExecuteImport}
+                      disabled={!importPreview?.grants?.length || isImporting}
+                      className="px-6 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-2"
+                    >
+                      {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                      Import {importPreview?.grants?.length || 0} Grants
+                    </button>
+                  </>
+                )}
+                {importStep === "done" && (
+                  <button
+                    onClick={resetImport}
+                    className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
+                  >
+                    Done
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

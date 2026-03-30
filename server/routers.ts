@@ -10,13 +10,14 @@ import {
   hardDeleteGrant, upsertGrantTranslations, getGrantStats, getRelatedGrants,
   getActiveNewsletterSubscribers, getNewsletterSubscriberCount, exportAllGrants,
   unsubscribeByToken, createNotificationRecord, updateNotificationRecord,
-  getNotificationHistory,
+  getNotificationHistory, bulkImportGrants,
 } from "./db";
 import {
   sendSubscriptionEmail, sendAdminNewSubscriberNotification,
   sendBatchNewGrantNotifications, buildNewGrantsSubject,
   type GrantEmailData,
 } from "./emailService";
+import { parseCSV, parseExcel, validateBatch, type ImportParseResult } from "./importGrants";
 import { z } from "zod";
 
 export const appRouter = router({
@@ -659,6 +660,70 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await hardDeleteGrant(input.itemId);
         return { success: true };
+      }),
+
+    // Parse imported file (CSV or Excel) — returns preview data
+    parseImport: adminProcedure
+      .input(z.object({
+        content: z.string(), // Base64-encoded file content
+        filename: z.string(),
+        format: z.enum(["csv", "excel"]),
+      }))
+      .mutation(async ({ input }): Promise<ImportParseResult & { duplicateErrors: Array<{ row: number; field: string; message: string }> }> => {
+        let result: ImportParseResult;
+
+        if (input.format === "csv") {
+          // Decode base64 to string
+          const csvContent = Buffer.from(input.content, "base64").toString("utf-8");
+          result = parseCSV(csvContent);
+        } else {
+          // Decode base64 to buffer
+          const buffer = Buffer.from(input.content, "base64");
+          result = parseExcel(buffer);
+        }
+
+        // Run batch validation for duplicates
+        const duplicateErrors = validateBatch(result.grants);
+
+        return {
+          ...result,
+          duplicateErrors,
+        };
+      }),
+
+    // Execute the import — save parsed grants to database
+    executeImport: adminProcedure
+      .input(z.object({
+        grants: z.array(z.object({
+          itemId: z.string().optional(),
+          name: z.string(),
+          organization: z.string(),
+          description: z.string(),
+          category: z.string(),
+          type: z.enum(["grant", "resource"]),
+          country: z.string(),
+          eligibility: z.string(),
+          website: z.string(),
+          phone: z.string(),
+          email: z.string(),
+          amount: z.string(),
+          status: z.string(),
+          translations: z.record(z.string(), z.object({
+            name: z.string(),
+            description: z.string(),
+            eligibility: z.string(),
+          })),
+        })),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await bulkImportGrants(input.grants);
+        return {
+          success: true,
+          created: result.created,
+          updated: result.updated,
+          errors: result.errors,
+          total: result.total,
+        };
       }),
   }),
 });

@@ -142,3 +142,15 @@
 - [x] Add Excel (XLS/XML Spreadsheet) export button in admin Grants tab
 - [x] Include translations in export (5 languages: EN, KA, FR, ES, RU)
 - [x] Write vitest tests for export endpoint (126 tests total passing)
+
+## Admin: Grants CSV/Excel Import
+- [x] Build backend tRPC endpoint to parse and import grants from CSV/Excel data
+- [x] Validate imported data (required fields, categories, countries)
+- [x] Support both new grants and updating existing grants (upsert by itemId)
+- [x] Build admin UI: file upload with drag & drop
+- [x] Build admin UI: preview table showing parsed data before import
+- [x] Build admin UI: import confirmation with success/error summary
+- [x] Support CSV format with UTF-8 encoding
+- [x] Support Excel (XLS/XLSX) format
+- [x] Include translations import support (5 languages)
+- [x] Write vitest tests for import parsing and validation logic (151 tests total passing)

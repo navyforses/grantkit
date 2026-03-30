@@ -682,6 +682,113 @@ export async function upsertGrantTranslations(itemId: string, translations: Reco
   }
 }
 
+/** Bulk import grants with upsert support */
+export async function bulkImportGrants(grantsData: Array<{
+  itemId?: string;
+  name: string;
+  organization: string;
+  description: string;
+  category: string;
+  type: "grant" | "resource";
+  country: string;
+  eligibility: string;
+  website: string;
+  phone: string;
+  email: string;
+  amount: string;
+  status: string;
+  translations: Record<string, { name: string; description: string; eligibility: string }>;
+}>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  let created = 0;
+  let updated = 0;
+  const errors: Array<{ index: number; name: string; error: string }> = [];
+
+  for (let i = 0; i < grantsData.length; i++) {
+    const g = grantsData[i];
+    try {
+      let itemId = g.itemId;
+
+      if (itemId) {
+        // Check if grant exists for upsert
+        const existing = await db.select({ id: grants.id }).from(grants).where(eq(grants.itemId, itemId)).limit(1);
+        if (existing.length > 0) {
+          // Update existing
+          await db.update(grants).set({
+            name: g.name,
+            organization: g.organization,
+            description: g.description,
+            category: g.category,
+            type: g.type,
+            country: g.country,
+            eligibility: g.eligibility,
+            website: g.website,
+            phone: g.phone,
+            email: g.email,
+            amount: g.amount,
+            status: g.status,
+            isActive: true,
+          }).where(eq(grants.itemId, itemId));
+          updated++;
+        } else {
+          // Create with provided itemId
+          await db.insert(grants).values({
+            itemId,
+            name: g.name,
+            organization: g.organization,
+            description: g.description,
+            category: g.category,
+            type: g.type,
+            country: g.country,
+            eligibility: g.eligibility,
+            website: g.website,
+            phone: g.phone,
+            email: g.email,
+            amount: g.amount,
+            status: g.status,
+            isActive: true,
+          });
+          created++;
+        }
+      } else {
+        // Create new with auto-generated itemId
+        const countResult = await db.select({ count: count() }).from(grants);
+        const nextNum = (countResult[0]?.count ?? 0) + 1;
+        itemId = `item_${String(nextNum).padStart(4, "0")}`;
+
+        await db.insert(grants).values({
+          itemId,
+          name: g.name,
+          organization: g.organization,
+          description: g.description,
+          category: g.category,
+          type: g.type,
+          country: g.country,
+          eligibility: g.eligibility,
+          website: g.website,
+          phone: g.phone,
+          email: g.email,
+          amount: g.amount,
+          status: g.status,
+          isActive: true,
+        });
+        created++;
+      }
+
+      // Upsert translations
+      if (Object.keys(g.translations).length > 0) {
+        await upsertGrantTranslations(itemId, g.translations);
+      }
+    } catch (err: any) {
+      errors.push({ index: i, name: g.name, error: err.message || "Unknown error" });
+    }
+  }
+
+  return { created, updated, errors, total: grantsData.length };
+}
+
 /** Get grant stats for admin dashboard */
 export async function getGrantStats() {
   const db = await getDb();
