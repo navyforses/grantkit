@@ -9,7 +9,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { LogIn, LogOut, User } from "lucide-react";
+import { LogIn, LogOut, User, Shield } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 export default function Navbar() {
@@ -68,6 +68,16 @@ export default function Navbar() {
                     <div className="hidden sm:block">
                       <PricingCTA text={t.nav.subscribe} size="default" />
                     </div>
+                  )}
+                  {/* Admin link */}
+                  {user?.role === "admin" && (
+                    <Link
+                      href="/admin"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-2.5 py-1.5 rounded-lg transition-colors"
+                    >
+                      <Shield className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Admin</span>
+                    </Link>
                   )}
                   {/* User info + logout */}
                   <div className="flex items-center gap-2">

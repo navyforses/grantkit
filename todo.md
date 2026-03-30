@@ -63,3 +63,14 @@
 - [x] Register route in App.tsx
 - [x] Add footer link
 - [x] All 28 vitest tests passing
+
+## Admin Panel
+- [x] Create admin-only tRPC procedures (list users, user stats, update subscription)
+- [x] Create adminProcedure middleware for role-based access control
+- [x] Build Admin Dashboard page with user statistics overview
+- [x] Build Users list with search, filter, and pagination
+- [x] Show subscription status for each user (active/cancelled/none/past_due/paused)
+- [x] Add ability to manually activate/deactivate subscriptions + change roles
+- [x] Register /admin route in App.tsx (protected for admin role)
+- [x] Add admin link in Navbar for admin users (purple badge)
+- [x] Write vitest tests for admin procedures (37 tests total passing)

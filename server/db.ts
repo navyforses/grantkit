@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and, or, like, desc, count } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -133,4 +133,87 @@ export async function getUserByPaddleCustomerId(customerId: string) {
 
   const result = await db.select().from(users).where(eq(users.paddleCustomerId, customerId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
+}
+
+// ===== Admin helpers =====
+
+export async function listAllUsers(options?: {
+  search?: string;
+  statusFilter?: string;
+  limit?: number;
+  offset?: number;
+}) {
+  const db = await getDb();
+  if (!db) return { users: [], total: 0 };
+
+  const { search, statusFilter, limit = 50, offset = 0 } = options || {};
+
+  let conditions: any[] = [];
+
+  if (search) {
+    conditions.push(
+      or(
+        like(users.name, `%${search}%`),
+        like(users.email, `%${search}%`)
+      )
+    );
+  }
+
+  if (statusFilter && statusFilter !== "all") {
+    conditions.push(eq(users.subscriptionStatus, statusFilter as any));
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const [userList, countResult] = await Promise.all([
+    db
+      .select()
+      .from(users)
+      .where(whereClause)
+      .orderBy(desc(users.createdAt))
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ count: count() })
+      .from(users)
+      .where(whereClause),
+  ]);
+
+  return {
+    users: userList,
+    total: countResult[0]?.count ?? 0,
+  };
+}
+
+export async function updateUserRole(userId: number, role: "user" | "admin") {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({ role }).where(eq(users.id, userId));
+}
+
+export async function getSubscriptionStats() {
+  const db = await getDb();
+  if (!db) return { total: 0, active: 0, cancelled: 0, none: 0, pastDue: 0, paused: 0 };
+
+  const result = await db
+    .select({
+      status: users.subscriptionStatus,
+      count: count(),
+    })
+    .from(users)
+    .groupBy(users.subscriptionStatus);
+
+  const stats = { total: 0, active: 0, cancelled: 0, none: 0, pastDue: 0, paused: 0 };
+  for (const row of result) {
+    const c = Number(row.count);
+    stats.total += c;
+    switch (row.status) {
+      case "active": stats.active = c; break;
+      case "cancelled": stats.cancelled = c; break;
+      case "none": stats.none = c; break;
+      case "past_due": stats.pastDue = c; break;
+      case "paused": stats.paused = c; break;
+    }
+  }
+  return stats;
 }
