@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://grantkit.co/sitemap.xml

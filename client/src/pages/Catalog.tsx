@@ -18,6 +18,7 @@ import { trpc } from "@/lib/trpc";
 import { Lock, LogIn, Loader2 } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
@@ -148,6 +149,12 @@ export default function Catalog() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/30">
+      <SEO
+        title="Browse Grants & Resources"
+        description="Search and filter 600+ grants for medical treatment, financial assistance, academic scholarships, and startup funding. Find the right grant for you."
+        canonicalPath="/catalog"
+        keywords="grant catalog, search grants, medical grants, startup funding, scholarships, financial aid"
+      />
       <Navbar />
 
       {/* Page header */}

@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -47,6 +48,11 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/30">
+      <SEO
+        title="Contact Us"
+        description="Get in touch with the GrantKit team. Questions about grants, subscriptions, or partnerships? We usually respond within 24 hours."
+        canonicalPath="/contact"
+      />
       <Navbar />
 
       {/* Header */}

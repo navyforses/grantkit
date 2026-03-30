@@ -28,6 +28,8 @@ import PricingCTA from "@/components/PricingCTA";
 import { type CatalogItem } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
+import SEO from "@/components/SEO";
+import { OrganizationJsonLd, WebSiteJsonLd, FaqJsonLd } from "@/components/JsonLd";
 import { trpc } from "@/lib/trpc";
 import { useMemo } from "react";
 
@@ -103,6 +105,16 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      <SEO
+        title="Find Medical & Startup Grants Worldwide"
+        description="Curated database of 600+ grants for medical treatment, financial assistance, and academic scholarships across 15+ countries. Updated monthly. Start your search today."
+        canonicalPath="/"
+        keywords="grants, medical grants, startup grants, scholarships, financial assistance, funding, research grants"
+        noSuffix
+      />
+      <OrganizationJsonLd />
+      <WebSiteJsonLd />
+      <FaqJsonLd items={t.faq.items.map(faq => ({ question: faq.q, answer: faq.a }))} />
       <Navbar />
 
       {/* ===== HERO SECTION ===== */}

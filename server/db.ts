@@ -914,3 +914,17 @@ export async function getRelatedGrants(itemId: string, category: string, limit =
 
   return result;
 }
+
+/** Get all active grant itemIds and updatedAt for sitemap generation */
+export async function getAllGrantItemIds(): Promise<Array<{ itemId: string; updatedAt: Date }>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ itemId: grants.itemId, updatedAt: grants.updatedAt })
+    .from(grants)
+    .where(eq(grants.isActive, true))
+    .orderBy(asc(grants.name));
+
+  return result;
+}

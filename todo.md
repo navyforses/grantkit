@@ -163,3 +163,13 @@
 - [x] Show search results count (e.g., "14 results for 'wheelchair'")
 - [x] Search integrated in catalog FilterBar with clear button
 - [x] Write vitest tests for search endpoint (156 tests total passing)
+
+## SEO Optimization
+- [x] Build server-side sitemap.xml endpoint with all grant URLs (636 URLs: 6 static + 630 grants)
+- [x] Build robots.txt endpoint (disallows admin/dashboard/profile/api)
+- [x] Add dynamic meta tags (title, description) per page using react-helmet-async
+- [x] Add Open Graph tags (og:title, og:description, og:image, og:url) per page
+- [x] Add Twitter Card meta tags (summary_large_image)
+- [x] Add JSON-LD structured data (Organization, WebSite, FAQPage, GovernmentService, BreadcrumbList)
+- [x] Add canonical URLs for all pages
+- [x] Write vitest tests for sitemap and robots.txt endpoints (15 tests, 171 total passing)

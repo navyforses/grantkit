@@ -8,12 +8,18 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import SEO from "@/components/SEO";
 
 export default function Terms() {
   const { t } = useLanguage();
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      <SEO
+        title="Terms of Service"
+        description="GrantKit Terms of Service. Read our terms and conditions for using the platform."
+        canonicalPath="/terms"
+      />
       <Navbar />
 
       <main className="flex-1 py-16">

@@ -8,12 +8,18 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import SEO from "@/components/SEO";
 
 export default function Refund() {
   const { t } = useLanguage();
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      <SEO
+        title="Refund Policy"
+        description="GrantKit Refund Policy. Learn about our refund eligibility, process, and timeline."
+        canonicalPath="/refund"
+      />
       <Navbar />
 
       <main className="flex-1 py-16">

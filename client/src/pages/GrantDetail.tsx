@@ -31,6 +31,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
+import { GrantJsonLd } from "@/components/JsonLd";
 
 export default function GrantDetail() {
   const params = useParams<{ id: string }>();
@@ -140,8 +142,39 @@ export default function GrantDetail() {
     }
   };
 
+  // Build SEO description from grant content
+  const seoDescription = content.description
+    ? content.description.slice(0, 160).replace(/\s+/g, " ").trim() + (content.description.length > 160 ? "..." : "")
+    : `${content.name} — ${translatedCategory} grant from ${item.organization || "GrantKit"}`;
+  const seoKeywords = [
+    content.name,
+    item.organization,
+    translatedCategory,
+    translatedCountry,
+    item.type === "grant" ? "grant" : "resource",
+    "funding",
+  ].filter(Boolean).join(", ");
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/30">
+      <SEO
+        title={content.name}
+        description={seoDescription}
+        canonicalPath={`/grant/${item.id}`}
+        keywords={seoKeywords}
+        ogType="article"
+      />
+      <GrantJsonLd
+        name={content.name}
+        description={content.description || ""}
+        organization={item.organization}
+        category={translatedCategory}
+        country={translatedCountry}
+        amount={item.amount}
+        eligibility={content.eligibility}
+        website={item.website}
+        url={window.location.href}
+      />
       <Navbar />
 
       {/* Header */}

@@ -8,12 +8,18 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import SEO from "@/components/SEO";
 
 export default function Privacy() {
   const { t } = useLanguage();
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      <SEO
+        title="Privacy Policy"
+        description="GrantKit Privacy Policy. Learn how we collect, use, and protect your personal information."
+        canonicalPath="/privacy"
+      />
       <Navbar />
 
       <main className="flex-1 py-16">

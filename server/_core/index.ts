@@ -5,6 +5,7 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerPaddleWebhookRoute } from "../paddleWebhook";
+import { registerSeoRoutes } from "../seoRoutes";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -55,6 +56,8 @@ async function startServer() {
   registerOAuthRoutes(app);
   // Paddle webhook under /api/paddle/webhook
   registerPaddleWebhookRoute(app);
+  // SEO routes (sitemap.xml, robots.txt)
+  registerSeoRoutes(app);
 
   // Newsletter unsubscribe route (GET for email link compatibility)
   app.get("/api/newsletter/unsubscribe", async (req, res) => {

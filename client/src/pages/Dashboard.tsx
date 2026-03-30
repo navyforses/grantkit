@@ -28,6 +28,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { getLoginUrl } from "@/const";
 import { getCategoryStyle, getCategoryBorderColor } from "@/lib/constants";
+import SEO from "@/components/SEO";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Dashboard() {
@@ -139,6 +140,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/30">
+      <SEO title="Dashboard" noIndex />
       <Navbar />
 
       {/* Header */}

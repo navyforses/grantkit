@@ -27,6 +27,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Link } from "wouter";
+import SEO from "@/components/SEO";
 
 export default function Profile() {
   const { user, isAuthenticated, loading: authLoading, logout } = useAuth();
@@ -112,6 +113,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/50">
+      <SEO title="Profile" noIndex />
       <Navbar />
 
       <main className="flex-1 py-10 md:py-16">

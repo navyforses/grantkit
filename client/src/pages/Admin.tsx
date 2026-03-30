@@ -10,6 +10,7 @@ import { CATEGORIES } from "@/lib/constants";
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -1026,6 +1027,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Admin Panel" noIndex />
       {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
