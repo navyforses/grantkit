@@ -130,3 +130,15 @@
 - [x] Add unsubscribe link in emails + unsubscribe endpoint
 - [x] Track notification history (sent date, grant count, recipient count)
 - [x] Write vitest tests for new grant notification logic (118 tests total passing)
+
+## Database Cleanup
+- [x] Identify all invalid/problematic entries (names starting with ~, numeric-only, personal notes)
+- [x] Remove 13 invalid entries from grants, grant_translations, and saved_grants tables
+- [x] Verify cleanup — 630 clean grants remain, 0 problematic entries
+
+## Admin: Grants CSV/Excel Export
+- [x] Build admin tRPC endpoint to export all grants as structured data
+- [x] Add CSV export button in admin Grants tab
+- [x] Add Excel (XLS/XML Spreadsheet) export button in admin Grants tab
+- [x] Include translations in export (5 languages: EN, KA, FR, ES, RU)
+- [x] Write vitest tests for export endpoint (126 tests total passing)

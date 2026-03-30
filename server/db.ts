@@ -706,6 +706,44 @@ export async function getGrantStats() {
 }
 
 /** Get related grants by category (excluding the current one) */
+/** Export all grants with their translations for CSV/Excel export */
+export async function exportAllGrants(options?: {
+  category?: string;
+  country?: string;
+  type?: string;
+  activeOnly?: boolean;
+}) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const { category, country, type, activeOnly = true } = options || {};
+
+  const conditions: any[] = [];
+  if (activeOnly) conditions.push(eq(grants.isActive, true));
+  if (category && category !== "all") conditions.push(eq(grants.category, category));
+  if (country && country !== "all") conditions.push(eq(grants.country, country));
+  if (type && type !== "all") conditions.push(eq(grants.type, type as "grant" | "resource"));
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const allGrants = await db
+    .select()
+    .from(grants)
+    .where(whereClause)
+    .orderBy(asc(grants.name));
+
+  // Fetch all translations in one query
+  const itemIds = allGrants.map(g => g.itemId);
+  const allTranslations = itemIds.length > 0
+    ? await getBulkGrantTranslations(itemIds)
+    : {};
+
+  return allGrants.map(g => ({
+    ...g,
+    translations: allTranslations[g.itemId] || {},
+  }));
+}
+
 export async function getRelatedGrants(itemId: string, category: string, limit = 4) {
   const db = await getDb();
   if (!db) return [];

@@ -1,0 +1,46 @@
+{
+  "query": "SELECT id, name, description, category \nFROM grants \nWHERE description = ''\n   OR description IS NULL\nORDER BY id\nLIMIT 50;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT id, name, description, category \nFROM grants \nWHERE description = ''\n   OR description IS NULL\nORDER BY id\nLIMIT 50;",
+  "rows": [
+    {
+      "id": "279",
+      "name": "არ ფარავს (EAP ექსპერიმენტული სტატუსი). მგზავრობა/საცხოვრებელი დამატებით.",
+      "description": "",
+      "category": "medical_treatment"
+    },
+    {
+      "id": "282",
+      "name": "გადაუდებელობა/urgency (ასაკი <3–5 იდეალური; მოსალოდნელი ფანჯარა/ვადა)",
+      "description": "",
+      "category": "medical_treatment"
+    },
+    {
+      "id": "285",
+      "name": "დეტალები",
+      "description": "",
+      "category": "medical_treatment"
+    },
+    {
+      "id": "286",
+      "name": "თანამიმდევრულობით, დოკუმენტ. შემთხვევებიდან",
+      "description": "",
+      "category": "medical_treatment"
+    },
+    {
+      "id": "639",
+      "name": "~304",
+      "description": "",
+      "category": "other"
+    },
+    {
+      "id": "641",
+      "name": "დეტალური აღწერა",
+      "description": "",
+      "category": "other"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\tcategory\n279\tარ ფარავს (EAP ექსპერიმენტული სტატუსი). მგზავრობა/საცხოვრებელი დამატებით.\t\tmedical_treatment\n282\tგადაუდებელობა/urgency (ასაკი <3–5 იდეალური; მოსალოდნელი ფანჯარა/ვადა)\t\tmedical_treatment\n285\tდეტალები\t\tmedical_treatment\n286\tთანამიმდევრულობით, დოკუმენტ. შემთხვევებიდან\t\tmedical_treatment\n639\t~304\t\tother\n641\tდეტალური აღწერა\t\tother\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

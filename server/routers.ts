@@ -8,7 +8,7 @@ import {
   completeOnboarding, listGrants, getGrantByItemId, getGrantTranslations,
   getBulkGrantTranslations, createGrant, updateGrant, deleteGrant,
   hardDeleteGrant, upsertGrantTranslations, getGrantStats, getRelatedGrants,
-  getActiveNewsletterSubscribers, getNewsletterSubscriberCount,
+  getActiveNewsletterSubscribers, getNewsletterSubscriberCount, exportAllGrants,
   unsubscribeByToken, createNotificationRecord, updateNotificationRecord,
   getNotificationHistory,
 } from "./db";
@@ -268,6 +268,44 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const limit = input?.limit ?? 20;
         return await getNotificationHistory(limit);
+      }),
+
+    // Export all grants for CSV/Excel download
+    exportGrants: adminProcedure
+      .input(z.object({
+        category: z.string().optional(),
+        country: z.string().optional(),
+        type: z.string().optional(),
+        includeInactive: z.boolean().optional().default(false),
+      }).optional())
+      .query(async ({ input }) => {
+        const { category, country, type, includeInactive = false } = input || {};
+        const data = await exportAllGrants({
+          category,
+          country,
+          type,
+          activeOnly: !includeInactive,
+        });
+
+        return data.map(g => ({
+          itemId: g.itemId,
+          name: g.name,
+          organization: g.organization || "",
+          description: g.description || "",
+          category: g.category,
+          type: g.type,
+          country: g.country,
+          eligibility: g.eligibility || "",
+          website: g.website || "",
+          phone: g.phone || "",
+          email: g.email || "",
+          amount: g.amount || "",
+          status: g.status || "",
+          isActive: g.isActive,
+          createdAt: g.createdAt,
+          updatedAt: g.updatedAt,
+          translations: g.translations,
+        }));
       }),
 
     // Send new grant notification to all subscribers

@@ -39,6 +39,8 @@ import {
   CheckCircle,
   XOctagon,
   Loader2,
+  Download,
+  FileSpreadsheet,
 } from "lucide-react";
 
 // ===== Stat Card =====
@@ -625,6 +627,9 @@ export default function Admin() {
   // Newsletter tab state
   const [showSendNotification, setShowSendNotification] = useState(false);
 
+  // Export state
+  const [isExporting, setIsExporting] = useState(false);
+
   // ===== Queries =====
   const { data: stats } = trpc.admin.stats.useQuery();
   const { data: grantStats } = trpc.admin.grantStats.useQuery();
@@ -703,6 +708,143 @@ export default function Admin() {
       toast.error("Failed to send notification: " + err.message);
     },
   });
+
+  // ===== Export Helpers =====
+  const escapeCsvField = (value: string) => {
+    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+      return '"' + value.replace(/"/g, '""') + '"';
+    }
+    return value;
+  };
+
+  const exportAsCSV = async () => {
+    setIsExporting(true);
+    try {
+      const data = await utils.admin.exportGrants.fetch({
+        category: grantCategoryFilter !== "all" ? grantCategoryFilter : undefined,
+        includeInactive: true,
+      });
+
+      if (!data || data.length === 0) {
+        toast.error("No grants to export");
+        return;
+      }
+
+      const languages = ["en", "ka", "fr", "es", "ru"];
+      const headers = [
+        "Item ID", "Name", "Organization", "Description", "Category", "Type",
+        "Country", "Eligibility", "Website", "Phone", "Email", "Amount",
+        "Status", "Active", "Created At", "Updated At",
+        ...languages.flatMap(lang => [`${lang.toUpperCase()} Name`, `${lang.toUpperCase()} Description`, `${lang.toUpperCase()} Eligibility`]),
+      ];
+
+      const rows = data.map(g => {
+        const base = [
+          g.itemId, g.name, g.organization, g.description, g.category, g.type,
+          g.country, g.eligibility, g.website, g.phone, g.email, g.amount,
+          g.status, g.isActive ? "Yes" : "No",
+          g.createdAt ? new Date(g.createdAt).toISOString().split("T")[0] : "",
+          g.updatedAt ? new Date(g.updatedAt).toISOString().split("T")[0] : "",
+        ];
+        const translationCols = languages.flatMap(lang => {
+          const t = g.translations?.[lang];
+          return [t?.name || "", t?.description || "", t?.eligibility || ""];
+        });
+        return [...base, ...translationCols].map(v => escapeCsvField(String(v || "")));
+      });
+
+      const bom = "\uFEFF";
+      const csvContent = bom + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `grantkit-grants-${new Date().toISOString().split("T")[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success(`Exported ${data.length} grants as CSV`);
+    } catch (err) {
+      toast.error("Export failed: " + (err instanceof Error ? err.message : "Unknown error"));
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const exportAsExcel = async () => {
+    setIsExporting(true);
+    try {
+      const data = await utils.admin.exportGrants.fetch({
+        category: grantCategoryFilter !== "all" ? grantCategoryFilter : undefined,
+        includeInactive: true,
+      });
+
+      if (!data || data.length === 0) {
+        toast.error("No grants to export");
+        return;
+      }
+
+      const languages = ["en", "ka", "fr", "es", "ru"];
+
+      // Build tab-separated content for Excel-compatible format
+      const headers = [
+        "Item ID", "Name", "Organization", "Description", "Category", "Type",
+        "Country", "Eligibility", "Website", "Phone", "Email", "Amount",
+        "Status", "Active", "Created At", "Updated At",
+        ...languages.flatMap(lang => [`${lang.toUpperCase()} Name`, `${lang.toUpperCase()} Description`, `${lang.toUpperCase()} Eligibility`]),
+      ];
+
+      const escapeTab = (v: string) => v.replace(/\t/g, " ").replace(/\n/g, " ");
+
+      const rows = data.map(g => {
+        const base = [
+          g.itemId, g.name, g.organization, g.description, g.category, g.type,
+          g.country, g.eligibility, g.website, g.phone, g.email, g.amount,
+          g.status, g.isActive ? "Yes" : "No",
+          g.createdAt ? new Date(g.createdAt).toISOString().split("T")[0] : "",
+          g.updatedAt ? new Date(g.updatedAt).toISOString().split("T")[0] : "",
+        ];
+        const translationCols = languages.flatMap(lang => {
+          const t = g.translations?.[lang];
+          return [t?.name || "", t?.description || "", t?.eligibility || ""];
+        });
+        return [...base, ...translationCols].map(v => escapeTab(String(v || "")));
+      });
+
+      // Use XML Spreadsheet format for proper Excel support with Unicode
+      const xmlHeader = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Worksheet ss:Name="Grants">
+<Table>`;
+
+      const escapeXml = (v: string) => v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+      const headerRow = `<Row>${headers.map(h => `<Cell><Data ss:Type="String">${escapeXml(h)}</Data></Cell>`).join("")}</Row>`;
+
+      const dataRows = rows.map(row =>
+        `<Row>${row.map(cell => `<Cell><Data ss:Type="String">${escapeXml(cell)}</Data></Cell>`).join("")}</Row>`
+      ).join("\n");
+
+      const xmlFooter = `</Table>
+</Worksheet>
+</Workbook>`;
+
+      const xmlContent = [xmlHeader, headerRow, dataRows, xmlFooter].join("\n");
+      const blob = new Blob([xmlContent], { type: "application/vnd.ms-excel;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `grantkit-grants-${new Date().toISOString().split("T")[0]}.xls`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success(`Exported ${data.length} grants as Excel`);
+    } catch (err) {
+      toast.error("Export failed: " + (err instanceof Error ? err.message : "Unknown error"));
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Auth guard
   if (authLoading) {
@@ -1069,13 +1211,33 @@ export default function Admin() {
                     </option>
                   ))}
                 </select>
-                <button
-                  onClick={() => setShowGrantForm(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Grant
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={exportAsCSV}
+                    disabled={isExporting}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
+                    title="Export as CSV"
+                  >
+                    {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                    CSV
+                  </button>
+                  <button
+                    onClick={exportAsExcel}
+                    disabled={isExporting}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
+                    title="Export as Excel"
+                  >
+                    {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
+                    Excel
+                  </button>
+                  <button
+                    onClick={() => setShowGrantForm(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Grant
+                  </button>
+                </div>
               </div>
             </div>
 

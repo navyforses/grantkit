@@ -1,0 +1,115 @@
+{
+  "query": "SELECT id, name, category, country, organization \nFROM grants \nWHERE name LIKE '~%' \n   OR name LIKE '%~%'\n   OR name REGEXP '^[0-9~. ]+$'\n   OR LENGTH(name) < 5\nORDER BY name\nLIMIT 100;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT id, name, category, country, organization \nFROM grants \nWHERE name LIKE '~%' \n   OR name LIKE '%~%'\n   OR name REGEXP '^[0-9~. ]+$'\n   OR LENGTH(name) < 5\nORDER BY name\nLIMIT 100;",
+  "rows": [
+    {
+      "id": "637",
+      "name": "~12",
+      "category": "other",
+      "country": "US",
+      "organization": "~12"
+    },
+    {
+      "id": "276",
+      "name": "~20",
+      "category": "medical_treatment",
+      "country": "US",
+      "organization": "~20"
+    },
+    {
+      "id": "638",
+      "name": "~25",
+      "category": "other",
+      "country": "US",
+      "organization": "~25"
+    },
+    {
+      "id": "444",
+      "name": "~30",
+      "category": "assistive_technology",
+      "country": "US",
+      "organization": "~30"
+    },
+    {
+      "id": "639",
+      "name": "~304",
+      "category": "other",
+      "country": "US",
+      "organization": "~304"
+    },
+    {
+      "id": "407",
+      "name": "~40",
+      "category": "financial_assistance",
+      "country": "US",
+      "organization": "~40"
+    },
+    {
+      "id": "277",
+      "name": "~45",
+      "category": "medical_treatment",
+      "country": "US",
+      "organization": "~45"
+    },
+    {
+      "id": "640",
+      "name": "~80",
+      "category": "other",
+      "country": "US",
+      "organization": "~80"
+    },
+    {
+      "id": "488",
+      "name": "AAHD",
+      "category": "scholarships",
+      "country": "US",
+      "organization": "AAHD"
+    },
+    {
+      "id": "586",
+      "name": "Beam",
+      "category": "other",
+      "country": "US",
+      "organization": "Beam"
+    },
+    {
+      "id": "592",
+      "name": "CC4C",
+      "category": "other",
+      "country": "US",
+      "organization": "CC4C"
+    },
+    {
+      "id": "573",
+      "name": "COTA",
+      "category": "international",
+      "country": "US",
+      "organization": "COTA"
+    },
+    {
+      "id": "564",
+      "name": "DAV",
+      "category": "travel_transport",
+      "country": "US",
+      "organization": "DAV"
+    },
+    {
+      "id": "122",
+      "name": "GSK",
+      "category": "medical_treatment",
+      "country": "US",
+      "organization": "GSK"
+    },
+    {
+      "id": "191",
+      "name": "NORD",
+      "category": "medical_treatment",
+      "country": "US",
+      "organization": "NORD"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tcategory\tcountry\torganization\n637\t~12\tother\tUS\t~12\n276\t~20\tmedical_treatment\tUS\t~20\n638\t~25\tother\tUS\t~25\n444\t~30\tassistive_technology\tUS\t~30\n639\t~304\tother\tUS\t~304\n407\t~40\tfinancial_assistance\tUS\t~40\n277\t~45\tmedical_treatment\tUS\t~45\n640\t~80\tother\tUS\t~80\n488\tAAHD\tscholarships\tUS\tAAHD\n586\tBeam\tother\tUS\tBeam\n592\tCC4C\tother\tUS\tCC4C\n573\tCOTA\tinternational\tUS\tCOTA\n564\tDAV\ttravel_transport\tUS\tDAV\n122\tGSK\tmedical_treatment\tUS\tGSK\n191\tNORD\tmedical_treatment\tUS\tNORD\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}
