@@ -2,7 +2,8 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
-import { updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats } from "./db";
+import { updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats, getUserById } from "./db";
+import { sendSubscriptionEmail, sendAdminNewSubscriberNotification } from "./emailService";
 import { z } from "zod";
 
 export const appRouter = router({
@@ -38,6 +39,15 @@ export const appRouter = router({
       await updateUserSubscription(ctx.user.id, {
         subscriptionStatus: "cancelled",
       });
+
+      // Send cancellation email
+      if (ctx.user.email) {
+        sendSubscriptionEmail(
+          { email: ctx.user.email, name: ctx.user.name },
+          "cancelled"
+        ).catch((err) => console.error("[Email] Cancel notification failed:", err));
+      }
+
       return { success: true };
     }),
 
@@ -55,6 +65,19 @@ export const appRouter = router({
           subscriptionStatus: "active",
           subscriptionPlanId: "pri_01kmygcd8stckbs3d7vt3xenq6",
         });
+
+        // Send activation email + admin notification
+        if (ctx.user.email) {
+          sendSubscriptionEmail(
+            { email: ctx.user.email, name: ctx.user.name },
+            "activated"
+          ).catch((err) => console.error("[Email] Activation notification failed:", err));
+
+          sendAdminNewSubscriberNotification(
+            { email: ctx.user.email, name: ctx.user.name }
+          ).catch((err) => console.error("[Email] Admin notification failed:", err));
+        }
+
         return { success: true };
       }),
   }),
@@ -128,6 +151,25 @@ export const appRouter = router({
         await updateUserSubscription(input.userId, {
           subscriptionStatus: input.subscriptionStatus,
         });
+
+        // Send email notification for admin-triggered status changes
+        const statusEmailMap: Record<string, "activated" | "cancelled" | "paused" | "past_due"> = {
+          active: "activated",
+          cancelled: "cancelled",
+          paused: "paused",
+          past_due: "past_due",
+        };
+        const emailType = statusEmailMap[input.subscriptionStatus];
+        if (emailType) {
+          const user = await getUserById(input.userId);
+          if (user?.email) {
+            sendSubscriptionEmail(
+              { email: user.email, name: user.name },
+              emailType
+            ).catch((err) => console.error("[Email] Admin status change notification failed:", err));
+          }
+        }
+
         return { success: true };
       }),
   }),

@@ -74,3 +74,13 @@
 - [x] Register /admin route in App.tsx (protected for admin role)
 - [x] Add admin link in Navbar for admin users (purple badge)
 - [x] Write vitest tests for admin procedures (37 tests total passing)
+
+## Email Notifications
+- [x] Create email notification service module (Resend API)
+- [x] Design HTML email templates for subscription events (activated, cancelled, paused, past_due, resumed)
+- [x] Integrate email sending into Paddle webhook handler
+- [x] Integrate email sending into manual subscription changes (admin panel)
+- [x] Integrate email sending into tRPC subscription.activate and subscription.cancel
+- [x] Add welcome email on first subscription activation
+- [x] Add admin notification on new subscriber
+- [x] Write vitest tests for email notification logic (49 tests total passing)

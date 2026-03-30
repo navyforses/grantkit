@@ -12,6 +12,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 import type { Express, Request, Response } from "express";
 import { ENV } from "./_core/env";
 import { getUserByPaddleCustomerId, updateUserSubscription } from "./db";
+import { sendSubscriptionEmail, sendAdminNewSubscriberNotification, type SubscriptionEmailType } from "./emailService";
 
 // ===== Types =====
 
@@ -167,6 +168,34 @@ export async function processWebhookEvent(event: PaddleWebhookEvent): Promise<{
   console.log(
     `[Paddle Webhook] Updated user ${user.id} (${user.email}): ${event_type} → status=${internalStatus}`
   );
+
+  // Send email notification to user (fire-and-forget, don't block webhook response)
+  const emailTypeMap: Record<string, SubscriptionEmailType> = {
+    "subscription.activated": "activated",
+    "subscription.canceled": "cancelled",
+    "subscription.paused": "paused",
+    "subscription.past_due": "past_due",
+    "subscription.resumed": "resumed",
+  };
+
+  const emailType = emailTypeMap[event_type];
+  if (emailType && user.email) {
+    sendSubscriptionEmail(
+      { email: user.email, name: user.name },
+      emailType
+    ).catch((err) => {
+      console.error(`[Paddle Webhook] Failed to send ${emailType} email:`, err);
+    });
+
+    // Notify admin on new subscriber activation
+    if (emailType === "activated") {
+      sendAdminNewSubscriberNotification(
+        { email: user.email, name: user.name }
+      ).catch((err) => {
+        console.error("[Paddle Webhook] Failed to send admin notification:", err);
+      });
+    }
+  }
 
   return {
     handled: true,

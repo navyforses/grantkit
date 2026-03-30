@@ -9,4 +9,5 @@ export const ENV = {
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
   paddleWebhookSecret: process.env.PADDLE_WEBHOOK_SECRET ?? "",
   paddleApiKey: process.env.PADDLE_API_KEY ?? "",
+  resendApiKey: process.env.RESEND_API_KEY ?? "",
 };
