@@ -28,6 +28,14 @@ export default function Footer() {
               {t.footer.contact}
             </a>
             <span className="text-gray-600">|</span>
+            <a href="/privacy" className="hover:text-white transition-colors">
+              {t.legal.privacyTitle}
+            </a>
+            <span className="text-gray-600">|</span>
+            <a href="/terms" className="hover:text-white transition-colors">
+              {t.legal.termsTitle}
+            </a>
+            <span className="text-gray-600">|</span>
             <span className="text-gray-500 text-xs">
               {t.footer.paddle}
             </span>

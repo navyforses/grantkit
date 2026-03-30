@@ -47,3 +47,12 @@
 - [x] Handle subscription.updated + resumed events
 - [x] Update user subscription status in DB based on events
 - [x] Write vitest tests for webhook handler logic (28 tests total passing)
+
+## Legal Pages
+- [x] Create Privacy Policy page (/privacy)
+- [x] Create Terms of Service page (/terms)
+- [x] Register routes in App.tsx
+- [x] Add footer links to Privacy Policy and Terms of Service
+- [x] Add i18n translations for all 5 languages (EN, FR, ES, RU, KA)
+- [x] Add @tailwindcss/typography plugin for proper prose styling
+- [x] All 28 vitest tests passing
