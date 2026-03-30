@@ -96,3 +96,14 @@
 - [x] Dashboard link in Navbar for authenticated users
 - [x] Contact link in Footer (replaces mailto)
 - [x] Write vitest tests for grants.savedList and grants.toggleSave (55 tests total passing)
+
+## Phase 2: Conversion Optimization
+- [x] "How It Works" section on landing page (3 steps: Register → Subscribe → Access)
+- [x] Social proof / testimonials section on landing page
+- [x] Annual pricing option ($79/year vs $9/month) with toggle
+- [x] Onboarding flow — welcome modal for first-time users after login
+- [x] Newsletter signup form for non-subscribers (landing page)
+- [x] Newsletter subscribers DB table + tRPC endpoint
+- [x] Onboarding completed DB field + tRPC endpoint
+- [x] i18n translations for all Phase 2 sections (5 languages)
+- [x] Write vitest tests for newsletter and onboarding (62 tests total passing)

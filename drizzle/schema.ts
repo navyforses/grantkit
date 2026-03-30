@@ -19,6 +19,9 @@ export const users = mysqlTable("users", {
   subscriptionPlanId: varchar("subscriptionPlanId", { length: 128 }),
   subscriptionCurrentPeriodEnd: timestamp("subscriptionCurrentPeriodEnd"),
 
+  // Onboarding
+  onboardingCompleted: boolean("onboardingCompleted").default(false).notNull(),
+
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -42,3 +45,18 @@ export const savedGrants = mysqlTable("saved_grants", {
 
 export type SavedGrant = typeof savedGrants.$inferSelect;
 export type InsertSavedGrant = typeof savedGrants.$inferInsert;
+
+/**
+ * Newsletter subscribers — both anonymous visitors and registered users.
+ */
+export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  userId: int("userId"),
+  subscribedAt: timestamp("subscribedAt").defaultNow().notNull(),
+  unsubscribedAt: timestamp("unsubscribedAt"),
+  isActive: boolean("isActive").default(true).notNull(),
+});
+
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;

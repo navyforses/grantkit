@@ -1,6 +1,6 @@
 import { eq, and, or, like, desc, count } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, savedGrants } from "../drizzle/schema";
+import { InsertUser, users, savedGrants, newsletterSubscribers } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -228,6 +228,42 @@ export async function updateUserRole(userId: number, role: "user" | "admin") {
   const db = await getDb();
   if (!db) return;
   await db.update(users).set({ role }).where(eq(users.id, userId));
+}
+
+// ===== Newsletter helpers =====
+
+export async function subscribeNewsletter(email: string, userId?: number): Promise<{ success: boolean; alreadySubscribed?: boolean }> {
+  const db = await getDb();
+  if (!db) return { success: false };
+
+  // Check if already subscribed
+  const existing = await db
+    .select()
+    .from(newsletterSubscribers)
+    .where(eq(newsletterSubscribers.email, email))
+    .limit(1);
+
+  if (existing.length > 0) {
+    if (existing[0].isActive) {
+      return { success: true, alreadySubscribed: true };
+    }
+    // Re-activate
+    await db.update(newsletterSubscribers)
+      .set({ isActive: true, unsubscribedAt: null, userId: userId || existing[0].userId })
+      .where(eq(newsletterSubscribers.id, existing[0].id));
+    return { success: true };
+  }
+
+  await db.insert(newsletterSubscribers).values({ email, userId });
+  return { success: true };
+}
+
+// ===== Onboarding helpers =====
+
+export async function completeOnboarding(userId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({ onboardingCompleted: true }).where(eq(users.id, userId));
 }
 
 export async function getSubscriptionStats() {

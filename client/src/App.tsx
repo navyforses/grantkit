@@ -16,6 +16,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
 import Admin from "./pages/Admin";
+import OnboardingModal from "./components/OnboardingModal";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -49,6 +50,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <PaddleInitializer />
+            <OnboardingModal />
             <Router />
           </TooltipProvider>
         </LanguageProvider>

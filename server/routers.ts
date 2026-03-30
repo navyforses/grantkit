@@ -2,7 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
-import { updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats, getUserById, getSavedGrantIds, toggleSavedGrant } from "./db";
+import { updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats, getUserById, getSavedGrantIds, toggleSavedGrant, subscribeNewsletter, completeOnboarding } from "./db";
 import { sendSubscriptionEmail, sendAdminNewSubscriberNotification } from "./emailService";
 import { z } from "zod";
 
@@ -97,6 +97,24 @@ export const appRouter = router({
         const result = await toggleSavedGrant(ctx.user.id, input.grantId);
         return result;
       }),
+  }),
+
+  // ===== Newsletter =====
+  newsletter: router({
+    subscribe: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input, ctx }) => {
+        const userId = ctx.user?.id;
+        return await subscribeNewsletter(input.email, userId);
+      }),
+  }),
+
+  // ===== Onboarding =====
+  onboarding: router({
+    complete: protectedProcedure.mutation(async ({ ctx }) => {
+      await completeOnboarding(ctx.user.id);
+      return { success: true };
+    }),
   }),
 
   // ===== Admin Panel =====

@@ -71,6 +71,67 @@ export interface Translations {
     items: { q: string; a: string }[];
   };
 
+  // How It Works
+  howItWorks: {
+    title: string;
+    subtitle: string;
+    step1Title: string;
+    step1Desc: string;
+    step2Title: string;
+    step2Desc: string;
+    step3Title: string;
+    step3Desc: string;
+  };
+
+  // Testimonials / Social Proof
+  testimonials: {
+    title: string;
+    subtitle: string;
+    items: { name: string; role: string; text: string }[];
+    statUsers: string;
+    statUsersLabel: string;
+    statGrants: string;
+    statGrantsLabel: string;
+    statCountries: string;
+    statCountriesLabel: string;
+  };
+
+  // Pricing section
+  pricing: {
+    title: string;
+    subtitle: string;
+    monthly: string;
+    annual: string;
+    annualSave: string;
+    perMonth: string;
+    perYear: string;
+    monthlyPrice: string;
+    annualPrice: string;
+    annualMonthlyPrice: string;
+    features: string[];
+    cta: string;
+  };
+
+  // Newsletter
+  newsletter: {
+    title: string;
+    subtitle: string;
+    placeholder: string;
+    cta: string;
+    success: string;
+    error: string;
+  };
+
+  // Onboarding
+  onboarding: {
+    welcomeTitle: string;
+    welcomeSubtitle: string;
+    step1: string;
+    step2: string;
+    step3: string;
+    getStarted: string;
+  };
+
   // Final CTA
   finalCta: {
     title: string;
