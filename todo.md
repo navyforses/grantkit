@@ -188,3 +188,6 @@
 - [x] Add new sort options: existing sorts retained, advanced filters serve as primary refinement
 - [x] Update admin panel grant form with new enrichment fields (applicationProcess, deadline, fundingType, targetDiagnosis, ageRange, geographicScope, documentsRequired, b2VisaEligible)
 - [x] Write vitest tests for enrichment and new features (12 new tests, 183 total passing)
+
+## Bug Fixes
+- [x] Fix tRPC error: hardened SPA fallback to never serve HTML for /api/* routes + added client-side retry for non-JSON responses
