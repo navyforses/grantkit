@@ -203,3 +203,9 @@
 - [x] Add PWA manifest.json (standalone display, portrait, theme-color #0f172a) and meta tags for Add to Home Screen
 - [x] Ensure all touch targets are 44px+ (h-11/h-12 buttons, p-3/p-4 cards) and spacing is thumb-friendly
 - [x] Test all pages — 183 vitest tests passing, no TypeScript errors, dev server running
+
+## Pull-to-Refresh
+- [x] Create reusable usePullToRefresh hook with touch gesture handling (rubber-band resistance, threshold, scroll-top gating)
+- [x] Create PullToRefresh visual indicator component (rotating arrow + spinner + text labels)
+- [x] Integrate pull-to-refresh into Catalog page (invalidates catalog.list, catalog.count, grants.savedList + toast confirmation)
+- [x] Ensure it only activates on mobile (useIsMobile gating) and when scrolled to top (scrollY <= 5 check)

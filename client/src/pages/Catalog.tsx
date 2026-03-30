@@ -12,6 +12,7 @@ import FilterBar, { type SortValue } from "@/components/FilterBar";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
+import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -20,6 +21,8 @@ import { Lock, LogIn, Loader2 } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import { useIsMobile } from "@/hooks/useMobile";
 
 const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
@@ -60,6 +63,23 @@ export default function Catalog() {
 
   const isActive = subStatus?.isActive || false;
   const isAuthLoading = authLoading || (isAuthenticated && subLoading);
+  const isMobile = useIsMobile();
+
+  // Pull-to-refresh: invalidate catalog data on pull
+  const utils = trpc.useUtils();
+  const { state: pullState, pullDistance, progress, containerRef } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        utils.catalog.list.invalidate(),
+        utils.catalog.count.invalidate(),
+        utils.grants.savedList.invalidate(),
+      ]);
+      toast.success("Grants refreshed");
+    },
+    enabled: isMobile,
+    threshold: 80,
+    maxPull: 140,
+  });
 
   // Stabilize query input with debounced search and language
   const catalogInput = useMemo(
@@ -95,7 +115,6 @@ export default function Catalog() {
   });
   const savedSet = useMemo(() => new Set(savedData?.grantIds || []), [savedData]);
 
-  const utils = trpc.useUtils();
   const toggleSave = trpc.grants.toggleSave.useMutation({
     onMutate: async ({ grantId }) => {
       await utils.grants.savedList.cancel();
@@ -167,7 +186,7 @@ export default function Catalog() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50/30">
+    <div ref={containerRef} className="min-h-screen flex flex-col bg-gray-50/30">
       <SEO
         title="Browse Grants & Resources"
         description="Search and filter 600+ grants for medical treatment, financial assistance, academic scholarships, and startup funding. Find the right grant for you."
@@ -187,6 +206,13 @@ export default function Catalog() {
           </p>
         </div>
       </div>
+
+      {/* Pull-to-refresh indicator — visible only on mobile during gesture */}
+      <PullToRefreshIndicator
+        state={pullState}
+        pullDistance={pullDistance}
+        progress={progress}
+      />
 
       {/* Filter bar */}
       <FilterBar
