@@ -1,6 +1,7 @@
 /*
  * Catalog Page — Unified Grants & Resources Directory
  * Design: Structured Clarity — dense card grid with sticky filters
+ * Content locked behind authentication + active subscription
  */
 
 import { useMemo, useState } from "react";
@@ -12,9 +13,15 @@ import PricingCTA from "@/components/PricingCTA";
 import catalogData from "@/data/catalog.json";
 import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { trpc } from "@/lib/trpc";
+import { Lock, LogIn, CreditCard } from "lucide-react";
+import { getLoginUrl } from "@/const";
 
 const allItems = catalogData as CatalogItem[];
 const ITEMS_PER_PAGE = 30;
+// Show only 3 preview items for non-subscribers
+const PREVIEW_ITEMS = 3;
 
 export default function Catalog() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>("all");
@@ -23,6 +30,15 @@ export default function Catalog() {
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const { t, tCatalogContent } = useLanguage();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+
+  const { data: subStatus, isLoading: subLoading } = trpc.subscription.status.useQuery(undefined, {
+    enabled: isAuthenticated,
+    retry: false,
+  });
+
+  const isActive = subStatus?.isActive || false;
+  const isLoading = authLoading || (isAuthenticated && subLoading);
 
   const filtered = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
@@ -31,7 +47,6 @@ export default function Catalog() {
       if (selectedCountry !== "all" && item.country !== selectedCountry) return false;
       if (selectedType !== "all" && item.type !== selectedType) return false;
       if (query) {
-        // Search in both original and translated content
         const content = tCatalogContent(item.id, {
           name: item.name,
           description: item.description,
@@ -55,8 +70,10 @@ export default function Catalog() {
     });
   }, [selectedCategory, selectedCountry, selectedType, searchQuery, tCatalogContent]);
 
-  const visibleItems = filtered.slice(0, visibleCount);
-  const hasMore = visibleCount < filtered.length;
+  // If not active subscriber, only show preview items
+  const displayItems = isActive ? filtered : filtered.slice(0, PREVIEW_ITEMS);
+  const visibleItems = isActive ? displayItems.slice(0, visibleCount) : displayItems;
+  const hasMore = isActive && visibleCount < filtered.length;
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/30">
@@ -74,7 +91,7 @@ export default function Catalog() {
         </div>
       </div>
 
-      {/* Filter bar */}
+      {/* Filter bar - always visible */}
       <FilterBar
         selectedCategory={selectedCategory}
         selectedCountry={selectedCountry}
@@ -89,49 +106,117 @@ export default function Catalog() {
 
       {/* Cards grid */}
       <div className="container py-8 flex-1">
-        {visibleItems.length > 0 ? (
+        {isLoading ? (
+          <div className="text-center py-20">
+            <div className="w-8 h-8 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-gray-500">Loading...</p>
+          </div>
+        ) : (
           <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {visibleItems.map((item, i) => (
-                <CatalogCard key={item.id} item={item} index={i} />
-              ))}
-            </div>
+            {visibleItems.length > 0 ? (
+              <>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {visibleItems.map((item, i) => (
+                    <CatalogCard key={item.id} item={item} index={i} />
+                  ))}
+                </div>
 
-            {/* Load more */}
-            {hasMore && (
-              <div className="mt-8 text-center">
+                {/* Load more - only for active subscribers */}
+                {hasMore && (
+                  <div className="mt-8 text-center">
+                    <button
+                      onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
+                      className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-[#1e3a5f] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all"
+                    >
+                      {t.catalog.loadMore} ({filtered.length - visibleCount} {t.catalog.remaining})
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-20">
+                <p className="text-gray-500 text-lg mb-2">{t.catalog.noResults}</p>
                 <button
-                  onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
-                  className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-[#1e3a5f] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all"
+                  onClick={() => {
+                    setSelectedCategory("all");
+                    setSelectedCountry("all");
+                    setSelectedType("all");
+                    setSearchQuery("");
+                  }}
+                  className="text-sm text-[#1e3a5f] hover:underline"
                 >
-                  {t.catalog.loadMore} ({filtered.length - visibleCount} {t.catalog.remaining})
+                  {t.catalog.clearFilters}
                 </button>
               </div>
             )}
-          </>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-lg mb-2">{t.catalog.noResults}</p>
-            <button
-              onClick={() => {
-                setSelectedCategory("all");
-                setSelectedCountry("all");
-                setSelectedType("all");
-                setSearchQuery("");
-              }}
-              className="text-sm text-[#1e3a5f] hover:underline"
-            >
-              {t.catalog.clearFilters}
-            </button>
-          </div>
-        )}
 
-        {/* Member CTA */}
-        <div className="mt-12 bg-[#0f172a] rounded-xl p-8 text-center">
-          <h3 className="text-xl font-bold text-white mb-2">{t.catalog.ctaTitle}</h3>
-          <p className="text-blue-200/70 mb-6 max-w-md mx-auto">{t.catalog.ctaSubtitle}</p>
-          <PricingCTA text={t.catalog.ctaButton} />
-        </div>
+            {/* ===== LOCKED CONTENT OVERLAY ===== */}
+            {!isActive && (
+              <div className="relative mt-6">
+                {/* Blurred placeholder cards */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 blur-sm opacity-40 pointer-events-none select-none">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="bg-white border border-gray-200 rounded-lg p-5 h-48">
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-3" />
+                      <div className="h-3 bg-gray-100 rounded w-1/2 mb-2" />
+                      <div className="h-3 bg-gray-100 rounded w-full mb-2" />
+                      <div className="h-3 bg-gray-100 rounded w-2/3" />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Lock overlay */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl px-8 py-8 text-center shadow-lg max-w-md">
+                    <Lock className="w-10 h-10 text-gray-400 mx-auto mb-4" />
+
+                    {!isAuthenticated ? (
+                      <>
+                        <h3 className="text-lg font-bold text-[#0f172a] mb-2">
+                          {t.catalog.memberBanner}
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                          {t.catalog.subtitle}
+                        </p>
+                        <div className="flex flex-col gap-3">
+                          <a
+                            href={getLoginUrl()}
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-[#1e3a5f] rounded-lg hover:bg-[#0f172a] transition-colors"
+                          >
+                            <LogIn className="w-4 h-4" />
+                            Login / Register
+                          </a>
+                          <PricingCTA text={t.catalog.ctaButton} />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h3 className="text-lg font-bold text-[#0f172a] mb-2">
+                          {t.catalog.ctaTitle}
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                          {t.catalog.ctaSubtitle}
+                        </p>
+                        <div className="flex flex-col gap-3">
+                          <PricingCTA text={t.catalog.ctaButton} size="large" />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Member CTA - only show for active subscribers at the bottom */}
+            {isActive && (
+              <div className="mt-12 bg-[#0f172a] rounded-xl p-8 text-center">
+                <h3 className="text-xl font-bold text-white mb-2">{t.catalog.ctaTitle}</h3>
+                <p className="text-blue-200/70 mb-6 max-w-md mx-auto">{t.catalog.ctaSubtitle}</p>
+                <p className="text-green-400 text-sm font-medium">Active Subscriber</p>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <Footer />

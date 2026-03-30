@@ -14,6 +14,7 @@ import PricingCTA from "@/components/PricingCTA";
 import catalogData from "@/data/catalog.json";
 import { type CatalogItem } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 // Show first 5 items from different categories for variety
 const allItems = catalogData as CatalogItem[];
@@ -53,6 +54,10 @@ const stagger = {
 };
 
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const { t } = useLanguage();
 
