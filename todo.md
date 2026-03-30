@@ -56,3 +56,10 @@
 - [x] Add i18n translations for all 5 languages (EN, FR, ES, RU, KA)
 - [x] Add @tailwindcss/typography plugin for proper prose styling
 - [x] All 28 vitest tests passing
+
+## Refund Policy Page
+- [x] Create Refund Policy page (/refund)
+- [x] Add i18n translations for all 5 languages (EN, FR, ES, RU, KA)
+- [x] Register route in App.tsx
+- [x] Add footer link
+- [x] All 28 vitest tests passing

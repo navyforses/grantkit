@@ -36,6 +36,10 @@ export default function Footer() {
               {t.legal.termsTitle}
             </a>
             <span className="text-gray-600">|</span>
+            <a href="/refund" className="hover:text-white transition-colors">
+              {t.legal?.refundTitle || "Refund Policy"}
+            </a>
+            <span className="text-gray-600">|</span>
             <span className="text-gray-500 text-xs">
               {t.footer.paddle}
             </span>
