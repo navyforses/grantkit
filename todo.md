@@ -210,3 +210,8 @@
 - [x] Integrate pull-to-refresh into Catalog page (invalidates catalog.list, catalog.count, grants.savedList + toast confirmation)
 - [x] Ensure it only activates on mobile (useIsMobile gating) and when scrolled to top (scrollY <= 5 check)
 - [x] Fix React duplicate key error: MobileBottomNav used tab.href as key, but Dashboard+Profile both had getLoginUrl() when unauthenticated — changed to tab.label
+
+## Skeleton Loading
+- [x] Create CatalogCardSkeleton component matching CatalogCard layout (staggered pulse animation)
+- [x] Integrate skeleton into Catalog page during loading (4 on mobile, 9 on desktop)
+- [x] Add skeleton to Home page preview section (5 skeletons when data is loading)

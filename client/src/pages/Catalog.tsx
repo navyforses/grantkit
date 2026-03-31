@@ -8,6 +8,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CatalogCard from "@/components/CatalogCard";
+import CatalogCardSkeleton from "@/components/CatalogCardSkeleton";
 import FilterBar, { type SortValue } from "@/components/FilterBar";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -240,9 +241,10 @@ export default function Catalog() {
       {/* Cards grid — single column on mobile, multi on desktop */}
       <div className="container px-4 md:px-0 py-4 md:py-8 flex-1 pb-24 md:pb-8">
         {isLoading ? (
-          <div className="text-center py-16 md:py-20">
-            <div className="w-8 h-8 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-gray-500 text-sm">Loading...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            {Array.from({ length: isMobile ? 4 : 9 }).map((_, i) => (
+              <CatalogCardSkeleton key={i} index={i} />
+            ))}
           </div>
         ) : (
           <>

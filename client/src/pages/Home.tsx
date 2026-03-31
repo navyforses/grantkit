@@ -23,6 +23,7 @@ import {
 import { useState, useRef } from "react";
 import Footer from "@/components/Footer";
 import CatalogCard from "@/components/CatalogCard";
+import CatalogCardSkeleton from "@/components/CatalogCardSkeleton";
 import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
 import { type CatalogItem } from "@/lib/constants";
@@ -366,11 +367,18 @@ export default function Home() {
               ref={scrollRef}
               className="flex md:contents gap-4 overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide"
             >
-              {previewItems.map((item, i) => (
-                <div key={item.id} className="flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-auto snap-center">
-                  <CatalogCard item={item} index={i} />
-                </div>
-              ))}
+              {previewItems.length === 0
+                ? Array.from({ length: 5 }).map((_, i) => (
+                    <div key={`skel-${i}`} className="flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-auto snap-center">
+                      <CatalogCardSkeleton index={i} />
+                    </div>
+                  ))
+                : previewItems.map((item, i) => (
+                    <div key={item.id} className="flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-auto snap-center">
+                      <CatalogCard item={item} index={i} />
+                    </div>
+                  ))
+              }
             </div>
           </div>
 
