@@ -183,23 +183,23 @@ export default function FilterBar({
   return (
     <>
       {/* ===== MOBILE FILTER BAR ===== */}
-      <div className="md:hidden sticky top-14 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+      <div className="md:hidden sticky top-14 z-20 bg-white/95 backdrop-blur-sm border-b border-border">
         <div className="px-4 py-3">
           {/* Search bar — full width on mobile */}
           {onSearchChange && (
             <div className="relative mb-3">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery || ""}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={t.catalog.searchPlaceholder}
-                className="w-full text-sm border border-gray-200 rounded-xl pl-9 pr-9 py-2.5 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] placeholder:text-gray-400"
+                className="w-full text-sm border border-border rounded-xl pl-9 pr-9 py-2.5 bg-secondary text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/60"
               />
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 active:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 active:text-muted-foreground"
                   aria-label="Clear search"
                 >
                   <X className="w-4 h-4" />
@@ -218,8 +218,8 @@ export default function FilterBar({
                   onClick={() => onCategoryChange(cat.value)}
                   className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border flex-shrink-0 ${
                     selectedCategory === cat.value
-                      ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
-                      : "bg-white text-gray-600 border-gray-200 active:bg-gray-50"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card text-muted-foreground border-border active:bg-secondary"
                   }`}
                 >
                   <span>{cat.icon}</span>
@@ -237,8 +237,8 @@ export default function FilterBar({
                 onClick={() => setShowMobileSheet(true)}
                 className={`inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border transition-all ${
                   totalActiveFilters > 0
-                    ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
-                    : "bg-white text-gray-600 border-gray-200 active:bg-gray-50"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-card text-muted-foreground border-border active:bg-secondary"
                 }`}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -255,7 +255,7 @@ export default function FilterBar({
                 <select
                   value={sortBy || "name_asc"}
                   onChange={(e) => onSortChange(e.target.value as SortValue)}
-                  className="text-xs border border-gray-200 rounded-lg px-2.5 py-2 bg-white text-gray-700 focus:outline-none"
+                  className="text-xs border border-border rounded-lg px-2.5 py-2 bg-card text-foreground/80 focus:outline-none"
                 >
                   <option value="name_asc">{t.filters.sortAZ}</option>
                   <option value="name_desc">{t.filters.sortZA}</option>
@@ -268,14 +268,14 @@ export default function FilterBar({
             </div>
 
             {/* Result count */}
-            <span className="text-xs text-gray-500">
-              <span className="font-semibold text-[#0f172a]">{itemCount}</span> {t.catalog.itemsCount}
+            <span className="text-xs text-muted-foreground">
+              <span className="font-semibold text-foreground">{itemCount}</span> {t.catalog.itemsCount}
             </span>
           </div>
 
           {/* Search result summary */}
           {searchQuery && (
-            <p className="mt-1.5 text-xs text-gray-500">
+            <p className="mt-1.5 text-xs text-muted-foreground">
               {searchResultText(itemCount, searchQuery)}
             </p>
           )}
@@ -291,12 +291,12 @@ export default function FilterBar({
             onClick={() => setShowMobileSheet(false)}
           />
           {/* Sheet */}
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[85vh] overflow-y-auto animate-slide-up safe-area-bottom">
+          <div className="absolute bottom-0 left-0 right-0 bg-card rounded-t-2xl max-h-[85vh] overflow-y-auto animate-slide-up safe-area-bottom">
             {/* Handle */}
-            <div className="sticky top-0 bg-white pt-3 pb-2 px-5 border-b border-gray-100 rounded-t-2xl z-10">
-              <div className="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-3" />
+            <div className="sticky top-0 bg-card pt-3 pb-2 px-5 border-b border-border rounded-t-2xl z-10">
+              <div className="w-10 h-1 bg-muted-foreground/40 rounded-full mx-auto mb-3" />
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-semibold text-[#0f172a]">{t.filters.filters}</h3>
+                <h3 className="text-base font-semibold text-foreground">{t.filters.filters}</h3>
                 <div className="flex items-center gap-3">
                   {totalActiveFilters > 0 && (
                     <button
@@ -308,9 +308,9 @@ export default function FilterBar({
                   )}
                   <button
                     onClick={() => setShowMobileSheet(false)}
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 active:bg-gray-200"
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-muted active:bg-muted"
                   >
-                    <X className="w-4 h-4 text-gray-600" />
+                    <X className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </div>
               </div>
@@ -319,7 +319,7 @@ export default function FilterBar({
             <div className="px-5 py-4 space-y-5 pb-8">
               {/* Type */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.type}</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">{t.filters.type}</label>
                 <div className="flex gap-2">
                   {[
                     { value: "all", label: t.catalog.typeAll },
@@ -331,8 +331,8 @@ export default function FilterBar({
                       onClick={() => onTypeChange(opt.value as TypeValue)}
                       className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
                         selectedType === opt.value
-                          ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
-                          : "bg-gray-50 text-gray-600 border-gray-200 active:bg-gray-100"
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-secondary text-muted-foreground border-border active:bg-muted"
                       }`}
                     >
                       {opt.label}
@@ -343,11 +343,11 @@ export default function FilterBar({
 
               {/* Country */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.country}</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">{t.filters.country}</label>
                 <select
                   value={selectedCountry}
                   onChange={(e) => onCountryChange(e.target.value as CountryValue)}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                  className="w-full text-sm border border-border rounded-xl px-4 py-3 bg-secondary text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   {COUNTRIES.map((country) => {
                     const label = country.value === "all" ? t.countries.all : tCountry(country.value);
@@ -363,13 +363,13 @@ export default function FilterBar({
               {/* State / Location */}
               {onStateChange && statesData && statesData.length > 0 && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
                     <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> {t.filters.stateLocation}</span>
                   </label>
                   <select
                     value={selectedState || "all"}
                     onChange={(e) => onStateChange(e.target.value)}
-                    className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    className="w-full text-sm border border-border rounded-xl px-4 py-3 bg-secondary text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20"
                   >
                     <option value="all">{t.filters.allStates}</option>
                     <option value="Nationwide">🇺🇸 {t.filters.nationwide}</option>
@@ -388,13 +388,13 @@ export default function FilterBar({
               {/* City (appears when a specific state is selected) */}
               {onCityChange && isStateSelected && citiesData && citiesData.length > 0 && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
                     <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> {t.filters.city}</span>
                   </label>
                   <select
                     value={selectedCity || "all"}
                     onChange={(e) => onCityChange(e.target.value)}
-                    className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    className="w-full text-sm border border-border rounded-xl px-4 py-3 bg-secondary text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20"
                   >
                     <option value="all">{t.filters.allCitiesIn.replace("{state}", selectedState || "")}</option>
                     {citiesData.map((c) => (
@@ -409,11 +409,11 @@ export default function FilterBar({
               {/* Condition / Diagnosis */}
               {onTargetDiagnosisChange && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.condition}</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">{t.filters.condition}</label>
                   <select
                     value={targetDiagnosis || "all"}
                     onChange={(e) => onTargetDiagnosisChange(e.target.value)}
-                    className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    className="w-full text-sm border border-border rounded-xl px-4 py-3 bg-secondary text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20"
                   >
                     {DIAGNOSIS_VALUES.map((val) => (
                       <option key={val} value={val}>{diagnosisLabelMap[val]}</option>
@@ -425,7 +425,7 @@ export default function FilterBar({
               {/* Funding Type */}
               {onFundingTypeChange && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.fundingType}</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">{t.filters.fundingType}</label>
                   <div className="flex flex-wrap gap-2">
                     {FUNDING_TYPE_VALUES.map((val) => (
                       <button
@@ -433,8 +433,8 @@ export default function FilterBar({
                         onClick={() => onFundingTypeChange(val)}
                         className={`px-3.5 py-2 rounded-xl text-sm font-medium border transition-all ${
                           fundingType === val
-                            ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
-                            : "bg-gray-50 text-gray-600 border-gray-200 active:bg-gray-100"
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-secondary text-muted-foreground border-border active:bg-muted"
                         }`}
                       >
                         {fundingTypeLabelMap[val]}
@@ -447,7 +447,7 @@ export default function FilterBar({
               {/* B-2 Visa */}
               {onB2VisaChange && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.b2Visa}</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">{t.filters.b2Visa}</label>
                   <div className="flex flex-wrap gap-2">
                     {B2_VISA_VALUES.map((val) => (
                       <button
@@ -455,8 +455,8 @@ export default function FilterBar({
                         onClick={() => onB2VisaChange(val)}
                         className={`px-3.5 py-2 rounded-xl text-sm font-medium border transition-all ${
                           b2VisaEligible === val
-                            ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
-                            : "bg-gray-50 text-gray-600 border-gray-200 active:bg-gray-100"
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-secondary text-muted-foreground border-border active:bg-muted"
                         }`}
                       >
                         {b2VisaLabelMap[val]}
@@ -469,13 +469,13 @@ export default function FilterBar({
               {/* Has Deadline */}
               {onHasDeadlineChange && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.deadline}</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">{t.filters.deadline}</label>
                   <button
                     onClick={() => onHasDeadlineChange(!hasDeadline)}
                     className={`w-full py-3 rounded-xl text-sm font-medium border transition-all ${
                       hasDeadline
-                        ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
-                        : "bg-gray-50 text-gray-600 border-gray-200 active:bg-gray-100"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-secondary text-muted-foreground border-border active:bg-muted"
                     }`}
                   >
                     {hasDeadline ? t.filters.onlyWithDeadline : t.filters.anyDeadline}
@@ -486,7 +486,7 @@ export default function FilterBar({
               {/* Apply button */}
               <button
                 onClick={() => setShowMobileSheet(false)}
-                className="w-full py-3.5 bg-[#1e3a5f] text-white rounded-xl text-sm font-semibold active:bg-[#0f172a] transition-colors"
+                className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold active:bg-primary transition-colors"
               >
                 {t.filters.showResults.replace("{count}", String(itemCount))}
               </button>
@@ -496,24 +496,24 @@ export default function FilterBar({
       )}
 
       {/* ===== DESKTOP FILTER BAR ===== */}
-      <div className="hidden md:block sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+      <div className="hidden md:block sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-border">
         <div className="container py-4">
           {/* Search bar */}
           {onSearchChange && (
             <div className="mb-3">
               <div className="relative w-full sm:max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery || ""}
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder={t.catalog.searchPlaceholder}
-                  className="w-full text-sm border border-gray-200 rounded-lg pl-9 pr-9 py-2.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] placeholder:text-gray-400 transition-all"
+                  className="w-full text-sm border border-border rounded-lg pl-9 pr-9 py-2.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/60 transition-all"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => onSearchChange("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                     aria-label="Clear search"
                   >
                     <X className="w-4 h-4" />
@@ -521,7 +521,7 @@ export default function FilterBar({
                 )}
               </div>
               {searchQuery && (
-                <p className="mt-1.5 text-xs text-gray-500">
+                <p className="mt-1.5 text-xs text-muted-foreground">
                   {searchResultText(itemCount, searchQuery)}
                 </p>
               )}
@@ -539,8 +539,8 @@ export default function FilterBar({
                     onClick={() => onCategoryChange(cat.value)}
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
                       selectedCategory === cat.value
-                        ? "bg-[#1e3a5f] text-white border-[#1e3a5f] shadow-sm"
-                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                        ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                        : "bg-card text-muted-foreground border-border hover:border-border hover:bg-secondary"
                     }`}
                   >
                     <span className="text-sm">{cat.icon}</span>
@@ -553,15 +553,15 @@ export default function FilterBar({
             {/* Type filter + Country filter + Sort + count */}
             <div className="flex items-center gap-3 flex-wrap">
               {!searchQuery && (
-                <span className="text-sm text-gray-500 whitespace-nowrap">
-                  <span className="font-semibold text-[#0f172a]">{itemCount}</span> {t.catalog.itemsCount}
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                  <span className="font-semibold text-foreground">{itemCount}</span> {t.catalog.itemsCount}
                 </span>
               )}
 
               <select
                 value={selectedType}
                 onChange={(e) => onTypeChange(e.target.value as TypeValue)}
-                className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               >
                 <option value="all">{t.catalog.typeAll}</option>
                 <option value="grant">{t.catalog.typeGrant}</option>
@@ -571,7 +571,7 @@ export default function FilterBar({
               <select
                 value={selectedCountry}
                 onChange={(e) => onCountryChange(e.target.value as CountryValue)}
-                className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               >
                 {COUNTRIES.map((country) => {
                   const label = country.value === "all" ? t.countries.all : tCountry(country.value);
@@ -587,7 +587,7 @@ export default function FilterBar({
                 <select
                   value={sortBy || "name_asc"}
                   onChange={(e) => onSortChange(e.target.value as SortValue)}
-                  className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 >
                   <option value="name_asc">{t.filters.sortAZ}</option>
                   <option value="name_desc">{t.filters.sortZA}</option>
@@ -603,8 +603,8 @@ export default function FilterBar({
                 onClick={() => setShowAdvanced(!showAdvanced)}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${
                   activeAdvancedCount > 0
-                    ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-card text-muted-foreground border-border hover:border-border hover:bg-secondary"
                 }`}
               >
                 <Filter className="w-3.5 h-3.5" />
@@ -621,16 +621,16 @@ export default function FilterBar({
 
           {/* Advanced Filters Panel — desktop */}
           {showAdvanced && (
-            <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="mt-3 pt-3 border-t border-border">
               <div className="flex flex-wrap gap-3 items-center">
                 {/* State filter */}
                 {onStateChange && statesData && statesData.length > 0 && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.state}</label>
+                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.state}</label>
                     <select
                       value={selectedState || "all"}
                       onChange={(e) => onStateChange(e.target.value)}
-                      className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     >
                       <option value="all">{t.filters.allStates}</option>
                       <option value="Nationwide">🇺🇸 {t.filters.nationwide}</option>
@@ -649,11 +649,11 @@ export default function FilterBar({
                 {/* City (cascading from state) */}
                 {onCityChange && isStateSelected && citiesData && citiesData.length > 0 && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.city}</label>
+                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.city}</label>
                     <select
                       value={selectedCity || "all"}
                       onChange={(e) => onCityChange(e.target.value)}
-                      className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     >
                       <option value="all">{t.filters.allCities}</option>
                       {citiesData.map((c) => (
@@ -667,11 +667,11 @@ export default function FilterBar({
 
                 {onTargetDiagnosisChange && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.condition}</label>
+                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.condition}</label>
                     <select
                       value={targetDiagnosis || "all"}
                       onChange={(e) => onTargetDiagnosisChange(e.target.value)}
-                      className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     >
                       {DIAGNOSIS_VALUES.map((val) => (
                         <option key={val} value={val}>{diagnosisLabelMap[val]}</option>
@@ -682,11 +682,11 @@ export default function FilterBar({
 
                 {onFundingTypeChange && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.fundingType}</label>
+                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.fundingType}</label>
                     <select
                       value={fundingType || "all"}
                       onChange={(e) => onFundingTypeChange(e.target.value)}
-                      className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     >
                       {FUNDING_TYPE_VALUES.map((val) => (
                         <option key={val} value={val}>{fundingTypeLabelMap[val]}</option>
@@ -697,11 +697,11 @@ export default function FilterBar({
 
                 {onB2VisaChange && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.b2Visa}</label>
+                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.b2Visa}</label>
                     <select
                       value={b2VisaEligible || "all"}
                       onChange={(e) => onB2VisaChange(e.target.value)}
-                      className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     >
                       {B2_VISA_VALUES.map((val) => (
                         <option key={val} value={val}>{b2VisaLabelMap[val]}</option>
@@ -712,13 +712,13 @@ export default function FilterBar({
 
                 {onHasDeadlineChange && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.deadline}</label>
+                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.deadline}</label>
                     <button
                       onClick={() => onHasDeadlineChange(!hasDeadline)}
                       className={`text-sm px-3 py-1.5 rounded-lg border transition-all ${
                         hasDeadline
-                          ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
-                          : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-card text-muted-foreground border-border hover:border-border"
                       }`}
                     >
                       {hasDeadline ? t.filters.hasDeadline : t.filters.anyDeadline}

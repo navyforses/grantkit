@@ -4,8 +4,11 @@ type Theme = "light" | "dark";
 
 interface ThemeContextType {
   theme: Theme;
-  toggleTheme?: () => void;
-  switchable: boolean;
+  toggleTheme: () => void;
+  /** Convenience: true when theme === "light" */
+  isSun: boolean;
+  /** Convenience: true when theme === "dark" */
+  isMoon: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -13,20 +16,15 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 interface ThemeProviderProps {
   children: React.ReactNode;
   defaultTheme?: Theme;
-  switchable?: boolean;
 }
 
 export function ThemeProvider({
   children,
   defaultTheme = "light",
-  switchable = false,
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
-    if (switchable) {
-      const stored = localStorage.getItem("theme");
-      return (stored as Theme) || defaultTheme;
-    }
-    return defaultTheme;
+    const stored = localStorage.getItem("grantkit-theme");
+    return (stored as Theme) || defaultTheme;
   });
 
   useEffect(() => {
@@ -36,20 +34,22 @@ export function ThemeProvider({
     } else {
       root.classList.remove("dark");
     }
+    localStorage.setItem("grantkit-theme", theme);
+  }, [theme]);
 
-    if (switchable) {
-      localStorage.setItem("theme", theme);
-    }
-  }, [theme, switchable]);
-
-  const toggleTheme = switchable
-    ? () => {
-        setTheme(prev => (prev === "light" ? "dark" : "light"));
-      }
-    : undefined;
+  const toggleTheme = () => {
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+  };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        toggleTheme,
+        isSun: theme === "light",
+        isMoon: theme === "dark",
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

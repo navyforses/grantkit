@@ -276,3 +276,35 @@
 - [x] Add profile i18n keys to types.ts and all 5 language files (adminAccess, planName)
 - [x] Replace hardcoded strings in Profile page with t() calls (adminAccess + planName)
 - [x] Run tests and verify (196 tests all passing, 0 TS errors)
+
+## Full Redesign: Sun & Moon Dual Theme System
+- [x] Add dark theme CSS variables to index.css (.dark {} block)
+- [x] Update Sun (light) theme CSS variables for warmer, more refined palette
+- [x] Enable theme switching in ThemeContext (switchable=true)
+- [x] Add Sun/Moon toggle button component
+- [x] Add Sun/Moon toggle to Navbar (desktop)
+- [x] Add Sun/Moon toggle to MobileHeader (mobile)
+- [x] Redesign Navbar — use semantic colors, refined typography, theme-aware
+- [x] Redesign MobileHeader — use semantic colors, theme-aware
+- [x] Redesign MobileBottomNav — use semantic colors, theme-aware
+- [x] Redesign Home.tsx hero section — theme-aware gradient, semantic colors
+- [x] Redesign Home.tsx How It Works section — theme-aware
+- [x] Redesign Home.tsx Problem section — theme-aware
+- [x] Redesign Home.tsx What You Get section — theme-aware
+- [x] Redesign Home.tsx Preview section — theme-aware cards
+- [x] Redesign Home.tsx Testimonials section — theme-aware
+- [x] Redesign Home.tsx Pricing section — theme-aware
+- [x] Redesign Home.tsx FAQ section — theme-aware
+- [x] Redesign Home.tsx Newsletter section — theme-aware
+- [x] Redesign Home.tsx Final CTA section — theme-aware
+- [x] Redesign CatalogCard.tsx — theme-aware card styling
+- [x] Redesign Catalog.tsx page — theme-aware header, grid, pagination
+- [x] Redesign FilterBar.tsx — theme-aware filters, mobile bottom sheet
+- [x] Redesign GrantDetail.tsx — theme-aware detail page
+- [x] Redesign Dashboard.tsx — theme-aware dashboard
+- [x] Redesign Profile.tsx — theme-aware profile page
+- [x] Redesign Footer.tsx — theme-aware footer
+- [x] Redesign PricingCTA.tsx — theme-aware CTA button
+- [x] Redesign Contact.tsx — theme-aware contact page
+- [x] Mobile responsiveness verification for both themes
+- [x] Run all vitest tests and ensure passing (196 tests all passing)

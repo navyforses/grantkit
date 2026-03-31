@@ -193,7 +193,7 @@ export default function Catalog() {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen flex flex-col bg-gray-50/30">
+    <div ref={containerRef} className="min-h-screen flex flex-col bg-background theme-transition">
       <SEO
         title="Browse Grants & Resources"
         description="Search and filter 600+ grants for medical treatment, financial assistance, academic scholarships, and startup funding. Find the right grant for you."
@@ -203,12 +203,12 @@ export default function Catalog() {
       <Navbar />
 
       {/* Page header — compact on mobile */}
-      <div className="bg-[#0f172a] py-6 md:py-10">
+      <div className="bg-secondary py-6 md:py-10 border-b border-border">
         <div className="container px-4 md:px-0">
-          <h1 className="text-xl md:text-3xl font-bold text-white tracking-tight mb-1 md:mb-2">
+          <h1 className="text-xl md:text-3xl font-bold text-foreground tracking-tight mb-1 md:mb-2">
             {t.catalog.title}
           </h1>
-          <p className="text-blue-200/70 text-sm md:text-base max-w-xl">
+          <p className="text-muted-foreground text-sm md:text-base max-w-xl">
             {t.catalog.subtitle}
           </p>
         </div>
@@ -260,7 +260,7 @@ export default function Catalog() {
           <>
             {/* Subtle search loading indicator */}
             {isSearching && (
-              <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
+              <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span>Searching...</span>
               </div>
@@ -287,7 +287,7 @@ export default function Catalog() {
                     <button
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg active:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                      className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg active:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
                       Prev
                     </button>
@@ -304,8 +304,8 @@ export default function Catalog() {
                             onClick={() => setPage(pageNum)}
                             className={`w-10 h-10 md:w-9 md:h-9 text-sm rounded-lg transition-colors ${
                               page === pageNum
-                                ? "bg-[#1e3a5f] text-white font-semibold"
-                                : "text-gray-600 active:bg-gray-100"
+                                ? "bg-primary text-primary-foreground font-semibold"
+                                : "text-muted-foreground active:bg-secondary"
                             }`}
                           >
                             {pageNum}
@@ -316,7 +316,7 @@ export default function Catalog() {
                     <button
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
-                      className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg active:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                      className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg active:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
                       Next
                     </button>
@@ -325,10 +325,10 @@ export default function Catalog() {
               </>
             ) : (
               <div className="text-center py-16 md:py-20">
-                <p className="text-gray-500 text-base md:text-lg mb-2">{t.catalog.noResults}</p>
+                <p className="text-muted-foreground text-base md:text-lg mb-2">{t.catalog.noResults}</p>
                 <button
                   onClick={resetFilters}
-                  className="text-sm text-[#1e3a5f] active:underline"
+                  className="text-sm text-brand-green active:underline"
                 >
                   {t.catalog.clearFilters}
                 </button>
@@ -341,32 +341,32 @@ export default function Catalog() {
                 {/* Blurred placeholder cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 blur-sm opacity-40 pointer-events-none select-none">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="bg-white border border-gray-200 rounded-lg p-4 md:p-5 h-40 md:h-48">
-                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-3" />
-                      <div className="h-3 bg-gray-100 rounded w-1/2 mb-2" />
-                      <div className="h-3 bg-gray-100 rounded w-full mb-2" />
-                      <div className="h-3 bg-gray-100 rounded w-2/3" />
+                    <div key={i} className="bg-card border border-border rounded-lg p-4 md:p-5 h-40 md:h-48">
+                      <div className="h-4 bg-muted rounded w-3/4 mb-3" />
+                      <div className="h-3 bg-muted/60 rounded w-1/2 mb-2" />
+                      <div className="h-3 bg-muted/60 rounded w-full mb-2" />
+                      <div className="h-3 bg-muted/60 rounded w-2/3" />
                     </div>
                   ))}
                 </div>
 
                 {/* Lock overlay */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-                  <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl px-6 md:px-8 py-6 md:py-8 text-center shadow-lg max-w-md w-full">
-                    <Lock className="w-8 h-8 md:w-10 md:h-10 text-gray-400 mx-auto mb-3 md:mb-4" />
+                  <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl px-6 md:px-8 py-6 md:py-8 text-center shadow-lg max-w-md w-full">
+                    <Lock className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground/60 mx-auto mb-3 md:mb-4" />
 
                     {!isAuthenticated ? (
                       <>
-                        <h3 className="text-base md:text-lg font-bold text-[#0f172a] mb-2">
+                        <h3 className="text-base md:text-lg font-bold text-foreground mb-2">
                           {t.catalog.memberBanner}
                         </h3>
-                        <p className="text-sm text-gray-500 mb-5 md:mb-6">
+                        <p className="text-sm text-muted-foreground mb-5 md:mb-6">
                           {t.catalog.subtitle}
                         </p>
                         <div className="flex flex-col gap-3">
                           <a
                             href={getLoginUrl()}
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-[#1e3a5f] rounded-xl active:bg-[#0f172a] transition-colors"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-primary-foreground bg-primary rounded-xl active:bg-primary/90 transition-colors"
                           >
                             <LogIn className="w-4 h-4" />
                             Login / Register
@@ -376,10 +376,10 @@ export default function Catalog() {
                       </>
                     ) : (
                       <>
-                        <h3 className="text-base md:text-lg font-bold text-[#0f172a] mb-2">
+                        <h3 className="text-base md:text-lg font-bold text-foreground mb-2">
                           {t.catalog.ctaTitle}
                         </h3>
-                        <p className="text-sm text-gray-500 mb-5 md:mb-6">
+                        <p className="text-sm text-muted-foreground mb-5 md:mb-6">
                           {t.catalog.ctaSubtitle}
                         </p>
                         <div className="flex flex-col gap-3">
@@ -394,10 +394,10 @@ export default function Catalog() {
 
             {/* Member CTA - only show for active subscribers at the bottom */}
             {isActive && (
-              <div className="mt-8 md:mt-12 bg-[#0f172a] rounded-xl p-6 md:p-8 text-center">
-                <h3 className="text-lg md:text-xl font-bold text-white mb-2">{t.catalog.ctaTitle}</h3>
-                <p className="text-blue-200/70 text-sm md:text-base mb-4 md:mb-6 max-w-md mx-auto">{t.catalog.ctaSubtitle}</p>
-                <p className="text-green-400 text-sm font-medium">Active Subscriber</p>
+              <div className="mt-8 md:mt-12 bg-secondary rounded-xl p-6 md:p-8 text-center border border-border">
+                <h3 className="text-lg md:text-xl font-bold text-foreground mb-2">{t.catalog.ctaTitle}</h3>
+                <p className="text-muted-foreground text-sm md:text-base mb-4 md:mb-6 max-w-md mx-auto">{t.catalog.ctaSubtitle}</p>
+                <p className="text-brand-green text-sm font-medium">Active Subscriber</p>
               </div>
             )}
           </>

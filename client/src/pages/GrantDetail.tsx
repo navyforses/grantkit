@@ -68,14 +68,14 @@ function CollapsibleSection({
           onClick={() => setOpen(!open)}
           className="w-full flex items-center justify-between py-3 text-left"
         >
-          <span className="flex items-center gap-2 text-sm font-semibold text-[#0f172a]">
+          <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
             {icon}
             {title}
           </span>
           {open ? (
-            <ChevronUp className="w-4 h-4 text-gray-400" />
+            <ChevronUp className="w-4 h-4 text-muted-foreground/60" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-gray-400" />
+            <ChevronDown className="w-4 h-4 text-muted-foreground/60" />
           )}
         </button>
         {open && <div className="pb-4">{children}</div>}
@@ -83,7 +83,7 @@ function CollapsibleSection({
       {/* Desktop: always open */}
       {mobileOnly && (
         <div className="hidden md:block">
-          <h2 className="text-lg font-semibold text-[#0f172a] mb-3 flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
             {icon}
             {title}
           </h2>
@@ -140,7 +140,7 @@ export default function GrantDetail() {
   // Loading state — show skeleton matching the page layout
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50/30">
+      <div className="min-h-screen flex flex-col bg-secondary">
         <Navbar />
         <GrantDetailSkeleton />
       </div>
@@ -150,12 +150,12 @@ export default function GrantDetail() {
   // Not found
   if (!detailData?.grant) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50/30">
+      <div className="min-h-screen flex flex-col bg-secondary">
         <Navbar />
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="text-center">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{t.grantDetail.notFound}</h2>
-            <p className="text-gray-500 mb-6 text-sm">{t.grantDetail.notFoundDesc}</p>
+            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.grantDetail.notFound}</h2>
+            <p className="text-muted-foreground mb-6 text-sm">{t.grantDetail.notFoundDesc}</p>
             <Link href="/catalog">
               <Button variant="outline" className="gap-2">
                 <ArrowLeft className="w-4 h-4" />
@@ -232,7 +232,7 @@ export default function GrantDetail() {
     : null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50/30">
+    <div className="min-h-screen flex flex-col bg-secondary">
       <SEO
         title={content.name}
         description={seoDescription}
@@ -254,11 +254,11 @@ export default function GrantDetail() {
       <Navbar />
 
       {/* ===== MOBILE HEADER ===== */}
-      <div className="md:hidden bg-[#0f172a] px-4 pt-4 pb-5">
+      <div className="md:hidden bg-secondary px-4 pt-4 pb-5 border-b border-border">
         {/* Back + actions row */}
         <div className="flex items-center justify-between mb-3">
           <Link href="/catalog">
-            <button className="inline-flex items-center gap-1 text-sm text-blue-200/70 active:text-white">
+            <button className="inline-flex items-center gap-1 text-sm text-muted-foreground active:text-foreground">
               <ArrowLeft className="w-4 h-4" />
               {t.grantDetail.back}
             </button>
@@ -267,7 +267,7 @@ export default function GrantDetail() {
             {isAuthenticated && (
               <button
                 className={`w-9 h-9 flex items-center justify-center rounded-full border transition-all ${
-                  isSaved ? "border-yellow-400/40 text-yellow-400 bg-yellow-400/10" : "border-white/20 text-white/70 active:bg-white/10"
+                  isSaved ? "border-yellow-400/40 text-yellow-400 bg-yellow-400/10" : "border-white/20 text-foreground/70 active:bg-white/10"
                 }`}
                 onClick={() => toggleSave.mutate({ grantId: item.id })}
               >
@@ -275,7 +275,7 @@ export default function GrantDetail() {
               </button>
             )}
             <button
-              className="w-9 h-9 flex items-center justify-center rounded-full border border-white/20 text-white/70 active:bg-white/10"
+              className="w-9 h-9 flex items-center justify-center rounded-full border border-white/20 text-foreground/70 active:bg-white/10"
               onClick={handleShare}
             >
               <Share2 className="w-4 h-4" />
@@ -307,7 +307,7 @@ export default function GrantDetail() {
           {content.name}
         </h1>
         {item.organization && item.organization !== item.name && (
-          <p className="text-blue-200/70 text-sm mt-1 flex items-center gap-1">
+          <p className="text-primary-foreground/70 text-sm mt-1 flex items-center gap-1">
             <Building2 className="w-3.5 h-3.5" />
             {item.organization}
           </p>
@@ -343,10 +343,10 @@ export default function GrantDetail() {
       </div>
 
       {/* ===== DESKTOP HEADER ===== */}
-      <div className="hidden md:block bg-[#0f172a] py-8">
+      <div className="hidden md:block bg-secondary py-8 border-b border-border">
         <div className="container">
           <Link href="/catalog">
-            <button className="inline-flex items-center gap-1.5 text-sm text-blue-200/70 hover:text-white transition-colors mb-4">
+            <button className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
               <ArrowLeft className="w-4 h-4" />
               {t.catalog.title}
             </button>
@@ -370,11 +370,11 @@ export default function GrantDetail() {
                   </span>
                 )}
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                 {content.name}
               </h1>
               {item.organization && item.organization !== item.name && (
-                <p className="text-blue-200/70 mt-1 flex items-center gap-1.5">
+                <p className="text-muted-foreground mt-1 flex items-center gap-1.5">
                   <Building2 className="w-4 h-4" />
                   {item.organization}
                 </p>
@@ -436,13 +436,13 @@ export default function GrantDetail() {
           {/* Main content */}
           <div className="lg:col-span-2 space-y-0 md:space-y-6">
             {/* Description — mobile: collapsible card, desktop: full card */}
-            <div className={`bg-white border border-gray-200 rounded-xl md:rounded-lg ${borderColor} border-l-4 p-4 md:p-6`}>
+            <div className={`bg-card border border-border rounded-xl md:rounded-lg ${borderColor} border-l-4 p-4 md:p-6`}>
               <CollapsibleSection
                 title={t.grantDetail.description}
-                icon={<Tag className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />}
+                icon={<Tag className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground/60" />}
                 defaultOpen={true}
               >
-                <p className="text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+                <p className="text-sm md:text-base text-foreground/80 leading-relaxed whitespace-pre-line">
                   {content.description || "—"}
                 </p>
               </CollapsibleSection>
@@ -450,13 +450,13 @@ export default function GrantDetail() {
 
             {/* Eligibility */}
             {content.eligibility && (
-              <div className="bg-white border border-gray-200 rounded-xl md:rounded-lg p-4 md:p-6">
+              <div className="bg-card border border-border rounded-xl md:rounded-lg p-4 md:p-6">
                 <CollapsibleSection
                   title={t.catalog.eligibility}
-                  icon={<Users className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />}
+                  icon={<Users className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground/60" />}
                   defaultOpen={true}
                 >
-                  <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                  <p className="text-sm md:text-base text-foreground/80 leading-relaxed">
                     {content.eligibility}
                   </p>
                 </CollapsibleSection>
@@ -465,13 +465,13 @@ export default function GrantDetail() {
 
             {/* How to Apply */}
             {content.applicationProcess && (
-              <div className="bg-white border border-gray-200 rounded-xl md:rounded-lg p-4 md:p-6">
+              <div className="bg-card border border-border rounded-xl md:rounded-lg p-4 md:p-6">
                 <CollapsibleSection
                   title={t.grantDetail.howToApply}
                   icon={<CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-500" />}
                   defaultOpen={false}
                 >
-                  <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                  <p className="text-sm md:text-base text-foreground/80 leading-relaxed">
                     {content.applicationProcess}
                   </p>
                 </CollapsibleSection>
@@ -480,19 +480,19 @@ export default function GrantDetail() {
 
             {/* Required Documents */}
             {content.documentsRequired && (
-              <div className="bg-white border border-gray-200 rounded-xl md:rounded-lg p-4 md:p-6">
+              <div className="bg-card border border-border rounded-xl md:rounded-lg p-4 md:p-6">
                 <CollapsibleSection
                   title={t.grantDetail.requiredDocuments}
-                  icon={<FileText className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />}
+                  icon={<FileText className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground/60" />}
                   defaultOpen={false}
                 >
                   <div className="flex flex-wrap gap-2">
                     {content.documentsRequired.split(",").map((doc, i) => (
                       <span
                         key={i}
-                        className="inline-flex items-center gap-1 text-xs md:text-sm bg-gray-100 text-gray-700 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full"
+                        className="inline-flex items-center gap-1 text-xs md:text-sm bg-muted text-foreground/80 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full"
                       >
-                        <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5 text-gray-400" />
+                        <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5 text-muted-foreground/60" />
                         {doc.trim()}
                       </span>
                     ))}
@@ -502,10 +502,10 @@ export default function GrantDetail() {
             )}
 
             {/* Contact info — mobile only (desktop has sidebar) */}
-            <div className="md:hidden bg-white border border-gray-200 rounded-xl p-4">
+            <div className="md:hidden bg-card border border-border rounded-xl p-4">
               <CollapsibleSection
                 title={t.grantDetail.contact}
-                icon={<Phone className="w-4 h-4 text-gray-400" />}
+                icon={<Phone className="w-4 h-4 text-muted-foreground/60" />}
                 defaultOpen={false}
                 mobileOnly={false}
               >
@@ -515,7 +515,7 @@ export default function GrantDetail() {
                       href={primaryLink.startsWith("http") ? primaryLink : `https://${primaryLink}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm font-medium text-[#1e3a5f] active:text-[#22c55e]"
+                      className="flex items-center gap-2 text-sm font-medium text-primary active:text-brand-green"
                     >
                       <Globe className="w-4 h-4" />
                       {t.catalog.visitWebsite}
@@ -523,14 +523,14 @@ export default function GrantDetail() {
                     </a>
                   )}
                   {item.phone && (
-                    <a href={`tel:${item.phone}`} className="flex items-center gap-2 text-sm text-gray-600 active:text-gray-900">
-                      <Phone className="w-4 h-4 text-gray-400" />
+                    <a href={`tel:${item.phone}`} className="flex items-center gap-2 text-sm text-muted-foreground active:text-foreground">
+                      <Phone className="w-4 h-4 text-muted-foreground/60" />
                       {item.phone}
                     </a>
                   )}
                   {item.email && (
-                    <a href={`mailto:${item.email}`} className="flex items-center gap-2 text-sm text-gray-600 active:text-gray-900">
-                      <Mail className="w-4 h-4 text-gray-400" />
+                    <a href={`mailto:${item.email}`} className="flex items-center gap-2 text-sm text-muted-foreground active:text-foreground">
+                      <Mail className="w-4 h-4 text-muted-foreground/60" />
                       {item.email}
                     </a>
                   )}
@@ -539,35 +539,35 @@ export default function GrantDetail() {
             </div>
 
             {/* Details — mobile only (desktop has sidebar) */}
-            <div className="md:hidden bg-white border border-gray-200 rounded-xl p-4">
+            <div className="md:hidden bg-card border border-border rounded-xl p-4">
               <CollapsibleSection
                 title={t.grantDetail.details}
-                icon={<MapPin className="w-4 h-4 text-gray-400" />}
+                icon={<MapPin className="w-4 h-4 text-muted-foreground/60" />}
                 defaultOpen={false}
                 mobileOnly={false}
               >
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.location}</p>
-                    <p className="text-sm font-medium text-gray-900">{locationDisplay}</p>
+                    <p className="text-[10px] text-muted-foreground/60 uppercase">{t.grantDetail.location}</p>
+                    <p className="text-sm font-medium text-foreground">{locationDisplay}</p>
                   </div>
                   {content.geographicScope && (
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.scope}</p>
-                      <p className="text-sm font-medium text-gray-900">{content.geographicScope}</p>
+                      <p className="text-[10px] text-muted-foreground/60 uppercase">{t.grantDetail.scope}</p>
+                      <p className="text-sm font-medium text-foreground">{content.geographicScope}</p>
                     </div>
                   )}
                   <div>
-                    <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.category}</p>
-                    <p className="text-sm font-medium text-gray-900">{translatedCategory}</p>
+                    <p className="text-[10px] text-muted-foreground/60 uppercase">{t.grantDetail.category}</p>
+                    <p className="text-sm font-medium text-foreground">{translatedCategory}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.organization}</p>
-                    <p className="text-sm font-medium text-gray-900">{item.organization || "—"}</p>
+                    <p className="text-[10px] text-muted-foreground/60 uppercase">{t.grantDetail.organization}</p>
+                    <p className="text-sm font-medium text-foreground">{item.organization || "—"}</p>
                   </div>
                   {content.targetDiagnosis && content.targetDiagnosis !== "General" && (
                     <div className="col-span-2">
-                      <p className="text-[10px] text-gray-400 uppercase mb-1">{t.grantDetail.conditions}</p>
+                      <p className="text-[10px] text-muted-foreground/60 uppercase mb-1">{t.grantDetail.conditions}</p>
                       <div className="flex flex-wrap gap-1">
                         {content.targetDiagnosis.split(",").slice(0, 4).map((d, i) => (
                           <span key={i} className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
@@ -575,23 +575,23 @@ export default function GrantDetail() {
                           </span>
                         ))}
                         {content.targetDiagnosis.split(",").length > 4 && (
-                          <span className="text-[10px] text-gray-400">+{content.targetDiagnosis.split(",").length - 4}</span>
+                          <span className="text-[10px] text-muted-foreground/60">+{content.targetDiagnosis.split(",").length - 4}</span>
                         )}
                       </div>
                     </div>
                   )}
                   {content.ageRange && content.ageRange !== "0-100" && (
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.ageRange}</p>
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-[10px] text-muted-foreground/60 uppercase">{t.grantDetail.ageRange}</p>
+                      <p className="text-sm font-medium text-foreground">
                         {content.ageRange === "0-18" ? t.grantDetail.children : content.ageRange === "18-100" ? t.grantDetail.adults : t.grantDetail.ages.replace("{range}", content.ageRange)}
                       </p>
                     </div>
                   )}
                   {item.status && (
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.status}</p>
-                      <p className={`text-sm font-medium ${item.status === "Open" ? "text-emerald-600" : "text-gray-700"}`}>
+                      <p className="text-[10px] text-muted-foreground/60 uppercase">{t.grantDetail.status}</p>
+                      <p className={`text-sm font-medium ${item.status === "Open" ? "text-emerald-600" : "text-foreground/80"}`}>
                         {item.status}
                       </p>
                     </div>
@@ -603,7 +603,7 @@ export default function GrantDetail() {
             {/* Related Grants */}
             {relatedItems.length > 0 && (
               <div className="pt-2 md:pt-0">
-                <h2 className="text-sm md:text-lg font-semibold text-[#0f172a] mb-3 md:mb-4">{t.grantDetail.relatedGrants}</h2>
+                <h2 className="text-sm md:text-lg font-semibold text-foreground mb-3 md:mb-4">{t.grantDetail.relatedGrants}</h2>
                 {/* Mobile: horizontal scroll */}
                 <div className="md:hidden flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
                   {relatedItems.map((related) => {
@@ -612,14 +612,14 @@ export default function GrantDetail() {
                     const rFlag = related.country === "US" ? "🇺🇸" : "🌐";
                     return (
                       <Link key={related.id} href={`/grant/${related.id}`}>
-                        <div className={`w-56 flex-shrink-0 bg-white border border-gray-200 rounded-xl ${getCategoryBorderColor(related.category)} border-l-4 p-3.5 active:shadow-md transition-all`}>
+                        <div className={`w-56 flex-shrink-0 bg-card border border-border rounded-xl ${getCategoryBorderColor(related.category)} border-l-4 p-3.5 active:shadow-md transition-all`}>
                           <div className="flex items-start gap-2 mb-1.5">
                             <span className="text-base">{rFlag}</span>
-                            <h3 className="font-medium text-[#0f172a] text-xs leading-snug line-clamp-2">
+                            <h3 className="font-medium text-foreground text-xs leading-snug line-clamp-2">
                               {rc.name}
                             </h3>
                           </div>
-                          <p className="text-[10px] text-gray-500 line-clamp-2">{rc.description}</p>
+                          <p className="text-[10px] text-muted-foreground line-clamp-2">{rc.description}</p>
                           {related.amount && (
                             <p className="text-[10px] text-emerald-600 font-medium mt-1.5 flex items-center gap-1">
                               <DollarSign className="w-2.5 h-2.5" />
@@ -639,14 +639,14 @@ export default function GrantDetail() {
                     const rFlag = related.country === "US" ? "🇺🇸" : "🌐";
                     return (
                       <Link key={related.id} href={`/grant/${related.id}`}>
-                        <div className={`bg-white border border-gray-200 rounded-lg ${getCategoryBorderColor(related.category)} border-l-4 p-4 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer`}>
+                        <div className={`bg-card border border-border rounded-lg ${getCategoryBorderColor(related.category)} border-l-4 p-4 hover:shadow-md hover:border-border transition-all cursor-pointer`}>
                           <div className="flex items-start gap-2 mb-2">
                             <span className="text-lg">{rFlag}</span>
-                            <h3 className="font-medium text-[#0f172a] text-sm leading-snug line-clamp-2">
+                            <h3 className="font-medium text-foreground text-sm leading-snug line-clamp-2">
                               {rc.name}
                             </h3>
                           </div>
-                          <p className="text-xs text-gray-500 line-clamp-2">{rc.description}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-2">{rc.description}</p>
                           {related.amount && (
                             <p className="text-xs text-emerald-600 font-medium mt-1.5 flex items-center gap-1">
                               <DollarSign className="w-3 h-3" />
@@ -669,72 +669,72 @@ export default function GrantDetail() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="bg-white border border-gray-200 rounded-lg p-6"
+              className="bg-card border border-border rounded-lg p-6"
             >
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{t.grantDetail.details}</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">{t.grantDetail.details}</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                  <MapPin className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">{t.grantDetail.location}</p>
-                    <p className="text-sm font-medium text-gray-900">{locationDisplay}</p>
+                    <p className="text-xs text-muted-foreground">{t.grantDetail.location}</p>
+                    <p className="text-sm font-medium text-foreground">{locationDisplay}</p>
                   </div>
                 </div>
                 {content.geographicScope && (
                   <div className="flex items-start gap-3">
-                    <Globe className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <Globe className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">{t.grantDetail.geographicScope}</p>
-                      <p className="text-sm font-medium text-gray-900">{content.geographicScope}</p>
+                      <p className="text-xs text-muted-foreground">{t.grantDetail.geographicScope}</p>
+                      <p className="text-sm font-medium text-foreground">{content.geographicScope}</p>
                     </div>
                   </div>
                 )}
                 <div className="flex items-start gap-3">
-                  <Tag className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                  <Tag className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">{t.grantDetail.category}</p>
-                    <p className="text-sm font-medium text-gray-900">{translatedCategory}</p>
+                    <p className="text-xs text-muted-foreground">{t.grantDetail.category}</p>
+                    <p className="text-sm font-medium text-foreground">{translatedCategory}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Building2 className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                  <Building2 className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">{t.grantDetail.organization}</p>
-                    <p className="text-sm font-medium text-gray-900">{item.organization || "\u2014"}</p>
+                    <p className="text-xs text-muted-foreground">{t.grantDetail.organization}</p>
+                    <p className="text-sm font-medium text-foreground">{item.organization || "\u2014"}</p>
                   </div>
                 </div>
                 {item.amount && (
                   <div className="flex items-start gap-3">
                     <DollarSign className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">{t.grantDetail.amount}</p>
+                      <p className="text-xs text-muted-foreground">{t.grantDetail.amount}</p>
                       <p className="text-sm font-semibold text-emerald-600">{item.amount}</p>
                     </div>
                   </div>
                 )}
                 {item.fundingType && item.fundingType !== "unknown" && (
                   <div className="flex items-start gap-3">
-                    <Heart className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <Heart className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">{t.grantDetail.fundingType}</p>
-                      <p className="text-sm font-medium text-gray-900">{fundingTypeLabels[item.fundingType] || item.fundingType}</p>
+                      <p className="text-xs text-muted-foreground">{t.grantDetail.fundingType}</p>
+                      <p className="text-sm font-medium text-foreground">{fundingTypeLabels[item.fundingType] || item.fundingType}</p>
                     </div>
                   </div>
                 )}
                 {content.deadline && (
                   <div className="flex items-start gap-3">
-                    <Calendar className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <Calendar className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">{t.grantDetail.deadlineLabel}</p>
-                      <p className="text-sm font-medium text-gray-900">{content.deadline}</p>
+                      <p className="text-xs text-muted-foreground">{t.grantDetail.deadlineLabel}</p>
+                      <p className="text-sm font-medium text-foreground">{content.deadline}</p>
                     </div>
                   </div>
                 )}
                 {content.targetDiagnosis && content.targetDiagnosis !== "General" && (
                   <div className="flex items-start gap-3">
-                    <Stethoscope className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <Stethoscope className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">{t.grantDetail.targetConditions}</p>
+                      <p className="text-xs text-muted-foreground">{t.grantDetail.targetConditions}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {content.targetDiagnosis.split(",").slice(0, 5).map((d, i) => (
                           <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
@@ -742,7 +742,7 @@ export default function GrantDetail() {
                           </span>
                         ))}
                         {content.targetDiagnosis.split(",").length > 5 && (
-                          <span className="text-xs text-gray-400">+{content.targetDiagnosis.split(",").length - 5} more</span>
+                          <span className="text-xs text-muted-foreground/60">+{content.targetDiagnosis.split(",").length - 5} more</span>
                         )}
                       </div>
                     </div>
@@ -750,10 +750,10 @@ export default function GrantDetail() {
                 )}
                 {content.ageRange && content.ageRange !== "0-100" && (
                   <div className="flex items-start gap-3">
-                    <Users className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <Users className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">{t.grantDetail.ageRange}</p>
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-xs text-muted-foreground">{t.grantDetail.ageRange}</p>
+                      <p className="text-sm font-medium text-foreground">
                         {content.ageRange === "0-18" ? `${t.grantDetail.children} (0-18)` :
                          content.ageRange === "18-100" ? `${t.grantDetail.adults} (18+)` :
                          t.grantDetail.ages.replace("{range}", content.ageRange)}
@@ -763,10 +763,10 @@ export default function GrantDetail() {
                 )}
                 {item.status && (
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">{t.grantDetail.status}</p>
-                      <p className={`text-sm font-medium ${item.status === "Open" ? "text-emerald-600" : "text-gray-700"}`}>
+                      <p className="text-xs text-muted-foreground">{t.grantDetail.status}</p>
+                      <p className={`text-sm font-medium ${item.status === "Open" ? "text-emerald-600" : "text-foreground/80"}`}>
                         {item.status}
                       </p>
                     </div>
@@ -780,45 +780,45 @@ export default function GrantDetail() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.15 }}
-              className="bg-white border border-gray-200 rounded-lg p-6"
+              className="bg-card border border-border rounded-lg p-6"
             >
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{t.grantDetail.contact}</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">{t.grantDetail.contact}</h3>
               <div className="space-y-3">
                 {primaryLink ? (
                   <a
                     href={primaryLink.startsWith("http") ? primaryLink : `https://${primaryLink}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm font-medium text-[#1e3a5f] hover:text-[#22c55e] transition-colors"
+                    className="flex items-center gap-2 text-sm font-medium text-primary hover:text-brand-green transition-colors"
                   >
                     <Globe className="w-4 h-4" />
                     {t.catalog.visitWebsite}
                     <ArrowUpRight className="w-3.5 h-3.5" />
                   </a>
                 ) : (
-                  <p className="text-sm text-gray-400 flex items-center gap-2">
+                  <p className="text-sm text-muted-foreground/60 flex items-center gap-2">
                     <Globe className="w-4 h-4" />
                     {t.grantDetail.noWebsite}
                   </p>
                 )}
                 {item.phone ? (
-                  <a href={`tel:${item.phone}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                    <Phone className="w-4 h-4 text-gray-400" />
+                  <a href={`tel:${item.phone}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Phone className="w-4 h-4 text-muted-foreground/60" />
                     {item.phone}
                   </a>
                 ) : (
-                  <p className="text-sm text-gray-400 flex items-center gap-2">
+                  <p className="text-sm text-muted-foreground/60 flex items-center gap-2">
                     <Phone className="w-4 h-4" />
                     {t.grantDetail.noPhone}
                   </p>
                 )}
                 {item.email ? (
-                  <a href={`mailto:${item.email}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                    <Mail className="w-4 h-4 text-gray-400" />
+                  <a href={`mailto:${item.email}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Mail className="w-4 h-4 text-muted-foreground/60" />
                     {item.email}
                   </a>
                 ) : (
-                  <p className="text-sm text-gray-400 flex items-center gap-2">
+                  <p className="text-sm text-muted-foreground/60 flex items-center gap-2">
                     <Mail className="w-4 h-4" />
                     {t.grantDetail.noEmail}
                   </p>
@@ -849,7 +849,7 @@ export default function GrantDetail() {
               >
                 <Button
                   variant={isSaved ? "outline" : "default"}
-                  className={`w-full gap-2 ${isSaved ? "border-yellow-400 text-yellow-600 hover:bg-yellow-50" : "bg-[#1e3a5f] hover:bg-[#0f172a]"}`}
+                  className={`w-full gap-2 ${isSaved ? "border-yellow-400 text-yellow-600 hover:bg-yellow-50" : "bg-primary hover:bg-primary"}`}
                   onClick={() => toggleSave.mutate({ grantId: item.id })}
                 >
                   {isSaved ? (
@@ -872,7 +872,7 @@ export default function GrantDetail() {
 
       {/* ===== MOBILE STICKY BOTTOM CTA ===== */}
       {primaryLink && (
-        <div className="md:hidden fixed bottom-16 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-t border-gray-200 px-4 py-3 safe-area-bottom">
+        <div className="md:hidden fixed bottom-16 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-bottom">
           <div className="flex gap-2">
             <a
               href={primaryLink.startsWith("http") ? primaryLink : `https://${primaryLink}`}
@@ -888,7 +888,7 @@ export default function GrantDetail() {
             {isAuthenticated && (
               <Button
                 variant="outline"
-                className={`h-12 w-12 shrink-0 rounded-xl ${isSaved ? "border-yellow-400 text-yellow-600" : "border-gray-200 text-gray-600"}`}
+                className={`h-12 w-12 shrink-0 rounded-xl ${isSaved ? "border-yellow-400 text-yellow-600" : "border-border text-muted-foreground"}`}
                 onClick={() => toggleSave.mutate({ grantId: item.id })}
               >
                 {isSaved ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}

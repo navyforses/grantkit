@@ -24,16 +24,16 @@ export default function LanguageSwitcher() {
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium
-          bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors border border-gray-200"
+          bg-muted hover:bg-muted text-foreground/80 transition-colors border border-border"
         aria-label="Select language"
       >
-        <Globe className="w-4 h-4 text-gray-500" />
+        <Globe className="w-4 h-4 text-muted-foreground" />
         <span className="hidden sm:inline">{current.flag} {current.nativeName}</span>
         <span className="sm:hidden">{current.flag}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-48 bg-card rounded-xl shadow-xl border border-border py-1 z-50 overflow-hidden">
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
@@ -44,12 +44,12 @@ export default function LanguageSwitcher() {
               className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors
                 ${language === lang.code
                   ? "bg-emerald-50 text-emerald-700 font-semibold"
-                  : "text-gray-700 hover:bg-gray-50"
+                  : "text-foreground/80 hover:bg-secondary"
                 }`}
             >
               <span className="text-base">{lang.flag}</span>
               <span>{lang.nativeName}</span>
-              <span className="text-gray-400 text-xs ml-auto">{lang.label}</span>
+              <span className="text-muted-foreground/60 text-xs ml-auto">{lang.label}</span>
             </button>
           ))}
         </div>

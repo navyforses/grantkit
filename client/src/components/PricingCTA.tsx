@@ -41,8 +41,8 @@ export default function PricingCTA({
     ? "px-8 py-4 text-base"
     : "px-6 py-3 text-sm";
   const variantStyles = variant === "primary"
-    ? "bg-[#22c55e] text-white hover:bg-[#16a34a] shadow-sm hover:shadow-md"
-    : "border-2 border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e] hover:text-white";
+    ? "bg-brand-green text-white hover:bg-brand-green-hover shadow-sm hover:shadow-md"
+    : "border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white";
 
   const handleClick = () => {
     if (!isAuthenticated) {

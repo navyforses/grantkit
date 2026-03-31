@@ -75,27 +75,27 @@ export default function OnboardingModal() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 overflow-hidden"
+            className="relative bg-card rounded-2xl shadow-2xl max-w-md w-full p-8 overflow-hidden"
           >
             {/* Close button */}
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-4 right-4 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Decorative gradient */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#22c55e] via-[#1e3a5f] to-[#22c55e]" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-green via-primary to-brand-green" />
 
             <div className="text-center mb-6">
-              <div className="w-14 h-14 bg-[#f0fdf4] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 bg-brand-green/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🎉</span>
               </div>
-              <h2 className="text-xl font-bold text-[#0f172a] mb-2">
+              <h2 className="text-xl font-bold text-foreground mb-2">
                 {t.onboarding.welcomeTitle}
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 {t.onboarding.welcomeSubtitle}
               </p>
             </div>
@@ -112,14 +112,14 @@ export default function OnboardingModal() {
                   <div className={`w-10 h-10 ${step.color} rounded-xl flex items-center justify-center shrink-0`}>
                     <step.icon className="w-5 h-5" />
                   </div>
-                  <p className="text-sm text-gray-600 leading-relaxed pt-2">{step.text}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed pt-2">{step.text}</p>
                 </motion.div>
               ))}
             </div>
 
             <button
               onClick={handleGetStarted}
-              className="w-full py-3 bg-[#22c55e] text-white rounded-xl font-semibold text-sm hover:bg-[#16a34a] transition-colors"
+              className="w-full py-3 bg-brand-green text-white rounded-xl font-semibold text-sm hover:bg-brand-green-hover transition-colors"
             >
               {t.onboarding.getStarted}
             </button>

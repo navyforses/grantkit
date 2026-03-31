@@ -35,16 +35,16 @@ export default function PullToRefreshIndicator({
       >
         {state === "refreshing" ? (
           <>
-            <Loader2 className="w-6 h-6 text-[#1e3a5f] animate-spin" />
-            <span className="text-xs text-gray-500 font-medium">Updating...</span>
+            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+            <span className="text-xs text-muted-foreground font-medium">Updating...</span>
           </>
         ) : (
           <>
             <ArrowDown
-              className="w-6 h-6 text-[#1e3a5f] transition-transform duration-150"
+              className="w-6 h-6 text-primary transition-transform duration-150"
               style={{ transform: `rotate(${rotation}deg)` }}
             />
-            <span className="text-xs text-gray-500 font-medium">
+            <span className="text-xs text-muted-foreground font-medium">
               {state === "ready" ? "Release to refresh" : "Pull to refresh"}
             </span>
           </>

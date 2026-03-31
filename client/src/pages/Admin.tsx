@@ -67,14 +67,14 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
       <div className="flex items-center gap-3 mb-2">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}>
           <Icon className="w-4.5 h-4.5 text-white" />
         </div>
-        <span className="text-sm text-gray-500 font-medium">{label}</span>
+        <span className="text-sm text-muted-foreground font-medium">{label}</span>
       </div>
-      <p className="text-2xl font-bold text-[#0f172a]">{value}</p>
+      <p className="text-2xl font-bold text-foreground">{value}</p>
     </div>
   );
 }
@@ -86,7 +86,7 @@ function StatusBadge({ status, t }: { status: string; t: AdminT }) {
     cancelled: { bg: "bg-red-50", text: "text-red-700", key: "statusCancelled" },
     past_due: { bg: "bg-amber-50", text: "text-amber-700", key: "statusPastDue" },
     paused: { bg: "bg-blue-50", text: "text-blue-700", key: "statusPaused" },
-    none: { bg: "bg-gray-50", text: "text-gray-500", key: "statusNone" },
+    none: { bg: "bg-secondary", text: "text-muted-foreground", key: "statusNone" },
   };
   const c = config[status] || config.none;
   return (
@@ -106,7 +106,7 @@ function RoleBadge({ role, t }: { role: string; t: AdminT }) {
     );
   }
   return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-50 text-gray-600">
+    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-muted-foreground">
       {t.roleUser}
     </span>
   );
@@ -223,14 +223,14 @@ function GrantFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-card rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-[#0f172a]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h3 className="text-lg font-semibold text-foreground">
             {mode === "create" ? t.addNewGrant : t.editGrant}
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-            <X className="w-5 h-5 text-gray-400" />
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+            <X className="w-5 h-5 text-muted-foreground/60" />
           </button>
         </div>
 
@@ -238,7 +238,7 @@ function GrantFormModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">
               {t.formName} <span className="text-red-500">*</span>
             </label>
             <input
@@ -246,31 +246,31 @@ function GrantFormModal({
               required
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
-              className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder={t.phGrantName}
             />
           </div>
 
           {/* Organization */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formOrganization}</label>
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formOrganization}</label>
             <input
               type="text"
               value={form.organization}
               onChange={(e) => updateField("organization", e.target.value)}
-              className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder={t.phOrganization}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formDescription}</label>
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formDescription}</label>
             <textarea
               value={form.description}
               onChange={(e) => updateField("description", e.target.value)}
               rows={4}
-              className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
               placeholder={t.phDescription}
             />
           </div>
@@ -278,13 +278,13 @@ function GrantFormModal({
           {/* Row: Category + Type */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
                 {t.formCategory} <span className="text-red-500">*</span>
               </label>
               <select
                 value={form.category}
                 onChange={(e) => updateField("category", e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-card"
               >
                 {CATEGORIES.filter((c) => c.value !== "all").map((c) => (
                   <option key={c.value} value={c.value}>
@@ -294,13 +294,13 @@ function GrantFormModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
                 {t.formType} <span className="text-red-500">*</span>
               </label>
               <select
                 value={form.type}
                 onChange={(e) => updateField("type", e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-card"
               >
                 <option value="grant">{t.typeGrant}</option>
                 <option value="resource">{t.typeResource}</option>
@@ -311,25 +311,25 @@ function GrantFormModal({
           {/* Row: Country + Amount */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
                 {t.formCountry} <span className="text-red-500">*</span>
               </label>
               <select
                 value={form.country}
                 onChange={(e) => updateField("country", e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-card"
               >
                 <option value="US">🇺🇸 {t.unitedStates}</option>
                 <option value="International">🌍 {t.international}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formAmount}</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formAmount}</label>
               <input
                 type="text"
                 value={form.amount}
                 onChange={(e) => updateField("amount", e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder={t.phAmount}
               />
             </div>
@@ -337,12 +337,12 @@ function GrantFormModal({
 
           {/* Eligibility */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formEligibility}</label>
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formEligibility}</label>
             <textarea
               value={form.eligibility}
               onChange={(e) => updateField("eligibility", e.target.value)}
               rows={2}
-              className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
               placeholder={t.phEligibility}
             />
           </div>
@@ -350,22 +350,22 @@ function GrantFormModal({
           {/* Row: Website + Email */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formWebsite}</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formWebsite}</label>
               <input
                 type="text"
                 value={form.website}
                 onChange={(e) => updateField("website", e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder={t.phWebsite}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formEmail}</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formEmail}</label>
               <input
                 type="text"
                 value={form.email}
                 onChange={(e) => updateField("email", e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder={t.phEmail}
               />
             </div>
@@ -374,42 +374,42 @@ function GrantFormModal({
           {/* Row: Phone + Status */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formPhone}</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formPhone}</label>
               <input
                 type="text"
                 value={form.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder={t.phPhone}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formStatus}</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formStatus}</label>
               <input
                 type="text"
                 value={form.status}
                 onChange={(e) => updateField("status", e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder={t.phStatus}
               />
             </div>
           </div>
 
           {/* ===== Enrichment Fields ===== */}
-          <div className="border-t border-gray-100 pt-5 mt-2">
-            <h4 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <Info className="w-4 h-4 text-[#1e3a5f]" />
+          <div className="border-t border-border pt-5 mt-2">
+            <h4 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Info className="w-4 h-4 text-primary" />
               {t.enrichmentDetails}
             </h4>
 
             {/* Application Process */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formApplicationProcess}</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formApplicationProcess}</label>
               <textarea
                 value={form.applicationProcess}
                 onChange={(e) => updateField("applicationProcess", e.target.value)}
                 rows={3}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
                 placeholder={t.phApplicationProcess}
               />
             </div>
@@ -417,21 +417,21 @@ function GrantFormModal({
             {/* Row: Deadline + Funding Type */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formDeadline}</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formDeadline}</label>
                 <input
                   type="text"
                   value={form.deadline}
                   onChange={(e) => updateField("deadline", e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder={t.phDeadline}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formFundingType}</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formFundingType}</label>
                 <select
                   value={form.fundingType}
                   onChange={(e) => updateField("fundingType", e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-card"
                 >
                   <option value="">{t.notSpecified}</option>
                   <option value="one_time">{t.oneTime}</option>
@@ -445,22 +445,22 @@ function GrantFormModal({
             {/* Row: Target Diagnosis + Age Range */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formTargetDiagnosis}</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formTargetDiagnosis}</label>
                 <input
                   type="text"
                   value={form.targetDiagnosis}
                   onChange={(e) => updateField("targetDiagnosis", e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder={t.phTargetDiagnosis}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formAgeRange}</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formAgeRange}</label>
                 <input
                   type="text"
                   value={form.ageRange}
                   onChange={(e) => updateField("ageRange", e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder={t.phAgeRange}
                 />
               </div>
@@ -469,22 +469,22 @@ function GrantFormModal({
             {/* Row: State + City */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formState}</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formState}</label>
                 <input
                   type="text"
                   value={form.state}
                   onChange={(e) => updateField("state", e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder={t.phState}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formCity}</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formCity}</label>
                 <input
                   type="text"
                   value={form.city}
                   onChange={(e) => updateField("city", e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder={t.phCity}
                 />
               </div>
@@ -493,21 +493,21 @@ function GrantFormModal({
             {/* Row: Geographic Scope + B-2 Visa */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formGeographicScope}</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formGeographicScope}</label>
                 <input
                   type="text"
                   value={form.geographicScope}
                   onChange={(e) => updateField("geographicScope", e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder={t.phGeographicScope}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formB2Visa}</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formB2Visa}</label>
                 <select
                   value={form.b2VisaEligible}
                   onChange={(e) => updateField("b2VisaEligible", e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-card"
                 >
                   <option value="">{t.notSpecified}</option>
                   <option value="yes">{t.yes}</option>
@@ -519,12 +519,12 @@ function GrantFormModal({
 
             {/* Documents Required */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formDocumentsRequired}</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">{t.formDocumentsRequired}</label>
               <textarea
                 value={form.documentsRequired}
                 onChange={(e) => updateField("documentsRequired", e.target.value)}
                 rows={2}
-                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
                 placeholder={t.phDocuments}
               />
             </div>
@@ -538,7 +538,7 @@ function GrantFormModal({
                 id="notifySubscribers"
                 checked={notifySubscribers}
                 onChange={(e) => setNotifySubscribers(e.target.checked)}
-                className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                className="w-4 h-4 text-purple-600 border-border rounded focus:ring-purple-500"
               />
               <label htmlFor="notifySubscribers" className="text-sm text-purple-800">
                 <span className="font-medium">{t.notifySubscribers}</span>
@@ -554,14 +554,14 @@ function GrantFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+              className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary hover:bg-muted rounded-lg transition-colors"
             >
               {t.cancel}
             </button>
             <button
               type="submit"
               disabled={isPending || !form.name.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-primary hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50"
             >
               {isPending ? (
                 <RefreshCw className="w-4 h-4 animate-spin" />
@@ -595,20 +595,20 @@ function DeleteConfirmModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-card rounded-2xl shadow-xl w-full max-w-md p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
             <AlertTriangle className="w-5 h-5 text-red-500" />
           </div>
-          <h3 className="text-lg font-semibold text-[#0f172a]">{t.deleteGrant}</h3>
+          <h3 className="text-lg font-semibold text-foreground">{t.deleteGrant}</h3>
         </div>
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm text-muted-foreground mb-6">
           {t.deleteConfirm.replace("{name}", grantName)}
         </p>
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+            className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary hover:bg-muted rounded-lg transition-colors"
           >
             {t.cancel}
           </button>
@@ -671,26 +671,26 @@ function SendNotificationModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
+      <div className="bg-card rounded-2xl shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center">
               <Send className="w-4 h-4 text-purple-600" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-[#0f172a]">{t.sendNotification}</h3>
-              <p className="text-xs text-gray-500">{t.selectGrantsToNotify}</p>
+              <h3 className="text-lg font-semibold text-foreground">{t.sendNotification}</h3>
+              <p className="text-xs text-muted-foreground">{t.selectGrantsToNotify}</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-            <X className="w-5 h-5 text-gray-400" />
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+            <X className="w-5 h-5 text-muted-foreground/60" />
           </button>
         </div>
 
         {/* Selected Grants */}
         {selectedGrants.length > 0 && (
-          <div className="px-6 py-3 border-b border-gray-100 bg-purple-50/50">
+          <div className="px-6 py-3 border-b border-border bg-purple-50/50">
             <p className="text-xs font-medium text-purple-700 mb-2">
               {t.selected} ({selectedGrants.length}/20):
             </p>
@@ -698,7 +698,7 @@ function SendNotificationModal({
               {selectedGrants.map((g) => (
                 <span
                   key={g.itemId}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-white text-purple-700 rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-card text-purple-700 rounded-full border border-purple-200 cursor-pointer hover:bg-purple-50"
                   onClick={() => toggleGrant(g)}
                 >
                   {g.name.length > 30 ? g.name.substring(0, 30) + "..." : g.name}
@@ -710,15 +710,15 @@ function SendNotificationModal({
         )}
 
         {/* Search */}
-        <div className="px-6 py-3 border-b border-gray-100">
+        <div className="px-6 py-3 border-b border-border">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
             <input
               type="text"
               placeholder={t.searchGrantsToInclude}
               value={grantSearch}
               onChange={(e) => setGrantSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+              className="w-full pl-9 pr-4 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
             />
           </div>
         </div>
@@ -732,17 +732,17 @@ function SendNotificationModal({
                 key={g.itemId}
                 onClick={() => toggleGrant({ itemId: g.itemId, name: g.name })}
                 className={`flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer transition-colors mb-1 ${
-                  isSelected ? "bg-purple-50 border border-purple-200" : "hover:bg-gray-50 border border-transparent"
+                  isSelected ? "bg-purple-50 border border-purple-200" : "hover:bg-secondary border border-transparent"
                 }`}
               >
                 <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${
-                  isSelected ? "bg-purple-600 border-purple-600" : "border-gray-300"
+                  isSelected ? "bg-purple-600 border-purple-600" : "border-border"
                 }`}>
                   {isSelected && <Check className="w-3 h-3 text-white" />}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-900 truncate">{g.name}</p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-sm font-medium text-foreground truncate">{g.name}</p>
+                  <p className="text-xs text-muted-foreground/60">
                     {categoryLabels[g.category] || g.category} · {g.country === "US" ? "🇺🇸 US" : "🌍 Intl"}
                   </p>
                 </div>
@@ -751,14 +751,14 @@ function SendNotificationModal({
           })}
           {recentGrants?.grants.length === 0 && (
             <div className="py-8 text-center">
-              <p className="text-sm text-gray-400">{t.noGrantsFound}</p>
+              <p className="text-sm text-muted-foreground/60">{t.noGrantsFound}</p>
             </div>
           )}
         </div>
 
         {/* Actions */}
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-          <p className="text-xs text-gray-500">
+        <div className="px-6 py-4 border-t border-border flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">
             {selectedGrants.length === 0
               ? t.selectAtLeastOne
               : t.grantsSelected.replace("{count}", String(selectedGrants.length))}
@@ -766,7 +766,7 @@ function SendNotificationModal({
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+              className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary hover:bg-muted rounded-lg transition-colors"
             >
               {t.cancel}
             </button>
@@ -1133,8 +1133,8 @@ export default function Admin() {
   // ===== Loading / Auth Check =====
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
+      <div className="min-h-screen flex items-center justify-center bg-secondary">
+        <RefreshCw className="w-6 h-6 animate-spin text-muted-foreground/60" />
       </div>
     );
   }
@@ -1146,14 +1146,14 @@ export default function Admin() {
 
   if (user.role !== "admin") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-secondary p-4">
         <div className="text-center max-w-md">
           <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
             <Shield className="w-8 h-8 text-red-400" />
           </div>
-          <h1 className="text-xl font-bold text-gray-900 mb-2">{a.accessDenied}</h1>
-          <p className="text-sm text-gray-500 mb-6">{a.noPermission}</p>
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-[#1e3a5f] hover:underline">
+          <h1 className="text-xl font-bold text-foreground mb-2">{a.accessDenied}</h1>
+          <p className="text-sm text-muted-foreground mb-6">{a.noPermission}</p>
+          <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
             <ArrowLeft className="w-4 h-4" /> {a.returnHome}
           </Link>
         </div>
@@ -1162,18 +1162,18 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-secondary">
       <SEO title="Admin Panel" />
 
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-30">
+      <div className="bg-card border-b border-border sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-              <ArrowLeft className="w-5 h-5 text-gray-500" />
+            <Link href="/" className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </Link>
             <div>
-              <h1 className="text-lg font-bold text-[#0f172a] flex items-center gap-2">
+              <h1 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <Crown className="w-5 h-5 text-amber-500" />
                 {a.title}
               </h1>
@@ -1187,7 +1187,7 @@ export default function Admin() {
               utils.admin.newsletterStats.invalidate();
               utils.admin.notificationHistory.invalidate();
             }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground/80 hover:bg-muted rounded-lg transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             {a.refresh}
@@ -1207,7 +1207,7 @@ export default function Admin() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-white rounded-xl p-1 border border-gray-100 shadow-sm w-fit">
+        <div className="flex gap-1 bg-card rounded-xl p-1 border border-border shadow-sm w-fit">
           {([
             { key: "users" as const, icon: Users, label: a.tabUsers },
             { key: "grants" as const, icon: Database, label: a.tabGrants },
@@ -1218,8 +1218,8 @@ export default function Admin() {
               onClick={() => setActiveTab(tab.key)}
               className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                 activeTab === tab.key
-                  ? "bg-[#1e3a5f] text-white"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  ? "bg-primary text-white"
+                  : "text-muted-foreground hover:text-foreground/80 hover:bg-secondary"
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -1230,28 +1230,28 @@ export default function Admin() {
 
         {/* ===== USERS TAB ===== */}
         {activeTab === "users" && (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             {/* Toolbar */}
-            <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-              <h2 className="text-base font-semibold text-[#0f172a]">
+            <div className="px-5 py-4 border-b border-border flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+              <h2 className="text-base font-semibold text-foreground">
                 {a.usersTitle}
-                <span className="text-sm font-normal text-gray-400 ml-2">{usersData?.total ?? 0}</span>
+                <span className="text-sm font-normal text-muted-foreground/60 ml-2">{usersData?.total ?? 0}</span>
               </h2>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
                   <input
                     type="text"
                     placeholder={a.searchUsers}
                     value={userSearch}
                     onChange={(e) => { setUserSearch(e.target.value); setUserPage(1); }}
-                    className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] w-full sm:w-56"
+                    className="pl-9 pr-4 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary w-full sm:w-56"
                   />
                 </div>
                 <select
                   value={userStatusFilter}
                   onChange={(e) => { setUserStatusFilter(e.target.value); setUserPage(1); }}
-                  className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                  className="px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-card"
                 >
                   <option value="all">{a.allStatuses}</option>
                   <option value="active">{a.statusActive}</option>
@@ -1267,55 +1267,55 @@ export default function Admin() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-gray-50/50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thUser}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thRole}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thSubscription}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thJoined}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thLastLogin}</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thActions}</th>
+                  <tr className="bg-secondary">
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thUser}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thRole}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thSubscription}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thJoined}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thLastLogin}</th>
+                    <th className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thActions}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {usersLoading ? (
                     <tr>
                       <td colSpan={6} className="px-5 py-12 text-center">
-                        <RefreshCw className="w-5 h-5 animate-spin text-gray-300 mx-auto mb-2" />
-                        <p className="text-sm text-gray-400">{a.loadingUsers}</p>
+                        <RefreshCw className="w-5 h-5 animate-spin text-muted-foreground/40 mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground/60">{a.loadingUsers}</p>
                       </td>
                     </tr>
                   ) : !usersData?.users.length ? (
                     <tr>
                       <td colSpan={6} className="px-5 py-12 text-center">
-                        <Users className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                        <p className="text-sm text-gray-400">{a.noUsersFound}</p>
+                        <Users className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground/60">{a.noUsersFound}</p>
                       </td>
                     </tr>
                   ) : (
                     usersData.users.map((u) => (
-                      <tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
+                      <tr key={u.id} className="hover:bg-secondary transition-colors">
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-[#1e3a5f]/10 flex items-center justify-center text-sm font-medium text-[#1e3a5f]">
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
                               {u.name?.charAt(0)?.toUpperCase() || "?"}
                             </div>
                             <div className="min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate">{u.name || "—"}</p>
-                              <p className="text-xs text-gray-400 truncate">{u.email || "—"}</p>
+                              <p className="text-sm font-medium text-foreground truncate">{u.name || "—"}</p>
+                              <p className="text-xs text-muted-foreground/60 truncate">{u.email || "—"}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-5 py-3.5"><RoleBadge role={u.role} t={a} /></td>
                         <td className="px-5 py-3.5"><StatusBadge status={u.subscriptionStatus} t={a} /></td>
-                        <td className="px-5 py-3.5"><span className="text-sm text-gray-500">{formatDate(u.createdAt)}</span></td>
-                        <td className="px-5 py-3.5"><span className="text-sm text-gray-500">{formatDate(u.lastSignedIn)}</span></td>
+                        <td className="px-5 py-3.5"><span className="text-sm text-muted-foreground">{formatDate(u.createdAt)}</span></td>
+                        <td className="px-5 py-3.5"><span className="text-sm text-muted-foreground">{formatDate(u.lastSignedIn)}</span></td>
                         <td className="px-5 py-3.5">
                           <div className="flex items-center justify-end gap-2">
                             {u.id !== user?.id && (
                               <button
                                 onClick={() => updateRoleMutation.mutate({ userId: u.id, role: u.role === "admin" ? "user" : "admin" })}
                                 disabled={updateRoleMutation.isPending}
-                                className="text-xs px-2.5 py-1.5 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                                className="text-xs px-2.5 py-1.5 rounded-md border border-border text-muted-foreground hover:bg-secondary transition-colors disabled:opacity-50"
                                 title={u.role === "admin" ? a.demote : a.promote}
                               >
                                 {u.role === "admin" ? a.demote : a.promote}
@@ -1325,7 +1325,7 @@ export default function Admin() {
                               value={u.subscriptionStatus}
                               onChange={(e) => updateSubMutation.mutate({ userId: u.id, subscriptionStatus: e.target.value as any })}
                               disabled={updateSubMutation.isPending}
-                              className="text-xs px-2 py-1.5 rounded-md border border-gray-200 text-gray-600 bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]/20 disabled:opacity-50"
+                              className="text-xs px-2 py-1.5 rounded-md border border-border text-muted-foreground bg-card focus:outline-none focus:ring-1 focus:ring-primary/20 disabled:opacity-50"
                             >
                               <option value="none">{a.statusNone}</option>
                               <option value="active">{a.statusActive}</option>
@@ -1344,12 +1344,12 @@ export default function Admin() {
 
             {/* Pagination */}
             {usersData && usersData.totalPages > 1 && (
-              <div className="px-5 py-3 border-t border-gray-100 flex items-center justify-between">
-                <p className="text-sm text-gray-500">
+              <div className="px-5 py-3 border-t border-border flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">
                   {a.showing} {((userPage - 1) * userPageSize) + 1}–{Math.min(userPage * userPageSize, usersData.total)} / {usersData.total}
                 </p>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setUserPage((p) => Math.max(1, p - 1))} disabled={userPage === 1} className="p-1.5 rounded-md hover:bg-gray-100 disabled:opacity-30 transition-colors">
+                  <button onClick={() => setUserPage((p) => Math.max(1, p - 1))} disabled={userPage === 1} className="p-1.5 rounded-md hover:bg-muted disabled:opacity-30 transition-colors">
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   {Array.from({ length: Math.min(usersData.totalPages, 5) }, (_, i) => {
@@ -1359,12 +1359,12 @@ export default function Admin() {
                     else if (userPage >= usersData.totalPages - 2) pageNum = usersData.totalPages - 4 + i;
                     else pageNum = userPage - 2 + i;
                     return (
-                      <button key={pageNum} onClick={() => setUserPage(pageNum)} className={`w-8 h-8 text-sm rounded-md transition-colors ${userPage === pageNum ? "bg-[#1e3a5f] text-white" : "text-gray-600 hover:bg-gray-100"}`}>
+                      <button key={pageNum} onClick={() => setUserPage(pageNum)} className={`w-8 h-8 text-sm rounded-md transition-colors ${userPage === pageNum ? "bg-primary text-white" : "text-muted-foreground hover:bg-muted"}`}>
                         {pageNum}
                       </button>
                     );
                   })}
-                  <button onClick={() => setUserPage((p) => Math.min(usersData.totalPages, p + 1))} disabled={userPage === usersData.totalPages} className="p-1.5 rounded-md hover:bg-gray-100 disabled:opacity-30 transition-colors">
+                  <button onClick={() => setUserPage((p) => Math.min(usersData.totalPages, p + 1))} disabled={userPage === usersData.totalPages} className="p-1.5 rounded-md hover:bg-muted disabled:opacity-30 transition-colors">
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -1375,30 +1375,30 @@ export default function Admin() {
 
         {/* ===== GRANTS TAB ===== */}
         {activeTab === "grants" && (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
             {/* Toolbar */}
-            <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-              <h2 className="text-base font-semibold text-[#0f172a]">
+            <div className="px-5 py-4 border-b border-border flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+              <h2 className="text-base font-semibold text-foreground">
                 {a.grantsTitle}
-                <span className="text-sm font-normal text-gray-400 ml-2">
+                <span className="text-sm font-normal text-muted-foreground/60 ml-2">
                   {grantStats?.grants ?? 0} {a.typeGrant.toLowerCase()}, {grantStats?.resources ?? 0} {a.typeResource.toLowerCase()}
                 </span>
               </h2>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
                   <input
                     type="text"
                     placeholder={a.searchGrants}
                     value={grantSearch}
                     onChange={(e) => { setGrantSearch(e.target.value); setGrantPage(1); }}
-                    className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] w-full sm:w-56"
+                    className="pl-9 pr-4 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary w-full sm:w-56"
                   />
                 </div>
                 <select
                   value={grantCategoryFilter}
                   onChange={(e) => { setGrantCategoryFilter(e.target.value); setGrantPage(1); }}
-                  className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
+                  className="px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-card"
                 >
                   <option value="all">{a.allCategories}</option>
                   {CATEGORIES.filter((c) => c.value !== "all").map((c) => (
@@ -1411,7 +1411,7 @@ export default function Admin() {
                   <button
                     onClick={exportAsCSV}
                     disabled={isExporting}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-muted-foreground bg-card border border-border hover:bg-secondary rounded-lg transition-colors disabled:opacity-50"
                     title="CSV"
                   >
                     {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
@@ -1420,7 +1420,7 @@ export default function Admin() {
                   <button
                     onClick={exportAsExcel}
                     disabled={isExporting}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-muted-foreground bg-card border border-border hover:bg-secondary rounded-lg transition-colors disabled:opacity-50"
                     title="Excel"
                   >
                     {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
@@ -1428,7 +1428,7 @@ export default function Admin() {
                   </button>
                   <button
                     onClick={() => { resetImport(); setShowImportModal(true); }}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#1e3a5f] bg-white border border-[#1e3a5f]/30 hover:bg-[#1e3a5f]/5 rounded-lg transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-primary bg-card border border-primary/30 hover:bg-primary/5 rounded-lg transition-colors"
                     title={a.importBtn}
                   >
                     <Upload className="w-4 h-4" />
@@ -1436,7 +1436,7 @@ export default function Admin() {
                   </button>
                   <button
                     onClick={() => setShowGrantForm(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-[#162d4a] rounded-lg transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                     {a.addGrant}
@@ -1449,42 +1449,42 @@ export default function Admin() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-gray-50/50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thGrant}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thCategory}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thType}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thCountry}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thStatus}</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thAdded}</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thActions}</th>
+                  <tr className="bg-secondary">
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thGrant}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thCategory}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thType}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thCountry}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thStatus}</th>
+                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thAdded}</th>
+                    <th className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thActions}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {grantsLoading ? (
                     <tr>
                       <td colSpan={7} className="px-5 py-12 text-center">
-                        <RefreshCw className="w-5 h-5 animate-spin text-gray-300 mx-auto mb-2" />
-                        <p className="text-sm text-gray-400">{a.loadingGrants}</p>
+                        <RefreshCw className="w-5 h-5 animate-spin text-muted-foreground/40 mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground/60">{a.loadingGrants}</p>
                       </td>
                     </tr>
                   ) : !grantsData?.grants.length ? (
                     <tr>
                       <td colSpan={7} className="px-5 py-12 text-center">
-                        <Database className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                        <p className="text-sm text-gray-400">{a.noGrantsFound}</p>
+                        <Database className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground/60">{a.noGrantsFound}</p>
                       </td>
                     </tr>
                   ) : (
                     grantsData.grants.map((g) => (
-                      <tr key={g.itemId} className={`hover:bg-gray-50/50 transition-colors ${!g.isActive ? "opacity-50" : ""}`}>
+                      <tr key={g.itemId} className={`hover:bg-secondary transition-colors ${!g.isActive ? "opacity-50" : ""}`}>
                         <td className="px-5 py-3.5">
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate max-w-[280px]">{g.name}</p>
-                            <p className="text-xs text-gray-400 truncate max-w-[280px]">{g.organization || "—"}</p>
+                            <p className="text-sm font-medium text-foreground truncate max-w-[280px]">{g.name}</p>
+                            <p className="text-xs text-muted-foreground/60 truncate max-w-[280px]">{g.organization || "—"}</p>
                           </div>
                         </td>
                         <td className="px-5 py-3.5">
-                          <span className="text-xs text-gray-600">{categoryLabels[g.category] || g.category}</span>
+                          <span className="text-xs text-muted-foreground">{categoryLabels[g.category] || g.category}</span>
                         </td>
                         <td className="px-5 py-3.5">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -1494,7 +1494,7 @@ export default function Admin() {
                           </span>
                         </td>
                         <td className="px-5 py-3.5">
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-muted-foreground">
                             {g.country === "US" ? `🇺🇸 ${a.unitedStates}` : `🌍 ${a.international}`}
                           </span>
                         </td>
@@ -1506,13 +1506,13 @@ export default function Admin() {
                           </span>
                         </td>
                         <td className="px-5 py-3.5">
-                          <span className="text-sm text-gray-500">{formatDate(g.createdAt)}</span>
+                          <span className="text-sm text-muted-foreground">{formatDate(g.createdAt)}</span>
                         </td>
                         <td className="px-5 py-3.5 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               onClick={() => handleEditGrant(g)}
-                              className="p-1.5 rounded-md text-gray-400 hover:text-[#1e3a5f] hover:bg-[#1e3a5f]/5 transition-colors"
+                              className="p-1.5 rounded-md text-muted-foreground/60 hover:text-primary hover:bg-primary/5 transition-colors"
                               title={a.editGrant}
                             >
                               <Edit2 className="w-4 h-4" />
@@ -1520,14 +1520,14 @@ export default function Admin() {
                             <button
                               onClick={() => handleToggleActive(g)}
                               disabled={updateGrantMutation.isPending}
-                              className="p-1.5 rounded-md text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors disabled:opacity-50"
+                              className="p-1.5 rounded-md text-muted-foreground/60 hover:text-amber-600 hover:bg-amber-50 transition-colors disabled:opacity-50"
                               title={g.isActive ? a.inactiveStatus : a.activeStatus}
                             >
                               {g.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
                             <button
                               onClick={() => setDeletingGrant({ itemId: g.itemId, name: g.name })}
-                              className="p-1.5 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                              className="p-1.5 rounded-md text-muted-foreground/60 hover:text-red-500 hover:bg-red-50 transition-colors"
                               title={a.deleteGrant}
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1543,12 +1543,12 @@ export default function Admin() {
 
             {/* Pagination */}
             {grantsData && grantsData.totalPages > 1 && (
-              <div className="px-5 py-3 border-t border-gray-100 flex items-center justify-between">
-                <p className="text-sm text-gray-500">
+              <div className="px-5 py-3 border-t border-border flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">
                   {a.showing} {((grantPage - 1) * grantPageSize) + 1}–{Math.min(grantPage * grantPageSize, grantsData.total)} / {grantsData.total}
                 </p>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setGrantPage((p) => Math.max(1, p - 1))} disabled={grantPage === 1} className="p-1.5 rounded-md hover:bg-gray-100 disabled:opacity-30 transition-colors">
+                  <button onClick={() => setGrantPage((p) => Math.max(1, p - 1))} disabled={grantPage === 1} className="p-1.5 rounded-md hover:bg-muted disabled:opacity-30 transition-colors">
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   {Array.from({ length: Math.min(grantsData.totalPages, 5) }, (_, i) => {
@@ -1558,12 +1558,12 @@ export default function Admin() {
                     else if (grantPage >= grantsData.totalPages - 2) pageNum = grantsData.totalPages - 4 + i;
                     else pageNum = grantPage - 2 + i;
                     return (
-                      <button key={pageNum} onClick={() => setGrantPage(pageNum)} className={`w-8 h-8 text-sm rounded-md transition-colors ${grantPage === pageNum ? "bg-[#1e3a5f] text-white" : "text-gray-600 hover:bg-gray-100"}`}>
+                      <button key={pageNum} onClick={() => setGrantPage(pageNum)} className={`w-8 h-8 text-sm rounded-md transition-colors ${grantPage === pageNum ? "bg-primary text-white" : "text-muted-foreground hover:bg-muted"}`}>
                         {pageNum}
                       </button>
                     );
                   })}
-                  <button onClick={() => setGrantPage((p) => Math.min(grantsData.totalPages, p + 1))} disabled={grantPage === grantsData.totalPages} className="p-1.5 rounded-md hover:bg-gray-100 disabled:opacity-30 transition-colors">
+                  <button onClick={() => setGrantPage((p) => Math.min(grantsData.totalPages, p + 1))} disabled={grantPage === grantsData.totalPages} className="p-1.5 rounded-md hover:bg-muted disabled:opacity-30 transition-colors">
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -1577,37 +1577,37 @@ export default function Admin() {
           <div className="space-y-6">
             {/* Newsletter Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
                     <Mail className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{a.activeSubscribers}</p>
-                    <p className="text-2xl font-bold text-[#0f172a]">{newsletterStats?.active ?? 0}</p>
+                    <p className="text-sm text-muted-foreground">{a.activeSubscribers}</p>
+                    <p className="text-2xl font-bold text-foreground">{newsletterStats?.active ?? 0}</p>
                   </div>
                 </div>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-muted-foreground/60">
                   {newsletterStats?.total ?? 0} {a.totalSubscribers} ({(newsletterStats?.total ?? 0) - (newsletterStats?.active ?? 0)} {a.unsubscribed})
                 </p>
               </div>
 
-              <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
                     <Bell className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{a.notificationsSent}</p>
-                    <p className="text-2xl font-bold text-[#0f172a]">{notifHistory?.length ?? 0}</p>
+                    <p className="text-sm text-muted-foreground">{a.notificationsSent}</p>
+                    <p className="text-2xl font-bold text-foreground">{notifHistory?.length ?? 0}</p>
                   </div>
                 </div>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-muted-foreground/60">
                   {notifHistory?.filter((n) => n.status === "completed").length ?? 0} {a.completed}, {notifHistory?.filter((n) => n.status === "failed").length ?? 0} {a.failed}
                 </p>
               </div>
 
-              <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm flex items-center justify-center">
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex items-center justify-center">
                 <button
                   onClick={() => setShowSendNotification(true)}
                   className="inline-flex items-center gap-3 px-6 py-3 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-xl transition-colors shadow-sm"
@@ -1619,30 +1619,30 @@ export default function Admin() {
             </div>
 
             {/* Notification History */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h2 className="text-base font-semibold text-[#0f172a]">{a.notificationHistory}</h2>
+            <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+                <h2 className="text-base font-semibold text-foreground">{a.notificationHistory}</h2>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-gray-50/50">
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thSubject}</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thGrantsCol}</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thRecipients}</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thSuccess}</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thStatus}</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thSentAt}</th>
+                    <tr className="bg-secondary">
+                      <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thSubject}</th>
+                      <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thGrantsCol}</th>
+                      <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thRecipients}</th>
+                      <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thSuccess}</th>
+                      <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thStatus}</th>
+                      <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-5 py-3">{a.thSentAt}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
                     {!notifHistory?.length ? (
                       <tr>
                         <td colSpan={6} className="px-5 py-12 text-center">
-                          <Mail className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                          <p className="text-sm text-gray-400">{a.noNotifications}</p>
-                          <p className="text-xs text-gray-300 mt-1">{a.noNotificationsHint}</p>
+                          <Mail className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                          <p className="text-sm text-muted-foreground/60">{a.noNotifications}</p>
+                          <p className="text-xs text-muted-foreground/40 mt-1">{a.noNotificationsHint}</p>
                         </td>
                       </tr>
                     ) : (
@@ -1653,15 +1653,15 @@ export default function Admin() {
                         } catch { grantCount = 0; }
 
                         return (
-                          <tr key={n.id} className="hover:bg-gray-50/50 transition-colors">
+                          <tr key={n.id} className="hover:bg-secondary transition-colors">
                             <td className="px-5 py-3.5">
-                              <p className="text-sm font-medium text-gray-900 truncate max-w-[250px]">{n.subject}</p>
+                              <p className="text-sm font-medium text-foreground truncate max-w-[250px]">{n.subject}</p>
                             </td>
                             <td className="px-5 py-3.5">
-                              <span className="text-sm text-gray-600">{grantCount}</span>
+                              <span className="text-sm text-muted-foreground">{grantCount}</span>
                             </td>
                             <td className="px-5 py-3.5">
-                              <span className="text-sm text-gray-600">{n.recipientCount}</span>
+                              <span className="text-sm text-muted-foreground">{n.recipientCount}</span>
                             </td>
                             <td className="px-5 py-3.5">
                               <span className="text-sm">
@@ -1675,7 +1675,7 @@ export default function Admin() {
                               <NotifStatusBadge status={n.status} t={a} />
                             </td>
                             <td className="px-5 py-3.5">
-                              <span className="text-sm text-gray-500">{formatDateTime(n.sentAt)}</span>
+                              <span className="text-sm text-muted-foreground">{formatDateTime(n.sentAt)}</span>
                             </td>
                           </tr>
                         );
@@ -1733,16 +1733,16 @@ export default function Admin() {
       {/* Import Modal */}
       {showImportModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+          <div className="bg-card rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#1e3a5f]/10 flex items-center justify-center">
-                  <FileUp className="w-5 h-5 text-[#1e3a5f]" />
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <FileUp className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0f172a]">{a.importGrants}</h3>
-                  <p className="text-xs text-gray-400">
+                  <h3 className="text-lg font-semibold text-foreground">{a.importGrants}</h3>
+                  <p className="text-xs text-muted-foreground/60">
                     {importStep === "upload" && a.importStepUpload}
                     {importStep === "preview" && a.importStepPreview}
                     {importStep === "importing" && a.importStepImporting}
@@ -1750,7 +1750,7 @@ export default function Admin() {
                   </p>
                 </div>
               </div>
-              <button onClick={resetImport} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <button onClick={resetImport} className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -1762,12 +1762,12 @@ export default function Admin() {
                 <div className="space-y-4">
                   {/* Drop zone */}
                   <div
-                    className="border-2 border-dashed border-gray-200 rounded-xl p-10 text-center hover:border-[#1e3a5f]/40 transition-colors cursor-pointer"
-                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-[#1e3a5f]", "bg-[#1e3a5f]/5"); }}
-                    onDragLeave={(e) => { e.currentTarget.classList.remove("border-[#1e3a5f]", "bg-[#1e3a5f]/5"); }}
+                    className="border-2 border-dashed border-border rounded-xl p-10 text-center hover:border-primary/40 transition-colors cursor-pointer"
+                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-primary", "bg-primary/5"); }}
+                    onDragLeave={(e) => { e.currentTarget.classList.remove("border-primary", "bg-primary/5"); }}
                     onDrop={(e) => {
                       e.preventDefault();
-                      e.currentTarget.classList.remove("border-[#1e3a5f]", "bg-[#1e3a5f]/5");
+                      e.currentTarget.classList.remove("border-primary", "bg-primary/5");
                       const file = e.dataTransfer.files[0];
                       if (file) handleImportFileSelect(file);
                     }}
@@ -1784,14 +1784,14 @@ export default function Admin() {
                   >
                     {isImporting ? (
                       <>
-                        <Loader2 className="w-10 h-10 text-[#1e3a5f] mx-auto mb-3 animate-spin" />
-                        <p className="text-sm font-medium text-gray-700">{a.parsingFile}</p>
+                        <Loader2 className="w-10 h-10 text-primary mx-auto mb-3 animate-spin" />
+                        <p className="text-sm font-medium text-foreground/80">{a.parsingFile}</p>
                       </>
                     ) : (
                       <>
-                        <Upload className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                        <p className="text-sm font-medium text-gray-700 mb-1">{a.dropFileHere}</p>
-                        <p className="text-xs text-gray-400">{a.orClickBrowse}</p>
+                        <Upload className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                        <p className="text-sm font-medium text-foreground/80 mb-1">{a.dropFileHere}</p>
+                        <p className="text-xs text-muted-foreground/60">{a.orClickBrowse}</p>
                       </>
                     )}
                   </div>
@@ -1855,34 +1855,34 @@ export default function Admin() {
 
                   {/* Preview table */}
                   {importPreview.grants.length > 0 && (
-                    <div className="border border-gray-200 rounded-xl overflow-hidden">
-                      <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
-                        <p className="text-xs font-medium text-gray-500">{a.previewRows}</p>
+                    <div className="border border-border rounded-xl overflow-hidden">
+                      <div className="px-4 py-2 bg-secondary border-b border-border">
+                        <p className="text-xs font-medium text-muted-foreground">{a.previewRows}</p>
                       </div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-xs">
                           <thead>
-                            <tr className="bg-gray-50/50">
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">#</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.formName}</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.formCategory}</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.formCountry}</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.formType}</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.translationColumns}</th>
+                            <tr className="bg-secondary">
+                              <th className="text-left px-3 py-2 font-medium text-muted-foreground">#</th>
+                              <th className="text-left px-3 py-2 font-medium text-muted-foreground">{a.formName}</th>
+                              <th className="text-left px-3 py-2 font-medium text-muted-foreground">{a.formCategory}</th>
+                              <th className="text-left px-3 py-2 font-medium text-muted-foreground">{a.formCountry}</th>
+                              <th className="text-left px-3 py-2 font-medium text-muted-foreground">{a.formType}</th>
+                              <th className="text-left px-3 py-2 font-medium text-muted-foreground">{a.translationColumns}</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-gray-100">
+                          <tbody className="divide-y divide-border">
                             {importPreview.grants.slice(0, 10).map((g: any, i: number) => (
-                              <tr key={i} className="hover:bg-gray-50/50">
-                                <td className="px-3 py-2 text-gray-400">{i + 1}</td>
-                                <td className="px-3 py-2 text-gray-900 font-medium truncate max-w-[200px]">
+                              <tr key={i} className="hover:bg-secondary">
+                                <td className="px-3 py-2 text-muted-foreground/60">{i + 1}</td>
+                                <td className="px-3 py-2 text-foreground font-medium truncate max-w-[200px]">
                                   {g.itemId && <span className="text-blue-500 mr-1" title="Will update existing">↻</span>}
                                   {g.name}
                                 </td>
-                                <td className="px-3 py-2 text-gray-600">{g.category}</td>
-                                <td className="px-3 py-2 text-gray-600">{g.country}</td>
-                                <td className="px-3 py-2 text-gray-600">{g.type}</td>
-                                <td className="px-3 py-2 text-gray-500">
+                                <td className="px-3 py-2 text-muted-foreground">{g.category}</td>
+                                <td className="px-3 py-2 text-muted-foreground">{g.country}</td>
+                                <td className="px-3 py-2 text-muted-foreground">{g.type}</td>
+                                <td className="px-3 py-2 text-muted-foreground">
                                   {Object.keys(g.translations).length > 0
                                     ? Object.keys(g.translations).map((l: string) => l.toUpperCase()).join(", ")
                                     : "-"}
@@ -1893,7 +1893,7 @@ export default function Admin() {
                         </table>
                       </div>
                       {importPreview.grants.length > 10 && (
-                        <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-400 text-center">
+                        <div className="px-4 py-2 bg-secondary border-t border-border text-xs text-muted-foreground/60 text-center">
                           ...{a.andMoreRows.replace("{count}", String(importPreview.grants.length - 10))}
                         </div>
                       )}
@@ -1901,7 +1901,7 @@ export default function Admin() {
                   )}
 
                   {importFile && (
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
                       <FileSpreadsheet className="w-4 h-4" />
                       <span>{importFile.name} ({(importFile.size / 1024).toFixed(1)} KB)</span>
                     </div>
@@ -1912,9 +1912,9 @@ export default function Admin() {
               {/* Step 3: Importing */}
               {importStep === "importing" && (
                 <div className="text-center py-12">
-                  <Loader2 className="w-10 h-10 text-[#1e3a5f] mx-auto mb-4 animate-spin" />
-                  <p className="text-sm font-medium text-gray-700">{a.importingGrants.replace("{count}", String(importPreview?.grants?.length || 0))}</p>
-                  <p className="text-xs text-gray-400 mt-1">{a.thisMayTakeMoment}</p>
+                  <Loader2 className="w-10 h-10 text-primary mx-auto mb-4 animate-spin" />
+                  <p className="text-sm font-medium text-foreground/80">{a.importingGrants.replace("{count}", String(importPreview?.grants?.length || 0))}</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">{a.thisMayTakeMoment}</p>
                 </div>
               )}
 
@@ -1923,7 +1923,7 @@ export default function Admin() {
                 <div className="space-y-4">
                   <div className="text-center py-6">
                     <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                    <p className="text-lg font-semibold text-gray-900">{a.importComplete}</p>
+                    <p className="text-lg font-semibold text-foreground">{a.importComplete}</p>
                   </div>
 
                   <div className="grid grid-cols-3 gap-3">
@@ -1958,10 +1958,10 @@ export default function Admin() {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <div className="px-6 py-4 border-t border-border flex items-center justify-between">
               <button
                 onClick={resetImport}
-                className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground/80 transition-colors"
               >
                 {importStep === "done" ? a.close : a.cancel}
               </button>
@@ -1970,14 +1970,14 @@ export default function Admin() {
                   <>
                     <button
                       onClick={() => { setImportStep("upload"); setImportPreview(null); setImportFile(null); }}
-                      className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="px-4 py-2 text-sm text-muted-foreground border border-border rounded-lg hover:bg-secondary transition-colors"
                     >
                       {a.uploadDifferentFile}
                     </button>
                     <button
                       onClick={handleExecuteImport}
                       disabled={!importPreview?.grants?.length || isImporting}
-                      className="px-6 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-2"
+                      className="px-6 py-2 text-sm font-medium text-white bg-primary hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-2"
                     >
                       {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                       {a.importNGrants.replace("{count}", String(importPreview?.grants?.length || 0))}

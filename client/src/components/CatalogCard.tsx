@@ -43,7 +43,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.02, 0.4), ease: "easeOut" }}
-      className={`group bg-white border border-gray-200/80 rounded-lg ${borderColor} border-l-4 hover:shadow-md hover:border-gray-300 transition-all duration-200 relative`}
+      className={`group bg-card border border-border rounded-lg ${borderColor} border-l-4 hover:shadow-md hover:border-foreground/20 transition-all duration-200 relative theme-transition`}
     >
       {/* Bookmark button */}
       {isAuthenticated && onToggleSave && (
@@ -55,8 +55,8 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
           }}
           className={`absolute top-3 right-3 z-10 p-1.5 rounded-md transition-all ${
             isSaved
-              ? "text-yellow-500 hover:bg-yellow-50"
-              : "text-gray-300 hover:text-gray-500 hover:bg-gray-50 opacity-0 group-hover:opacity-100"
+                  ? "text-yellow-500 hover:bg-yellow-500/10"
+              : "text-muted-foreground/40 hover:text-muted-foreground hover:bg-secondary opacity-0 group-hover:opacity-100"
           }`}
           title={isSaved ? t.grantDetail.removeFromSaved : t.grantDetail.saveThisGrant}
         >
@@ -71,11 +71,11 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
             <div className="flex items-start gap-2.5 min-w-0">
               <span className="text-xl mt-0.5 shrink-0">{countryFlag}</span>
               <div className="min-w-0">
-                <h3 className="font-semibold text-[#0f172a] leading-snug text-[15px] group-hover:text-[#1e3a5f] transition-colors">
+                <h3 className="font-semibold text-foreground leading-snug text-[15px] group-hover:text-brand-green transition-colors">
                   {content.name}
                 </h3>
                 {item.organization && item.organization !== item.name && (
-                  <p className="text-sm text-gray-500 mt-0.5 truncate">{item.organization}</p>
+                  <p className="text-sm text-muted-foreground mt-0.5 truncate">{item.organization}</p>
                 )}
               </div>
             </div>
@@ -95,15 +95,15 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
 
           {/* Description */}
           {content.description && (
-            <p className="text-sm text-gray-600 leading-relaxed mb-3 line-clamp-2">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
               {content.description}
             </p>
           )}
 
           {/* Meta row: Location + State/City + Amount + Deadline + B-2 Visa */}
-          <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-sm text-gray-500 mb-3">
+          <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-sm text-muted-foreground mb-3">
             <span className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-gray-400" />
+              <MapPin className="w-3.5 h-3.5 text-muted-foreground/60" />
               {item.state && item.state !== "Nationwide" && item.state !== "International"
                 ? `${item.city ? item.city + ", " : ""}${item.state}`
                 : translatedCountry}
@@ -115,8 +115,8 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
               </span>
             )}
             {item.deadline && (
-              <span className="flex items-center gap-1 text-gray-500">
-                <Clock className="w-3.5 h-3.5 text-gray-400" />
+              <span className="flex items-center gap-1 text-muted-foreground">
+                <Clock className="w-3.5 h-3.5 text-muted-foreground/60" />
                 {item.deadline}
               </span>
             )}
@@ -130,8 +130,8 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
 
           {/* Eligibility */}
           {content.eligibility && (
-            <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-2">
-              <span className="font-medium text-gray-600">{t.catalog.eligibility}</span>{" "}
+            <p className="text-xs text-muted-foreground leading-relaxed mb-4 line-clamp-2">
+              <span className="font-medium text-foreground/70">{t.catalog.eligibility}</span>{" "}
               {content.eligibility}
             </p>
           )}
@@ -145,7 +145,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
                   e.stopPropagation();
                   window.open(primaryLink.startsWith("http") ? primaryLink : `https://${primaryLink}`, "_blank");
                 }}
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1e3a5f] hover:text-[#22c55e] transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-brand-green transition-colors"
               >
                 <Globe className="w-3.5 h-3.5" />
                 {t.catalog.visitWebsite}
@@ -159,7 +159,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
                   e.stopPropagation();
                   window.location.href = `tel:${item.phone}`;
                 }}
-                className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Phone className="w-3 h-3" />
                 <span className="hidden sm:inline">{item.phone}</span>
@@ -172,7 +172,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
                   e.stopPropagation();
                   window.location.href = `mailto:${item.email}`;
                 }}
-                className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Mail className="w-3 h-3" />
                 <span className="hidden sm:inline truncate max-w-[140px]">{item.email}</span>

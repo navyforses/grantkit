@@ -11,6 +11,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLoginUrl } from "@/const";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import PricingCTA from "./PricingCTA";
 import { trpc } from "@/lib/trpc";
 
@@ -50,24 +51,25 @@ export default function MobileHeader() {
   return (
     <>
       {/* Compact header bar */}
-      <header className="md:hidden bg-white/95 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-40">
+      <header className="md:hidden bg-background/95 backdrop-blur-lg border-b border-border sticky top-0 z-40 theme-transition">
         <div className="flex items-center justify-between h-14 px-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-[#1e3a5f] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">G</span>
+            <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-xs">G</span>
             </div>
-            <span className="font-bold text-base text-[#0f172a] tracking-tight">
-              Grant<span className="text-[#1e3a5f]">Kit</span>
+            <span className="font-bold text-base text-foreground tracking-tight">
+              Grant<span className="text-brand-green">Kit</span>
             </span>
           </Link>
 
           {/* Right side: language + menu */}
           <div className="flex items-center gap-2">
+            <ThemeToggle size="sm" />
             <LanguageSwitcher />
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="w-10 h-10 flex items-center justify-center rounded-xl text-gray-600 active:bg-gray-100 transition-colors"
+              className="w-10 h-10 flex items-center justify-center rounded-xl text-muted-foreground active:bg-secondary transition-colors"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -78,22 +80,22 @@ export default function MobileHeader() {
 
       {/* Full-screen overlay menu */}
       {menuOpen && (
-        <div className="md:hidden fixed inset-0 top-14 z-30 bg-white animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="md:hidden fixed inset-0 top-14 z-30 bg-background animate-in fade-in slide-in-from-top-2 duration-200 theme-transition">
           <div className="flex flex-col h-full overflow-y-auto pb-20">
             {/* User section */}
             {isAuthenticated && user && (
-              <div className="px-5 py-4 bg-gray-50 border-b border-gray-100">
+              <div className="px-5 py-4 bg-secondary border-b border-border">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#1e3a5f]/10 rounded-full flex items-center justify-center">
-                    <span className="text-[#1e3a5f] font-semibold text-sm">
+                  <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
+                    <span className="text-foreground font-semibold text-sm">
                       {(user.name || user.email || "U").charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <p className="text-sm font-medium text-foreground truncate">
                       {user.name || t.nav.user}
                     </p>
-                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                   </div>
                 </div>
               </div>
@@ -114,46 +116,46 @@ export default function MobileHeader() {
               )}
 
               {/* Legal links */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <p className="px-4 py-2 text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <div className="mt-4 pt-4 border-t border-border">
+                <p className="px-4 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t.nav.legal}
                 </p>
                 <Link
                   href="/contact"
-                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm text-gray-600 active:bg-gray-50"
+                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm text-muted-foreground active:bg-secondary"
                 >
                   <span>{t.footer.contact}</span>
-                  <ChevronRight className="w-4 h-4 text-gray-300" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
                 </Link>
                 <Link
                   href="/privacy"
-                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm text-gray-600 active:bg-gray-50"
+                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm text-muted-foreground active:bg-secondary"
                 >
                   <span>{t.legal.privacyTitle}</span>
-                  <ChevronRight className="w-4 h-4 text-gray-300" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
                 </Link>
                 <Link
                   href="/terms"
-                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm text-gray-600 active:bg-gray-50"
+                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm text-muted-foreground active:bg-secondary"
                 >
                   <span>{t.legal.termsTitle}</span>
-                  <ChevronRight className="w-4 h-4 text-gray-300" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
                 </Link>
                 <Link
                   href="/refund"
-                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm text-gray-600 active:bg-gray-50"
+                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm text-muted-foreground active:bg-secondary"
                 >
                   <span>{t.legal?.refundTitle || "Refund Policy"}</span>
-                  <ChevronRight className="w-4 h-4 text-gray-300" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
                 </Link>
               </div>
 
               {/* Auth actions */}
-              <div className="mt-4 pt-4 border-t border-gray-100 px-2">
+              <div className="mt-4 pt-4 border-t border-border px-2">
                 {isAuthenticated ? (
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm text-red-500 active:bg-red-50 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm text-destructive active:bg-destructive/10 transition-colors"
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium">{t.nav.logout}</span>
@@ -161,7 +163,7 @@ export default function MobileHeader() {
                 ) : (
                   <a
                     href={getLoginUrl()}
-                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm text-[#1e3a5f] active:bg-blue-50 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm text-foreground active:bg-secondary transition-colors"
                   >
                     <LogIn className="w-5 h-5" />
                     <span className="font-medium">{t.nav.login}</span>

@@ -1,12 +1,13 @@
 /*
  * Navbar Component
- * Design: Structured Clarity — clean top navigation with logo, language switcher, auth, and CTA
+ * Design: Theme-aware top navigation with logo, language switcher, auth, Sun/Moon toggle, and CTA
  * Hidden on mobile (< 768px) — MobileHeader + MobileBottomNav are used instead
  */
 
 import { Link, useLocation } from "wouter";
 import PricingCTA from "./PricingCTA";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -28,15 +29,15 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="hidden md:block bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-30">
+    <nav className="hidden md:block bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-30 theme-transition">
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#1e3a5f] rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">G</span>
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-sm">G</span>
           </div>
-          <span className="font-bold text-lg text-[#0f172a] tracking-tight">
-            Grant<span className="text-[#1e3a5f]">Kit</span>
+          <span className="font-bold text-lg text-foreground tracking-tight">
+            Grant<span className="text-brand-green">Kit</span>
           </span>
         </Link>
 
@@ -45,7 +46,7 @@ export default function Navbar() {
           <Link
             href="/"
             className={`text-sm font-medium transition-colors ${
-              location === "/" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
+              location === "/" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.nav.home}
@@ -53,7 +54,7 @@ export default function Navbar() {
           <Link
             href="/catalog"
             className={`text-sm font-medium transition-colors ${
-              location === "/catalog" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
+              location === "/catalog" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.nav.catalog}
@@ -68,7 +69,7 @@ export default function Navbar() {
                   <Link
                     href="/dashboard"
                     className={`inline-flex items-center gap-1 text-sm font-medium transition-colors ${
-                      location === "/dashboard" ? "text-[#1e3a5f]" : "text-gray-500 hover:text-gray-700"
+                      location === "/dashboard" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     <LayoutDashboard className="w-4 h-4" />
@@ -83,7 +84,7 @@ export default function Navbar() {
                   {user?.role === "admin" && (
                     <Link
                       href="/admin"
-                      className="inline-flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-2.5 py-1.5 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 bg-purple-50 dark:bg-purple-500/10 hover:bg-purple-100 dark:hover:bg-purple-500/20 px-2.5 py-1.5 rounded-lg transition-colors"
                     >
                       <Shield className="w-3.5 h-3.5" />
                       <span>{t.nav.admin}</span>
@@ -92,16 +93,16 @@ export default function Navbar() {
                   {/* User info + logout */}
                   <div className="flex items-center gap-2">
                     <Link href="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                      <div className="w-8 h-8 bg-[#1e3a5f]/10 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-[#1e3a5f]" />
+                      <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-muted-foreground" />
                       </div>
-                      <span className="text-sm text-gray-600 max-w-[120px] truncate">
+                      <span className="text-sm text-muted-foreground max-w-[120px] truncate">
                         {user?.name || user?.email || t.nav.user}
                       </span>
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                      className="text-muted-foreground hover:text-destructive transition-colors p-1"
                       title={t.nav.logout}
                     >
                       <LogOut className="w-4 h-4" />
@@ -112,7 +113,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-3">
                   <a
                     href={getLoginUrl()}
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1e3a5f] hover:text-[#0f172a] transition-colors"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-brand-green transition-colors"
                   >
                     <LogIn className="w-4 h-4" />
                     <span>{t.nav.login}</span>
@@ -123,6 +124,7 @@ export default function Navbar() {
             </>
           )}
 
+          <ThemeToggle />
           <LanguageSwitcher />
         </div>
       </div>
