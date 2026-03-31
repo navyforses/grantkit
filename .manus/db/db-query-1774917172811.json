@@ -1,0 +1,70 @@
+{
+  "query": "SELECT itemId, name, organization, geographicScope FROM grants WHERE isActive = 1 AND country = 'US' LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT itemId, name, organization, geographicScope FROM grants WHERE isActive = 1 AND country = 'US' LIMIT 10;",
+  "rows": [
+    {
+      "itemId": "item_0001",
+      "name": "180 Medical Emotional Support and Resources",
+      "organization": "180 Medical",
+      "geographicScope": "Nationwide USA"
+    },
+    {
+      "itemId": "item_0002",
+      "name": "AAHD Frederick J. Krause Scholarship on Health and Disability",
+      "organization": "American Association on Health and Disability",
+      "geographicScope": "Nationwide USA"
+    },
+    {
+      "itemId": "item_0003",
+      "name": "Acoustics for Autism",
+      "organization": "Acoustics for Autism",
+      "geographicScope": "Northwest Ohio, USA"
+    },
+    {
+      "itemId": "item_0005",
+      "name": "Adaptive Equipment Grant",
+      "organization": "Adaptx",
+      "geographicScope": "USA"
+    },
+    {
+      "itemId": "item_0006",
+      "name": "Addi's Faith Foundation",
+      "organization": "Addi's Faith Foundation",
+      "geographicScope": "Nationwide USA"
+    },
+    {
+      "itemId": "item_0007",
+      "name": "Additional funding and renewal grants",
+      "organization": "Patient Access Network Foundation (PAN Foundation)",
+      "geographicScope": "Nationwide USA"
+    },
+    {
+      "itemId": "item_0008",
+      "name": "AFA Wounded Airmen & Guardians Program",
+      "organization": "Air & Space Forces Association",
+      "geographicScope": "Nationwide USA"
+    },
+    {
+      "itemId": "item_0009",
+      "name": "AFA Wounded Airmen & Guardians Travel Assistance Grants",
+      "organization": "Air & Space Forces Association",
+      "geographicScope": "Nationwide USA"
+    },
+    {
+      "itemId": "item_0010",
+      "name": "Agility Program (formerly Agility Angels)",
+      "organization": "The Ability Center",
+      "geographicScope": "Northwest Ohio, USA, Southeast Michigan, USA"
+    },
+    {
+      "itemId": "item_0011",
+      "name": "Air Charity Network Flights",
+      "organization": "Air Charity Network",
+      "geographicScope": "Nationwide USA"
+    }
+  ],
+  "messages": [],
+  "stdout": "itemId\tname\torganization\tgeographicScope\nitem_0001\t180 Medical Emotional Support and Resources\t180 Medical\tNationwide USA\nitem_0002\tAAHD Frederick J. Krause Scholarship on Health and Disability\tAmerican Association on Health and Disability\tNationwide USA\nitem_0003\tAcoustics for Autism\tAcoustics for Autism\tNorthwest Ohio, USA\nitem_0005\tAdaptive Equipment Grant\tAdaptx\tUSA\nitem_0006\tAddi's Faith Foundation\tAddi's Faith Foundation\tNationwide USA\nitem_0007\tAdditional funding and renewal grants\tPatient Access Network Foundation (PAN Foundation)\tNationwide USA\nitem_0008\tAFA Wounded Airmen & Guardians Program\tAir & Space Forces Association\tNationwide USA\nitem_0009\tAFA Wounded Airmen & Guardians Travel Assistance Grants\tAir & Space Forces Association\tNationwide USA\nitem_0010\tAgility Program (formerly Agility Angels)\tThe Ability Center\tNorthwest Ohio, USA, Southeast Michigan, USA\nitem_0011\tAir Charity Network Flights\tAir Charity Network\tNationwide USA\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

@@ -168,6 +168,8 @@ function GrantFormModal({
     geographicScope?: string;
     documentsRequired?: string;
     b2VisaEligible?: string;
+    state?: string;
+    city?: string;
   };
   onClose: () => void;
   onSave: (data: any) => void;
@@ -194,6 +196,8 @@ function GrantFormModal({
     geographicScope: initialData?.geographicScope || "",
     documentsRequired: initialData?.documentsRequired || "",
     b2VisaEligible: initialData?.b2VisaEligible || "",
+    state: initialData?.state || "",
+    city: initialData?.city || "",
   });
   const [notifySubscribers, setNotifySubscribers] = useState(mode === "create");
 
@@ -451,6 +455,30 @@ function GrantFormModal({
                   onChange={(e) => updateField("ageRange", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
                   placeholder="All Ages, Children (0-17), Adults..."
+                />
+              </div>
+            </div>
+
+            {/* Row: State + City */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">State</label>
+                <input
+                  type="text"
+                  value={form.state}
+                  onChange={(e) => updateField("state", e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  placeholder="California, New York, Nationwide..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">City</label>
+                <input
+                  type="text"
+                  value={form.city}
+                  onChange={(e) => updateField("city", e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                  placeholder="Los Angeles, New York City..."
                 />
               </div>
             </div>

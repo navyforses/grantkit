@@ -91,6 +91,10 @@ export const grants = mysqlTable("grants", {
   documentsRequired: text("documentsRequired"),
   b2VisaEligible: varchar("b2VisaEligible", { length: 32 }),
 
+  // Location fields
+  state: varchar("state", { length: 128 }),
+  city: varchar("city", { length: 128 }),
+
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -98,6 +102,7 @@ export const grants = mysqlTable("grants", {
   index("grants_category_idx").on(table.category),
   index("grants_country_idx").on(table.country),
   index("grants_type_idx").on(table.type),
+  index("grants_state_idx").on(table.state),
 ]);
 
 export type Grant = typeof grants.$inferSelect;

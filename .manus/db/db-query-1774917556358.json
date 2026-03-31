@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE grants SET state = 'District of Columbia' WHERE state = 'Washington DC';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute UPDATE grants SET state = 'District of Columbia' WHERE state = 'Washington DC';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 66
+}

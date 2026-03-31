@@ -90,6 +90,8 @@ export default function Home() {
         geographicScope: g.geographicScope,
         documentsRequired: g.documentsRequired,
         b2VisaEligible: g.b2VisaEligible,
+        state: g.state,
+        city: g.city,
       };
     });
   }, [previewData, language]);

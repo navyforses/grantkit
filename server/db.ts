@@ -434,6 +434,7 @@ export async function listGrants(options?: {
   ageRange?: string;
   b2VisaEligible?: string;
   hasDeadline?: boolean;
+  state?: string;
   limit?: number;
   offset?: number;
   activeOnly?: boolean;
@@ -441,7 +442,7 @@ export async function listGrants(options?: {
   const db = await getDb();
   if (!db) return { grants: [], total: 0 };
 
-  const { search, language, category, country, type, sortBy = "name_asc", fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, limit = 50, offset = 0, activeOnly = true } = options || {};
+  const { search, language, category, country, type, sortBy = "name_asc", fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, state, limit = 50, offset = 0, activeOnly = true } = options || {};
 
   // Helper to add enrichment filter conditions
   const addEnrichmentFilters = (conditions: any[]) => {
@@ -459,6 +460,9 @@ export async function listGrants(options?: {
     }
     if (hasDeadline === true) {
       conditions.push(sql`${grants.deadline} IS NOT NULL AND ${grants.deadline} != '' AND ${grants.deadline} != 'Rolling/Open'`);
+    }
+    if (state && state !== "all") {
+      conditions.push(eq(grants.state, state));
     }
   };
 
@@ -884,6 +888,26 @@ export async function getGrantStats() {
   }
 
   return { total, active, inactive: total - active, grants: grantsCount, resources: resourcesCount };
+}
+
+/** Get distinct states with grant counts for filter dropdown */
+export async function getDistinctStates() {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ state: grants.state, count: count() })
+    .from(grants)
+    .where(
+      and(
+        eq(grants.isActive, true),
+        sql`${grants.state} IS NOT NULL AND ${grants.state} != ''`
+      )
+    )
+    .groupBy(grants.state)
+    .orderBy(desc(count()));
+
+  return result.map(r => ({ state: r.state as string, count: Number(r.count) }));
 }
 
 /** Get related grants by category (excluding the current one) */

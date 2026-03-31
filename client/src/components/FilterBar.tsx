@@ -4,10 +4,11 @@
  * Desktop: sticky horizontal bar with category pills + advanced panel
  */
 
-import { ArrowUpDown, ChevronDown, ChevronUp, Filter, Search, SlidersHorizontal, X } from "lucide-react";
+import { ArrowUpDown, ChevronDown, ChevronUp, Filter, MapPin, Search, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { trpc } from "@/lib/trpc";
 
 export type SortValue = "name_asc" | "name_desc" | "category" | "country" | "newest";
 
@@ -70,6 +71,9 @@ interface FilterBarProps {
   onB2VisaChange?: (v: string) => void;
   hasDeadline?: boolean;
   onHasDeadlineChange?: (v: boolean) => void;
+  // State filter
+  selectedState?: string;
+  onStateChange?: (v: string) => void;
 }
 
 export default function FilterBar({
@@ -92,10 +96,17 @@ export default function FilterBar({
   onB2VisaChange,
   hasDeadline,
   onHasDeadlineChange,
+  selectedState,
+  onStateChange,
 }: FilterBarProps) {
   const { t, tCategory, tCountry } = useLanguage();
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showMobileSheet, setShowMobileSheet] = useState(false);
+
+  // Fetch distinct states for the filter dropdown
+  const { data: statesData } = trpc.catalog.states.useQuery(undefined, {
+    staleTime: 5 * 60 * 1000, // cache for 5 minutes
+  });
 
   // Count active advanced filters
   const activeAdvancedCount = [
@@ -103,6 +114,7 @@ export default function FilterBar({
     targetDiagnosis && targetDiagnosis !== "all",
     b2VisaEligible && b2VisaEligible !== "all",
     hasDeadline,
+    selectedState && selectedState !== "all",
   ].filter(Boolean).length;
 
   // Count total active filters (including basic)
@@ -129,6 +141,7 @@ export default function FilterBar({
     onTargetDiagnosisChange?.("all");
     onB2VisaChange?.("all");
     onHasDeadlineChange?.(false);
+    onStateChange?.("all");
   };
 
   return (
@@ -311,6 +324,31 @@ export default function FilterBar({
                   })}
                 </select>
               </div>
+
+              {/* State / Location */}
+              {onStateChange && statesData && statesData.length > 0 && (
+                <div>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">
+                    <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> State / Location</span>
+                  </label>
+                  <select
+                    value={selectedState || "all"}
+                    onChange={(e) => onStateChange(e.target.value)}
+                    className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                  >
+                    <option value="all">All States</option>
+                    <option value="Nationwide">🇺🇸 Nationwide</option>
+                    {statesData
+                      .filter(s => s.state !== "Nationwide" && s.state !== "International")
+                      .map((s) => (
+                        <option key={s.state} value={s.state}>
+                          {s.state} ({s.count})
+                        </option>
+                      ))}
+                    <option value="International">🌐 International</option>
+                  </select>
+                </div>
+              )}
 
               {/* Condition / Diagnosis */}
               {onTargetDiagnosisChange && (
@@ -530,6 +568,29 @@ export default function FilterBar({
           {showAdvanced && (
             <div className="mt-3 pt-3 border-t border-gray-100">
               <div className="flex flex-wrap gap-3 items-center">
+                {/* State filter */}
+                {onStateChange && statesData && statesData.length > 0 && (
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">State</label>
+                    <select
+                      value={selectedState || "all"}
+                      onChange={(e) => onStateChange(e.target.value)}
+                      className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                    >
+                      <option value="all">All States</option>
+                      <option value="Nationwide">🇺🇸 Nationwide</option>
+                      {statesData
+                        .filter(s => s.state !== "Nationwide" && s.state !== "International")
+                        .map((s) => (
+                          <option key={s.state} value={s.state}>
+                            {s.state} ({s.count})
+                          </option>
+                        ))}
+                      <option value="International">🌐 International</option>
+                    </select>
+                  </div>
+                )}
+
                 {onTargetDiagnosisChange && (
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Condition</label>
@@ -600,6 +661,7 @@ export default function FilterBar({
                         onTargetDiagnosisChange?.("all");
                         onB2VisaChange?.("all");
                         onHasDeadlineChange?.(false);
+                        onStateChange?.("all");
                       }}
                       className="text-sm text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg border border-red-200 hover:border-red-300 transition-all flex items-center gap-1"
                     >

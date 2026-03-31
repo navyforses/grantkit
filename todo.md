@@ -219,3 +219,13 @@
 ## GrantDetail Skeleton
 - [x] Create GrantDetailSkeleton component matching GrantDetail layout (mobile header, desktop header, content cards, sidebar, sticky CTA)
 - [x] Integrate skeleton into GrantDetail page — replaces Loader2 spinner with full-page skeleton
+
+## State & City for Grants
+- [x] Add state and city columns to grants schema and migrate (with state index)
+- [x] Build AI enrichment script to fill state/city for all 630+ grants (568 with state, 522 with city, 36 unique states)
+- [x] Update backend API to expose state/city and add state filter (catalog.list, createGrant, updateGrant)
+- [x] Update CatalogCard to show state/city (smart display: City, State or Nationwide)
+- [x] Update GrantDetail page to show state/city (header chips + details section on mobile and desktop)
+- [x] Add state filter to FilterBar (mobile bottom sheet + desktop advanced panel, fetches distinct states from API)
+- [x] Update admin panel grant form with state/city fields
+- [x] Write tests for new state filter (7 tests all passing)

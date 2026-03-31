@@ -10,7 +10,7 @@ import {
   hardDeleteGrant, upsertGrantTranslations, getGrantStats, getRelatedGrants,
   getActiveNewsletterSubscribers, getNewsletterSubscriberCount, exportAllGrants,
   unsubscribeByToken, createNotificationRecord, updateNotificationRecord,
-  getNotificationHistory, bulkImportGrants,
+  getNotificationHistory, bulkImportGrants, getDistinctStates,
 } from "./db";
 import {
   sendSubscriptionEmail, sendAdminNewSubscriberNotification,
@@ -130,11 +130,12 @@ export const appRouter = router({
         ageRange: z.string().optional(),
         b2VisaEligible: z.string().optional(),
         hasDeadline: z.boolean().optional(),
+        state: z.string().optional(),
         page: z.number().min(1).default(1),
         pageSize: z.number().min(1).max(100).default(20),
       }).optional())
       .query(async ({ input }) => {
-        const { search, language, category, country, type, sortBy, fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, page = 1, pageSize = 20 } = input || {};
+        const { search, language, category, country, type, sortBy, fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, state, page = 1, pageSize = 20 } = input || {};
         const result = await listGrants({
           search,
           language,
@@ -147,6 +148,7 @@ export const appRouter = router({
           ageRange,
           b2VisaEligible,
           hasDeadline,
+          state,
           limit: pageSize,
           offset: (page - 1) * pageSize,
           activeOnly: true,
@@ -180,6 +182,8 @@ export const appRouter = router({
             geographicScope: g.geographicScope || "",
             documentsRequired: g.documentsRequired || "",
             b2VisaEligible: g.b2VisaEligible || "",
+            state: g.state || "",
+            city: g.city || "",
             translations: translations[g.itemId] || {},
           })),
           total: result.total,
@@ -224,6 +228,8 @@ export const appRouter = router({
             geographicScope: grant.geographicScope || "",
             documentsRequired: grant.documentsRequired || "",
             b2VisaEligible: grant.b2VisaEligible || "",
+            state: grant.state || "",
+            city: grant.city || "",
           },
           translations,
           related: related.map(r => ({
@@ -249,6 +255,11 @@ export const appRouter = router({
     count: publicProcedure.query(async () => {
       const stats = await getGrantStats();
       return { total: stats.active, grants: stats.grants, resources: stats.resources };
+    }),
+
+    // Get distinct states for filter dropdown
+    states: publicProcedure.query(async () => {
+      return await getDistinctStates();
     }),
   }),
 
@@ -591,6 +602,8 @@ export const appRouter = router({
         geographicScope: z.string().optional(),
         documentsRequired: z.string().optional(),
         b2VisaEligible: z.string().optional(),
+        state: z.string().optional(),
+        city: z.string().optional(),
         notifySubscribers: z.boolean().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
@@ -670,6 +683,8 @@ export const appRouter = router({
         geographicScope: z.string().optional(),
         documentsRequired: z.string().optional(),
         b2VisaEligible: z.string().optional(),
+        state: z.string().optional(),
+        city: z.string().optional(),
         isActive: z.boolean().optional(),
       }))
       .mutation(async ({ input }) => {

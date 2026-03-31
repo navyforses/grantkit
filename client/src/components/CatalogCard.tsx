@@ -100,11 +100,13 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
             </p>
           )}
 
-          {/* Meta row: Location + Amount + Deadline + B-2 Visa */}
+          {/* Meta row: Location + State/City + Amount + Deadline + B-2 Visa */}
           <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-sm text-gray-500 mb-3">
             <span className="flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-gray-400" />
-              {translatedCountry}
+              {item.state && item.state !== "Nationwide" && item.state !== "International"
+                ? `${item.city ? item.city + ", " : ""}${item.state}`
+                : translatedCountry}
             </span>
             {item.amount && (
               <span className="flex items-center gap-1 text-emerald-600 font-medium">

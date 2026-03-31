@@ -29,6 +29,8 @@ export interface CatalogItem {
   geographicScope: string;
   documentsRequired: string;
   b2VisaEligible: string;
+  state: string;
+  city: string;
 }
 
 // ===== Categories =====

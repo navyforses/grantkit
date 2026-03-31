@@ -51,6 +51,7 @@ export default function Catalog() {
   const [targetDiagnosis, setTargetDiagnosis] = useState("all");
   const [b2VisaEligible, setB2VisaEligible] = useState("all");
   const [hasDeadline, setHasDeadline] = useState(false);
+  const [selectedState, setSelectedState] = useState("all");
   const { t, tCategory, tCountry, language } = useLanguage();
   const { isAuthenticated, loading: authLoading } = useAuth();
 
@@ -95,10 +96,11 @@ export default function Catalog() {
       targetDiagnosis: targetDiagnosis !== "all" ? targetDiagnosis : undefined,
       b2VisaEligible: b2VisaEligible !== "all" ? b2VisaEligible : undefined,
       hasDeadline: hasDeadline || undefined,
+      state: selectedState !== "all" ? selectedState : undefined,
       page: isActive ? page : 1,
       pageSize: isActive ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
-    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, page, isActive]
+    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, page, isActive]
   );
 
   const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
@@ -165,6 +167,8 @@ export default function Catalog() {
         geographicScope: g.geographicScope,
         documentsRequired: g.documentsRequired,
         b2VisaEligible: g.b2VisaEligible,
+        state: g.state,
+        city: g.city,
       };
     });
   }, [catalogData, language]);
@@ -236,6 +240,8 @@ export default function Catalog() {
         onB2VisaChange={(v) => { setB2VisaEligible(v); setPage(1); }}
         hasDeadline={hasDeadline}
         onHasDeadlineChange={(v) => { setHasDeadline(v); setPage(1); }}
+        selectedState={selectedState}
+        onStateChange={(v) => { setSelectedState(v); setPage(1); }}
       />
 
       {/* Cards grid — single column on mobile, multi on desktop */}

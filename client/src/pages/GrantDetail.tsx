@@ -183,6 +183,11 @@ export default function GrantDetail() {
   const translatedCountry = tCountry(item.country);
   const countryFlag = item.country === "US" ? "🇺🇸" : "🌐";
   const typeLabel = item.type === "grant" ? t.catalog.typeGrant : t.catalog.typeResource;
+
+  // Build location display string: "City, State" or "State" or country fallback
+  const locationDisplay = item.state && item.state !== "Nationwide" && item.state !== "International"
+    ? `${item.city ? item.city + ", " : ""}${item.state}`
+    : item.state === "Nationwide" ? "Nationwide (USA)" : translatedCountry;
   const borderColor = getCategoryBorderColor(item.category);
   const primaryLink = item.website || "";
 
@@ -304,6 +309,12 @@ export default function GrantDetail() {
 
         {/* Quick stats chips */}
         <div className="flex items-center gap-2 mt-3 flex-wrap">
+          {item.state && (
+            <span className="inline-flex items-center gap-1 text-xs text-gray-200 bg-white/10 px-2.5 py-1 rounded-full">
+              <MapPin className="w-3 h-3" />
+              {locationDisplay}
+            </span>
+          )}
           {item.amount && (
             <span className="inline-flex items-center gap-1 text-xs text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-full">
               <DollarSign className="w-3 h-3" />
@@ -363,6 +374,12 @@ export default function GrantDetail() {
                 </p>
               )}
               <div className="flex items-center gap-4 mt-3 flex-wrap">
+                {item.state && (
+                  <span className="inline-flex items-center gap-1.5 text-sm text-gray-200 bg-white/10 px-3 py-1 rounded-full">
+                    <MapPin className="w-3.5 h-3.5" />
+                    {locationDisplay}
+                  </span>
+                )}
                 {item.amount && (
                   <span className="inline-flex items-center gap-1.5 text-sm text-emerald-300 bg-emerald-500/10 px-3 py-1 rounded-full">
                     <DollarSign className="w-3.5 h-3.5" />
@@ -526,7 +543,7 @@ export default function GrantDetail() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <p className="text-[10px] text-gray-400 uppercase">Location</p>
-                    <p className="text-sm font-medium text-gray-900">{translatedCountry}</p>
+                    <p className="text-sm font-medium text-gray-900">{locationDisplay}</p>
                   </div>
                   {item.geographicScope && (
                     <div>
@@ -654,7 +671,7 @@ export default function GrantDetail() {
                   <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                   <div>
                     <p className="text-xs text-gray-500">Location</p>
-                    <p className="text-sm font-medium text-gray-900">{translatedCountry}</p>
+                    <p className="text-sm font-medium text-gray-900">{locationDisplay}</p>
                   </div>
                 </div>
                 {item.geographicScope && (

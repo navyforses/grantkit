@@ -1,0 +1,78 @@
+{
+  "query": "SELECT state, COUNT(*) as cnt FROM grants WHERE state IS NOT NULL AND state != '' GROUP BY state ORDER BY cnt DESC LIMIT 20 OFFSET 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute SELECT state, COUNT(*) as cnt FROM grants WHERE state IS NOT NULL AND state != '' GROUP BY state ORDER BY cnt DESC LIMIT 20 OFFSET 20;",
+  "rows": [
+    {
+      "state": "Pennsylvania",
+      "cnt": "7"
+    },
+    {
+      "state": "Minnesota",
+      "cnt": "4"
+    },
+    {
+      "state": "Tennessee",
+      "cnt": "4"
+    },
+    {
+      "state": "Michigan",
+      "cnt": "4"
+    },
+    {
+      "state": "Nebraska",
+      "cnt": "3"
+    },
+    {
+      "state": "Nevada",
+      "cnt": "3"
+    },
+    {
+      "state": "Washington",
+      "cnt": "3"
+    },
+    {
+      "state": "Arkansas",
+      "cnt": "2"
+    },
+    {
+      "state": "Vermont",
+      "cnt": "2"
+    },
+    {
+      "state": "New Mexico",
+      "cnt": "2"
+    },
+    {
+      "state": "Kansas",
+      "cnt": "1"
+    },
+    {
+      "state": "Washington DC",
+      "cnt": "1"
+    },
+    {
+      "state": "Wisconsin",
+      "cnt": "1"
+    },
+    {
+      "state": "Louisiana",
+      "cnt": "1"
+    },
+    {
+      "state": "Oklahoma",
+      "cnt": "1"
+    },
+    {
+      "state": "South Carolina",
+      "cnt": "1"
+    },
+    {
+      "state": "North Dakota",
+      "cnt": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "state\tcnt\nPennsylvania\t7\nMinnesota\t4\nTennessee\t4\nMichigan\t4\nNebraska\t3\nNevada\t3\nWashington\t3\nArkansas\t2\nVermont\t2\nNew Mexico\t2\nKansas\t1\nWashington DC\t1\nWisconsin\t1\nLouisiana\t1\nOklahoma\t1\nSouth Carolina\t1\nNorth Dakota\t1\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}
