@@ -168,7 +168,7 @@ export default function Profile() {
                   <Shield className="w-4 h-4 text-gray-400 shrink-0" />
                   <div className="flex-1">
                     <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mb-0.5">{t.profile.plan}</p>
-                    <p className="text-sm font-medium text-[#0f172a]">GrantKit Pro — $9/month</p>
+                    <p className="text-sm font-medium text-[#0f172a]">{t.profile.planName}</p>
                   </div>
                 </div>
                 {subStatus.subscriptionCurrentPeriodEnd && (
@@ -194,7 +194,7 @@ export default function Profile() {
             ) : (
               <div className="bg-gray-50 rounded-lg p-4 md:p-5 text-center">
                 {user?.role === "admin" ? (
-                  <p className="text-xs md:text-sm text-gray-500">You have full access as an administrator.</p>
+                  <p className="text-xs md:text-sm text-gray-500">{t.profile.adminAccess}</p>
                 ) : (
                   <>
                     <p className="text-xs md:text-sm text-gray-500 mb-3 md:mb-4">{t.profile.subscribeDesc}</p>

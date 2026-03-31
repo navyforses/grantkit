@@ -304,9 +304,13 @@ export const ka: Translations = {
     resubscribe: "თავიდან გამოწერა",
     subscribeCta: "გამოწერა — $9/თვე",
     subscribeDesc: "მიიღეთ სრული წვდომა 643 შერჩეულ გრანტსა და რესურსზე, ყოველთვიურად განახლებული.",
-    logoutButton: "გამოსვლა",
+    logoutButton: "გასვლა",
     backToHome: "მთავარზე დაბრუნება",
+    adminAccess: "თქვენ გაქვთ სრული წვდომა როგორც ადმინისტრატორი.",
+    planName: "GrantKit Pro — $9/თვეში",
   },
+
+  // Admin panel
   admin: {
     title: "ადმინ პანელი",
     refresh: "განახლება",

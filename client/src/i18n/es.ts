@@ -306,6 +306,8 @@ export const es: Translations = {
     subscribeDesc: "Accede a 643 subvenciones y recursos seleccionados, actualizados mensualmente.",
     logoutButton: "Cerrar sesión",
     backToHome: "Volver al inicio",
+    adminAccess: "Tienes acceso completo como administrador.",
+    planName: "GrantKit Pro — $9/mes",
   },
   admin: {
     title: "Panel de administración",

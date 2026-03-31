@@ -306,7 +306,11 @@ export const en: Translations = {
     subscribeDesc: "Get full access to 643 curated grants and resources, updated monthly.",
     logoutButton: "Log Out",
     backToHome: "Back to Home",
+    adminAccess: "You have full access as an administrator.",
+    planName: "GrantKit Pro — $9/month",
   },
+
+  // Admin panel
   admin: {
     title: "Admin Panel",
     refresh: "Refresh",

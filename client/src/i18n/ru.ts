@@ -306,6 +306,8 @@ export const ru: Translations = {
     subscribeDesc: "Получите доступ к 643 грантам и ресурсам с ежемесячным обновлением.",
     logoutButton: "Выйти",
     backToHome: "На главную",
+    adminAccess: "У вас полный доступ как у администратора.",
+    planName: "GrantKit Pro — $9/месяц",
   },
   admin: {
     title: "Панель администратора",

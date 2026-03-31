@@ -270,3 +270,9 @@
 - [x] Add navbar i18n keys to types.ts and all 5 language files (dashboard, admin, login, logout, legal, user)
 - [x] Replace hardcoded strings in Navbar, MobileHeader, MobileBottomNav with t() calls
 - [x] Run tests and verify (196 tests all passing, 0 TS errors)
+
+## Profile Page i18n Translation
+- [x] Audit Profile page for hardcoded English strings (only 2 remaining: admin access msg + plan name)
+- [x] Add profile i18n keys to types.ts and all 5 language files (adminAccess, planName)
+- [x] Replace hardcoded strings in Profile page with t() calls (adminAccess + planName)
+- [x] Run tests and verify (196 tests all passing, 0 TS errors)

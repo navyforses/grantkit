@@ -317,6 +317,8 @@ export interface Translations {
     subscribeDesc: string;
     logoutButton: string;
     backToHome: string;
+    adminAccess: string;
+    planName: string;
   };
 
   // Admin panel
