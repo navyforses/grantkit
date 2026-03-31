@@ -5,7 +5,8 @@ import type { TrpcContext } from "./_core/context";
 /**
  * Tests for the state/city feature:
  * 1. catalog.states — returns distinct states with counts
- * 2. catalog.list — filters by state when provided
+ * 2. catalog.cities — returns distinct cities for a given state
+ * 3. catalog.list — filters by state and city when provided
  */
 
 function createPublicContext(): TrpcContext {
@@ -158,5 +159,95 @@ describe("catalog.list with state filter", () => {
       expect(grant).toHaveProperty("state");
       expect(grant).toHaveProperty("city");
     }
+  });
+});
+
+describe("catalog.cities", () => {
+  it("returns cities for California with counts", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const cities = await caller.catalog.cities({ state: "California" });
+
+    expect(Array.isArray(cities)).toBe(true);
+    expect(cities.length).toBeGreaterThan(0);
+
+    for (const entry of cities) {
+      expect(typeof entry.city).toBe("string");
+      expect(entry.city.length).toBeGreaterThan(0);
+      expect(typeof entry.count).toBe("number");
+      expect(entry.count).toBeGreaterThan(0);
+    }
+  });
+
+  it("cities are sorted alphabetically", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const cities = await caller.catalog.cities({ state: "California" });
+
+    for (let i = 1; i < cities.length; i++) {
+      expect(cities[i - 1].city.localeCompare(cities[i].city)).toBeLessThanOrEqual(0);
+    }
+  });
+
+  it("returns empty array for a state with no cities", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const cities = await caller.catalog.cities({ state: "NonExistentState" });
+
+    expect(Array.isArray(cities)).toBe(true);
+    expect(cities.length).toBe(0);
+  });
+});
+
+describe("catalog.list with city filter", () => {
+  it("returns grants filtered by state and city", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    // First get a city from California
+    const cities = await caller.catalog.cities({ state: "California" });
+    expect(cities.length).toBeGreaterThan(0);
+    const testCity = cities[0].city;
+
+    const result = await caller.catalog.list({
+      state: "California",
+      city: testCity,
+      page: 1,
+      pageSize: 50,
+    });
+
+    expect(result.grants.length).toBeGreaterThan(0);
+
+    for (const grant of result.grants) {
+      expect(grant.state).toBe("California");
+      expect(grant.city).toBe(testCity);
+    }
+  });
+
+  it("city filter narrows results within a state", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const cities = await caller.catalog.cities({ state: "California" });
+    expect(cities.length).toBeGreaterThan(0);
+    const testCity = cities[0].city;
+
+    const stateOnly = await caller.catalog.list({
+      state: "California",
+      page: 1,
+      pageSize: 50,
+    });
+
+    const stateAndCity = await caller.catalog.list({
+      state: "California",
+      city: testCity,
+      page: 1,
+      pageSize: 50,
+    });
+
+    expect(stateOnly.total).toBeGreaterThanOrEqual(stateAndCity.total);
   });
 });

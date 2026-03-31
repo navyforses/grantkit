@@ -52,6 +52,7 @@ export default function Catalog() {
   const [b2VisaEligible, setB2VisaEligible] = useState("all");
   const [hasDeadline, setHasDeadline] = useState(false);
   const [selectedState, setSelectedState] = useState("all");
+  const [selectedCity, setSelectedCity] = useState("all");
   const { t, tCategory, tCountry, language } = useLanguage();
   const { isAuthenticated, loading: authLoading } = useAuth();
 
@@ -97,10 +98,11 @@ export default function Catalog() {
       b2VisaEligible: b2VisaEligible !== "all" ? b2VisaEligible : undefined,
       hasDeadline: hasDeadline || undefined,
       state: selectedState !== "all" ? selectedState : undefined,
+      city: selectedCity !== "all" ? selectedCity : undefined,
       page: isActive ? page : 1,
       pageSize: isActive ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
-    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, page, isActive]
+    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, page, isActive]
   );
 
   const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
@@ -241,7 +243,9 @@ export default function Catalog() {
         hasDeadline={hasDeadline}
         onHasDeadlineChange={(v) => { setHasDeadline(v); setPage(1); }}
         selectedState={selectedState}
-        onStateChange={(v) => { setSelectedState(v); setPage(1); }}
+        onStateChange={(v) => { setSelectedState(v); setSelectedCity("all"); setPage(1); }}
+        selectedCity={selectedCity}
+        onCityChange={(v) => { setSelectedCity(v); setPage(1); }}
       />
 
       {/* Cards grid — single column on mobile, multi on desktop */}

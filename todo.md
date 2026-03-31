@@ -234,3 +234,10 @@
 - [x] Add "state" sort option to backend listGrants function
 - [x] Add "State" option to FilterBar sort dropdown (mobile + desktop)
 - [x] Write vitest test for sort-by-state (8 tests all passing)
+
+## City Filter (appears after state selection)
+- [x] Add backend endpoint catalog.cities to return distinct cities for a given state
+- [x] Add city filter to backend listGrants query
+- [x] Update FilterBar with dynamic city dropdown that appears when state is selected (mobile + desktop)
+- [x] Wire city filter state in Catalog.tsx and pass to backend (resets city when state changes)
+- [x] Write vitest tests for city filter (13 total state/city tests, 196 overall all passing)

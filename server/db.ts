@@ -435,6 +435,7 @@ export async function listGrants(options?: {
   b2VisaEligible?: string;
   hasDeadline?: boolean;
   state?: string;
+  city?: string;
   limit?: number;
   offset?: number;
   activeOnly?: boolean;
@@ -442,7 +443,7 @@ export async function listGrants(options?: {
   const db = await getDb();
   if (!db) return { grants: [], total: 0 };
 
-  const { search, language, category, country, type, sortBy = "name_asc", fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, state, limit = 50, offset = 0, activeOnly = true } = options || {};
+  const { search, language, category, country, type, sortBy = "name_asc", fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, state, city, limit = 50, offset = 0, activeOnly = true } = options || {};
 
   // Helper to add enrichment filter conditions
   const addEnrichmentFilters = (conditions: any[]) => {
@@ -463,6 +464,9 @@ export async function listGrants(options?: {
     }
     if (state && state !== "all") {
       conditions.push(eq(grants.state, state));
+    }
+    if (city && city !== "all") {
+      conditions.push(eq(grants.city, city));
     }
   };
 
@@ -910,6 +914,27 @@ export async function getDistinctStates() {
     .orderBy(desc(count()));
 
   return result.map(r => ({ state: r.state as string, count: Number(r.count) }));
+}
+
+/** Get distinct cities for a given state with grant counts for filter dropdown */
+export async function getDistinctCities(stateName: string) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ city: grants.city, count: count() })
+    .from(grants)
+    .where(
+      and(
+        eq(grants.isActive, true),
+        eq(grants.state, stateName),
+        sql`${grants.city} IS NOT NULL AND ${grants.city} != ''`
+      )
+    )
+    .groupBy(grants.city)
+    .orderBy(asc(grants.city));
+
+  return result.map(r => ({ city: r.city as string, count: Number(r.count) }));
 }
 
 /** Get related grants by category (excluding the current one) */

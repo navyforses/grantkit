@@ -10,7 +10,7 @@ import {
   hardDeleteGrant, upsertGrantTranslations, getGrantStats, getRelatedGrants,
   getActiveNewsletterSubscribers, getNewsletterSubscriberCount, exportAllGrants,
   unsubscribeByToken, createNotificationRecord, updateNotificationRecord,
-  getNotificationHistory, bulkImportGrants, getDistinctStates,
+  getNotificationHistory, bulkImportGrants, getDistinctStates, getDistinctCities,
 } from "./db";
 import {
   sendSubscriptionEmail, sendAdminNewSubscriberNotification,
@@ -131,11 +131,12 @@ export const appRouter = router({
         b2VisaEligible: z.string().optional(),
         hasDeadline: z.boolean().optional(),
         state: z.string().optional(),
+        city: z.string().optional(),
         page: z.number().min(1).default(1),
         pageSize: z.number().min(1).max(100).default(20),
       }).optional())
       .query(async ({ input }) => {
-        const { search, language, category, country, type, sortBy, fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, state, page = 1, pageSize = 20 } = input || {};
+        const { search, language, category, country, type, sortBy, fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, state, city, page = 1, pageSize = 20 } = input || {};
         const result = await listGrants({
           search,
           language,
@@ -149,6 +150,7 @@ export const appRouter = router({
           b2VisaEligible,
           hasDeadline,
           state,
+          city,
           limit: pageSize,
           offset: (page - 1) * pageSize,
           activeOnly: true,
@@ -261,6 +263,13 @@ export const appRouter = router({
     states: publicProcedure.query(async () => {
       return await getDistinctStates();
     }),
+
+    // Get distinct cities for a given state (for cascading filter)
+    cities: publicProcedure
+      .input(z.object({ state: z.string() }))
+      .query(async ({ input }) => {
+        return await getDistinctCities(input.state);
+      }),
   }),
 
   // ===== Newsletter =====

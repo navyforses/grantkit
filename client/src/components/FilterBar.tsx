@@ -74,6 +74,9 @@ interface FilterBarProps {
   // State filter
   selectedState?: string;
   onStateChange?: (v: string) => void;
+  // City filter (cascading from state)
+  selectedCity?: string;
+  onCityChange?: (v: string) => void;
 }
 
 export default function FilterBar({
@@ -98,6 +101,8 @@ export default function FilterBar({
   onHasDeadlineChange,
   selectedState,
   onStateChange,
+  selectedCity,
+  onCityChange,
 }: FilterBarProps) {
   const { t, tCategory, tCountry } = useLanguage();
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -108,6 +113,16 @@ export default function FilterBar({
     staleTime: 5 * 60 * 1000, // cache for 5 minutes
   });
 
+  // Fetch distinct cities for the selected state (cascading filter)
+  const isStateSelected = selectedState && selectedState !== "all" && selectedState !== "Nationwide" && selectedState !== "International";
+  const { data: citiesData } = trpc.catalog.cities.useQuery(
+    { state: selectedState || "" },
+    {
+      enabled: !!isStateSelected,
+      staleTime: 5 * 60 * 1000,
+    }
+  );
+
   // Count active advanced filters
   const activeAdvancedCount = [
     fundingType && fundingType !== "all",
@@ -115,6 +130,7 @@ export default function FilterBar({
     b2VisaEligible && b2VisaEligible !== "all",
     hasDeadline,
     selectedState && selectedState !== "all",
+    selectedCity && selectedCity !== "all",
   ].filter(Boolean).length;
 
   // Count total active filters (including basic)
@@ -142,6 +158,7 @@ export default function FilterBar({
     onB2VisaChange?.("all");
     onHasDeadlineChange?.(false);
     onStateChange?.("all");
+    onCityChange?.("all");
   };
 
   return (
@@ -347,6 +364,27 @@ export default function FilterBar({
                         </option>
                       ))}
                     <option value="International">🌐 International</option>
+                  </select>
+                </div>
+              )}
+
+              {/* City (appears when a specific state is selected) */}
+              {onCityChange && isStateSelected && citiesData && citiesData.length > 0 && (
+                <div>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">
+                    <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> City</span>
+                  </label>
+                  <select
+                    value={selectedCity || "all"}
+                    onChange={(e) => onCityChange(e.target.value)}
+                    className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
+                  >
+                    <option value="all">All Cities in {selectedState}</option>
+                    {citiesData.map((c) => (
+                      <option key={c.city} value={c.city}>
+                        {c.city} ({c.count})
+                      </option>
+                    ))}
                   </select>
                 </div>
               )}
@@ -593,6 +631,25 @@ export default function FilterBar({
                   </div>
                 )}
 
+                {/* City (cascading from state) */}
+                {onCityChange && isStateSelected && citiesData && citiesData.length > 0 && (
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">City</label>
+                    <select
+                      value={selectedCity || "all"}
+                      onChange={(e) => onCityChange(e.target.value)}
+                      className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
+                    >
+                      <option value="all">All Cities</option>
+                      {citiesData.map((c) => (
+                        <option key={c.city} value={c.city}>
+                          {c.city} ({c.count})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
                 {onTargetDiagnosisChange && (
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Condition</label>
@@ -664,6 +721,7 @@ export default function FilterBar({
                         onB2VisaChange?.("all");
                         onHasDeadlineChange?.(false);
                         onStateChange?.("all");
+                        onCityChange?.("all");
                       }}
                       className="text-sm text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg border border-red-200 hover:border-red-300 transition-all flex items-center gap-1"
                     >
