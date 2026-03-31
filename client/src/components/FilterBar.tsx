@@ -12,43 +12,18 @@ import { trpc } from "@/lib/trpc";
 
 export type SortValue = "name_asc" | "name_desc" | "category" | "country" | "state" | "newest";
 
-// Diagnosis options for filtering
-const DIAGNOSIS_OPTIONS = [
-  { value: "all", label: "All Conditions" },
-  { value: "Cancer", label: "Cancer" },
-  { value: "Rare Disease", label: "Rare Disease" },
-  { value: "Autism", label: "Autism / ASD" },
-  { value: "Cerebral Palsy", label: "Cerebral Palsy" },
-  { value: "Epilepsy", label: "Epilepsy" },
-  { value: "Down Syndrome", label: "Down Syndrome" },
-  { value: "Hearing", label: "Hearing Loss" },
-  { value: "Vision", label: "Vision Impairment" },
-  { value: "Diabetes", label: "Diabetes" },
-  { value: "Mental Health", label: "Mental Health" },
-  { value: "Spinal", label: "Spinal Cord Injury" },
-  { value: "Kidney", label: "Kidney Disease" },
-  { value: "Heart", label: "Heart Disease" },
-  { value: "Multiple Sclerosis", label: "Multiple Sclerosis" },
-  { value: "Alzheimer", label: "Alzheimer's" },
-  { value: "General", label: "General / Any" },
-];
+// Diagnosis option values (labels come from i18n)
+const DIAGNOSIS_VALUES = [
+  "all", "Cancer", "Rare Disease", "Autism", "Cerebral Palsy", "Epilepsy",
+  "Down Syndrome", "Hearing", "Vision", "Diabetes", "Mental Health",
+  "Spinal", "Kidney", "Heart", "Multiple Sclerosis", "Alzheimer", "General",
+] as const;
 
-// Funding type options
-const FUNDING_TYPE_OPTIONS = [
-  { value: "all", label: "All Types" },
-  { value: "one_time", label: "One-Time" },
-  { value: "recurring", label: "Recurring" },
-  { value: "reimbursement", label: "Reimbursement" },
-  { value: "varies", label: "Varies" },
-];
+// Funding type option values
+const FUNDING_TYPE_VALUES = ["all", "one_time", "recurring", "reimbursement", "varies"] as const;
 
-// B-2 Visa options
-const B2_VISA_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "yes", label: "B-2 Visa Eligible" },
-  { value: "no", label: "US Residents Only" },
-  { value: "uncertain", label: "Contact to Confirm" },
-];
+// B-2 Visa option values
+const B2_VISA_VALUES = ["all", "yes", "no", "uncertain"] as const;
 
 interface FilterBarProps {
   selectedCategory: CategoryValue;
@@ -108,6 +83,42 @@ export default function FilterBar({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showMobileSheet, setShowMobileSheet] = useState(false);
 
+  // Build translated option arrays from i18n
+  const diagnosisLabelMap: Record<string, string> = {
+    all: t.filters.allConditions,
+    Cancer: t.filters.cancer,
+    "Rare Disease": t.filters.rareDisease,
+    Autism: t.filters.autismASD,
+    "Cerebral Palsy": t.filters.cerebralPalsy,
+    Epilepsy: t.filters.epilepsy,
+    "Down Syndrome": t.filters.downSyndrome,
+    Hearing: t.filters.hearingLoss,
+    Vision: t.filters.visionImpairment,
+    Diabetes: t.filters.diabetes,
+    "Mental Health": t.filters.mentalHealth,
+    Spinal: t.filters.spinalCordInjury,
+    Kidney: t.filters.kidneyDisease,
+    Heart: t.filters.heartDisease,
+    "Multiple Sclerosis": t.filters.multipleSclerosis,
+    Alzheimer: t.filters.alzheimers,
+    General: t.filters.generalAny,
+  };
+
+  const fundingTypeLabelMap: Record<string, string> = {
+    all: t.filters.allFundingTypes,
+    one_time: t.filters.oneTime,
+    recurring: t.filters.recurring,
+    reimbursement: t.filters.reimbursement,
+    varies: t.filters.varies,
+  };
+
+  const b2VisaLabelMap: Record<string, string> = {
+    all: t.filters.all,
+    yes: t.filters.b2Eligible,
+    no: t.filters.usResidentsOnly,
+    uncertain: t.filters.contactToConfirm,
+  };
+
   // Fetch distinct states for the filter dropdown
   const { data: statesData } = trpc.catalog.states.useQuery(undefined, {
     staleTime: 5 * 60 * 1000, // cache for 5 minutes
@@ -159,6 +170,14 @@ export default function FilterBar({
     onHasDeadlineChange?.(false);
     onStateChange?.("all");
     onCityChange?.("all");
+  };
+
+  // Helper for search result text
+  const searchResultText = (count: number, query: string) => {
+    if (count > 0) {
+      return t.filters.resultsFor.replace("{count}", String(count)).replace("{query}", query);
+    }
+    return t.filters.noResultsFor.replace("{query}", query);
   };
 
   return (
@@ -223,7 +242,7 @@ export default function FilterBar({
                 }`}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
-                Filters
+                {t.filters.filters}
                 {totalActiveFilters > 0 && (
                   <span className="bg-white/20 text-white text-[10px] px-1.5 py-0.5 rounded-full">
                     {totalActiveFilters}
@@ -238,12 +257,12 @@ export default function FilterBar({
                   onChange={(e) => onSortChange(e.target.value as SortValue)}
                   className="text-xs border border-gray-200 rounded-lg px-2.5 py-2 bg-white text-gray-700 focus:outline-none"
                 >
-                  <option value="name_asc">A → Z</option>
-                  <option value="name_desc">Z → A</option>
-                  <option value="newest">Newest</option>
-                  <option value="category">Category</option>
-                  <option value="country">Country</option>
-                  <option value="state">State</option>
+                  <option value="name_asc">{t.filters.sortAZ}</option>
+                  <option value="name_desc">{t.filters.sortZA}</option>
+                  <option value="newest">{t.filters.sortNewest}</option>
+                  <option value="category">{t.filters.sortCategory}</option>
+                  <option value="country">{t.filters.sortCountry}</option>
+                  <option value="state">{t.filters.sortState}</option>
                 </select>
               )}
             </div>
@@ -257,9 +276,7 @@ export default function FilterBar({
           {/* Search result summary */}
           {searchQuery && (
             <p className="mt-1.5 text-xs text-gray-500">
-              {itemCount > 0
-                ? `${itemCount} result${itemCount !== 1 ? "s" : ""} for "${searchQuery}"`
-                : `No results for "${searchQuery}"`}
+              {searchResultText(itemCount, searchQuery)}
             </p>
           )}
         </div>
@@ -279,14 +296,14 @@ export default function FilterBar({
             <div className="sticky top-0 bg-white pt-3 pb-2 px-5 border-b border-gray-100 rounded-t-2xl z-10">
               <div className="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-3" />
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-semibold text-[#0f172a]">Filters</h3>
+                <h3 className="text-base font-semibold text-[#0f172a]">{t.filters.filters}</h3>
                 <div className="flex items-center gap-3">
                   {totalActiveFilters > 0 && (
                     <button
                       onClick={clearAllFilters}
                       className="text-xs text-red-500 font-medium"
                     >
-                      Clear All
+                      {t.filters.clearAll}
                     </button>
                   )}
                   <button
@@ -302,7 +319,7 @@ export default function FilterBar({
             <div className="px-5 py-4 space-y-5 pb-8">
               {/* Type */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Type</label>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.type}</label>
                 <div className="flex gap-2">
                   {[
                     { value: "all", label: t.catalog.typeAll },
@@ -326,7 +343,7 @@ export default function FilterBar({
 
               {/* Country */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Country</label>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.country}</label>
                 <select
                   value={selectedCountry}
                   onChange={(e) => onCountryChange(e.target.value as CountryValue)}
@@ -347,15 +364,15 @@ export default function FilterBar({
               {onStateChange && statesData && statesData.length > 0 && (
                 <div>
                   <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">
-                    <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> State / Location</span>
+                    <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> {t.filters.stateLocation}</span>
                   </label>
                   <select
                     value={selectedState || "all"}
                     onChange={(e) => onStateChange(e.target.value)}
                     className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
                   >
-                    <option value="all">All States</option>
-                    <option value="Nationwide">🇺🇸 Nationwide</option>
+                    <option value="all">{t.filters.allStates}</option>
+                    <option value="Nationwide">🇺🇸 {t.filters.nationwide}</option>
                     {statesData
                       .filter(s => s.state !== "Nationwide" && s.state !== "International")
                       .map((s) => (
@@ -363,7 +380,7 @@ export default function FilterBar({
                           {s.state} ({s.count})
                         </option>
                       ))}
-                    <option value="International">🌐 International</option>
+                    <option value="International">🌐 {t.filters.international}</option>
                   </select>
                 </div>
               )}
@@ -372,14 +389,14 @@ export default function FilterBar({
               {onCityChange && isStateSelected && citiesData && citiesData.length > 0 && (
                 <div>
                   <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">
-                    <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> City</span>
+                    <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> {t.filters.city}</span>
                   </label>
                   <select
                     value={selectedCity || "all"}
                     onChange={(e) => onCityChange(e.target.value)}
                     className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
                   >
-                    <option value="all">All Cities in {selectedState}</option>
+                    <option value="all">{t.filters.allCitiesIn.replace("{state}", selectedState || "")}</option>
                     {citiesData.map((c) => (
                       <option key={c.city} value={c.city}>
                         {c.city} ({c.count})
@@ -392,14 +409,14 @@ export default function FilterBar({
               {/* Condition / Diagnosis */}
               {onTargetDiagnosisChange && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Condition</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.condition}</label>
                   <select
                     value={targetDiagnosis || "all"}
                     onChange={(e) => onTargetDiagnosisChange(e.target.value)}
                     className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20"
                   >
-                    {DIAGNOSIS_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    {DIAGNOSIS_VALUES.map((val) => (
+                      <option key={val} value={val}>{diagnosisLabelMap[val]}</option>
                     ))}
                   </select>
                 </div>
@@ -408,19 +425,19 @@ export default function FilterBar({
               {/* Funding Type */}
               {onFundingTypeChange && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Funding Type</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.fundingType}</label>
                   <div className="flex flex-wrap gap-2">
-                    {FUNDING_TYPE_OPTIONS.map((opt) => (
+                    {FUNDING_TYPE_VALUES.map((val) => (
                       <button
-                        key={opt.value}
-                        onClick={() => onFundingTypeChange(opt.value)}
+                        key={val}
+                        onClick={() => onFundingTypeChange(val)}
                         className={`px-3.5 py-2 rounded-xl text-sm font-medium border transition-all ${
-                          fundingType === opt.value
+                          fundingType === val
                             ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
                             : "bg-gray-50 text-gray-600 border-gray-200 active:bg-gray-100"
                         }`}
                       >
-                        {opt.label}
+                        {fundingTypeLabelMap[val]}
                       </button>
                     ))}
                   </div>
@@ -430,19 +447,19 @@ export default function FilterBar({
               {/* B-2 Visa */}
               {onB2VisaChange && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">B-2 Visa</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.b2Visa}</label>
                   <div className="flex flex-wrap gap-2">
-                    {B2_VISA_OPTIONS.map((opt) => (
+                    {B2_VISA_VALUES.map((val) => (
                       <button
-                        key={opt.value}
-                        onClick={() => onB2VisaChange(opt.value)}
+                        key={val}
+                        onClick={() => onB2VisaChange(val)}
                         className={`px-3.5 py-2 rounded-xl text-sm font-medium border transition-all ${
-                          b2VisaEligible === opt.value
+                          b2VisaEligible === val
                             ? "bg-[#1e3a5f] text-white border-[#1e3a5f]"
                             : "bg-gray-50 text-gray-600 border-gray-200 active:bg-gray-100"
                         }`}
                       >
-                        {opt.label}
+                        {b2VisaLabelMap[val]}
                       </button>
                     ))}
                   </div>
@@ -452,7 +469,7 @@ export default function FilterBar({
               {/* Has Deadline */}
               {onHasDeadlineChange && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Deadline</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">{t.filters.deadline}</label>
                   <button
                     onClick={() => onHasDeadlineChange(!hasDeadline)}
                     className={`w-full py-3 rounded-xl text-sm font-medium border transition-all ${
@@ -461,7 +478,7 @@ export default function FilterBar({
                         : "bg-gray-50 text-gray-600 border-gray-200 active:bg-gray-100"
                     }`}
                   >
-                    {hasDeadline ? "Only with Deadline ✓" : "Any Deadline"}
+                    {hasDeadline ? t.filters.onlyWithDeadline : t.filters.anyDeadline}
                   </button>
                 </div>
               )}
@@ -471,7 +488,7 @@ export default function FilterBar({
                 onClick={() => setShowMobileSheet(false)}
                 className="w-full py-3.5 bg-[#1e3a5f] text-white rounded-xl text-sm font-semibold active:bg-[#0f172a] transition-colors"
               >
-                Show {itemCount} Results
+                {t.filters.showResults.replace("{count}", String(itemCount))}
               </button>
             </div>
           </div>
@@ -505,9 +522,7 @@ export default function FilterBar({
               </div>
               {searchQuery && (
                 <p className="mt-1.5 text-xs text-gray-500">
-                  {itemCount > 0
-                    ? `${itemCount} result${itemCount !== 1 ? "s" : ""} for "${searchQuery}"`
-                    : `No results for "${searchQuery}"`}
+                  {searchResultText(itemCount, searchQuery)}
                 </p>
               )}
             </div>
@@ -574,12 +589,12 @@ export default function FilterBar({
                   onChange={(e) => onSortChange(e.target.value as SortValue)}
                   className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
                 >
-                  <option value="name_asc">A → Z</option>
-                  <option value="name_desc">Z → A</option>
-                  <option value="newest">Newest</option>
-                  <option value="category">Category</option>
-                  <option value="country">Country</option>
-                  <option value="state">State</option>
+                  <option value="name_asc">{t.filters.sortAZ}</option>
+                  <option value="name_desc">{t.filters.sortZA}</option>
+                  <option value="newest">{t.filters.sortNewest}</option>
+                  <option value="category">{t.filters.sortCategory}</option>
+                  <option value="country">{t.filters.sortCountry}</option>
+                  <option value="state">{t.filters.sortState}</option>
                 </select>
               )}
 
@@ -593,7 +608,7 @@ export default function FilterBar({
                 }`}
               >
                 <Filter className="w-3.5 h-3.5" />
-                Filters
+                {t.filters.filters}
                 {activeAdvancedCount > 0 && (
                   <span className="bg-white/20 text-white text-xs px-1.5 py-0.5 rounded-full ml-0.5">
                     {activeAdvancedCount}
@@ -611,14 +626,14 @@ export default function FilterBar({
                 {/* State filter */}
                 {onStateChange && statesData && statesData.length > 0 && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">State</label>
+                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.state}</label>
                     <select
                       value={selectedState || "all"}
                       onChange={(e) => onStateChange(e.target.value)}
                       className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
                     >
-                      <option value="all">All States</option>
-                      <option value="Nationwide">🇺🇸 Nationwide</option>
+                      <option value="all">{t.filters.allStates}</option>
+                      <option value="Nationwide">🇺🇸 {t.filters.nationwide}</option>
                       {statesData
                         .filter(s => s.state !== "Nationwide" && s.state !== "International")
                         .map((s) => (
@@ -626,7 +641,7 @@ export default function FilterBar({
                             {s.state} ({s.count})
                           </option>
                         ))}
-                      <option value="International">🌐 International</option>
+                      <option value="International">🌐 {t.filters.international}</option>
                     </select>
                   </div>
                 )}
@@ -634,13 +649,13 @@ export default function FilterBar({
                 {/* City (cascading from state) */}
                 {onCityChange && isStateSelected && citiesData && citiesData.length > 0 && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">City</label>
+                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.city}</label>
                     <select
                       value={selectedCity || "all"}
                       onChange={(e) => onCityChange(e.target.value)}
                       className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
                     >
-                      <option value="all">All Cities</option>
+                      <option value="all">{t.filters.allCities}</option>
                       {citiesData.map((c) => (
                         <option key={c.city} value={c.city}>
                           {c.city} ({c.count})
@@ -652,14 +667,14 @@ export default function FilterBar({
 
                 {onTargetDiagnosisChange && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Condition</label>
+                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.condition}</label>
                     <select
                       value={targetDiagnosis || "all"}
                       onChange={(e) => onTargetDiagnosisChange(e.target.value)}
                       className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
                     >
-                      {DIAGNOSIS_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      {DIAGNOSIS_VALUES.map((val) => (
+                        <option key={val} value={val}>{diagnosisLabelMap[val]}</option>
                       ))}
                     </select>
                   </div>
@@ -667,14 +682,14 @@ export default function FilterBar({
 
                 {onFundingTypeChange && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Funding</label>
+                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.fundingType}</label>
                     <select
                       value={fundingType || "all"}
                       onChange={(e) => onFundingTypeChange(e.target.value)}
                       className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
                     >
-                      {FUNDING_TYPE_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      {FUNDING_TYPE_VALUES.map((val) => (
+                        <option key={val} value={val}>{fundingTypeLabelMap[val]}</option>
                       ))}
                     </select>
                   </div>
@@ -682,14 +697,14 @@ export default function FilterBar({
 
                 {onB2VisaChange && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">B-2 Visa</label>
+                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.b2Visa}</label>
                     <select
                       value={b2VisaEligible || "all"}
                       onChange={(e) => onB2VisaChange(e.target.value)}
                       className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
                     >
-                      {B2_VISA_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      {B2_VISA_VALUES.map((val) => (
+                        <option key={val} value={val}>{b2VisaLabelMap[val]}</option>
                       ))}
                     </select>
                   </div>
@@ -697,7 +712,7 @@ export default function FilterBar({
 
                 {onHasDeadlineChange && (
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Deadline</label>
+                    <label className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{t.filters.deadline}</label>
                     <button
                       onClick={() => onHasDeadlineChange(!hasDeadline)}
                       className={`text-sm px-3 py-1.5 rounded-lg border transition-all ${
@@ -706,7 +721,7 @@ export default function FilterBar({
                           : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      {hasDeadline ? "Has Deadline ✓" : "Any Deadline"}
+                      {hasDeadline ? t.filters.hasDeadline : t.filters.anyDeadline}
                     </button>
                   </div>
                 )}
@@ -726,7 +741,7 @@ export default function FilterBar({
                       className="text-sm text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg border border-red-200 hover:border-red-300 transition-all flex items-center gap-1"
                     >
                       <X className="w-3.5 h-3.5" />
-                      Clear Filters
+                      {t.filters.clearFilters}
                     </button>
                   </div>
                 )}

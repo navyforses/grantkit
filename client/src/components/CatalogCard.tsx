@@ -58,7 +58,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
               ? "text-yellow-500 hover:bg-yellow-50"
               : "text-gray-300 hover:text-gray-500 hover:bg-gray-50 opacity-0 group-hover:opacity-100"
           }`}
-          title={isSaved ? "Remove from saved" : "Save this grant"}
+          title={isSaved ? t.grantDetail.removeFromSaved : t.grantDetail.saveThisGrant}
         >
           {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
         </button>
@@ -123,7 +123,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
             {item.b2VisaEligible === "yes" && (
               <span className="flex items-center gap-1 text-emerald-600 text-xs font-medium bg-emerald-50 px-2 py-0.5 rounded-full">
                 <Plane className="w-3 h-3" />
-                B-2 Visa OK
+                {t.grantDetail.b2VisaOK}
               </span>
             )}
           </div>

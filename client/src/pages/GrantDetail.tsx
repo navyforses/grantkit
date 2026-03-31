@@ -130,7 +130,7 @@ export default function GrantDetail() {
     },
     onError: (_err: unknown, _vars: unknown, ctx: { prev?: { grantIds: string[] } } | undefined) => {
       if (ctx?.prev) utils.grants.savedList.setData(undefined, ctx.prev);
-      toast.error("Failed to save grant");
+      toast.error(t.grantDetail.failedToSave);
     },
     onSettled: () => {
       utils.grants.savedList.invalidate();
@@ -154,12 +154,12 @@ export default function GrantDetail() {
         <Navbar />
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="text-center">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Grant Not Found</h2>
-            <p className="text-gray-500 mb-6 text-sm">The grant you're looking for doesn't exist.</p>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{t.grantDetail.notFound}</h2>
+            <p className="text-gray-500 mb-6 text-sm">{t.grantDetail.notFoundDesc}</p>
             <Link href="/catalog">
               <Button variant="outline" className="gap-2">
                 <ArrowLeft className="w-4 h-4" />
-                Back to Catalog
+                {t.grantDetail.backToCatalog}
               </Button>
             </Link>
           </div>
@@ -187,16 +187,16 @@ export default function GrantDetail() {
   // Build location display string: "City, State" or "State" or country fallback
   const locationDisplay = item.state && item.state !== "Nationwide" && item.state !== "International"
     ? `${item.city ? item.city + ", " : ""}${item.state}`
-    : item.state === "Nationwide" ? "Nationwide (USA)" : translatedCountry;
+    : item.state === "Nationwide" ? t.grantDetail.nationwideUSA : translatedCountry;
   const borderColor = getCategoryBorderColor(item.category);
   const primaryLink = item.website || "";
 
   const fundingTypeLabels: Record<string, string> = {
-    one_time: "One-Time",
-    recurring: "Recurring",
-    reimbursement: "Reimbursement",
-    varies: "Varies",
-    unknown: "—",
+    one_time: t.filters.oneTime,
+    recurring: t.filters.recurring,
+    reimbursement: t.filters.reimbursement,
+    varies: t.filters.varies,
+    unknown: "\u2014",
   };
 
   const handleShare = () => {
@@ -205,7 +205,7 @@ export default function GrantDetail() {
       navigator.share({ title: content.name, url });
     } else {
       navigator.clipboard.writeText(url);
-      toast.success("Link copied to clipboard");
+      toast.success(t.grantDetail.linkCopied);
     }
   };
 
@@ -218,11 +218,11 @@ export default function GrantDetail() {
   ].filter(Boolean).join(", ");
 
   const b2Badge = item.b2VisaEligible === "yes"
-    ? { label: "B-2 Visa Eligible", color: "bg-emerald-100 text-emerald-700 border-emerald-200" }
+    ? { label: t.filters.b2Eligible, color: "bg-emerald-100 text-emerald-700 border-emerald-200" }
     : item.b2VisaEligible === "no"
-    ? { label: "US Residents Only", color: "bg-red-50 text-red-600 border-red-200" }
+    ? { label: t.filters.usResidentsOnly, color: "bg-red-50 text-red-600 border-red-200" }
     : item.b2VisaEligible === "uncertain"
-    ? { label: "Contact to Confirm", color: "bg-amber-50 text-amber-700 border-amber-200" }
+    ? { label: t.filters.contactToConfirm, color: "bg-amber-50 text-amber-700 border-amber-200" }
     : null;
 
   return (
@@ -254,7 +254,7 @@ export default function GrantDetail() {
           <Link href="/catalog">
             <button className="inline-flex items-center gap-1 text-sm text-blue-200/70 active:text-white">
               <ArrowLeft className="w-4 h-4" />
-              Back
+              {t.grantDetail.back}
             </button>
           </Link>
           <div className="flex items-center gap-2">
@@ -432,12 +432,12 @@ export default function GrantDetail() {
             {/* Description — mobile: collapsible card, desktop: full card */}
             <div className={`bg-white border border-gray-200 rounded-xl md:rounded-lg ${borderColor} border-l-4 p-4 md:p-6`}>
               <CollapsibleSection
-                title="Description"
+                title={t.grantDetail.description}
                 icon={<Tag className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />}
                 defaultOpen={true}
               >
                 <p className="text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-line">
-                  {content.description || "No description available."}
+                  {content.description || "—"}
                 </p>
               </CollapsibleSection>
             </div>
@@ -461,7 +461,7 @@ export default function GrantDetail() {
             {item.applicationProcess && (
               <div className="bg-white border border-gray-200 rounded-xl md:rounded-lg p-4 md:p-6">
                 <CollapsibleSection
-                  title="How to Apply"
+                  title={t.grantDetail.howToApply}
                   icon={<CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-500" />}
                   defaultOpen={false}
                 >
@@ -476,7 +476,7 @@ export default function GrantDetail() {
             {item.documentsRequired && (
               <div className="bg-white border border-gray-200 rounded-xl md:rounded-lg p-4 md:p-6">
                 <CollapsibleSection
-                  title="Required Documents"
+                  title={t.grantDetail.requiredDocuments}
                   icon={<FileText className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />}
                   defaultOpen={false}
                 >
@@ -498,7 +498,7 @@ export default function GrantDetail() {
             {/* Contact info — mobile only (desktop has sidebar) */}
             <div className="md:hidden bg-white border border-gray-200 rounded-xl p-4">
               <CollapsibleSection
-                title="Contact"
+                title={t.grantDetail.contact}
                 icon={<Phone className="w-4 h-4 text-gray-400" />}
                 defaultOpen={false}
                 mobileOnly={false}
@@ -535,33 +535,33 @@ export default function GrantDetail() {
             {/* Details — mobile only (desktop has sidebar) */}
             <div className="md:hidden bg-white border border-gray-200 rounded-xl p-4">
               <CollapsibleSection
-                title="Details"
+                title={t.grantDetail.details}
                 icon={<MapPin className="w-4 h-4 text-gray-400" />}
                 defaultOpen={false}
                 mobileOnly={false}
               >
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-[10px] text-gray-400 uppercase">Location</p>
+                    <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.location}</p>
                     <p className="text-sm font-medium text-gray-900">{locationDisplay}</p>
                   </div>
                   {item.geographicScope && (
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase">Scope</p>
+                      <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.scope}</p>
                       <p className="text-sm font-medium text-gray-900">{item.geographicScope}</p>
                     </div>
                   )}
                   <div>
-                    <p className="text-[10px] text-gray-400 uppercase">Category</p>
+                    <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.category}</p>
                     <p className="text-sm font-medium text-gray-900">{translatedCategory}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-gray-400 uppercase">Organization</p>
+                    <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.organization}</p>
                     <p className="text-sm font-medium text-gray-900">{item.organization || "—"}</p>
                   </div>
                   {item.targetDiagnosis && item.targetDiagnosis !== "General" && (
                     <div className="col-span-2">
-                      <p className="text-[10px] text-gray-400 uppercase mb-1">Conditions</p>
+                      <p className="text-[10px] text-gray-400 uppercase mb-1">{t.grantDetail.conditions}</p>
                       <div className="flex flex-wrap gap-1">
                         {item.targetDiagnosis.split(",").slice(0, 4).map((d, i) => (
                           <span key={i} className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
@@ -576,15 +576,15 @@ export default function GrantDetail() {
                   )}
                   {item.ageRange && item.ageRange !== "0-100" && (
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase">Age Range</p>
+                      <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.ageRange}</p>
                       <p className="text-sm font-medium text-gray-900">
-                        {item.ageRange === "0-18" ? "Children" : item.ageRange === "18-100" ? "Adults" : `Ages ${item.ageRange}`}
+                        {item.ageRange === "0-18" ? t.grantDetail.children : item.ageRange === "18-100" ? t.grantDetail.adults : t.grantDetail.ages.replace("{range}", item.ageRange)}
                       </p>
                     </div>
                   )}
                   {item.status && (
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase">Status</p>
+                      <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.status}</p>
                       <p className={`text-sm font-medium ${item.status === "Open" ? "text-emerald-600" : "text-gray-700"}`}>
                         {item.status}
                       </p>
@@ -597,7 +597,7 @@ export default function GrantDetail() {
             {/* Related Grants */}
             {relatedItems.length > 0 && (
               <div className="pt-2 md:pt-0">
-                <h2 className="text-sm md:text-lg font-semibold text-[#0f172a] mb-3 md:mb-4">Related Grants</h2>
+                <h2 className="text-sm md:text-lg font-semibold text-[#0f172a] mb-3 md:mb-4">{t.grantDetail.relatedGrants}</h2>
                 {/* Mobile: horizontal scroll */}
                 <div className="md:hidden flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
                   {relatedItems.map((related) => {
@@ -665,12 +665,12 @@ export default function GrantDetail() {
               transition={{ duration: 0.3, delay: 0.1 }}
               className="bg-white border border-gray-200 rounded-lg p-6"
             >
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Details</h3>
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{t.grantDetail.details}</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">Location</p>
+                    <p className="text-xs text-gray-500">{t.grantDetail.location}</p>
                     <p className="text-sm font-medium text-gray-900">{locationDisplay}</p>
                   </div>
                 </div>
@@ -678,7 +678,7 @@ export default function GrantDetail() {
                   <div className="flex items-start gap-3">
                     <Globe className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">Geographic Scope</p>
+                      <p className="text-xs text-gray-500">{t.grantDetail.geographicScope}</p>
                       <p className="text-sm font-medium text-gray-900">{item.geographicScope}</p>
                     </div>
                   </div>
@@ -686,22 +686,22 @@ export default function GrantDetail() {
                 <div className="flex items-start gap-3">
                   <Tag className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">Category</p>
+                    <p className="text-xs text-gray-500">{t.grantDetail.category}</p>
                     <p className="text-sm font-medium text-gray-900">{translatedCategory}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Building2 className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">Organization</p>
-                    <p className="text-sm font-medium text-gray-900">{item.organization || "—"}</p>
+                    <p className="text-xs text-gray-500">{t.grantDetail.organization}</p>
+                    <p className="text-sm font-medium text-gray-900">{item.organization || "\u2014"}</p>
                   </div>
                 </div>
                 {item.amount && (
                   <div className="flex items-start gap-3">
                     <DollarSign className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">Amount</p>
+                      <p className="text-xs text-gray-500">{t.grantDetail.amount}</p>
                       <p className="text-sm font-semibold text-emerald-600">{item.amount}</p>
                     </div>
                   </div>
@@ -710,7 +710,7 @@ export default function GrantDetail() {
                   <div className="flex items-start gap-3">
                     <Heart className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">Funding Type</p>
+                      <p className="text-xs text-gray-500">{t.grantDetail.fundingType}</p>
                       <p className="text-sm font-medium text-gray-900">{fundingTypeLabels[item.fundingType] || item.fundingType}</p>
                     </div>
                   </div>
@@ -719,7 +719,7 @@ export default function GrantDetail() {
                   <div className="flex items-start gap-3">
                     <Calendar className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">Deadline</p>
+                      <p className="text-xs text-gray-500">{t.grantDetail.deadlineLabel}</p>
                       <p className="text-sm font-medium text-gray-900">{item.deadline}</p>
                     </div>
                   </div>
@@ -728,7 +728,7 @@ export default function GrantDetail() {
                   <div className="flex items-start gap-3">
                     <Stethoscope className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">Target Conditions</p>
+                      <p className="text-xs text-gray-500">{t.grantDetail.targetConditions}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {item.targetDiagnosis.split(",").slice(0, 5).map((d, i) => (
                           <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
@@ -746,11 +746,11 @@ export default function GrantDetail() {
                   <div className="flex items-start gap-3">
                     <Users className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">Age Range</p>
+                      <p className="text-xs text-gray-500">{t.grantDetail.ageRange}</p>
                       <p className="text-sm font-medium text-gray-900">
-                        {item.ageRange === "0-18" ? "Children (0-18)" :
-                         item.ageRange === "18-100" ? "Adults (18+)" :
-                         `Ages ${item.ageRange}`}
+                        {item.ageRange === "0-18" ? `${t.grantDetail.children} (0-18)` :
+                         item.ageRange === "18-100" ? `${t.grantDetail.adults} (18+)` :
+                         t.grantDetail.ages.replace("{range}", item.ageRange)}
                       </p>
                     </div>
                   </div>
@@ -759,7 +759,7 @@ export default function GrantDetail() {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-500">Status</p>
+                      <p className="text-xs text-gray-500">{t.grantDetail.status}</p>
                       <p className={`text-sm font-medium ${item.status === "Open" ? "text-emerald-600" : "text-gray-700"}`}>
                         {item.status}
                       </p>
@@ -776,7 +776,7 @@ export default function GrantDetail() {
               transition={{ duration: 0.3, delay: 0.15 }}
               className="bg-white border border-gray-200 rounded-lg p-6"
             >
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Contact</h3>
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{t.grantDetail.contact}</h3>
               <div className="space-y-3">
                 {primaryLink ? (
                   <a
@@ -792,7 +792,7 @@ export default function GrantDetail() {
                 ) : (
                   <p className="text-sm text-gray-400 flex items-center gap-2">
                     <Globe className="w-4 h-4" />
-                    No website listed
+                    {t.grantDetail.noWebsite}
                   </p>
                 )}
                 {item.phone ? (
@@ -803,7 +803,7 @@ export default function GrantDetail() {
                 ) : (
                   <p className="text-sm text-gray-400 flex items-center gap-2">
                     <Phone className="w-4 h-4" />
-                    No phone listed
+                    {t.grantDetail.noPhone}
                   </p>
                 )}
                 {item.email ? (
@@ -814,7 +814,7 @@ export default function GrantDetail() {
                 ) : (
                   <p className="text-sm text-gray-400 flex items-center gap-2">
                     <Mail className="w-4 h-4" />
-                    No email listed
+                    {t.grantDetail.noEmail}
                   </p>
                 )}
               </div>
@@ -828,7 +828,7 @@ export default function GrantDetail() {
                 >
                   <Button className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
                     <ArrowUpRight className="w-4 h-4" />
-                    Apply Now
+                    {t.grantDetail.applyNow}
                   </Button>
                 </a>
               )}
@@ -849,12 +849,12 @@ export default function GrantDetail() {
                   {isSaved ? (
                     <>
                       <BookmarkCheck className="w-4 h-4" />
-                      Saved
+                      {t.grantDetail.saved}
                     </>
                   ) : (
                     <>
                       <Bookmark className="w-4 h-4" />
-                      Save this Grant
+                      {t.grantDetail.saveThisGrant}
                     </>
                   )}
                 </Button>
@@ -876,7 +876,7 @@ export default function GrantDetail() {
             >
               <Button className="w-full gap-2 bg-emerald-600 active:bg-emerald-700 text-white h-12 text-sm font-semibold rounded-xl">
                 <ArrowUpRight className="w-4 h-4" />
-                Apply Now
+                {t.grantDetail.applyNow}
               </Button>
             </a>
             {isAuthenticated && (

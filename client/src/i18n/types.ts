@@ -179,6 +179,112 @@ export interface Translations {
     all: string;
   };
 
+  // Filter & sort labels
+  filters: {
+    filters: string;
+    clearAll: string;
+    clearFilters: string;
+    showResults: string;
+    resultsFor: string;
+    noResultsFor: string;
+    type: string;
+    country: string;
+    stateLocation: string;
+    city: string;
+    condition: string;
+    fundingType: string;
+    b2Visa: string;
+    deadline: string;
+    state: string;
+    allStates: string;
+    nationwide: string;
+    international: string;
+    allCitiesIn: string;
+    allCities: string;
+    sortAZ: string;
+    sortZA: string;
+    sortNewest: string;
+    sortCategory: string;
+    sortCountry: string;
+    sortState: string;
+    onlyWithDeadline: string;
+    anyDeadline: string;
+    hasDeadline: string;
+    // Diagnosis options
+    allConditions: string;
+    cancer: string;
+    rareDisease: string;
+    autismASD: string;
+    cerebralPalsy: string;
+    epilepsy: string;
+    downSyndrome: string;
+    hearingLoss: string;
+    visionImpairment: string;
+    diabetes: string;
+    mentalHealth: string;
+    spinalCordInjury: string;
+    kidneyDisease: string;
+    heartDisease: string;
+    multipleSclerosis: string;
+    alzheimers: string;
+    generalAny: string;
+    // Funding type options
+    allFundingTypes: string;
+    oneTime: string;
+    recurring: string;
+    reimbursement: string;
+    varies: string;
+    // B-2 visa options
+    all: string;
+    b2Eligible: string;
+    usResidentsOnly: string;
+    contactToConfirm: string;
+  };
+
+  // Grant detail page
+  grantDetail: {
+    notFound: string;
+    notFoundDesc: string;
+    backToCatalog: string;
+    back: string;
+    description: string;
+    howToApply: string;
+    requiredDocuments: string;
+    contact: string;
+    details: string;
+    location: string;
+    scope: string;
+    category: string;
+    organization: string;
+    amount: string;
+    conditions: string;
+    status: string;
+    deadlineLabel: string;
+    geographicScope: string;
+    fundingType: string;
+    targetConditions: string;
+    ageRange: string;
+    children: string;
+    adults: string;
+    ages: string;
+    relatedGrants: string;
+    visitWebsite: string;
+    noWebsite: string;
+    noPhone: string;
+    noEmail: string;
+    applyNow: string;
+    save: string;
+    saved: string;
+    saveThisGrant: string;
+    removeFromSaved: string;
+    share: string;
+    failedToSave: string;
+    linkCopied: string;
+    nationwideUSA: string;
+    open: string;
+    b2VisaOK: string;
+  };
+
   // Profile page
   profile: {
     title: string;

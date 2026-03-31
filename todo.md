@@ -241,3 +241,12 @@
 - [x] Update FilterBar with dynamic city dropdown that appears when state is selected (mobile + desktop)
 - [x] Wire city filter state in Catalog.tsx and pass to backend (resets city when state changes)
 - [x] Write vitest tests for city filter (13 total state/city tests, 196 overall all passing)
+
+## Translation Audit & Fix — UI Functional Strings
+- [x] Audit all hardcoded English strings in FilterBar, GrantDetail, CatalogCard
+- [x] Add new i18n keys to types.ts (filters + grantDetail sections)
+- [x] Add translations to en.ts, ka.ts, ru.ts, fr.ts, es.ts
+- [x] Replace hardcoded strings in FilterBar.tsx with t() calls
+- [x] Replace hardcoded strings in GrantDetail.tsx with t() calls (35+ strings replaced)
+- [x] Replace hardcoded strings in CatalogCard.tsx with t() calls
+- [x] Run tests and verify (196 tests all passing)
