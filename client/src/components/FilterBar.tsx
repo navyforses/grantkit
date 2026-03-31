@@ -10,7 +10,7 @@ import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue, type Type
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 
-export type SortValue = "name_asc" | "name_desc" | "category" | "country" | "newest";
+export type SortValue = "name_asc" | "name_desc" | "category" | "country" | "state" | "newest";
 
 // Diagnosis options for filtering
 const DIAGNOSIS_OPTIONS = [
@@ -226,6 +226,7 @@ export default function FilterBar({
                   <option value="newest">Newest</option>
                   <option value="category">Category</option>
                   <option value="country">Country</option>
+                  <option value="state">State</option>
                 </select>
               )}
             </div>
@@ -540,6 +541,7 @@ export default function FilterBar({
                   <option value="newest">Newest</option>
                   <option value="category">Category</option>
                   <option value="country">Country</option>
+                  <option value="state">State</option>
                 </select>
               )}
 

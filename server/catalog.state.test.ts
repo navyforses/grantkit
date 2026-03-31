@@ -65,6 +65,28 @@ describe("catalog.states", () => {
   });
 });
 
+describe("catalog.list sort by state", () => {
+  it("sorts grants alphabetically by state when sortBy=state", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.catalog.list({
+      sortBy: "state",
+      page: 1,
+      pageSize: 50,
+    });
+
+    expect(result.grants.length).toBeGreaterThan(0);
+
+    // Verify alphabetical order (nulls may sort first or last depending on DB)
+    const states = result.grants.map(g => g.state || "");
+    const nonEmptyStates = states.filter(s => s.length > 0);
+    for (let i = 1; i < nonEmptyStates.length; i++) {
+      expect(nonEmptyStates[i - 1].localeCompare(nonEmptyStates[i])).toBeLessThanOrEqual(0);
+    }
+  });
+});
+
 describe("catalog.list with state filter", () => {
   it("returns grants filtered by a specific state", async () => {
     const ctx = createPublicContext();

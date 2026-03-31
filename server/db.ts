@@ -579,6 +579,8 @@ function getOrderByClause(sortBy?: string) {
       return asc(grants.country);
     case "newest":
       return desc(grants.createdAt);
+    case "state":
+      return asc(grants.state);
     case "name_asc":
     default:
       return asc(grants.name);

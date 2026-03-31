@@ -229,3 +229,8 @@
 - [x] Add state filter to FilterBar (mobile bottom sheet + desktop advanced panel, fetches distinct states from API)
 - [x] Update admin panel grant form with state/city fields
 - [x] Write tests for new state filter (7 tests all passing)
+
+## Sort by State
+- [x] Add "state" sort option to backend listGrants function
+- [x] Add "State" option to FilterBar sort dropdown (mobile + desktop)
+- [x] Write vitest test for sort-by-state (8 tests all passing)
