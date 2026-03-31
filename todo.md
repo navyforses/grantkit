@@ -250,3 +250,10 @@
 - [x] Replace hardcoded strings in GrantDetail.tsx with t() calls (35+ strings replaced)
 - [x] Replace hardcoded strings in CatalogCard.tsx with t() calls
 - [x] Run tests and verify (196 tests all passing)
+
+## Admin Panel i18n Translation
+- [x] Audit all hardcoded English strings in Admin.tsx (150+ strings found)
+- [x] Add admin section keys to types.ts (150+ keys)
+- [x] Add translations to en.ts, ka.ts, ru.ts, fr.ts, es.ts
+- [x] Replace hardcoded strings in Admin.tsx with t() calls (150+ strings, 0 TS errors)
+- [x] Run tests and verify (196 tests all passing, 0 TS errors)

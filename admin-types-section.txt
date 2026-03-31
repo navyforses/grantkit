@@ -1,0 +1,219 @@
+  // Admin panel
+  admin: {
+    // Page-level
+    title: string;
+    refresh: string;
+    accessDenied: string;
+    noPermission: string;
+    returnHome: string;
+
+    // Stat cards
+    totalUsers: string;
+    activeSubs: string;
+    totalGrants: string;
+    subscribers: string;
+    cancelled: string;
+    pastDue: string;
+    noSub: string;
+
+    // Tabs
+    tabUsers: string;
+    tabGrants: string;
+    tabNewsletter: string;
+
+    // Status badges
+    statusActive: string;
+    statusCancelled: string;
+    statusPastDue: string;
+    statusPaused: string;
+    statusNone: string;
+
+    // Role badges
+    roleAdmin: string;
+    roleUser: string;
+
+    // Category labels
+    catMedicalTreatment: string;
+    catFinancialAssistance: string;
+    catAssistiveTechnology: string;
+    catSocialServices: string;
+    catScholarships: string;
+    catHousing: string;
+    catTravelTransport: string;
+    catInternational: string;
+    catOther: string;
+
+    // Users tab
+    usersTitle: string;
+    searchUsers: string;
+    allStatuses: string;
+    noSubscription: string;
+    thUser: string;
+    thRole: string;
+    thSubscription: string;
+    thJoined: string;
+    thLastLogin: string;
+    thActions: string;
+    loadingUsers: string;
+    noUsersFound: string;
+    promote: string;
+    demote: string;
+    showing: string;
+
+    // Grants tab
+    grantsTitle: string;
+    grantsCount: string;
+    searchGrants: string;
+    allCategories: string;
+    addGrant: string;
+    importBtn: string;
+    thGrant: string;
+    thCategory: string;
+    thType: string;
+    thCountry: string;
+    thStatus: string;
+    thAdded: string;
+    loadingGrants: string;
+    noGrantsFound: string;
+    typeGrant: string;
+    typeResource: string;
+    activeStatus: string;
+    inactiveStatus: string;
+
+    // Grant form modal
+    addNewGrant: string;
+    editGrant: string;
+    formName: string;
+    formOrganization: string;
+    formDescription: string;
+    formCategory: string;
+    formType: string;
+    formCountry: string;
+    formAmount: string;
+    formEligibility: string;
+    formWebsite: string;
+    formEmail: string;
+    formPhone: string;
+    formStatus: string;
+    enrichmentDetails: string;
+    formApplicationProcess: string;
+    formDeadline: string;
+    formFundingType: string;
+    formTargetDiagnosis: string;
+    formAgeRange: string;
+    formState: string;
+    formCity: string;
+    formGeographicScope: string;
+    formB2Visa: string;
+    formDocumentsRequired: string;
+    notSpecified: string;
+    oneTime: string;
+    recurring: string;
+    reimbursement: string;
+    varies: string;
+    yes: string;
+    no: string;
+    uncertain: string;
+    notifySubscribers: string;
+    notifySubscribersDesc: string;
+    cancel: string;
+    createGrant: string;
+    saveChanges: string;
+
+    // Placeholders
+    phGrantName: string;
+    phOrganization: string;
+    phDescription: string;
+    phAmount: string;
+    phEligibility: string;
+    phWebsite: string;
+    phEmail: string;
+    phPhone: string;
+    phStatus: string;
+    phApplicationProcess: string;
+    phDeadline: string;
+    phTargetDiagnosis: string;
+    phAgeRange: string;
+    phState: string;
+    phCity: string;
+    phGeographicScope: string;
+    phDocuments: string;
+
+    // Delete modal
+    deleteGrant: string;
+    deleteConfirm: string;
+    deleteBtn: string;
+
+    // Notification modal
+    sendNotification: string;
+    selectGrantsToNotify: string;
+    selected: string;
+    searchGrantsToInclude: string;
+    selectAtLeastOne: string;
+    grantsSelected: string;
+    sendToSubscribers: string;
+
+    // Newsletter tab
+    activeSubscribers: string;
+    notificationsSent: string;
+    totalSubscribers: string;
+    unsubscribed: string;
+    completed: string;
+    failed: string;
+    sendGrantNotification: string;
+    notificationHistory: string;
+    thSubject: string;
+    thGrantsCol: string;
+    thRecipients: string;
+    thSuccess: string;
+    thSentAt: string;
+    noNotifications: string;
+    noNotificationsHint: string;
+
+    // Import modal
+    importGrants: string;
+    importStepUpload: string;
+    importStepPreview: string;
+    importStepImporting: string;
+    importStepDone: string;
+    parsingFile: string;
+    dropFileHere: string;
+    orClickBrowse: string;
+    expectedColumns: string;
+    requiredColumns: string;
+    optionalColumns: string;
+    translationColumns: string;
+    importTip: string;
+    validRows: string;
+    skipped: string;
+    errors: string;
+    validationErrors: string;
+    previewRows: string;
+    andMoreRows: string;
+    importingGrants: string;
+    thisMayTakeMoment: string;
+    importComplete: string;
+    created: string;
+    updated: string;
+    failedEntries: string;
+    uploadDifferentFile: string;
+    importNGrants: string;
+    done: string;
+    close: string;
+
+    // Toast messages
+    toastRoleUpdated: string;
+    toastSubUpdated: string;
+    toastGrantCreated: string;
+    toastGrantUpdated: string;
+    toastGrantDeleted: string;
+    toastNoGrantsExport: string;
+    toastExportFailed: string;
+    toastParseFailed: string;
+    toastImportFailed: string;
+
+    // Country labels
+    unitedStates: string;
+    international: string;
+  };
+

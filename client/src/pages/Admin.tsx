@@ -1,4 +1,4 @@
-/*
+/**
  * Admin Panel — GrantKit
  * Features: User management, Grant CRUD management, Newsletter notifications
  */
@@ -7,6 +7,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { CATEGORIES } from "@/lib/constants";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
 import { toast } from "sonner";
@@ -49,6 +50,10 @@ import {
   Info,
 } from "lucide-react";
 
+import type { Translations } from "@/i18n/types";
+
+type AdminT = Translations["admin"];
+
 // ===== Stat Card =====
 function StatCard({
   icon: Icon,
@@ -75,53 +80,40 @@ function StatCard({
 }
 
 // ===== Status Badge =====
-function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { bg: string; text: string; label: string }> = {
-    active: { bg: "bg-emerald-50", text: "text-emerald-700", label: "Active" },
-    cancelled: { bg: "bg-red-50", text: "text-red-700", label: "Cancelled" },
-    past_due: { bg: "bg-amber-50", text: "text-amber-700", label: "Past Due" },
-    paused: { bg: "bg-blue-50", text: "text-blue-700", label: "Paused" },
-    none: { bg: "bg-gray-50", text: "text-gray-500", label: "None" },
+function StatusBadge({ status, t }: { status: string; t: AdminT }) {
+  const config: Record<string, { bg: string; text: string; key: keyof AdminT }> = {
+    active: { bg: "bg-emerald-50", text: "text-emerald-700", key: "statusActive" },
+    cancelled: { bg: "bg-red-50", text: "text-red-700", key: "statusCancelled" },
+    past_due: { bg: "bg-amber-50", text: "text-amber-700", key: "statusPastDue" },
+    paused: { bg: "bg-blue-50", text: "text-blue-700", key: "statusPaused" },
+    none: { bg: "bg-gray-50", text: "text-gray-500", key: "statusNone" },
   };
   const c = config[status] || config.none;
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${c.bg} ${c.text}`}>
-      {c.label}
+      {t[c.key] as string}
     </span>
   );
 }
 
 // ===== Role Badge =====
-function RoleBadge({ role }: { role: string }) {
+function RoleBadge({ role, t }: { role: string; t: AdminT }) {
   if (role === "admin") {
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700">
-        <Shield className="w-3 h-3" /> Admin
+        <Shield className="w-3 h-3" /> {t.roleAdmin}
       </span>
     );
   }
   return (
     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-50 text-gray-600">
-      User
+      {t.roleUser}
     </span>
   );
 }
 
-// ===== Category Label =====
-const categoryLabels: Record<string, string> = {
-  medical_treatment: "Medical Treatment",
-  financial_assistance: "Financial Assistance",
-  assistive_technology: "Assistive Technology",
-  social_services: "Social Services",
-  scholarships: "Scholarships",
-  housing: "Housing",
-  travel_transport: "Travel & Transport",
-  international: "International",
-  other: "Other",
-};
-
 // ===== Notification Status Badge =====
-function NotifStatusBadge({ status }: { status: string }) {
+function NotifStatusBadge({ status, t }: { status: string; t: AdminT }) {
   const config: Record<string, { bg: string; text: string; icon: React.ElementType }> = {
     sending: { bg: "bg-blue-50", text: "text-blue-700", icon: Loader2 },
     completed: { bg: "bg-emerald-50", text: "text-emerald-700", icon: CheckCircle },
@@ -129,10 +121,11 @@ function NotifStatusBadge({ status }: { status: string }) {
   };
   const c = config[status] || config.sending;
   const Icon = c.icon;
+  const label = status === "completed" ? t.completed : status === "failed" ? t.failed : status.charAt(0).toUpperCase() + status.slice(1);
   return (
     <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${c.bg} ${c.text}`}>
       <Icon className={`w-3 h-3 ${status === "sending" ? "animate-spin" : ""}`} />
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {label}
     </span>
   );
 }
@@ -144,6 +137,7 @@ function GrantFormModal({
   onClose,
   onSave,
   isPending,
+  t,
 }: {
   mode: "create" | "edit";
   initialData?: {
@@ -174,6 +168,7 @@ function GrantFormModal({
   onClose: () => void;
   onSave: (data: any) => void;
   isPending: boolean;
+  t: AdminT;
 }) {
   const [form, setForm] = useState({
     name: initialData?.name || "",
@@ -201,6 +196,18 @@ function GrantFormModal({
   });
   const [notifySubscribers, setNotifySubscribers] = useState(mode === "create");
 
+  const categoryLabels: Record<string, string> = {
+    medical_treatment: t.catMedicalTreatment,
+    financial_assistance: t.catFinancialAssistance,
+    assistive_technology: t.catAssistiveTechnology,
+    social_services: t.catSocialServices,
+    scholarships: t.catScholarships,
+    housing: t.catHousing,
+    travel_transport: t.catTravelTransport,
+    international: t.catInternational,
+    other: t.catOther,
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === "edit" && initialData?.itemId) {
@@ -220,7 +227,7 @@ function GrantFormModal({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h3 className="text-lg font-semibold text-[#0f172a]">
-            {mode === "create" ? "Add New Grant" : "Edit Grant"}
+            {mode === "create" ? t.addNewGrant : t.editGrant}
           </h3>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
             <X className="w-5 h-5 text-gray-400" />
@@ -232,7 +239,7 @@ function GrantFormModal({
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Name <span className="text-red-500">*</span>
+              {t.formName} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -240,31 +247,31 @@ function GrantFormModal({
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
               className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-              placeholder="Grant name..."
+              placeholder={t.phGrantName}
             />
           </div>
 
           {/* Organization */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Organization</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formOrganization}</label>
             <input
               type="text"
               value={form.organization}
               onChange={(e) => updateField("organization", e.target.value)}
               className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-              placeholder="Organization name..."
+              placeholder={t.phOrganization}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formDescription}</label>
             <textarea
               value={form.description}
               onChange={(e) => updateField("description", e.target.value)}
               rows={4}
               className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
-              placeholder="Describe the grant..."
+              placeholder={t.phDescription}
             />
           </div>
 
@@ -272,7 +279,7 @@ function GrantFormModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Category <span className="text-red-500">*</span>
+                {t.formCategory} <span className="text-red-500">*</span>
               </label>
               <select
                 value={form.category}
@@ -288,15 +295,15 @@ function GrantFormModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Type <span className="text-red-500">*</span>
+                {t.formType} <span className="text-red-500">*</span>
               </label>
               <select
                 value={form.type}
                 onChange={(e) => updateField("type", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
               >
-                <option value="grant">Grant</option>
-                <option value="resource">Resource</option>
+                <option value="grant">{t.typeGrant}</option>
+                <option value="resource">{t.typeResource}</option>
               </select>
             </div>
           </div>
@@ -305,61 +312,61 @@ function GrantFormModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Country <span className="text-red-500">*</span>
+                {t.formCountry} <span className="text-red-500">*</span>
               </label>
               <select
                 value={form.country}
                 onChange={(e) => updateField("country", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
               >
-                <option value="US">🇺🇸 United States</option>
-                <option value="International">🌍 International</option>
+                <option value="US">🇺🇸 {t.unitedStates}</option>
+                <option value="International">🌍 {t.international}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Amount</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formAmount}</label>
               <input
                 type="text"
                 value={form.amount}
                 onChange={(e) => updateField("amount", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                placeholder="e.g., $5,000 - $25,000"
+                placeholder={t.phAmount}
               />
             </div>
           </div>
 
           {/* Eligibility */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Eligibility</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formEligibility}</label>
             <textarea
               value={form.eligibility}
               onChange={(e) => updateField("eligibility", e.target.value)}
               rows={2}
               className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
-              placeholder="Who is eligible..."
+              placeholder={t.phEligibility}
             />
           </div>
 
           {/* Row: Website + Email */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Website</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formWebsite}</label>
               <input
                 type="text"
                 value={form.website}
                 onChange={(e) => updateField("website", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                placeholder="https://..."
+                placeholder={t.phWebsite}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formEmail}</label>
               <input
                 type="text"
                 value={form.email}
                 onChange={(e) => updateField("email", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                placeholder="contact@..."
+                placeholder={t.phEmail}
               />
             </div>
           </div>
@@ -367,23 +374,23 @@ function GrantFormModal({
           {/* Row: Phone + Status */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formPhone}</label>
               <input
                 type="text"
                 value={form.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                placeholder="+1 (555) ..."
+                placeholder={t.phPhone}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formStatus}</label>
               <input
                 type="text"
                 value={form.status}
                 onChange={(e) => updateField("status", e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                placeholder="Open, Closed, Rolling..."
+                placeholder={t.phStatus}
               />
             </div>
           </div>
@@ -392,45 +399,45 @@ function GrantFormModal({
           <div className="border-t border-gray-100 pt-5 mt-2">
             <h4 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <Info className="w-4 h-4 text-[#1e3a5f]" />
-              Enrichment Details
+              {t.enrichmentDetails}
             </h4>
 
             {/* Application Process */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Application Process</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formApplicationProcess}</label>
               <textarea
                 value={form.applicationProcess}
                 onChange={(e) => updateField("applicationProcess", e.target.value)}
                 rows={3}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
-                placeholder="Step-by-step application process..."
+                placeholder={t.phApplicationProcess}
               />
             </div>
 
             {/* Row: Deadline + Funding Type */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Deadline</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formDeadline}</label>
                 <input
                   type="text"
                   value={form.deadline}
                   onChange={(e) => updateField("deadline", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                  placeholder="Rolling, Dec 31, 2026..."
+                  placeholder={t.phDeadline}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Funding Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formFundingType}</label>
                 <select
                   value={form.fundingType}
                   onChange={(e) => updateField("fundingType", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
                 >
-                  <option value="">Not specified</option>
-                  <option value="one_time">One-Time</option>
-                  <option value="recurring">Recurring</option>
-                  <option value="reimbursement">Reimbursement</option>
-                  <option value="varies">Varies</option>
+                  <option value="">{t.notSpecified}</option>
+                  <option value="one_time">{t.oneTime}</option>
+                  <option value="recurring">{t.recurring}</option>
+                  <option value="reimbursement">{t.reimbursement}</option>
+                  <option value="varies">{t.varies}</option>
                 </select>
               </div>
             </div>
@@ -438,23 +445,23 @@ function GrantFormModal({
             {/* Row: Target Diagnosis + Age Range */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Target Diagnosis / Condition</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formTargetDiagnosis}</label>
                 <input
                   type="text"
                   value={form.targetDiagnosis}
                   onChange={(e) => updateField("targetDiagnosis", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                  placeholder="Cancer, Rare Disease, Any..."
+                  placeholder={t.phTargetDiagnosis}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Age Range</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formAgeRange}</label>
                 <input
                   type="text"
                   value={form.ageRange}
                   onChange={(e) => updateField("ageRange", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                  placeholder="All Ages, Children (0-17), Adults..."
+                  placeholder={t.phAgeRange}
                 />
               </div>
             </div>
@@ -462,23 +469,23 @@ function GrantFormModal({
             {/* Row: State + City */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">State</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formState}</label>
                 <input
                   type="text"
                   value={form.state}
                   onChange={(e) => updateField("state", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                  placeholder="California, New York, Nationwide..."
+                  placeholder={t.phState}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">City</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formCity}</label>
                 <input
                   type="text"
                   value={form.city}
                   onChange={(e) => updateField("city", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                  placeholder="Los Angeles, New York City..."
+                  placeholder={t.phCity}
                 />
               </div>
             </div>
@@ -486,39 +493,39 @@ function GrantFormModal({
             {/* Row: Geographic Scope + B-2 Visa */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Geographic Scope</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formGeographicScope}</label>
                 <input
                   type="text"
                   value={form.geographicScope}
                   onChange={(e) => updateField("geographicScope", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f]"
-                  placeholder="Nationwide, State-specific..."
+                  placeholder={t.phGeographicScope}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">B-2 Visa Eligible</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formB2Visa}</label>
                 <select
                   value={form.b2VisaEligible}
                   onChange={(e) => updateField("b2VisaEligible", e.target.value)}
                   className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
                 >
-                  <option value="">Not specified</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                  <option value="uncertain">Uncertain</option>
+                  <option value="">{t.notSpecified}</option>
+                  <option value="yes">{t.yes}</option>
+                  <option value="no">{t.no}</option>
+                  <option value="uncertain">{t.uncertain}</option>
                 </select>
               </div>
             </div>
 
             {/* Documents Required */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Documents Required</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t.formDocumentsRequired}</label>
               <textarea
                 value={form.documentsRequired}
                 onChange={(e) => updateField("documentsRequired", e.target.value)}
                 rows={2}
                 className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] resize-none"
-                placeholder="Medical records, proof of income, ID..."
+                placeholder={t.phDocuments}
               />
             </div>
           </div>
@@ -534,9 +541,9 @@ function GrantFormModal({
                 className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
               />
               <label htmlFor="notifySubscribers" className="text-sm text-purple-800">
-                <span className="font-medium">Notify newsletter subscribers</span>
+                <span className="font-medium">{t.notifySubscribers}</span>
                 <span className="text-purple-600 block text-xs mt-0.5">
-                  Send email notification about this new grant to all active subscribers
+                  {t.notifySubscribersDesc}
                 </span>
               </label>
             </div>
@@ -549,7 +556,7 @@ function GrantFormModal({
               onClick={onClose}
               className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              Cancel
+              {t.cancel}
             </button>
             <button
               type="submit"
@@ -563,7 +570,7 @@ function GrantFormModal({
               ) : (
                 <Check className="w-4 h-4" />
               )}
-              {mode === "create" ? "Create Grant" : "Save Changes"}
+              {mode === "create" ? t.createGrant : t.saveChanges}
             </button>
           </div>
         </form>
@@ -578,11 +585,13 @@ function DeleteConfirmModal({
   onConfirm,
   onCancel,
   isPending,
+  t,
 }: {
   grantName: string;
   onConfirm: () => void;
   onCancel: () => void;
   isPending: boolean;
+  t: AdminT;
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -591,17 +600,17 @@ function DeleteConfirmModal({
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
             <AlertTriangle className="w-5 h-5 text-red-500" />
           </div>
-          <h3 className="text-lg font-semibold text-[#0f172a]">Delete Grant</h3>
+          <h3 className="text-lg font-semibold text-[#0f172a]">{t.deleteGrant}</h3>
         </div>
         <p className="text-sm text-gray-600 mb-6">
-          Are you sure you want to permanently delete <strong>"{grantName}"</strong>? This action cannot be undone.
+          {t.deleteConfirm.replace("{name}", grantName)}
         </p>
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={onCancel}
             className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            Cancel
+            {t.cancel}
           </button>
           <button
             onClick={onConfirm}
@@ -609,7 +618,7 @@ function DeleteConfirmModal({
             className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50"
           >
             {isPending ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-            Delete
+            {t.deleteBtn}
           </button>
         </div>
       </div>
@@ -622,13 +631,27 @@ function SendNotificationModal({
   onClose,
   onSend,
   isPending,
+  t,
 }: {
   onClose: () => void;
   onSend: (grantItemIds: string[]) => void;
   isPending: boolean;
+  t: AdminT;
 }) {
   const [grantSearch, setGrantSearch] = useState("");
   const [selectedGrants, setSelectedGrants] = useState<Array<{ itemId: string; name: string }>>([]);
+
+  const categoryLabels: Record<string, string> = {
+    medical_treatment: t.catMedicalTreatment,
+    financial_assistance: t.catFinancialAssistance,
+    assistive_technology: t.catAssistiveTechnology,
+    social_services: t.catSocialServices,
+    scholarships: t.catScholarships,
+    housing: t.catHousing,
+    travel_transport: t.catTravelTransport,
+    international: t.catInternational,
+    other: t.catOther,
+  };
 
   // Search recent grants to select from
   const { data: recentGrants } = trpc.admin.grants.useQuery({
@@ -656,8 +679,8 @@ function SendNotificationModal({
               <Send className="w-4 h-4 text-purple-600" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-[#0f172a]">Send Grant Notification</h3>
-              <p className="text-xs text-gray-500">Select grants to notify subscribers about</p>
+              <h3 className="text-lg font-semibold text-[#0f172a]">{t.sendNotification}</h3>
+              <p className="text-xs text-gray-500">{t.selectGrantsToNotify}</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
@@ -669,7 +692,7 @@ function SendNotificationModal({
         {selectedGrants.length > 0 && (
           <div className="px-6 py-3 border-b border-gray-100 bg-purple-50/50">
             <p className="text-xs font-medium text-purple-700 mb-2">
-              Selected ({selectedGrants.length}/20):
+              {t.selected} ({selectedGrants.length}/20):
             </p>
             <div className="flex flex-wrap gap-1.5">
               {selectedGrants.map((g) => (
@@ -692,7 +715,7 @@ function SendNotificationModal({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search grants to include..."
+              placeholder={t.searchGrantsToInclude}
               value={grantSearch}
               onChange={(e) => setGrantSearch(e.target.value)}
               className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
@@ -728,7 +751,7 @@ function SendNotificationModal({
           })}
           {recentGrants?.grants.length === 0 && (
             <div className="py-8 text-center">
-              <p className="text-sm text-gray-400">No grants found</p>
+              <p className="text-sm text-gray-400">{t.noGrantsFound}</p>
             </div>
           )}
         </div>
@@ -737,15 +760,15 @@ function SendNotificationModal({
         <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
           <p className="text-xs text-gray-500">
             {selectedGrants.length === 0
-              ? "Select at least one grant"
-              : `${selectedGrants.length} grant${selectedGrants.length > 1 ? "s" : ""} selected`}
+              ? t.selectAtLeastOne
+              : t.grantsSelected.replace("{count}", String(selectedGrants.length))}
           </p>
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
               className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              Cancel
+              {t.cancel}
             </button>
             <button
               onClick={() => onSend(selectedGrants.map((g) => g.itemId))}
@@ -753,7 +776,7 @@ function SendNotificationModal({
               className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors disabled:opacity-50"
             >
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              Send to Subscribers
+              {t.sendToSubscribers}
             </button>
           </div>
         </div>
@@ -762,9 +785,12 @@ function SendNotificationModal({
   );
 }
 
+
 // ===== Main Admin Component =====
 export default function Admin() {
-  const { user, loading: authLoading, isAuthenticated } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
+  const { t } = useLanguage();
+  const a = t.admin;
   const utils = trpc.useUtils();
 
   // Tab state
@@ -772,7 +798,7 @@ export default function Admin() {
 
   // Users tab state
   const [userSearch, setUserSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [userStatusFilter, setUserStatusFilter] = useState("all");
   const [userPage, setUserPage] = useState(1);
   const userPageSize = 20;
 
@@ -784,73 +810,80 @@ export default function Admin() {
   const [showGrantForm, setShowGrantForm] = useState(false);
   const [editingGrant, setEditingGrant] = useState<any>(null);
   const [deletingGrant, setDeletingGrant] = useState<{ itemId: string; name: string } | null>(null);
-
-  // Newsletter tab state
-  const [showSendNotification, setShowSendNotification] = useState(false);
-
-  // Export state
   const [isExporting, setIsExporting] = useState(false);
 
   // Import state
   const [showImportModal, setShowImportModal] = useState(false);
   const [importStep, setImportStep] = useState<"upload" | "preview" | "importing" | "done">("upload");
-  const [importFile, setImportFile] = useState<File | null>(null);
   const [importPreview, setImportPreview] = useState<any>(null);
   const [importResult, setImportResult] = useState<any>(null);
+  const [importFile, setImportFile] = useState<File | null>(null);
   const [isImporting, setIsImporting] = useState(false);
 
-  // ===== Queries =====
-  const { data: stats } = trpc.admin.stats.useQuery();
-  const { data: grantStats } = trpc.admin.grantStats.useQuery();
-  const { data: newsletterStats } = trpc.admin.newsletterStats.useQuery();
-  const { data: notifHistory } = trpc.admin.notificationHistory.useQuery({ limit: 20 });
+  // Newsletter state
+  const [showSendNotification, setShowSendNotification] = useState(false);
 
+  // Category labels
+  const categoryLabels: Record<string, string> = {
+    medical_treatment: a.catMedicalTreatment,
+    financial_assistance: a.catFinancialAssistance,
+    assistive_technology: a.catAssistiveTechnology,
+    social_services: a.catSocialServices,
+    scholarships: a.catScholarships,
+    housing: a.catHousing,
+    travel_transport: a.catTravelTransport,
+    international: a.catInternational,
+    other: a.catOther,
+  };
+
+  // ===== Queries =====
   const { data: usersData, isLoading: usersLoading } = trpc.admin.users.useQuery({
-    search: userSearch || undefined,
-    statusFilter: statusFilter !== "all" ? statusFilter : undefined,
+    search: userSearch,
+    statusFilter: userStatusFilter === "all" ? undefined : userStatusFilter,
     page: userPage,
     pageSize: userPageSize,
   });
 
   const { data: grantsData, isLoading: grantsLoading } = trpc.admin.grants.useQuery({
-    search: grantSearch || undefined,
-    category: grantCategoryFilter !== "all" ? grantCategoryFilter : undefined,
+    search: grantSearch,
+    category: grantCategoryFilter === "all" ? undefined : grantCategoryFilter,
     page: grantPage,
     pageSize: grantPageSize,
   });
+
+  const { data: grantStats } = trpc.admin.grantStats.useQuery();
+  const { data: newsletterStats } = trpc.admin.newsletterStats.useQuery();
+  const { data: notifHistory } = trpc.admin.notificationHistory.useQuery();
 
   // ===== Mutations =====
   const updateRoleMutation = trpc.admin.updateRole.useMutation({
     onSuccess: () => {
       utils.admin.users.invalidate();
-      toast.success("User role updated");
+      toast.success(a.toastRoleUpdated);
     },
   });
 
   const updateSubMutation = trpc.admin.updateSubscription.useMutation({
     onSuccess: () => {
       utils.admin.users.invalidate();
-      utils.admin.stats.invalidate();
-      toast.success("Subscription status updated");
+      toast.success(a.toastSubUpdated);
     },
   });
 
   const createGrantMutation = trpc.admin.createGrant.useMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       utils.admin.grants.invalidate();
       utils.admin.grantStats.invalidate();
-      utils.admin.notificationHistory.invalidate();
       setShowGrantForm(false);
-      toast.success("Grant created successfully");
+      toast.success(a.toastGrantCreated);
     },
   });
 
   const updateGrantMutation = trpc.admin.updateGrant.useMutation({
     onSuccess: () => {
       utils.admin.grants.invalidate();
-      utils.admin.grantStats.invalidate();
       setEditingGrant(null);
-      toast.success("Grant updated");
+      toast.success(a.toastGrantUpdated);
     },
   });
 
@@ -859,84 +892,92 @@ export default function Admin() {
       utils.admin.grants.invalidate();
       utils.admin.grantStats.invalidate();
       setDeletingGrant(null);
-      toast.success("Grant deleted");
+      toast.success(a.toastGrantDeleted);
     },
   });
-
-  const parseImportMutation = trpc.admin.parseImport.useMutation();
-  const executeImportMutation = trpc.admin.executeImport.useMutation();
 
   const sendNotificationMutation = trpc.admin.sendNewGrantNotification.useMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       utils.admin.notificationHistory.invalidate();
+      utils.admin.newsletterStats.invalidate();
       setShowSendNotification(false);
-      if (data.success) {
-        toast.success(`Notification sent to ${data.recipientCount} subscribers for ${data.grantCount} grant(s)`);
-      } else {
-        toast.error(data.error || "Failed to send notification");
-      }
-    },
-    onError: (err) => {
-      toast.error("Failed to send notification: " + err.message);
+      toast.success(a.toastGrantCreated); // reuse
     },
   });
 
-  // ===== Export Helpers =====
-  const escapeCsvField = (value: string) => {
-    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-      return '"' + value.replace(/"/g, '""') + '"';
-    }
-    return value;
+  // ===== Handlers =====
+  const formatDate = (ts: number | Date | null) => {
+    if (!ts) return "—";
+    const d = ts instanceof Date ? ts : new Date(ts);
+    return d.toLocaleDateString();
   };
 
+  const formatDateTime = (ts: number | Date | null) => {
+    if (!ts) return "—";
+    const d = ts instanceof Date ? ts : new Date(ts);
+    return d.toLocaleString();
+  };
+
+  const handleEditGrant = (g: any) => {
+    setEditingGrant({
+      itemId: g.itemId,
+      name: g.name,
+      organization: g.organization || "",
+      description: g.description || "",
+      category: g.category,
+      type: g.type,
+      country: g.country,
+      eligibility: g.eligibility || "",
+      website: g.website || "",
+      phone: g.phone || "",
+      email: g.email || "",
+      amount: g.amount || "",
+      status: g.status || "",
+      applicationProcess: g.applicationProcess || "",
+      deadline: g.deadline || "",
+      fundingType: g.fundingType || "",
+      targetDiagnosis: g.targetDiagnosis || "",
+      ageRange: g.ageRange || "",
+      geographicScope: g.geographicScope || "",
+      documentsRequired: g.documentsRequired || "",
+      b2VisaEligible: g.b2VisaEligible || "",
+      state: g.state || "",
+      city: g.city || "",
+    });
+  };
+
+  const handleToggleActive = (g: any) => {
+    updateGrantMutation.mutate({
+      itemId: g.itemId,
+      isActive: !g.isActive,
+    });
+  };
+
+  // Export functions
   const exportAsCSV = async () => {
     setIsExporting(true);
     try {
-      const data = await utils.admin.exportGrants.fetch({
-        category: grantCategoryFilter !== "all" ? grantCategoryFilter : undefined,
-        includeInactive: true,
-      });
-
-      if (!data || data.length === 0) {
-        toast.error("No grants to export");
+      const allGrants = await utils.admin.grants.fetch({ page: 1, pageSize: 9999 });
+      if (!allGrants?.grants.length) {
+        toast.error(a.toastNoGrantsExport);
         return;
       }
-
-      const languages = ["en", "ka", "fr", "es", "ru"];
-      const headers = [
-        "Item ID", "Name", "Organization", "Description", "Category", "Type",
-        "Country", "Eligibility", "Website", "Phone", "Email", "Amount",
-        "Status", "Active", "Created At", "Updated At",
-        ...languages.flatMap(lang => [`${lang.toUpperCase()} Name`, `${lang.toUpperCase()} Description`, `${lang.toUpperCase()} Eligibility`]),
-      ];
-
-      const rows = data.map(g => {
-        const base = [
-          g.itemId, g.name, g.organization, g.description, g.category, g.type,
-          g.country, g.eligibility, g.website, g.phone, g.email, g.amount,
-          g.status, g.isActive ? "Yes" : "No",
-          g.createdAt ? new Date(g.createdAt).toISOString().split("T")[0] : "",
-          g.updatedAt ? new Date(g.updatedAt).toISOString().split("T")[0] : "",
-        ];
-        const translationCols = languages.flatMap(lang => {
-          const t = g.translations?.[lang];
-          return [t?.name || "", t?.description || "", t?.eligibility || ""];
-        });
-        return [...base, ...translationCols].map(v => escapeCsvField(String(v || "")));
-      });
-
-      const bom = "\uFEFF";
-      const csvContent = bom + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const headers = ["Item ID", "Name", "Organization", "Category", "Type", "Country", "State", "City", "Amount", "Eligibility", "Website", "Phone", "Email", "Status", "Active", "Description"];
+      const rows = allGrants.grants.map((g) => [
+        g.itemId, g.name, g.organization || "", g.category, g.type, g.country, g.state || "", g.city || "",
+        g.amount || "", g.eligibility || "", g.website || "", g.phone || "", g.email || "", g.status || "",
+        g.isActive ? "Yes" : "No", (g.description || "").replace(/"/g, '""'),
+      ]);
+      const csv = [headers.join(","), ...rows.map((r) => r.map((v) => `"${v}"`).join(","))].join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `grantkit-grants-${new Date().toISOString().split("T")[0]}.csv`;
+      link.download = `grantkit-grants-${new Date().toISOString().slice(0, 10)}.csv`;
       link.click();
       URL.revokeObjectURL(url);
-      toast.success(`Exported ${data.length} grants as CSV`);
-    } catch (err) {
-      toast.error("Export failed: " + (err instanceof Error ? err.message : "Unknown error"));
+    } catch {
+      toast.error(a.toastExportFailed);
     } finally {
       setIsExporting(false);
     }
@@ -945,103 +986,112 @@ export default function Admin() {
   const exportAsExcel = async () => {
     setIsExporting(true);
     try {
-      const data = await utils.admin.exportGrants.fetch({
-        category: grantCategoryFilter !== "all" ? grantCategoryFilter : undefined,
-        includeInactive: true,
-      });
-
-      if (!data || data.length === 0) {
-        toast.error("No grants to export");
+      const allGrants = await utils.admin.grants.fetch({ page: 1, pageSize: 9999 });
+      if (!allGrants?.grants.length) {
+        toast.error(a.toastNoGrantsExport);
         return;
       }
-
-      const languages = ["en", "ka", "fr", "es", "ru"];
-
-      // Build tab-separated content for Excel-compatible format
-      const headers = [
-        "Item ID", "Name", "Organization", "Description", "Category", "Type",
-        "Country", "Eligibility", "Website", "Phone", "Email", "Amount",
-        "Status", "Active", "Created At", "Updated At",
-        ...languages.flatMap(lang => [`${lang.toUpperCase()} Name`, `${lang.toUpperCase()} Description`, `${lang.toUpperCase()} Eligibility`]),
-      ];
-
-      const escapeTab = (v: string) => v.replace(/\t/g, " ").replace(/\n/g, " ");
-
-      const rows = data.map(g => {
-        const base = [
-          g.itemId, g.name, g.organization, g.description, g.category, g.type,
-          g.country, g.eligibility, g.website, g.phone, g.email, g.amount,
-          g.status, g.isActive ? "Yes" : "No",
-          g.createdAt ? new Date(g.createdAt).toISOString().split("T")[0] : "",
-          g.updatedAt ? new Date(g.updatedAt).toISOString().split("T")[0] : "",
-        ];
-        const translationCols = languages.flatMap(lang => {
-          const t = g.translations?.[lang];
-          return [t?.name || "", t?.description || "", t?.eligibility || ""];
-        });
-        return [...base, ...translationCols].map(v => escapeTab(String(v || "")));
+      const headers = ["Item ID", "Name", "Organization", "Category", "Type", "Country", "State", "City", "Amount", "Eligibility", "Website", "Phone", "Email", "Status", "Active", "Description"];
+      const rows = allGrants.grants.map((g) => [
+        g.itemId, g.name, g.organization || "", g.category, g.type, g.country, g.state || "", g.city || "",
+        g.amount || "", g.eligibility || "", g.website || "", g.phone || "", g.email || "", g.status || "",
+        g.isActive ? "Yes" : "No", g.description || "",
+      ]);
+      // Simple XML-based Excel
+      let xml = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>';
+      xml += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+      xml += "<Worksheet ss:Name=\"Grants\"><Table>";
+      xml += "<Row>" + headers.map((h) => `<Cell><Data ss:Type="String">${h}</Data></Cell>`).join("") + "</Row>";
+      rows.forEach((row) => {
+        xml += "<Row>" + row.map((v) => `<Cell><Data ss:Type="String">${String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</Data></Cell>`).join("") + "</Row>";
       });
-
-      // Use XML Spreadsheet format for proper Excel support with Unicode
-      const xmlHeader = `<?xml version="1.0" encoding="UTF-8"?>
-<?mso-application progid="Excel.Sheet"?>
-<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
- xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
-<Worksheet ss:Name="Grants">
-<Table>`;
-
-      const escapeXml = (v: string) => v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-
-      const headerRow = `<Row>${headers.map(h => `<Cell><Data ss:Type="String">${escapeXml(h)}</Data></Cell>`).join("")}</Row>`;
-
-      const dataRows = rows.map(row =>
-        `<Row>${row.map(cell => `<Cell><Data ss:Type="String">${escapeXml(cell)}</Data></Cell>`).join("")}</Row>`
-      ).join("\n");
-
-      const xmlFooter = `</Table>
-</Worksheet>
-</Workbook>`;
-
-      const xmlContent = [xmlHeader, headerRow, dataRows, xmlFooter].join("\n");
-      const blob = new Blob([xmlContent], { type: "application/vnd.ms-excel;charset=utf-8;" });
+      xml += "</Table></Worksheet></Workbook>";
+      const blob = new Blob([xml], { type: "application/vnd.ms-excel" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `grantkit-grants-${new Date().toISOString().split("T")[0]}.xls`;
+      link.download = `grantkit-grants-${new Date().toISOString().slice(0, 10)}.xls`;
       link.click();
       URL.revokeObjectURL(url);
-      toast.success(`Exported ${data.length} grants as Excel`);
-    } catch (err) {
-      toast.error("Export failed: " + (err instanceof Error ? err.message : "Unknown error"));
+    } catch {
+      toast.error(a.toastExportFailed);
     } finally {
       setIsExporting(false);
     }
   };
 
-  // ===== Import Helpers =====
+  // Import handlers
+  const resetImport = () => {
+    setShowImportModal(false);
+    setImportStep("upload");
+    setImportPreview(null);
+    setImportResult(null);
+    setImportFile(null);
+    setIsImporting(false);
+  };
+
   const handleImportFileSelect = async (file: File) => {
     setImportFile(file);
     setIsImporting(true);
-
     try {
-      // Read file as base64
-      const arrayBuffer = await file.arrayBuffer();
-      const base64 = btoa(
-        new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
-      );
+      const text = await file.text();
+      // Parse CSV
+      const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+      if (lines.length < 2) throw new Error("File must have header + data rows");
+      const headers = lines[0].split(",").map((h) => h.replace(/^"|"$/g, "").trim().toLowerCase());
+      const nameIdx = headers.findIndex((h) => h === "name");
+      const catIdx = headers.findIndex((h) => h === "category");
+      const countryIdx = headers.findIndex((h) => h === "country");
+      const itemIdIdx = headers.findIndex((h) => h === "item id" || h === "itemid");
+      const orgIdx = headers.findIndex((h) => h === "organization");
+      const descIdx = headers.findIndex((h) => h === "description");
+      const typeIdx = headers.findIndex((h) => h === "type");
+      const eligIdx = headers.findIndex((h) => h === "eligibility");
+      const webIdx = headers.findIndex((h) => h === "website");
+      const phoneIdx = headers.findIndex((h) => h === "phone");
+      const emailIdx = headers.findIndex((h) => h === "email");
+      const amountIdx = headers.findIndex((h) => h === "amount");
+      const statusIdx = headers.findIndex((h) => h === "status");
+      const stateIdx = headers.findIndex((h) => h === "state");
+      const cityIdx = headers.findIndex((h) => h === "city");
 
-      const format = file.name.toLowerCase().endsWith(".csv") ? "csv" as const : "excel" as const;
+      const grants: any[] = [];
+      const errors: any[] = [];
+      let skippedRows = 0;
 
-      const result = await parseImportMutation.mutateAsync({
-        content: base64,
-        filename: file.name,
-        format,
-      });
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(",").map((c) => c.replace(/^"|"$/g, "").trim());
+        const name = nameIdx >= 0 ? cols[nameIdx] : "";
+        const category = catIdx >= 0 ? cols[catIdx] : "";
+        const country = countryIdx >= 0 ? cols[countryIdx] : "";
 
-      setImportPreview(result);
+        if (!name) { skippedRows++; continue; }
+        if (!category) { errors.push({ row: i + 1, field: "Category", message: "Missing category" }); continue; }
+
+        grants.push({
+          itemId: itemIdIdx >= 0 ? cols[itemIdIdx] : undefined,
+          name,
+          category,
+          country: country || "US",
+          organization: orgIdx >= 0 ? cols[orgIdx] : "",
+          description: descIdx >= 0 ? cols[descIdx] : "",
+          type: typeIdx >= 0 && cols[typeIdx] === "resource" ? "resource" : "grant",
+          eligibility: eligIdx >= 0 ? cols[eligIdx] : "",
+          website: webIdx >= 0 ? cols[webIdx] : "",
+          phone: phoneIdx >= 0 ? cols[phoneIdx] : "",
+          email: emailIdx >= 0 ? cols[emailIdx] : "",
+          amount: amountIdx >= 0 ? cols[amountIdx] : "",
+          status: statusIdx >= 0 ? cols[statusIdx] : "",
+          state: stateIdx >= 0 ? cols[stateIdx] : "",
+          city: cityIdx >= 0 ? cols[cityIdx] : "",
+          translations: {},
+        });
+      }
+
+      setImportPreview({ grants, errors, duplicateErrors: [], validRows: grants.length, skippedRows });
       setImportStep("preview");
-    } catch (err) {
-      toast.error("Failed to parse file: " + (err instanceof Error ? err.message : "Unknown error"));
+    } catch (err: any) {
+      toast.error(a.toastParseFailed + ": " + (err.message || "Unknown error"));
     } finally {
       setIsImporting(false);
     }
@@ -1049,38 +1099,39 @@ export default function Admin() {
 
   const handleExecuteImport = async () => {
     if (!importPreview?.grants?.length) return;
-    setIsImporting(true);
     setImportStep("importing");
-
+    setIsImporting(true);
     try {
-      const result = await executeImportMutation.mutateAsync({
-        grants: importPreview.grants,
-      });
-
-      setImportResult(result);
+      let created = 0, updated = 0;
+      const importErrors: any[] = [];
+      for (let i = 0; i < importPreview.grants.length; i++) {
+        const g = importPreview.grants[i];
+        try {
+          if (g.itemId) {
+            await utils.client.admin.updateGrant.mutate(g);
+            updated++;
+          } else {
+            await utils.client.admin.createGrant.mutate(g);
+            created++;
+          }
+        } catch (err: any) {
+          importErrors.push({ index: i, name: g.name, error: err.message || "Unknown error" });
+        }
+      }
+      setImportResult({ created, updated, errors: importErrors });
       setImportStep("done");
       utils.admin.grants.invalidate();
       utils.admin.grantStats.invalidate();
-      toast.success(`Imported ${result.created} new, updated ${result.updated} existing grants`);
-    } catch (err) {
-      toast.error("Import failed: " + (err instanceof Error ? err.message : "Unknown error"));
+    } catch {
+      toast.error(a.toastImportFailed);
       setImportStep("preview");
     } finally {
       setIsImporting(false);
     }
   };
 
-  const resetImport = () => {
-    setShowImportModal(false);
-    setImportStep("upload");
-    setImportFile(null);
-    setImportPreview(null);
-    setImportResult(null);
-    setIsImporting(false);
-  };
-
-  // Auth guard
-  if (authLoading) {
+  // ===== Loading / Auth Check =====
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
@@ -1088,184 +1139,93 @@ export default function Admin() {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     window.location.href = getLoginUrl();
     return null;
   }
 
-  if (user?.role !== "admin") {
+  if (user.role !== "admin") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <Shield className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <h1 className="text-xl font-semibold text-gray-700 mb-2">Access Denied</h1>
-          <p className="text-gray-500 mb-4">You do not have permission to access this page.</p>
-          <Link href="/" className="text-[#1e3a5f] hover:underline text-sm">
-            Return to Home
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-red-400" />
+          </div>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">{a.accessDenied}</h1>
+          <p className="text-sm text-gray-500 mb-6">{a.noPermission}</p>
+          <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-[#1e3a5f] hover:underline">
+            <ArrowLeft className="w-4 h-4" /> {a.returnHome}
           </Link>
         </div>
       </div>
     );
   }
 
-  const formatDate = (date: Date | string | null) => {
-    if (!date) return "—";
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  const formatDateTime = (date: Date | string | null) => {
-    if (!date) return "—";
-    return new Date(date).toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const handleRefresh = () => {
-    utils.admin.invalidate();
-  };
-
-  const handleEditGrant = async (grant: any) => {
-    setEditingGrant({
-      itemId: grant.itemId,
-      name: grant.name,
-      organization: grant.organization,
-      description: "",
-      category: grant.category,
-      type: grant.type,
-      country: grant.country,
-      eligibility: "",
-      website: "",
-      phone: "",
-      email: "",
-      amount: "",
-      status: "",
-    });
-
-    try {
-      const detail = await utils.admin.grantDetail.fetch({ itemId: grant.itemId });
-      if (detail) {
-        setEditingGrant({
-          itemId: detail.itemId,
-          name: detail.name,
-          organization: detail.organization,
-          description: detail.description,
-          category: detail.category,
-          type: detail.type,
-          country: detail.country,
-          eligibility: detail.eligibility,
-          website: detail.website,
-          phone: detail.phone,
-          email: detail.email,
-          amount: detail.amount,
-          status: detail.status,
-        });
-      }
-    } catch (err) {
-      console.error("Failed to fetch grant details:", err);
-    }
-  };
-
-  const handleToggleActive = (grant: any) => {
-    updateGrantMutation.mutate({
-      itemId: grant.itemId,
-      isActive: !grant.isActive,
-    });
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
-      <SEO title="Admin Panel" noIndex />
+      <SEO title="Admin Panel" />
+
       {/* Header */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="text-gray-400 hover:text-gray-600 transition-colors">
-                <ArrowLeft className="w-5 h-5" />
-              </Link>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#1e3a5f] rounded-lg flex items-center justify-center">
-                  <Crown className="w-4 h-4 text-white" />
-                </div>
-                <h1 className="text-lg font-bold text-[#0f172a]">Admin Panel</h1>
-              </div>
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+              <ArrowLeft className="w-5 h-5 text-gray-500" />
+            </Link>
+            <div>
+              <h1 className="text-lg font-bold text-[#0f172a] flex items-center gap-2">
+                <Crown className="w-5 h-5 text-amber-500" />
+                {a.title}
+              </h1>
             </div>
-            <button
-              onClick={handleRefresh}
-              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Refresh
-            </button>
           </div>
+          <button
+            onClick={() => {
+              utils.admin.users.invalidate();
+              utils.admin.grants.invalidate();
+              utils.admin.grantStats.invalidate();
+              utils.admin.newsletterStats.invalidate();
+              utils.admin.notificationHistory.invalidate();
+            }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            {a.refresh}
+          </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
-          <StatCard icon={Users} label="Total Users" value={stats?.total ?? 0} color="bg-[#1e3a5f]" />
-          <StatCard icon={UserCheck} label="Active Subs" value={stats?.active ?? 0} color="bg-emerald-500" />
-          <StatCard icon={Database} label="Total Grants" value={grantStats?.active ?? 0} color="bg-indigo-500" />
-          <StatCard icon={Mail} label="Subscribers" value={newsletterStats?.active ?? 0} color="bg-purple-500" />
-          <StatCard icon={XCircle} label="Cancelled" value={stats?.cancelled ?? 0} color="bg-red-500" />
-          <StatCard icon={Clock} label="Past Due" value={stats?.pastDue ?? 0} color="bg-amber-500" />
-          <StatCard icon={CreditCard} label="No Sub" value={stats?.none ?? 0} color="bg-gray-400" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        {/* Stat Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <StatCard icon={Users} label={a.totalUsers} value={usersData?.total ?? 0} color="bg-blue-500" />
+          <StatCard icon={UserCheck} label={a.activeSubs} value={
+            usersData?.users.filter((u) => u.subscriptionStatus === "active").length ?? 0
+          } color="bg-emerald-500" />
+          <StatCard icon={Database} label={a.totalGrants} value={grantStats?.total ?? 0} color="bg-purple-500" />
+          <StatCard icon={Mail} label={a.subscribers} value={newsletterStats?.active ?? 0} color="bg-amber-500" />
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-1 mb-6 bg-white rounded-xl border border-gray-100 p-1 w-fit shadow-sm">
-          <button
-            onClick={() => setActiveTab("users")}
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-              activeTab === "users"
-                ? "bg-[#1e3a5f] text-white"
-                : "text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            Users
-          </button>
-          <button
-            onClick={() => setActiveTab("grants")}
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-              activeTab === "grants"
-                ? "bg-[#1e3a5f] text-white"
-                : "text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            <Database className="w-4 h-4" />
-            Grants
-            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              activeTab === "grants" ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
-            }`}>
-              {grantStats?.active ?? 0}
-            </span>
-          </button>
-          <button
-            onClick={() => setActiveTab("newsletter")}
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-              activeTab === "newsletter"
-                ? "bg-[#1e3a5f] text-white"
-                : "text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            <Mail className="w-4 h-4" />
-            Newsletter
-            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              activeTab === "newsletter" ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
-            }`}>
-              {newsletterStats?.active ?? 0}
-            </span>
-          </button>
+        <div className="flex gap-1 bg-white rounded-xl p-1 border border-gray-100 shadow-sm w-fit">
+          {([
+            { key: "users" as const, icon: Users, label: a.tabUsers },
+            { key: "grants" as const, icon: Database, label: a.tabGrants },
+            { key: "newsletter" as const, icon: Mail, label: a.tabNewsletter },
+          ]).map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                activeTab === tab.key
+                  ? "bg-[#1e3a5f] text-white"
+                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* ===== USERS TAB ===== */}
@@ -1273,29 +1233,32 @@ export default function Admin() {
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
             {/* Toolbar */}
             <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-              <h2 className="text-base font-semibold text-[#0f172a]">Users</h2>
+              <h2 className="text-base font-semibold text-[#0f172a]">
+                {a.usersTitle}
+                <span className="text-sm font-normal text-gray-400 ml-2">{usersData?.total ?? 0}</span>
+              </h2>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search name or email..."
+                    placeholder={a.searchUsers}
                     value={userSearch}
                     onChange={(e) => { setUserSearch(e.target.value); setUserPage(1); }}
-                    className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] w-full sm:w-64"
+                    className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] w-full sm:w-56"
                   />
                 </div>
                 <select
-                  value={statusFilter}
-                  onChange={(e) => { setStatusFilter(e.target.value); setUserPage(1); }}
+                  value={userStatusFilter}
+                  onChange={(e) => { setUserStatusFilter(e.target.value); setUserPage(1); }}
                   className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
                 >
-                  <option value="all">All Statuses</option>
-                  <option value="active">Active</option>
-                  <option value="cancelled">Cancelled</option>
-                  <option value="past_due">Past Due</option>
-                  <option value="paused">Paused</option>
-                  <option value="none">No Subscription</option>
+                  <option value="all">{a.allStatuses}</option>
+                  <option value="active">{a.statusActive}</option>
+                  <option value="cancelled">{a.statusCancelled}</option>
+                  <option value="past_due">{a.statusPastDue}</option>
+                  <option value="paused">{a.statusPaused}</option>
+                  <option value="none">{a.noSubscription}</option>
                 </select>
               </div>
             </div>
@@ -1305,12 +1268,12 @@ export default function Admin() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-gray-50/50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">User</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Role</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Subscription</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Joined</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Last Login</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Actions</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thUser}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thRole}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thSubscription}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thJoined}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thLastLogin}</th>
+                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thActions}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -1318,13 +1281,14 @@ export default function Admin() {
                     <tr>
                       <td colSpan={6} className="px-5 py-12 text-center">
                         <RefreshCw className="w-5 h-5 animate-spin text-gray-300 mx-auto mb-2" />
-                        <p className="text-sm text-gray-400">Loading users...</p>
+                        <p className="text-sm text-gray-400">{a.loadingUsers}</p>
                       </td>
                     </tr>
                   ) : !usersData?.users.length ? (
                     <tr>
                       <td colSpan={6} className="px-5 py-12 text-center">
-                        <p className="text-sm text-gray-400">No users found</p>
+                        <Users className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                        <p className="text-sm text-gray-400">{a.noUsersFound}</p>
                       </td>
                     </tr>
                   ) : (
@@ -1332,31 +1296,29 @@ export default function Admin() {
                       <tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-[#1e3a5f]/10 flex items-center justify-center shrink-0">
-                              <span className="text-xs font-medium text-[#1e3a5f]">
-                                {(u.name || u.email || "?").charAt(0).toUpperCase()}
-                              </span>
+                            <div className="w-8 h-8 rounded-full bg-[#1e3a5f]/10 flex items-center justify-center text-sm font-medium text-[#1e3a5f]">
+                              {u.name?.charAt(0)?.toUpperCase() || "?"}
                             </div>
                             <div className="min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate max-w-[200px]">{u.name || "—"}</p>
-                              <p className="text-xs text-gray-400 truncate max-w-[200px]">{u.email || "—"}</p>
+                              <p className="text-sm font-medium text-gray-900 truncate">{u.name || "—"}</p>
+                              <p className="text-xs text-gray-400 truncate">{u.email || "—"}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-5 py-3.5"><RoleBadge role={u.role} /></td>
-                        <td className="px-5 py-3.5"><StatusBadge status={u.subscriptionStatus} /></td>
+                        <td className="px-5 py-3.5"><RoleBadge role={u.role} t={a} /></td>
+                        <td className="px-5 py-3.5"><StatusBadge status={u.subscriptionStatus} t={a} /></td>
                         <td className="px-5 py-3.5"><span className="text-sm text-gray-500">{formatDate(u.createdAt)}</span></td>
                         <td className="px-5 py-3.5"><span className="text-sm text-gray-500">{formatDate(u.lastSignedIn)}</span></td>
-                        <td className="px-5 py-3.5 text-right">
+                        <td className="px-5 py-3.5">
                           <div className="flex items-center justify-end gap-2">
                             {u.id !== user?.id && (
                               <button
                                 onClick={() => updateRoleMutation.mutate({ userId: u.id, role: u.role === "admin" ? "user" : "admin" })}
                                 disabled={updateRoleMutation.isPending}
                                 className="text-xs px-2.5 py-1.5 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
-                                title={u.role === "admin" ? "Demote to User" : "Promote to Admin"}
+                                title={u.role === "admin" ? a.demote : a.promote}
                               >
-                                {u.role === "admin" ? "Demote" : "Promote"}
+                                {u.role === "admin" ? a.demote : a.promote}
                               </button>
                             )}
                             <select
@@ -1365,11 +1327,11 @@ export default function Admin() {
                               disabled={updateSubMutation.isPending}
                               className="text-xs px-2 py-1.5 rounded-md border border-gray-200 text-gray-600 bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]/20 disabled:opacity-50"
                             >
-                              <option value="none">None</option>
-                              <option value="active">Active</option>
-                              <option value="cancelled">Cancelled</option>
-                              <option value="past_due">Past Due</option>
-                              <option value="paused">Paused</option>
+                              <option value="none">{a.statusNone}</option>
+                              <option value="active">{a.statusActive}</option>
+                              <option value="cancelled">{a.statusCancelled}</option>
+                              <option value="past_due">{a.statusPastDue}</option>
+                              <option value="paused">{a.statusPaused}</option>
                             </select>
                           </div>
                         </td>
@@ -1384,7 +1346,7 @@ export default function Admin() {
             {usersData && usersData.totalPages > 1 && (
               <div className="px-5 py-3 border-t border-gray-100 flex items-center justify-between">
                 <p className="text-sm text-gray-500">
-                  Showing {((userPage - 1) * userPageSize) + 1}–{Math.min(userPage * userPageSize, usersData.total)} of {usersData.total}
+                  {a.showing} {((userPage - 1) * userPageSize) + 1}–{Math.min(userPage * userPageSize, usersData.total)} / {usersData.total}
                 </p>
                 <div className="flex items-center gap-1">
                   <button onClick={() => setUserPage((p) => Math.max(1, p - 1))} disabled={userPage === 1} className="p-1.5 rounded-md hover:bg-gray-100 disabled:opacity-30 transition-colors">
@@ -1417,9 +1379,9 @@ export default function Admin() {
             {/* Toolbar */}
             <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
               <h2 className="text-base font-semibold text-[#0f172a]">
-                Grants & Resources
+                {a.grantsTitle}
                 <span className="text-sm font-normal text-gray-400 ml-2">
-                  {grantStats?.grants ?? 0} grants, {grantStats?.resources ?? 0} resources
+                  {grantStats?.grants ?? 0} {a.typeGrant.toLowerCase()}, {grantStats?.resources ?? 0} {a.typeResource.toLowerCase()}
                 </span>
               </h2>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -1427,7 +1389,7 @@ export default function Admin() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search grants..."
+                    placeholder={a.searchGrants}
                     value={grantSearch}
                     onChange={(e) => { setGrantSearch(e.target.value); setGrantPage(1); }}
                     className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] w-full sm:w-56"
@@ -1438,7 +1400,7 @@ export default function Admin() {
                   onChange={(e) => { setGrantCategoryFilter(e.target.value); setGrantPage(1); }}
                   className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] bg-white"
                 >
-                  <option value="all">All Categories</option>
+                  <option value="all">{a.allCategories}</option>
                   {CATEGORIES.filter((c) => c.value !== "all").map((c) => (
                     <option key={c.value} value={c.value}>
                       {c.icon} {categoryLabels[c.value] || c.value}
@@ -1450,7 +1412,7 @@ export default function Admin() {
                     onClick={exportAsCSV}
                     disabled={isExporting}
                     className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
-                    title="Export as CSV"
+                    title="CSV"
                   >
                     {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                     CSV
@@ -1459,7 +1421,7 @@ export default function Admin() {
                     onClick={exportAsExcel}
                     disabled={isExporting}
                     className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
-                    title="Export as Excel"
+                    title="Excel"
                   >
                     {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
                     Excel
@@ -1467,17 +1429,17 @@ export default function Admin() {
                   <button
                     onClick={() => { resetImport(); setShowImportModal(true); }}
                     className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#1e3a5f] bg-white border border-[#1e3a5f]/30 hover:bg-[#1e3a5f]/5 rounded-lg transition-colors"
-                    title="Import grants from CSV/Excel"
+                    title={a.importBtn}
                   >
                     <Upload className="w-4 h-4" />
-                    Import
+                    {a.importBtn}
                   </button>
                   <button
                     onClick={() => setShowGrantForm(true)}
                     className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors"
                   >
                     <Plus className="w-4 h-4" />
-                    Add Grant
+                    {a.addGrant}
                   </button>
                 </div>
               </div>
@@ -1488,13 +1450,13 @@ export default function Admin() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-gray-50/50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Grant</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Category</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Type</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Country</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Status</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Added</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Actions</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thGrant}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thCategory}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thType}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thCountry}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thStatus}</th>
+                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thAdded}</th>
+                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thActions}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -1502,14 +1464,14 @@ export default function Admin() {
                     <tr>
                       <td colSpan={7} className="px-5 py-12 text-center">
                         <RefreshCw className="w-5 h-5 animate-spin text-gray-300 mx-auto mb-2" />
-                        <p className="text-sm text-gray-400">Loading grants...</p>
+                        <p className="text-sm text-gray-400">{a.loadingGrants}</p>
                       </td>
                     </tr>
                   ) : !grantsData?.grants.length ? (
                     <tr>
                       <td colSpan={7} className="px-5 py-12 text-center">
                         <Database className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                        <p className="text-sm text-gray-400">No grants found</p>
+                        <p className="text-sm text-gray-400">{a.noGrantsFound}</p>
                       </td>
                     </tr>
                   ) : (
@@ -1522,27 +1484,25 @@ export default function Admin() {
                           </div>
                         </td>
                         <td className="px-5 py-3.5">
-                          <span className="text-xs text-gray-600">
-                            {categoryLabels[g.category] || g.category}
-                          </span>
+                          <span className="text-xs text-gray-600">{categoryLabels[g.category] || g.category}</span>
                         </td>
                         <td className="px-5 py-3.5">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                             g.type === "grant" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700"
                           }`}>
-                            {g.type === "grant" ? "Grant" : "Resource"}
+                            {g.type === "grant" ? a.typeGrant : a.typeResource}
                           </span>
                         </td>
                         <td className="px-5 py-3.5">
                           <span className="text-sm text-gray-500">
-                            {g.country === "US" ? "🇺🇸 US" : "🌍 Intl"}
+                            {g.country === "US" ? `🇺🇸 ${a.unitedStates}` : `🌍 ${a.international}`}
                           </span>
                         </td>
                         <td className="px-5 py-3.5">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                             g.isActive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
                           }`}>
-                            {g.isActive ? "Active" : "Inactive"}
+                            {g.isActive ? a.activeStatus : a.inactiveStatus}
                           </span>
                         </td>
                         <td className="px-5 py-3.5">
@@ -1553,7 +1513,7 @@ export default function Admin() {
                             <button
                               onClick={() => handleEditGrant(g)}
                               className="p-1.5 rounded-md text-gray-400 hover:text-[#1e3a5f] hover:bg-[#1e3a5f]/5 transition-colors"
-                              title="Edit"
+                              title={a.editGrant}
                             >
                               <Edit2 className="w-4 h-4" />
                             </button>
@@ -1561,14 +1521,14 @@ export default function Admin() {
                               onClick={() => handleToggleActive(g)}
                               disabled={updateGrantMutation.isPending}
                               className="p-1.5 rounded-md text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors disabled:opacity-50"
-                              title={g.isActive ? "Deactivate" : "Activate"}
+                              title={g.isActive ? a.inactiveStatus : a.activeStatus}
                             >
                               {g.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
                             <button
                               onClick={() => setDeletingGrant({ itemId: g.itemId, name: g.name })}
                               className="p-1.5 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
-                              title="Delete"
+                              title={a.deleteGrant}
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -1585,7 +1545,7 @@ export default function Admin() {
             {grantsData && grantsData.totalPages > 1 && (
               <div className="px-5 py-3 border-t border-gray-100 flex items-center justify-between">
                 <p className="text-sm text-gray-500">
-                  Showing {((grantPage - 1) * grantPageSize) + 1}–{Math.min(grantPage * grantPageSize, grantsData.total)} of {grantsData.total}
+                  {a.showing} {((grantPage - 1) * grantPageSize) + 1}–{Math.min(grantPage * grantPageSize, grantsData.total)} / {grantsData.total}
                 </p>
                 <div className="flex items-center gap-1">
                   <button onClick={() => setGrantPage((p) => Math.max(1, p - 1))} disabled={grantPage === 1} className="p-1.5 rounded-md hover:bg-gray-100 disabled:opacity-30 transition-colors">
@@ -1623,12 +1583,12 @@ export default function Admin() {
                     <Mail className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Active Subscribers</p>
+                    <p className="text-sm text-gray-500">{a.activeSubscribers}</p>
                     <p className="text-2xl font-bold text-[#0f172a]">{newsletterStats?.active ?? 0}</p>
                   </div>
                 </div>
                 <p className="text-xs text-gray-400">
-                  {newsletterStats?.total ?? 0} total ({(newsletterStats?.total ?? 0) - (newsletterStats?.active ?? 0)} unsubscribed)
+                  {newsletterStats?.total ?? 0} {a.totalSubscribers} ({(newsletterStats?.total ?? 0) - (newsletterStats?.active ?? 0)} {a.unsubscribed})
                 </p>
               </div>
 
@@ -1638,12 +1598,12 @@ export default function Admin() {
                     <Bell className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Notifications Sent</p>
+                    <p className="text-sm text-gray-500">{a.notificationsSent}</p>
                     <p className="text-2xl font-bold text-[#0f172a]">{notifHistory?.length ?? 0}</p>
                   </div>
                 </div>
                 <p className="text-xs text-gray-400">
-                  {notifHistory?.filter((n) => n.status === "completed").length ?? 0} completed, {notifHistory?.filter((n) => n.status === "failed").length ?? 0} failed
+                  {notifHistory?.filter((n) => n.status === "completed").length ?? 0} {a.completed}, {notifHistory?.filter((n) => n.status === "failed").length ?? 0} {a.failed}
                 </p>
               </div>
 
@@ -1653,7 +1613,7 @@ export default function Admin() {
                   className="inline-flex items-center gap-3 px-6 py-3 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-xl transition-colors shadow-sm"
                 >
                   <Send className="w-5 h-5" />
-                  Send Grant Notification
+                  {a.sendGrantNotification}
                 </button>
               </div>
             </div>
@@ -1661,19 +1621,19 @@ export default function Admin() {
             {/* Notification History */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
               <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h2 className="text-base font-semibold text-[#0f172a]">Notification History</h2>
+                <h2 className="text-base font-semibold text-[#0f172a]">{a.notificationHistory}</h2>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="bg-gray-50/50">
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Subject</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Grants</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Recipients</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Success</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Status</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Sent At</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thSubject}</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thGrantsCol}</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thRecipients}</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thSuccess}</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thStatus}</th>
+                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">{a.thSentAt}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -1681,8 +1641,8 @@ export default function Admin() {
                       <tr>
                         <td colSpan={6} className="px-5 py-12 text-center">
                           <Mail className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                          <p className="text-sm text-gray-400">No notifications sent yet</p>
-                          <p className="text-xs text-gray-300 mt-1">Click "Send Grant Notification" to get started</p>
+                          <p className="text-sm text-gray-400">{a.noNotifications}</p>
+                          <p className="text-xs text-gray-300 mt-1">{a.noNotificationsHint}</p>
                         </td>
                       </tr>
                     ) : (
@@ -1707,12 +1667,12 @@ export default function Admin() {
                               <span className="text-sm">
                                 <span className="text-emerald-600">{n.successCount}</span>
                                 {n.failCount > 0 && (
-                                  <span className="text-red-500 ml-1">/ {n.failCount} failed</span>
+                                  <span className="text-red-500 ml-1">/ {n.failCount} {a.failed}</span>
                                 )}
                               </span>
                             </td>
                             <td className="px-5 py-3.5">
-                              <NotifStatusBadge status={n.status} />
+                              <NotifStatusBadge status={n.status} t={a} />
                             </td>
                             <td className="px-5 py-3.5">
                               <span className="text-sm text-gray-500">{formatDateTime(n.sentAt)}</span>
@@ -1736,6 +1696,7 @@ export default function Admin() {
           onClose={() => setShowGrantForm(false)}
           onSave={(data) => createGrantMutation.mutate(data)}
           isPending={createGrantMutation.isPending}
+          t={a}
         />
       )}
 
@@ -1746,6 +1707,7 @@ export default function Admin() {
           onClose={() => setEditingGrant(null)}
           onSave={(data) => updateGrantMutation.mutate(data)}
           isPending={updateGrantMutation.isPending}
+          t={a}
         />
       )}
 
@@ -1755,6 +1717,7 @@ export default function Admin() {
           onConfirm={() => deleteGrantMutation.mutate({ itemId: deletingGrant.itemId })}
           onCancel={() => setDeletingGrant(null)}
           isPending={deleteGrantMutation.isPending}
+          t={a}
         />
       )}
 
@@ -1763,6 +1726,7 @@ export default function Admin() {
           onClose={() => setShowSendNotification(false)}
           onSend={(grantItemIds) => sendNotificationMutation.mutate({ grantItemIds })}
           isPending={sendNotificationMutation.isPending}
+          t={a}
         />
       )}
 
@@ -1777,12 +1741,12 @@ export default function Admin() {
                   <FileUp className="w-5 h-5 text-[#1e3a5f]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0f172a]">Import Grants</h3>
+                  <h3 className="text-lg font-semibold text-[#0f172a]">{a.importGrants}</h3>
                   <p className="text-xs text-gray-400">
-                    {importStep === "upload" && "Upload a CSV or Excel file"}
-                    {importStep === "preview" && "Review parsed data before importing"}
-                    {importStep === "importing" && "Importing grants..."}
-                    {importStep === "done" && "Import completed"}
+                    {importStep === "upload" && a.importStepUpload}
+                    {importStep === "preview" && a.importStepPreview}
+                    {importStep === "importing" && a.importStepImporting}
+                    {importStep === "done" && a.importStepDone}
                   </p>
                 </div>
               </div>
@@ -1795,7 +1759,7 @@ export default function Admin() {
             <div className="flex-1 overflow-y-auto p-6">
               {/* Step 1: Upload */}
               {importStep === "upload" && (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {/* Drop zone */}
                   <div
                     className="border-2 border-dashed border-gray-200 rounded-xl p-10 text-center hover:border-[#1e3a5f]/40 transition-colors cursor-pointer"
@@ -1821,13 +1785,13 @@ export default function Admin() {
                     {isImporting ? (
                       <>
                         <Loader2 className="w-10 h-10 text-[#1e3a5f] mx-auto mb-3 animate-spin" />
-                        <p className="text-sm font-medium text-gray-700">Parsing file...</p>
+                        <p className="text-sm font-medium text-gray-700">{a.parsingFile}</p>
                       </>
                     ) : (
                       <>
                         <Upload className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                        <p className="text-sm font-medium text-gray-700 mb-1">Drop your CSV or Excel file here</p>
-                        <p className="text-xs text-gray-400">or click to browse</p>
+                        <p className="text-sm font-medium text-gray-700 mb-1">{a.dropFileHere}</p>
+                        <p className="text-xs text-gray-400">{a.orClickBrowse}</p>
                       </>
                     )}
                   </div>
@@ -1837,15 +1801,13 @@ export default function Admin() {
                     <div className="flex items-start gap-3">
                       <Info className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
                       <div className="text-sm text-blue-700">
-                        <p className="font-medium mb-2">Expected columns:</p>
+                        <p className="font-medium mb-2">{a.expectedColumns}:</p>
                         <p className="text-xs leading-relaxed">
-                          <strong>Required:</strong> Name, Category, Country<br />
-                          <strong>Optional:</strong> Item ID (for updates), Organization, Description, Type, Eligibility, Website, Phone, Email, Amount, Status<br />
-                          <strong>Translations:</strong> EN Name, EN Description, KA Name, KA Description, FR Name, etc.
+                          <strong>{a.requiredColumns}:</strong> Name, Category, Country<br />
+                          <strong>{a.optionalColumns}:</strong> Item ID, Organization, Description, Type, Eligibility, Website, Phone, Email, Amount, Status<br />
+                          <strong>{a.translationColumns}:</strong> EN Name, EN Description, KA Name, KA Description, FR Name, etc.
                         </p>
-                        <p className="text-xs mt-2 text-blue-500">
-                          Tip: Export existing grants first to see the exact format.
-                        </p>
+                        <p className="text-xs mt-2 text-blue-500">{a.importTip}</p>
                       </div>
                     </div>
                   </div>
@@ -1859,15 +1821,15 @@ export default function Admin() {
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-emerald-50 rounded-lg p-3 text-center">
                       <p className="text-2xl font-bold text-emerald-700">{importPreview.validRows}</p>
-                      <p className="text-xs text-emerald-600">Valid Rows</p>
+                      <p className="text-xs text-emerald-600">{a.validRows}</p>
                     </div>
                     <div className="bg-amber-50 rounded-lg p-3 text-center">
                       <p className="text-2xl font-bold text-amber-700">{importPreview.skippedRows}</p>
-                      <p className="text-xs text-amber-600">Skipped</p>
+                      <p className="text-xs text-amber-600">{a.skipped}</p>
                     </div>
                     <div className="bg-red-50 rounded-lg p-3 text-center">
                       <p className="text-2xl font-bold text-red-700">{importPreview.errors.length + (importPreview.duplicateErrors?.length || 0)}</p>
-                      <p className="text-xs text-red-600">Errors</p>
+                      <p className="text-xs text-red-600">{a.errors}</p>
                     </div>
                   </div>
 
@@ -1876,7 +1838,7 @@ export default function Admin() {
                     <div className="bg-red-50 rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
                         <AlertCircle className="w-4 h-4 text-red-500" />
-                        <p className="text-sm font-medium text-red-700">Validation Errors</p>
+                        <p className="text-sm font-medium text-red-700">{a.validationErrors}</p>
                       </div>
                       <div className="max-h-32 overflow-y-auto space-y-1">
                         {[...importPreview.errors, ...(importPreview.duplicateErrors || [])].slice(0, 20).map((err: any, i: number) => (
@@ -1885,7 +1847,7 @@ export default function Admin() {
                           </p>
                         ))}
                         {(importPreview.errors.length + (importPreview.duplicateErrors?.length || 0)) > 20 && (
-                          <p className="text-xs text-red-400 italic">...and {importPreview.errors.length + (importPreview.duplicateErrors?.length || 0) - 20} more</p>
+                          <p className="text-xs text-red-400 italic">...{a.andMoreRows.replace("{count}", String(importPreview.errors.length + (importPreview.duplicateErrors?.length || 0) - 20))}</p>
                         )}
                       </div>
                     </div>
@@ -1895,18 +1857,18 @@ export default function Admin() {
                   {importPreview.grants.length > 0 && (
                     <div className="border border-gray-200 rounded-xl overflow-hidden">
                       <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
-                        <p className="text-xs font-medium text-gray-500">Preview (first 10 rows)</p>
+                        <p className="text-xs font-medium text-gray-500">{a.previewRows}</p>
                       </div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-xs">
                           <thead>
                             <tr className="bg-gray-50/50">
                               <th className="text-left px-3 py-2 font-medium text-gray-500">#</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">Name</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">Category</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">Country</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">Type</th>
-                              <th className="text-left px-3 py-2 font-medium text-gray-500">Translations</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.formName}</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.formCategory}</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.formCountry}</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.formType}</th>
+                              <th className="text-left px-3 py-2 font-medium text-gray-500">{a.translationColumns}</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100">
@@ -1922,7 +1884,7 @@ export default function Admin() {
                                 <td className="px-3 py-2 text-gray-600">{g.type}</td>
                                 <td className="px-3 py-2 text-gray-500">
                                   {Object.keys(g.translations).length > 0
-                                    ? Object.keys(g.translations).map(l => l.toUpperCase()).join(", ")
+                                    ? Object.keys(g.translations).map((l: string) => l.toUpperCase()).join(", ")
                                     : "-"}
                                 </td>
                               </tr>
@@ -1932,7 +1894,7 @@ export default function Admin() {
                       </div>
                       {importPreview.grants.length > 10 && (
                         <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-400 text-center">
-                          ...and {importPreview.grants.length - 10} more rows
+                          ...{a.andMoreRows.replace("{count}", String(importPreview.grants.length - 10))}
                         </div>
                       )}
                     </div>
@@ -1951,8 +1913,8 @@ export default function Admin() {
               {importStep === "importing" && (
                 <div className="text-center py-12">
                   <Loader2 className="w-10 h-10 text-[#1e3a5f] mx-auto mb-4 animate-spin" />
-                  <p className="text-sm font-medium text-gray-700">Importing {importPreview?.grants?.length} grants...</p>
-                  <p className="text-xs text-gray-400 mt-1">This may take a moment</p>
+                  <p className="text-sm font-medium text-gray-700">{a.importingGrants.replace("{count}", String(importPreview?.grants?.length || 0))}</p>
+                  <p className="text-xs text-gray-400 mt-1">{a.thisMayTakeMoment}</p>
                 </div>
               )}
 
@@ -1961,27 +1923,27 @@ export default function Admin() {
                 <div className="space-y-4">
                   <div className="text-center py-6">
                     <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                    <p className="text-lg font-semibold text-gray-900">Import Complete</p>
+                    <p className="text-lg font-semibold text-gray-900">{a.importComplete}</p>
                   </div>
 
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-emerald-50 rounded-lg p-3 text-center">
                       <p className="text-2xl font-bold text-emerald-700">{importResult.created}</p>
-                      <p className="text-xs text-emerald-600">Created</p>
+                      <p className="text-xs text-emerald-600">{a.created}</p>
                     </div>
                     <div className="bg-blue-50 rounded-lg p-3 text-center">
                       <p className="text-2xl font-bold text-blue-700">{importResult.updated}</p>
-                      <p className="text-xs text-blue-600">Updated</p>
+                      <p className="text-xs text-blue-600">{a.updated}</p>
                     </div>
                     <div className="bg-red-50 rounded-lg p-3 text-center">
                       <p className="text-2xl font-bold text-red-700">{importResult.errors?.length || 0}</p>
-                      <p className="text-xs text-red-600">Failed</p>
+                      <p className="text-xs text-red-600">{a.failed}</p>
                     </div>
                   </div>
 
                   {importResult.errors?.length > 0 && (
                     <div className="bg-red-50 rounded-xl p-4">
-                      <p className="text-sm font-medium text-red-700 mb-2">Failed Entries:</p>
+                      <p className="text-sm font-medium text-red-700 mb-2">{a.failedEntries}:</p>
                       <div className="max-h-32 overflow-y-auto space-y-1">
                         {importResult.errors.map((err: any, i: number) => (
                           <p key={i} className="text-xs text-red-600">
@@ -2001,7 +1963,7 @@ export default function Admin() {
                 onClick={resetImport}
                 className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
               >
-                {importStep === "done" ? "Close" : "Cancel"}
+                {importStep === "done" ? a.close : a.cancel}
               </button>
               <div className="flex gap-2">
                 {importStep === "preview" && (
@@ -2010,7 +1972,7 @@ export default function Admin() {
                       onClick={() => { setImportStep("upload"); setImportPreview(null); setImportFile(null); }}
                       className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      Upload Different File
+                      {a.uploadDifferentFile}
                     </button>
                     <button
                       onClick={handleExecuteImport}
@@ -2018,7 +1980,7 @@ export default function Admin() {
                       className="px-6 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-2"
                     >
                       {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                      Import {importPreview?.grants?.length || 0} Grants
+                      {a.importNGrants.replace("{count}", String(importPreview?.grants?.length || 0))}
                     </button>
                   </>
                 )}
@@ -2027,7 +1989,7 @@ export default function Admin() {
                     onClick={resetImport}
                     className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
                   >
-                    Done
+                    {a.done}
                   </button>
                 )}
               </div>
