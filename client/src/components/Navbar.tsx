@@ -72,7 +72,7 @@ export default function Navbar() {
                     }`}
                   >
                     <LayoutDashboard className="w-4 h-4" />
-                    <span>Dashboard</span>
+                    <span>{t.nav.dashboard}</span>
                   </Link>
 
                   {/* Show subscribe button only if not active subscriber */}
@@ -86,7 +86,7 @@ export default function Navbar() {
                       className="inline-flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-2.5 py-1.5 rounded-lg transition-colors"
                     >
                       <Shield className="w-3.5 h-3.5" />
-                      <span>Admin</span>
+                      <span>{t.nav.admin}</span>
                     </Link>
                   )}
                   {/* User info + logout */}
@@ -96,13 +96,13 @@ export default function Navbar() {
                         <User className="w-4 h-4 text-[#1e3a5f]" />
                       </div>
                       <span className="text-sm text-gray-600 max-w-[120px] truncate">
-                        {user?.name || user?.email || "User"}
+                        {user?.name || user?.email || t.nav.user}
                       </span>
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                      title="Logout"
+                      title={t.nav.logout}
                     >
                       <LogOut className="w-4 h-4" />
                     </button>
@@ -115,7 +115,7 @@ export default function Navbar() {
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1e3a5f] hover:text-[#0f172a] transition-colors"
                   >
                     <LogIn className="w-4 h-4" />
-                    <span>Login</span>
+                    <span>{t.nav.login}</span>
                   </a>
                   <PricingCTA text={t.nav.subscribe} size="default" />
                 </div>

@@ -6,6 +6,12 @@ export const en: Translations = {
     catalog: "Grants & Resources",
     subscribe: "Subscribe",
     profile: "Profile",
+    dashboard: "Dashboard",
+    admin: "Admin",
+    login: "Login",
+    logout: "Logout",
+    legal: "Legal",
+    user: "User",
   },
   hero: {
     badge: "643 curated grants & resources — updated monthly",

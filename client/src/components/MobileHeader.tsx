@@ -91,7 +91,7 @@ export default function MobileHeader() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
-                      {user.name || "User"}
+                      {user.name || t.nav.user}
                     </p>
                     <p className="text-xs text-gray-500 truncate">{user.email}</p>
                   </div>
@@ -116,7 +116,7 @@ export default function MobileHeader() {
               {/* Legal links */}
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="px-4 py-2 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Legal
+                  {t.nav.legal}
                 </p>
                 <Link
                   href="/contact"
@@ -156,7 +156,7 @@ export default function MobileHeader() {
                     className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm text-red-500 active:bg-red-50 transition-colors"
                   >
                     <LogOut className="w-5 h-5" />
-                    <span className="font-medium">Logout</span>
+                    <span className="font-medium">{t.nav.logout}</span>
                   </button>
                 ) : (
                   <a
@@ -164,7 +164,7 @@ export default function MobileHeader() {
                     className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm text-[#1e3a5f] active:bg-blue-50 transition-colors"
                   >
                     <LogIn className="w-5 h-5" />
-                    <span className="font-medium">Login</span>
+                    <span className="font-medium">{t.nav.login}</span>
                   </a>
                 )}
               </div>

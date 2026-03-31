@@ -6,6 +6,12 @@ export const ka: Translations = {
     catalog: "გრანტები & რესურსები",
     subscribe: "გამოწერა",
     profile: "პროფილი",
+    dashboard: "პანელი",
+    admin: "ადმინი",
+    login: "შესვლა",
+    logout: "გასვლა",
+    legal: "იურიდიული",
+    user: "მომხმარებელი",
   },
   hero: {
     badge: "643 შერჩეული გრანტი & რესურსი — ყოველთვიურად განახლებული",

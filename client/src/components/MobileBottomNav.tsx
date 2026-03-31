@@ -30,14 +30,14 @@ export default function MobileBottomNav() {
     {
       href: isAuthenticated ? "/dashboard" : getLoginUrl(),
       icon: LayoutDashboard,
-      label: "Dashboard",
+      label: t.nav.dashboard,
       active: location === "/dashboard",
       isExternal: !isAuthenticated,
     },
     {
       href: isAuthenticated ? "/profile" : getLoginUrl(),
       icon: User,
-      label: t.nav.profile || "Profile",
+      label: t.nav.profile,
       active: location === "/profile",
       isExternal: !isAuthenticated,
     },
@@ -48,7 +48,7 @@ export default function MobileBottomNav() {
     tabs.push({
       href: "/admin",
       icon: Shield,
-      label: "Admin",
+      label: t.nav.admin,
       active: location === "/admin",
     });
   }

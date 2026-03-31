@@ -6,6 +6,12 @@ export const ru: Translations = {
     catalog: "Гранты & Ресурсы",
     subscribe: "Подписаться",
     profile: "Профиль",
+    dashboard: "Панель",
+    admin: "Админ",
+    login: "Войти",
+    logout: "Выйти",
+    legal: "Правовая информация",
+    user: "Пользователь",
   },
   hero: {
     badge: "643 отобранных гранта & ресурса — обновляется ежемесячно",

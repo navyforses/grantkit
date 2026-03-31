@@ -5,6 +5,12 @@ export interface Translations {
     catalog: string;
     subscribe: string;
     profile: string;
+    dashboard: string;
+    admin: string;
+    login: string;
+    logout: string;
+    legal: string;
+    user: string;
   };
 
   // Hero

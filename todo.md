@@ -264,3 +264,9 @@
 - [x] Run translation for all grants × 4 languages (KA, FR, ES, RU) — 609/609, 0 errors
 - [x] Verify translation results in database (609/609 translated, all 4 languages)
 - [x] Run tests and verify (196 tests all passing, 0 TS errors)
+
+## Navbar i18n Translation
+- [x] Audit Navbar component for hardcoded English strings (found: Dashboard, Admin, Login, Logout, Legal, User in Navbar, MobileHeader, MobileBottomNav)
+- [x] Add navbar i18n keys to types.ts and all 5 language files (dashboard, admin, login, logout, legal, user)
+- [x] Replace hardcoded strings in Navbar, MobileHeader, MobileBottomNav with t() calls
+- [x] Run tests and verify (196 tests all passing, 0 TS errors)

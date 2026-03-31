@@ -6,6 +6,12 @@ export const es: Translations = {
     catalog: "Subvenciones & Recursos",
     subscribe: "Suscribirse",
     profile: "Perfil",
+    dashboard: "Panel",
+    admin: "Admin",
+    login: "Iniciar sesión",
+    logout: "Cerrar sesión",
+    legal: "Legal",
+    user: "Usuario",
   },
   hero: {
     badge: "643 subvenciones & recursos seleccionados — actualizados mensualmente",
