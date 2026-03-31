@@ -209,3 +209,4 @@
 - [x] Create PullToRefresh visual indicator component (rotating arrow + spinner + text labels)
 - [x] Integrate pull-to-refresh into Catalog page (invalidates catalog.list, catalog.count, grants.savedList + toast confirmation)
 - [x] Ensure it only activates on mobile (useIsMobile gating) and when scrolled to top (scrollY <= 5 check)
+- [x] Fix React duplicate key error: MobileBottomNav used tab.href as key, but Dashboard+Profile both had getLoginUrl() when unauthenticated — changed to tab.label

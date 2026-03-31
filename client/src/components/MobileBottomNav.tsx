@@ -61,7 +61,7 @@ export default function MobileBottomNav() {
           if (tab.isExternal) {
             return (
               <a
-                key={tab.href}
+                key={tab.label}
                 href={tab.href}
                 className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
                   tab.active
@@ -76,7 +76,7 @@ export default function MobileBottomNav() {
           }
           return (
             <Link
-              key={tab.href}
+              key={tab.label}
               href={tab.href}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
                 tab.active
