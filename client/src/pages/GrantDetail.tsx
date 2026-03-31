@@ -42,6 +42,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { GrantJsonLd } from "@/components/JsonLd";
+import GrantDetailSkeleton from "@/components/GrantDetailSkeleton";
 
 /** Collapsible section for mobile — expands/collapses content */
 function CollapsibleSection({
@@ -136,14 +137,12 @@ export default function GrantDetail() {
     },
   });
 
-  // Loading state
+  // Loading state — show skeleton matching the page layout
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50/30">
         <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-        </div>
+        <GrantDetailSkeleton />
       </div>
     );
   }

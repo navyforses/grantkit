@@ -215,3 +215,7 @@
 - [x] Create CatalogCardSkeleton component matching CatalogCard layout (staggered pulse animation)
 - [x] Integrate skeleton into Catalog page during loading (4 on mobile, 9 on desktop)
 - [x] Add skeleton to Home page preview section (5 skeletons when data is loading)
+
+## GrantDetail Skeleton
+- [x] Create GrantDetailSkeleton component matching GrantDetail layout (mobile header, desktop header, content cards, sidebar, sticky CTA)
+- [x] Integrate skeleton into GrantDetail page — replaces Loader2 spinner with full-page skeleton
