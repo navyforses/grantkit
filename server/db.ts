@@ -610,12 +610,18 @@ export async function getGrantTranslations(itemId: string) {
     .from(grantTranslations)
     .where(eq(grantTranslations.grantItemId, itemId));
 
-  const translations: Record<string, { name: string; description: string; eligibility: string }> = {};
+  const translations: Record<string, { name: string; description: string; eligibility: string; applicationProcess?: string; deadline?: string; targetDiagnosis?: string; ageRange?: string; geographicScope?: string; documentsRequired?: string }> = {};
   for (const row of result) {
     translations[row.language] = {
       name: row.name || "",
       description: row.description || "",
       eligibility: row.eligibility || "",
+      applicationProcess: row.applicationProcess || "",
+      deadline: row.deadline || "",
+      targetDiagnosis: row.targetDiagnosis || "",
+      ageRange: row.ageRange || "",
+      geographicScope: row.geographicScope || "",
+      documentsRequired: row.documentsRequired || "",
     };
   }
   return translations;
@@ -631,7 +637,7 @@ export async function getBulkGrantTranslations(itemIds: string[]) {
     .from(grantTranslations)
     .where(inArray(grantTranslations.grantItemId, itemIds));
 
-  const translations: Record<string, Record<string, { name: string; description: string; eligibility: string }>> = {};
+  const translations: Record<string, Record<string, { name: string; description: string; eligibility: string; applicationProcess?: string; deadline?: string; targetDiagnosis?: string; ageRange?: string; geographicScope?: string; documentsRequired?: string }>> = {};
   for (const row of result) {
     if (!translations[row.grantItemId]) {
       translations[row.grantItemId] = {};
@@ -640,6 +646,12 @@ export async function getBulkGrantTranslations(itemIds: string[]) {
       name: row.name || "",
       description: row.description || "",
       eligibility: row.eligibility || "",
+      applicationProcess: row.applicationProcess || "",
+      deadline: row.deadline || "",
+      targetDiagnosis: row.targetDiagnosis || "",
+      ageRange: row.ageRange || "",
+      geographicScope: row.geographicScope || "",
+      documentsRequired: row.documentsRequired || "",
     };
   }
   return translations;

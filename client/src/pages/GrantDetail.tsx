@@ -177,6 +177,12 @@ export default function GrantDetail() {
     name: trans?.name || item.name,
     description: trans?.description || item.description,
     eligibility: trans?.eligibility || item.eligibility,
+    applicationProcess: trans?.applicationProcess || item.applicationProcess,
+    deadline: trans?.deadline || item.deadline,
+    targetDiagnosis: trans?.targetDiagnosis || item.targetDiagnosis,
+    ageRange: trans?.ageRange || item.ageRange,
+    geographicScope: trans?.geographicScope || item.geographicScope,
+    documentsRequired: trans?.documentsRequired || item.documentsRequired,
   };
 
   const translatedCategory = tCategory(item.category);
@@ -321,10 +327,10 @@ export default function GrantDetail() {
               {item.amount}
             </span>
           )}
-          {item.deadline && (
+          {content.deadline && (
             <span className="inline-flex items-center gap-1 text-xs text-blue-200 bg-blue-500/10 px-2.5 py-1 rounded-full">
               <Clock className="w-3 h-3" />
-              {item.deadline}
+              {content.deadline}
             </span>
           )}
           {item.fundingType && item.fundingType !== "unknown" && (
@@ -386,10 +392,10 @@ export default function GrantDetail() {
                     {item.amount}
                   </span>
                 )}
-                {item.deadline && (
+                {content.deadline && (
                   <span className="inline-flex items-center gap-1.5 text-sm text-blue-200 bg-blue-500/10 px-3 py-1 rounded-full">
                     <Clock className="w-3.5 h-3.5" />
-                    {item.deadline}
+                    {content.deadline}
                   </span>
                 )}
                 {item.fundingType && item.fundingType !== "unknown" && (
@@ -458,7 +464,7 @@ export default function GrantDetail() {
             )}
 
             {/* How to Apply */}
-            {item.applicationProcess && (
+            {content.applicationProcess && (
               <div className="bg-white border border-gray-200 rounded-xl md:rounded-lg p-4 md:p-6">
                 <CollapsibleSection
                   title={t.grantDetail.howToApply}
@@ -466,14 +472,14 @@ export default function GrantDetail() {
                   defaultOpen={false}
                 >
                   <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-                    {item.applicationProcess}
+                    {content.applicationProcess}
                   </p>
                 </CollapsibleSection>
               </div>
             )}
 
             {/* Required Documents */}
-            {item.documentsRequired && (
+            {content.documentsRequired && (
               <div className="bg-white border border-gray-200 rounded-xl md:rounded-lg p-4 md:p-6">
                 <CollapsibleSection
                   title={t.grantDetail.requiredDocuments}
@@ -481,7 +487,7 @@ export default function GrantDetail() {
                   defaultOpen={false}
                 >
                   <div className="flex flex-wrap gap-2">
-                    {item.documentsRequired.split(",").map((doc, i) => (
+                    {content.documentsRequired.split(",").map((doc, i) => (
                       <span
                         key={i}
                         className="inline-flex items-center gap-1 text-xs md:text-sm bg-gray-100 text-gray-700 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full"
@@ -545,10 +551,10 @@ export default function GrantDetail() {
                     <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.location}</p>
                     <p className="text-sm font-medium text-gray-900">{locationDisplay}</p>
                   </div>
-                  {item.geographicScope && (
+                  {content.geographicScope && (
                     <div>
                       <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.scope}</p>
-                      <p className="text-sm font-medium text-gray-900">{item.geographicScope}</p>
+                      <p className="text-sm font-medium text-gray-900">{content.geographicScope}</p>
                     </div>
                   )}
                   <div>
@@ -559,26 +565,26 @@ export default function GrantDetail() {
                     <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.organization}</p>
                     <p className="text-sm font-medium text-gray-900">{item.organization || "—"}</p>
                   </div>
-                  {item.targetDiagnosis && item.targetDiagnosis !== "General" && (
+                  {content.targetDiagnosis && content.targetDiagnosis !== "General" && (
                     <div className="col-span-2">
                       <p className="text-[10px] text-gray-400 uppercase mb-1">{t.grantDetail.conditions}</p>
                       <div className="flex flex-wrap gap-1">
-                        {item.targetDiagnosis.split(",").slice(0, 4).map((d, i) => (
+                        {content.targetDiagnosis.split(",").slice(0, 4).map((d, i) => (
                           <span key={i} className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
                             {d.trim()}
                           </span>
                         ))}
-                        {item.targetDiagnosis.split(",").length > 4 && (
-                          <span className="text-[10px] text-gray-400">+{item.targetDiagnosis.split(",").length - 4}</span>
+                        {content.targetDiagnosis.split(",").length > 4 && (
+                          <span className="text-[10px] text-gray-400">+{content.targetDiagnosis.split(",").length - 4}</span>
                         )}
                       </div>
                     </div>
                   )}
-                  {item.ageRange && item.ageRange !== "0-100" && (
+                  {content.ageRange && content.ageRange !== "0-100" && (
                     <div>
                       <p className="text-[10px] text-gray-400 uppercase">{t.grantDetail.ageRange}</p>
                       <p className="text-sm font-medium text-gray-900">
-                        {item.ageRange === "0-18" ? t.grantDetail.children : item.ageRange === "18-100" ? t.grantDetail.adults : t.grantDetail.ages.replace("{range}", item.ageRange)}
+                        {content.ageRange === "0-18" ? t.grantDetail.children : content.ageRange === "18-100" ? t.grantDetail.adults : t.grantDetail.ages.replace("{range}", content.ageRange)}
                       </p>
                     </div>
                   )}
@@ -674,12 +680,12 @@ export default function GrantDetail() {
                     <p className="text-sm font-medium text-gray-900">{locationDisplay}</p>
                   </div>
                 </div>
-                {item.geographicScope && (
+                {content.geographicScope && (
                   <div className="flex items-start gap-3">
                     <Globe className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-gray-500">{t.grantDetail.geographicScope}</p>
-                      <p className="text-sm font-medium text-gray-900">{item.geographicScope}</p>
+                      <p className="text-sm font-medium text-gray-900">{content.geographicScope}</p>
                     </div>
                   </div>
                 )}
@@ -715,42 +721,42 @@ export default function GrantDetail() {
                     </div>
                   </div>
                 )}
-                {item.deadline && (
+                {content.deadline && (
                   <div className="flex items-start gap-3">
                     <Calendar className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-gray-500">{t.grantDetail.deadlineLabel}</p>
-                      <p className="text-sm font-medium text-gray-900">{item.deadline}</p>
+                      <p className="text-sm font-medium text-gray-900">{content.deadline}</p>
                     </div>
                   </div>
                 )}
-                {item.targetDiagnosis && item.targetDiagnosis !== "General" && (
+                {content.targetDiagnosis && content.targetDiagnosis !== "General" && (
                   <div className="flex items-start gap-3">
                     <Stethoscope className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-gray-500">{t.grantDetail.targetConditions}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {item.targetDiagnosis.split(",").slice(0, 5).map((d, i) => (
+                        {content.targetDiagnosis.split(",").slice(0, 5).map((d, i) => (
                           <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
                             {d.trim()}
                           </span>
                         ))}
-                        {item.targetDiagnosis.split(",").length > 5 && (
-                          <span className="text-xs text-gray-400">+{item.targetDiagnosis.split(",").length - 5} more</span>
+                        {content.targetDiagnosis.split(",").length > 5 && (
+                          <span className="text-xs text-gray-400">+{content.targetDiagnosis.split(",").length - 5} more</span>
                         )}
                       </div>
                     </div>
                   </div>
                 )}
-                {item.ageRange && item.ageRange !== "0-100" && (
+                {content.ageRange && content.ageRange !== "0-100" && (
                   <div className="flex items-start gap-3">
                     <Users className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-gray-500">{t.grantDetail.ageRange}</p>
                       <p className="text-sm font-medium text-gray-900">
-                        {item.ageRange === "0-18" ? `${t.grantDetail.children} (0-18)` :
-                         item.ageRange === "18-100" ? `${t.grantDetail.adults} (18+)` :
-                         t.grantDetail.ages.replace("{range}", item.ageRange)}
+                        {content.ageRange === "0-18" ? `${t.grantDetail.children} (0-18)` :
+                         content.ageRange === "18-100" ? `${t.grantDetail.adults} (18+)` :
+                         t.grantDetail.ages.replace("{range}", content.ageRange)}
                       </p>
                     </div>
                   </div>

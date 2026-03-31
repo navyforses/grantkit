@@ -257,3 +257,10 @@
 - [x] Add translations to en.ts, ka.ts, ru.ts, fr.ts, es.ts
 - [x] Replace hardcoded strings in Admin.tsx with t() calls (150+ strings, 0 TS errors)
 - [x] Run tests and verify (196 tests all passing, 0 TS errors)
+
+## Enriched Content Translation (4 languages)
+- [x] Audit current translation coverage for enriched fields (schema needs 6 new columns)
+- [x] Build LLM batch translation script for enriched fields
+- [x] Run translation for all grants × 4 languages (KA, FR, ES, RU) — 609/609, 0 errors
+- [x] Verify translation results in database (609/609 translated, all 4 languages)
+- [x] Run tests and verify (196 tests all passing, 0 TS errors)

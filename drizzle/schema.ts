@@ -119,6 +119,14 @@ export const grantTranslations = mysqlTable("grant_translations", {
   name: text("name"),
   description: text("description"),
   eligibility: text("eligibility"),
+
+  // Enrichment fields translations
+  applicationProcess: text("applicationProcess"),
+  deadline: text("deadline"),
+  targetDiagnosis: text("targetDiagnosis"),
+  ageRange: varchar("ageRange", { length: 64 }),
+  geographicScope: text("geographicScope"),
+  documentsRequired: text("documentsRequired"),
 }, (table) => [
   uniqueIndex("grant_lang_idx").on(table.grantItemId, table.language),
   index("grant_translations_lang_idx").on(table.language),

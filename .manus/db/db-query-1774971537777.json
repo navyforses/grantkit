@@ -1,0 +1,22 @@
+{
+  "query": "\nSELECT \n  COUNT(*) as total,\n  SUM(CASE WHEN applicationProcess IS NOT NULL AND applicationProcess != '' THEN 1 ELSE 0 END) as has_applicationProcess,\n  SUM(CASE WHEN deadline IS NOT NULL AND deadline != '' THEN 1 ELSE 0 END) as has_deadline,\n  SUM(CASE WHEN targetDiagnosis IS NOT NULL AND targetDiagnosis != '' THEN 1 ELSE 0 END) as has_targetDiagnosis,\n  SUM(CASE WHEN documentsRequired IS NOT NULL AND documentsRequired != '' THEN 1 ELSE 0 END) as has_documentsRequired,\n  SUM(CASE WHEN geographicScope IS NOT NULL AND geographicScope != '' THEN 1 ELSE 0 END) as has_geographicScope,\n  SUM(CASE WHEN ageRange IS NOT NULL AND ageRange != '' THEN 1 ELSE 0 END) as has_ageRange,\n  SUM(CASE WHEN fundingType IS NOT NULL AND fundingType != '' THEN 1 ELSE 0 END) as has_fundingType,\n  SUM(CASE WHEN description IS NOT NULL AND description != '' THEN 1 ELSE 0 END) as has_description,\n  SUM(CASE WHEN eligibility IS NOT NULL AND eligibility != '' THEN 1 ELSE 0 END) as has_eligibility\nFROM grants WHERE isActive = 1;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute \nSELECT \n  COUNT(*) as total,\n  SUM(CASE WHEN applicationProcess IS NOT NULL AND applicationProcess != '' THEN 1 ELSE 0 END) as has_applicationProcess,\n  SUM(CASE WHEN deadline IS NOT NULL AND deadline != '' THEN 1 ELSE 0 END) as has_deadline,\n  SUM(CASE WHEN targetDiagnosis IS NOT NULL AND targetDiagnosis != '' THEN 1 ELSE 0 END) as has_targetDiagnosis,\n  SUM(CASE WHEN documentsRequired IS NOT NULL AND documentsRequired != '' THEN 1 ELSE 0 END) as has_documentsRequired,\n  SUM(CASE WHEN geographicScope IS NOT NULL AND geographicScope != '' THEN 1 ELSE 0 END) as has_geographicScope,\n  SUM(CASE WHEN ageRange IS NOT NULL AND ageRange != '' THEN 1 ELSE 0 END) as has_ageRange,\n  SUM(CASE WHEN fundingType IS NOT NULL AND fundingType != '' THEN 1 ELSE 0 END) as has_fundingType,\n  SUM(CASE WHEN description IS NOT NULL AND description != '' THEN 1 ELSE 0 END) as has_description,\n  SUM(CASE WHEN eligibility IS NOT NULL AND eligibility != '' THEN 1 ELSE 0 END) as has_eligibility\nFROM grants WHERE isActive = 1;\n",
+  "rows": [
+    {
+      "total": "630",
+      "has_applicationProcess": "601",
+      "has_deadline": "590",
+      "has_targetDiagnosis": "609",
+      "has_documentsRequired": "558",
+      "has_geographicScope": "591",
+      "has_ageRange": "598",
+      "has_fundingType": "570",
+      "has_description": "630",
+      "has_eligibility": "611"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\thas_applicationProcess\thas_deadline\thas_targetDiagnosis\thas_documentsRequired\thas_geographicScope\thas_ageRange\thas_fundingType\thas_description\thas_eligibility\n630\t601\t590\t609\t558\t591\t598\t570\t630\t611\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}
