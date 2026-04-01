@@ -1,5 +1,5 @@
 /**
- * Import 300 researched social grants into the GrantKit database.
+ * Import Phase 7 EU grants (19 countries × 5 categories) into the GrantKit database.
  * Maps research JSON fields to the existing grants table schema.
  * 
  * Usage: node server/import-research-grants.mjs
@@ -43,7 +43,7 @@ const grants = mysqlTable("grants", {
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
-const DATA_PATH = "/home/ubuntu/grantkit-data/phase6/processed/phase6_all.json";
+const DATA_PATH = "/home/ubuntu/grantkit-data/phase7/processed/phase7_all.json";
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
@@ -52,7 +52,7 @@ function slugify(str) {
 function mapResearchToGrant(research, index) {
   // Generate a unique itemId based on name
   const nameSlug = slugify(research.name).substring(0, 40);
-  const itemId = `p6_${String(index + 1).padStart(4, "0")}_${nameSlug}`;
+  const itemId = research.itemId || `p7_${String(index + 1).padStart(4, "0")}_${nameSlug}`;
 
   const category = research.category || "other";
 
@@ -67,11 +67,11 @@ function mapResearchToGrant(research, index) {
   let eligibility = research.eligibility || research.eligibility_description || "";
 
   // Map state
-  let state = research.state || research.state_or_region || "Nationwide";
-  if (!state || state.toLowerCase() === "n/a" || state.toLowerCase() === "none") state = "Nationwide";
+  let state = research.state || research.state_or_region || "";
+  if (!state || state.toLowerCase() === "n/a" || state.toLowerCase() === "none") state = "";
 
   // Determine geographic scope
-  const geographicScope = research.geographic_scope || (state === "Nationwide" ? "National" : state);
+  const geographicScope = research.geographic_scope || research.country || "";
 
   // Determine funding type from funding_source
   let fundingType = "";
