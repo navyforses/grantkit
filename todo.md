@@ -328,3 +328,10 @@
 - [x] Import 305 unique grants to DB (86 skipped as duplicates)
 - [x] Total grants in DB: 1,235
 - [x] All 196 tests passing
+
+## State/Region Filter for Catalog
+- [x] State filter dropdown already exists in FilterBar (desktop + mobile advanced panel)
+- [x] Backend tRPC procedures already support state/city filtering (catalog.list, catalog.states, catalog.cities)
+- [x] State filter populated from DB with counts (53 distinct states)
+- [x] Fixed 384 rows: 2-letter state codes converted to full names + 79 'Federal' → 'Nationwide'
+- [x] Verified filter works with all 1,235 grants, 196 tests passing
