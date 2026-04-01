@@ -35,7 +35,7 @@ function tryParseJSON(str) {
 
 async function main() {
   const db = drizzle(process.env.DATABASE_URL);
-  const rawResults = JSON.parse(readFileSync("/home/ubuntu/enrich_batch_051_retry.json", "utf-8"));
+  const rawResults = JSON.parse(readFileSync("/home/ubuntu/enrich_batch_063_retry.json", "utf-8"));
   
   let updated = 0;
   for (const result of rawResults.results) {
@@ -72,7 +72,7 @@ async function main() {
       SUM(CASE WHEN documentsRequired IS NULL OR documentsRequired = '' THEN 1 ELSE 0 END) as empty_docs,
       SUM(CASE WHEN ageRange IS NULL OR ageRange = '' THEN 1 ELSE 0 END) as empty_age,
       SUM(CASE WHEN targetDiagnosis IS NULL OR targetDiagnosis = '' OR targetDiagnosis LIKE 'Subcategory:%' THEN 1 ELSE 0 END) as empty_target
-    FROM grants WHERE itemId LIKE 'social_%' OR itemId LIKE 'eu_social_%'`
+    FROM grants WHERE itemId LIKE 'social_%' OR itemId LIKE 'eu_social_%' OR itemId LIKE 'cat5_%'`
   );
   
   const row = verify[0]?.[0] || verify[0];

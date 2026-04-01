@@ -351,3 +351,15 @@
 - [x] Ran LLM enrichment in 86 parallel batches (849 + 10 retry = 859 grants)
 - [x] Imported all enriched data back to DB — 0 empty fields remaining
 - [x] Verified: all 859 grants have complete applicationProcess, deadline, documentsRequired, ageRange, targetDiagnosis
+
+## Phase 5: Remaining Categories Research
+- [x] Research startup/business grants (US + EU) — 187 unique
+- [x] Research educational grants (US + EU) — 211 unique
+- [x] Research research grants (US + EU) — 224 unique
+- [x] Research community development grants (US + EU) — 156 unique
+- [x] Research individual grants (US + EU) — 169 unique
+- [x] Added 5 new categories to platform (startup, educational, research, community, individual) with i18n (5 langs), styles, icons
+- [x] Compiled 947 unique grants, imported 944 to DB (3 duplicates skipped)
+- [x] LLM enrichment: 922/947 grants enriched (95 batches + 1 retry)
+- [x] Total grants in DB: 2,433 | All 196 tests passing
+- [ ] Update homepage counter to reflect 2,433+ grants

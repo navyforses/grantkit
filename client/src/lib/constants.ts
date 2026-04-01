@@ -45,6 +45,11 @@ export type CategoryValue =
   | "travel_transport"
   | "international"
   | "food_basic_needs"
+  | "startup"
+  | "educational"
+  | "research"
+  | "community"
+  | "individual"
   | "other";
 
 export const CATEGORIES: { value: CategoryValue; icon: string }[] = [
@@ -58,6 +63,11 @@ export const CATEGORIES: { value: CategoryValue; icon: string }[] = [
   { value: "travel_transport", icon: "✈️" },
   { value: "international", icon: "🌍" },
   { value: "food_basic_needs", icon: "🍽️" },
+  { value: "startup", icon: "🚀" },
+  { value: "educational", icon: "📚" },
+  { value: "research", icon: "🔬" },
+  { value: "community", icon: "🏘️" },
+  { value: "individual", icon: "👤" },
   { value: "other", icon: "📁" },
 ];
 
@@ -128,6 +138,36 @@ const CATEGORY_STYLES: Record<string, { bg: string; text: string; border: string
     text: "text-rose-700",
     border: "border-rose-200",
     borderLeft: "border-l-rose-500",
+  },
+  startup: {
+    bg: "bg-fuchsia-50",
+    text: "text-fuchsia-700",
+    border: "border-fuchsia-200",
+    borderLeft: "border-l-fuchsia-500",
+  },
+  educational: {
+    bg: "bg-sky-50",
+    text: "text-sky-700",
+    border: "border-sky-200",
+    borderLeft: "border-l-sky-500",
+  },
+  research: {
+    bg: "bg-lime-50",
+    text: "text-lime-700",
+    border: "border-lime-200",
+    borderLeft: "border-l-lime-500",
+  },
+  community: {
+    bg: "bg-yellow-50",
+    text: "text-yellow-700",
+    border: "border-yellow-200",
+    borderLeft: "border-l-yellow-500",
+  },
+  individual: {
+    bg: "bg-pink-50",
+    text: "text-pink-700",
+    border: "border-pink-200",
+    borderLeft: "border-l-pink-500",
   },
   other: {
     bg: "bg-gray-50",

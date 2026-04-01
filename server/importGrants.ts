@@ -10,7 +10,8 @@ import * as XLSX from "xlsx";
 const VALID_CATEGORIES = [
   "medical_treatment", "financial_assistance", "assistive_technology",
   "social_services", "scholarships", "housing", "travel_transport",
-  "international", "food_basic_needs", "other",
+  "international", "food_basic_needs", "startup", "educational",
+  "research", "community", "individual", "other",
 ];
 
 const VALID_COUNTRIES = ["US", "International"];

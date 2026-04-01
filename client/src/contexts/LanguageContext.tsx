@@ -45,6 +45,11 @@ const CATEGORY_LABELS: Record<string, Record<Language, string>> = {
   travel_transport: { en: "Travel & Transport", fr: "Voyage & Transport", es: "Viaje & Transporte", ru: "Путешествия и транспорт", ka: "მოგზაურობა & ტრანსპორტი" },
   international: { en: "International", fr: "International", es: "Internacional", ru: "Международные", ka: "საერთაშორისო" },
   food_basic_needs: { en: "Food & Basic Needs", fr: "Alimentation & Besoins essentiels", es: "Alimentación & Necesidades básicas", ru: "Питание и базовые потребности", ka: "საკვები & ძირითადი საჭიროებები" },
+  startup: { en: "Startup & Business", fr: "Startup & Entreprise", es: "Startup & Negocio", ru: "Стартапы и бизнес", ka: "სტარტაპი & ბიზნესი" },
+  educational: { en: "Educational", fr: "Éducatif", es: "Educativo", ru: "Образовательные", ka: "საგანმანათლებლო" },
+  research: { en: "Research", fr: "Recherche", es: "Investigación", ru: "Исследования", ka: "კვლევა" },
+  community: { en: "Community Development", fr: "Développement communautaire", es: "Desarrollo comunitario", ru: "Развитие сообщества", ka: "საზოგადოების განვითარება" },
+  individual: { en: "Individual & Fellowship", fr: "Individuel & Bourse", es: "Individual & Beca", ru: "Индивидуальные и стипендии", ka: "ინდივიდუალური & სტიპენდია" },
   other: { en: "Other", fr: "Autre", es: "Otro", ru: "Другое", ka: "სხვა" },
 };
 

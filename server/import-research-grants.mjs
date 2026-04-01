@@ -43,7 +43,7 @@ const grants = mysqlTable("grants", {
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
-const DATA_PATH = "/home/ubuntu/grantkit-data/combined/all_grants.json";
+const DATA_PATH = "/home/ubuntu/grantkit-data/phase5/processed/phase5_all.json";
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
@@ -52,7 +52,7 @@ function slugify(str) {
 function mapResearchToGrant(research, index) {
   // Generate a unique itemId based on name
   const nameSlug = slugify(research.name).substring(0, 40);
-  const itemId = `eu_social_${String(index + 1).padStart(4, "0")}_${nameSlug}`;
+  const itemId = `cat5_${String(index + 1).padStart(4, "0")}_${nameSlug}`;
 
   const category = research.category || "other";
 

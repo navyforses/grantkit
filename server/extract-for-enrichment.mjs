@@ -72,7 +72,8 @@ async function main() {
   }).from(grants).where(
     or(
       like(grants.itemId, "social_%"),
-      like(grants.itemId, "eu_social_%")
+      like(grants.itemId, "eu_social_%"),
+      like(grants.itemId, "cat5_%")
     )
   );
 
