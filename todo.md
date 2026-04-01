@@ -344,3 +344,10 @@
 - [x] Import 254 grants to DB (2 skipped as duplicates with existing)
 - [x] Total grants in DB: 1,489
 - [x] All 196 tests passing
+
+## LLM Enrichment for 559 New Grants
+- [x] Extract grants needing enrichment from DB (859 grants found)
+- [x] Created enrichment script using LLM to fill empty fields
+- [x] Ran LLM enrichment in 86 parallel batches (849 + 10 retry = 859 grants)
+- [x] Imported all enriched data back to DB — 0 empty fields remaining
+- [x] Verified: all 859 grants have complete applicationProcess, deadline, documentsRequired, ageRange, targetDiagnosis
