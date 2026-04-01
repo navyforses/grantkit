@@ -44,6 +44,7 @@ const CATEGORY_LABELS: Record<string, Record<Language, string>> = {
   housing: { en: "Housing", fr: "Logement", es: "Vivienda", ru: "Жильё", ka: "საცხოვრებელი" },
   travel_transport: { en: "Travel & Transport", fr: "Voyage & Transport", es: "Viaje & Transporte", ru: "Путешествия и транспорт", ka: "მოგზაურობა & ტრანსპორტი" },
   international: { en: "International", fr: "International", es: "Internacional", ru: "Международные", ka: "საერთაშორისო" },
+  food_basic_needs: { en: "Food & Basic Needs", fr: "Alimentation & Besoins essentiels", es: "Alimentación & Necesidades básicas", ru: "Питание и базовые потребности", ka: "საკვები & ძირითადი საჭიროებები" },
   other: { en: "Other", fr: "Autre", es: "Otro", ru: "Другое", ka: "სხვა" },
 };
 

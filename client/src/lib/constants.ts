@@ -44,6 +44,7 @@ export type CategoryValue =
   | "housing"
   | "travel_transport"
   | "international"
+  | "food_basic_needs"
   | "other";
 
 export const CATEGORIES: { value: CategoryValue; icon: string }[] = [
@@ -56,6 +57,7 @@ export const CATEGORIES: { value: CategoryValue; icon: string }[] = [
   { value: "housing", icon: "🏠" },
   { value: "travel_transport", icon: "✈️" },
   { value: "international", icon: "🌍" },
+  { value: "food_basic_needs", icon: "🍽️" },
   { value: "other", icon: "📁" },
 ];
 
@@ -120,6 +122,12 @@ const CATEGORY_STYLES: Record<string, { bg: string; text: string; border: string
     text: "text-teal-700",
     border: "border-teal-200",
     borderLeft: "border-l-teal-500",
+  },
+  food_basic_needs: {
+    bg: "bg-rose-50",
+    text: "text-rose-700",
+    border: "border-rose-200",
+    borderLeft: "border-l-rose-500",
   },
   other: {
     bg: "bg-gray-50",

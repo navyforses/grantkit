@@ -308,3 +308,13 @@
 - [x] Redesign Contact.tsx — theme-aware contact page
 - [x] Mobile responsiveness verification for both themes
 - [x] Run all vitest tests and ensure passing (196 tests all passing)
+
+## Upload 300 Researched Social Grants to Platform
+- [x] Create import script to transform research JSON to platform DB format
+- [x] Map new research fields to existing schema (subcategory→category, funding_source→status, etc.)
+- [x] Update VALID_CATEGORIES in importGrants.ts to include food_basic_needs
+- [x] Update VALID_COUNTRIES to include state-level entries or map to "US"
+- [x] Import 300 grants into grants table via bulkImportGrants or direct SQL
+- [x] Verify all 300 grants appear in catalog (930 total, 106 in Food & Basic Needs)
+- [x] Update frontend constants (CATEGORIES) to include new social categories
+- [x] All 196 vitest tests passing after import
