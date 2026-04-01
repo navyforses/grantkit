@@ -318,3 +318,13 @@
 - [x] Verify all 300 grants appear in catalog (930 total, 106 in Food & Basic Needs)
 - [x] Update frontend constants (CATEGORIES) to include new social categories
 - [x] All 196 vitest tests passing after import
+
+## Phase 3: Remaining 41 US States Social Grants
+- [x] Research Group 1 (AL, AK, AZ, AR, CO, CT, DE, HI, ID, IN) — 93 grants
+- [x] Research Group 2 (IA, KS, KY, LA, ME, MD, MA, MN, MS, MO) — 91 grants
+- [x] Research Group 3 (MT, NE, NV, NH, NJ, NM, ND, OK, OR, RI) — 89 grants
+- [x] Research Group 4 (SC, SD, TN, UT, VT, VA, WA, WV, WI, WY, DC) — 118 grants
+- [x] Validate and deduplicate all 391 grants (avg quality 98.5/100)
+- [x] Import 305 unique grants to DB (86 skipped as duplicates)
+- [x] Total grants in DB: 1,235
+- [x] All 196 tests passing
