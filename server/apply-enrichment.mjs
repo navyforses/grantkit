@@ -80,7 +80,7 @@ async function main() {
   const db = drizzle(dbUrl);
 
   // Load enrichment results
-  const resultsPath = "/home/ubuntu/enrich_phase5_grants.json";
+  const resultsPath = "/home/ubuntu/enrich_phase6_grants.json";
   const rawResults = JSON.parse(readFileSync(resultsPath, "utf-8"));
   
   console.log(`Loaded ${rawResults.results.length} batch results.`);
@@ -96,7 +96,7 @@ async function main() {
       continue;
     }
     
-    const enrichedJson = result.output?.enriched_json;
+    const enrichedJson = result.output?.enriched_grants_json || result.output?.enriched_json;
     const parsed = tryParseJSON(enrichedJson);
     
     if (parsed && Array.isArray(parsed)) {
@@ -117,7 +117,8 @@ async function main() {
 
   for (const enriched of allEnriched) {
     const grantId = enriched.id;
-    if (!grantId) {
+    const grantItemId = enriched.itemId;
+    if (!grantId && !grantItemId) {
       skipped++;
       continue;
     }
@@ -147,7 +148,11 @@ async function main() {
     }
 
     try {
-      await db.update(grants).set(updateData).where(eq(grants.id, grantId));
+      if (grantId) {
+        await db.update(grants).set(updateData).where(eq(grants.id, grantId));
+      } else {
+        await db.update(grants).set(updateData).where(eq(grants.itemId, grantItemId));
+      }
       updated++;
     } catch (err) {
       console.error(`Error updating grant ${grantId}: ${err.message}`);
@@ -170,7 +175,7 @@ async function main() {
       SUM(CASE WHEN documentsRequired IS NULL OR documentsRequired = '' THEN 1 ELSE 0 END) as empty_docs,
       SUM(CASE WHEN ageRange IS NULL OR ageRange = '' THEN 1 ELSE 0 END) as empty_age,
       SUM(CASE WHEN targetDiagnosis IS NULL OR targetDiagnosis = '' OR targetDiagnosis LIKE 'Subcategory:%' THEN 1 ELSE 0 END) as empty_target
-    FROM grants WHERE itemId LIKE 'social_%' OR itemId LIKE 'eu_social_%' OR itemId LIKE 'cat5_%'`
+    FROM grants WHERE itemId LIKE 'social_%' OR itemId LIKE 'eu_social_%' OR itemId LIKE 'cat5_%' OR itemId LIKE 'p6_%'`
   );
   
   console.log(`\n=== Post-Enrichment Verification ===`);

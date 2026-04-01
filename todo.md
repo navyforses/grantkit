@@ -363,3 +363,11 @@
 - [x] LLM enrichment: 922/947 grants enriched (95 batches + 1 retry)
 - [x] Total grants in DB: 2,433 | All 196 tests passing
 - [ ] Update homepage counter to reflect 2,433+ grants
+
+## Phase 6: Remaining 41 US States — 5 New Categories
+- [x] Research startup + educational grants for 41 states — 378 grants
+- [x] Research research + community grants for 41 states — 317 grants
+- [x] Research individual grants for 41 states — 327 grants
+- [x] Compiled 974 unique grants, imported 918 to DB (56 duplicates skipped)
+- [x] LLM enrichment: 937/952 grants enriched (96 batches, 0 parse errors)
+- [x] Total grants in DB: 3,351 | All 196 tests passing

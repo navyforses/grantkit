@@ -73,7 +73,8 @@ async function main() {
     or(
       like(grants.itemId, "social_%"),
       like(grants.itemId, "eu_social_%"),
-      like(grants.itemId, "cat5_%")
+      like(grants.itemId, "cat5_%"),
+      like(grants.itemId, "p6_%")
     )
   );
 
