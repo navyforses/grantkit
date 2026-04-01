@@ -335,3 +335,12 @@
 - [x] State filter populated from DB with counts (53 distinct states)
 - [x] Fixed 384 rows: 2-letter state codes converted to full names + 79 'Federal' → 'Nationwide'
 - [x] Verified filter works with all 1,235 grants, 196 tests passing
+
+## Phase 4: EU 27 Member States Social Grants
+- [x] Research Group 1 (Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland) — 80 grants
+- [x] Research Group 2 (France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg) — 82 grants
+- [x] Research Group 3 (Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden) — 100 grants
+- [x] Validate and deduplicate all 262 grants → 256 unique (avg quality 93.4/100)
+- [x] Import 254 grants to DB (2 skipped as duplicates with existing)
+- [x] Total grants in DB: 1,489
+- [x] All 196 tests passing

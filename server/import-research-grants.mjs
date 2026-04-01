@@ -52,75 +52,55 @@ function slugify(str) {
 function mapResearchToGrant(research, index) {
   // Generate a unique itemId based on name
   const nameSlug = slugify(research.name).substring(0, 40);
-  const itemId = `social_${String(index + 1).padStart(4, "0")}_${nameSlug}`;
+  const itemId = `eu_social_${String(index + 1).padStart(4, "0")}_${nameSlug}`;
 
-  // Map category: housing stays as "housing", medical_treatment stays, food_basic_needs is new
   const category = research.category || "other";
 
-  // Build amount description
-  let amount = research.amount_description || "";
+  // Handle both old (amount_description/amount_min/amount_max) and new (amount) format
+  let amount = research.amount || research.amount_description || "Varies";
   if (research.amount_min && research.amount_max) {
-    amount = `$${research.amount_min.toLocaleString()} - $${research.amount_max.toLocaleString()}`;
+    amount = `${research.amount_min} - ${research.amount_max}`;
     if (research.amount_description) amount += ` (${research.amount_description})`;
-  } else if (research.amount_description) {
-    amount = research.amount_description;
   }
 
-  // Build eligibility from structured fields
-  let eligibility = research.eligibility_description || "";
-  const eligTypes = [];
-  if (research.eligibility_individuals) eligTypes.push("Individuals");
-  if (research.eligibility_nonprofits) eligTypes.push("Nonprofits");
-  if (research.eligibility_businesses) eligTypes.push("Businesses");
-  if (research.eligibility_researchers) eligTypes.push("Researchers");
-  if (eligTypes.length > 0) {
-    eligibility += eligibility ? ` | Eligible: ${eligTypes.join(", ")}` : `Eligible: ${eligTypes.join(", ")}`;
-  }
-
-  // Build deadline string
-  let deadline = "";
-  if (research.deadline_date) {
-    deadline = research.deadline_date;
-  } else if (research.deadline_type) {
-    deadline = research.deadline_type;
-  }
+  // Handle both old (eligibility_description) and new (eligibility) format
+  let eligibility = research.eligibility || research.eligibility_description || "";
 
   // Map state
-  let state = research.state_or_region || "";
-  if (state === "Federal") state = "Federal";
+  let state = research.state || research.state_or_region || "Nationwide";
+  if (!state || state.toLowerCase() === "n/a" || state.toLowerCase() === "none") state = "Nationwide";
 
   // Determine geographic scope
-  const geographicScope = research.geographic_scope || "";
+  const geographicScope = research.geographic_scope || (state === "Nationwide" ? "National" : state);
 
   // Determine funding type from funding_source
   let fundingType = "";
-  if (research.funding_source === "federal") fundingType = "Federal Government";
-  else if (research.funding_source === "state") fundingType = "State Government";
-  else fundingType = research.funding_source || "";
-
-  // Build subcategory info for notes/targetDiagnosis
-  const subcategory = research.subcategory || "";
+  const fs = research.funding_source || "";
+  if (fs === "government") fundingType = "Government";
+  else if (fs === "nonprofit") fundingType = "Nonprofit";
+  else if (fs === "mixed") fundingType = "Mixed (Government + Nonprofit)";
+  else fundingType = fs;
 
   return {
     itemId,
     name: research.name,
-    organization: research.funder_name || "",
+    organization: research.organization || research.funder_name || "",
     description: research.description || "",
     category,
     type: "grant",
-    country: research.country || "US",
+    country: research.country || "Unknown",
     eligibility,
-    website: research.funder_url || research.application_url || "",
+    website: research.website || research.funder_url || research.application_url || "",
     phone: research.phone || "",
     email: research.email || "",
     amount,
     status: research.status === "active" ? "Active" : (research.status || "Active"),
     applicationProcess: research.application_process || "",
-    deadline,
+    deadline: research.deadline || "",
     fundingType,
-    targetDiagnosis: subcategory ? `Subcategory: ${subcategory}` : "",
+    targetDiagnosis: research.subcategory ? `Subcategory: ${research.subcategory}` : "",
     ageRange: "",
-    geographicScope: geographicScope || state,
+    geographicScope,
     documentsRequired: "",
     b2VisaEligible: "",
     state,
