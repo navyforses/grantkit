@@ -119,7 +119,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-background theme-transition">
       <SEO
         title="Find Medical & Startup Grants Worldwide"
-        description="Curated database of 600+ grants for medical treatment, financial assistance, and academic scholarships across 15+ countries. Updated monthly. Start your search today."
+        description="Curated database of 3,650+ grants for medical treatment, financial assistance, and academic scholarships across 29+ countries. Updated monthly. Start your search today."
         canonicalPath="/"
         keywords="grants, medical grants, startup grants, scholarships, financial assistance, funding, research grants"
         noSuffix

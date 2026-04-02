@@ -174,6 +174,12 @@ export interface Translations {
     ctaTitle: string;
     ctaSubtitle: string;
     ctaButton: string;
+    prev: string;
+    next: string;
+    searching: string;
+    loginRegister: string;
+    activeSubscriber: string;
+    grantsRefreshed: string;
   };
 
   // Filter labels
@@ -289,6 +295,7 @@ export interface Translations {
     nationwideUSA: string;
     open: string;
     b2VisaOK: string;
+    more: string;
   };
 
   // Profile page

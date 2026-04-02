@@ -175,6 +175,12 @@ export const es: Translations = {
     ctaTitle: "¿Necesitas ayuda para encontrar la subvención adecuada?",
     ctaSubtitle: "Obtén acceso completo a las 3,650+ entradas con actualizaciones mensuales.",
     ctaButton: "Obtener acceso — $9/mes",
+    prev: "Anterior",
+    next: "Siguiente",
+    searching: "Buscando...",
+    loginRegister: "Iniciar sesión / Registro",
+    activeSubscriber: "Suscriptor activo",
+    grantsRefreshed: "Subvenciones actualizadas",
   },
   categories: {
     all: "Todas las categorías",
@@ -280,6 +286,7 @@ export const es: Translations = {
     nationwideUSA: "Todo el país (EE.UU.)",
     open: "Abierto",
     b2VisaOK: "Visa B-2 OK",
+    more: "más",
   },
   profile: {
     title: "Mi Cuenta",
