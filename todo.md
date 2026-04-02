@@ -393,4 +393,11 @@
 - [x] Updated medical counter 296+ → 600+, financial 111+ → 350+ (Housing)
 - [x] Updated FAQ country answers in all languages (29 countries listed)
 - [x] Verified on live preview — all counters correct
+- [x] Save checkpoint — version 065b900f
+
+## Homepage Preview Section Update
+- [x] Created catalog.preview tRPC endpoint with getDiversePreviewGrants (one per category)
+- [x] Updated Home.tsx to use new preview endpoint instead of catalog.list
+- [x] Preview now shows: Medical, Housing, Startup, Educational, Research (randomized each load)
+- [x] Verified on live preview — 5 diverse category cards displaying correctly
 - [ ] Save checkpoint

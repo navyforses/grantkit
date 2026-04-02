@@ -11,6 +11,7 @@ import {
   getActiveNewsletterSubscribers, getNewsletterSubscriberCount, exportAllGrants,
   unsubscribeByToken, createNotificationRecord, updateNotificationRecord,
   getNotificationHistory, bulkImportGrants, getDistinctStates, getDistinctCities,
+  getDiversePreviewGrants,
 } from "./db";
 import {
   sendSubscriptionEmail, sendAdminNewSubscriberNotification,
@@ -257,6 +258,42 @@ export const appRouter = router({
     count: publicProcedure.query(async () => {
       const stats = await getGrantStats();
       return { total: stats.active, grants: stats.grants, resources: stats.resources };
+    }),
+
+    // Get diverse preview grants for homepage (one from each major category)
+    preview: publicProcedure.query(async () => {
+      const previewGrants = await getDiversePreviewGrants(5);
+      const itemIds = previewGrants.map(g => g.itemId);
+      const translations = await getBulkGrantTranslations(itemIds);
+
+      return {
+        grants: previewGrants.map(g => ({
+          id: g.itemId,
+          name: g.name,
+          organization: g.organization || "",
+          description: g.description || "",
+          category: g.category,
+          type: g.type,
+          country: g.country,
+          eligibility: g.eligibility || "",
+          website: g.website || "",
+          phone: g.phone || "",
+          email: g.email || "",
+          amount: g.amount || "",
+          status: g.status || "",
+          applicationProcess: g.applicationProcess || "",
+          deadline: g.deadline || "",
+          fundingType: g.fundingType || "",
+          targetDiagnosis: g.targetDiagnosis || "",
+          ageRange: g.ageRange || "",
+          geographicScope: g.geographicScope || "",
+          documentsRequired: g.documentsRequired || "",
+          b2VisaEligible: g.b2VisaEligible || "",
+          state: g.state,
+          city: g.city,
+          translations: translations[g.itemId] || {},
+        })),
+      };
     }),
 
     // Get distinct states for filter dropdown

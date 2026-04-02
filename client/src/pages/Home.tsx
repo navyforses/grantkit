@@ -57,9 +57,9 @@ export default function Home() {
   const { t, language } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Fetch preview items from database
-  const { data: previewData } = trpc.catalog.list.useQuery(
-    { pageSize: 5, page: 1 },
+  // Fetch diverse preview items from database (one per category)
+  const { data: previewData } = trpc.catalog.preview.useQuery(
+    undefined,
     { retry: false }
   );
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
@@ -90,13 +90,13 @@ export default function Home() {
         geographicScope: g.geographicScope,
         documentsRequired: g.documentsRequired,
         b2VisaEligible: g.b2VisaEligible,
-        state: g.state,
-        city: g.city,
+        state: g.state || "",
+        city: g.city || "",
       };
     });
   }, [previewData, language]);
 
-  const totalGrants = countData?.total || 643;
+  const totalGrants = countData?.total || 3650;
 
   const newsletterMutation = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => {

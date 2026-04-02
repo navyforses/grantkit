@@ -572,6 +572,37 @@ export async function listGrants(options?: {
   };
 }
 
+/** Get diverse preview grants — one from each major category for homepage showcase */
+export async function getDiversePreviewGrants(limit: number = 5) {
+  const db = await getDb();
+  if (!db) return [];
+
+  // Pick one grant from each of the most popular categories
+  const targetCategories = [
+    'medical_treatment', 'housing', 'startup', 'educational', 'research',
+    'community', 'individual', 'food_basic_needs', 'financial_assistance'
+  ];
+
+  const results = [];
+  for (const cat of targetCategories) {
+    if (results.length >= limit) break;
+    const [row] = await db
+      .select()
+      .from(grants)
+      .where(and(
+        eq(grants.isActive, true),
+        eq(grants.category, cat),
+        sql`${grants.description} IS NOT NULL AND ${grants.description} != ''`,
+        sql`${grants.amount} IS NOT NULL AND ${grants.amount} != ''`
+      ))
+      .orderBy(sql`RAND()`)
+      .limit(1);
+    if (row) results.push(row);
+  }
+
+  return results;
+}
+
 /** Helper to get sort order clause */
 function getOrderByClause(sortBy?: string) {
   switch (sortBy) {
