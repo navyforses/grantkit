@@ -385,4 +385,12 @@
 - [x] Imported 47 Boston housing grants into database (2 duplicates skipped)
 - [x] Translated all 47 grants into 4 languages (ka, fr, es, ru) — 188/188 translations
 - [x] Verified: Total grants in DB = 3,653 | Total translations = 2,708 | 196 tests passing
+- [x] Save checkpoint — version 05fcfacb
+
+## Homepage Counter Update
+- [x] Updated grant count from 643 to 3,650+ in all 5 languages (EN, KA, FR, ES, RU)
+- [x] Updated country count from 2+ to 29+ in all 5 languages
+- [x] Updated medical counter 296+ → 600+, financial 111+ → 350+ (Housing)
+- [x] Updated FAQ country answers in all languages (29 countries listed)
+- [x] Verified on live preview — all counters correct
 - [ ] Save checkpoint
