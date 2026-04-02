@@ -62,6 +62,9 @@ function useDebouncedValue<T>(value: T, delay: number): T {
 export default function Catalog() {
   const search = useSearch();
   const [, navigate] = useLocation();
+  // Read initial filter state from URL only on mount (empty deps intentional to avoid
+  // feedback loop with the URL-sync effect below)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initial = useMemo(() => readFiltersFromURL(search), []);
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(initial.category);
@@ -98,7 +101,7 @@ export default function Catalog() {
     const qs = params.toString();
     const newPath = qs ? `/catalog?${qs}` : "/catalog";
     navigate(newPath, { replace: true });
-  }, [selectedCategory, selectedCountry, selectedType, searchQuery, sortBy, page, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity]);
+  }, [selectedCategory, selectedCountry, selectedType, searchQuery, sortBy, page, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, navigate]);
 
   // Debounce search query to avoid excessive API calls
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
