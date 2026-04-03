@@ -28,17 +28,17 @@ export default function Contact() {
   const sendMessage = trpc.system.notifyOwner.useMutation({
     onSuccess: () => {
       setSubmitted(true);
-      toast.success("Message sent successfully!");
+      toast.success(t.contact.toastSuccess);
     },
     onError: () => {
-      toast.error("Failed to send message. Please try again.");
+      toast.error(t.contact.toastError);
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) {
-      toast.error("Please fill in all fields");
+      toast.error(t.contact.toastValidation);
       return;
     }
     sendMessage.mutate({
@@ -50,8 +50,8 @@ export default function Contact() {
   return (
     <div className="min-h-screen flex flex-col bg-secondary">
       <SEO
-        title="Contact Us"
-        description="Get in touch with the GrantKit team. Questions about grants, subscriptions, or partnerships? We usually respond within 24 hours."
+        title={t.seo.contactTitle}
+        description={t.seo.contactDescription}
         canonicalPath="/contact"
       />
       <Navbar />
@@ -62,14 +62,14 @@ export default function Contact() {
           <Link href="/">
             <button className="inline-flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground active:text-foreground md:hover:text-foreground transition-colors mb-3 md:mb-4">
               <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
-              Home
+              {t.contact.backHome}
             </button>
           </Link>
           <h1 className="text-xl md:text-3xl font-bold text-foreground tracking-tight mb-1 md:mb-2">
-            Contact Us
+            {t.contact.heading}
           </h1>
           <p className="text-muted-foreground text-sm md:text-base max-w-xl">
-            Have a question, suggestion, or need help? We'd love to hear from you.
+            {t.contact.subheading}
           </p>
         </div>
       </div>
@@ -86,9 +86,9 @@ export default function Contact() {
               <div className="w-14 h-14 md:w-16 md:h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
                 <Send className="w-6 h-6 md:w-8 md:h-8 text-emerald-500" />
               </div>
-              <h2 className="text-lg md:text-xl font-bold text-foreground mb-2">Message Sent!</h2>
+              <h2 className="text-lg md:text-xl font-bold text-foreground mb-2">{t.contact.successTitle}</h2>
               <p className="text-sm text-muted-foreground mb-5 md:mb-6">
-                Thank you for reaching out. We'll get back to you as soon as possible.
+                {t.contact.successMessage}
               </p>
               <div className="flex flex-col md:flex-row gap-2 md:gap-3 justify-center">
                 <Button
@@ -101,11 +101,11 @@ export default function Contact() {
                     setMessage("");
                   }}
                 >
-                  Send Another Message
+                  {t.contact.sendAnother}
                 </Button>
                 <Link href="/catalog">
                   <Button className="bg-primary hover:bg-primary h-11 md:h-10 rounded-xl md:rounded-md w-full md:w-auto">
-                    Browse Catalog
+                    {t.contact.browseCatalog}
                   </Button>
                 </Link>
               </div>
@@ -121,7 +121,7 @@ export default function Contact() {
                 <div className="flex-1 bg-card border border-border rounded-xl p-3 flex items-center gap-2.5">
                   <Mail className="w-4 h-4 text-primary shrink-0" />
                   <div>
-                    <p className="text-[10px] text-muted-foreground/60">Email</p>
+                    <p className="text-[10px] text-muted-foreground/60">{t.contact.emailLabel}</p>
                     <a href="mailto:hello@grantkit.co" className="text-xs font-medium text-primary">
                       hello@grantkit.co
                     </a>
@@ -130,8 +130,8 @@ export default function Contact() {
                 <div className="flex-1 bg-card border border-border rounded-xl p-3 flex items-center gap-2.5">
                   <MessageSquare className="w-4 h-4 text-primary shrink-0" />
                   <div>
-                    <p className="text-[10px] text-muted-foreground/60">Response</p>
-                    <p className="text-xs font-medium text-foreground/80">Within 24h</p>
+                    <p className="text-[10px] text-muted-foreground/60">{t.contact.responseLabel}</p>
+                    <p className="text-xs font-medium text-foreground/80">{t.contact.responseTime}</p>
                   </div>
                 </div>
               </div>
@@ -140,12 +140,12 @@ export default function Contact() {
                 {/* Desktop: Contact info sidebar */}
                 <div className="hidden md:block md:col-span-2 space-y-6">
                   <div className="bg-card border border-border rounded-lg p-6">
-                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Get in Touch</h3>
+                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">{t.contact.getInTouch}</h3>
                     <div className="space-y-4">
                       <div className="flex items-start gap-3">
                         <Mail className="w-5 h-5 text-primary mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium text-foreground">Email</p>
+                          <p className="text-sm font-medium text-foreground">{t.contact.emailLabel}</p>
                           <a href="mailto:hello@grantkit.co" className="text-sm text-primary hover:underline">
                             hello@grantkit.co
                           </a>
@@ -154,8 +154,8 @@ export default function Contact() {
                       <div className="flex items-start gap-3">
                         <MessageSquare className="w-5 h-5 text-primary mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium text-foreground">Response Time</p>
-                          <p className="text-sm text-muted-foreground">Usually within 24 hours</p>
+                          <p className="text-sm font-medium text-foreground">{t.contact.responseTimeLabel}</p>
+                          <p className="text-sm text-muted-foreground">{t.contact.usualResponseTime}</p>
                         </div>
                       </div>
                     </div>
@@ -166,13 +166,13 @@ export default function Contact() {
                 <div className="md:col-span-3">
                   <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl md:rounded-lg p-4 md:p-6 space-y-4 md:space-y-5">
                     <div>
-                      <label className="text-xs md:text-sm font-medium text-foreground/80 mb-1.5 block">Name</label>
+                      <label className="text-xs md:text-sm font-medium text-foreground/80 mb-1.5 block">{t.contact.nameLabel}</label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
                         <Input
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          placeholder="Your name"
+                          placeholder={t.contact.namePlaceholder}
                           className="pl-10 h-11 md:h-10 text-base md:text-sm rounded-xl md:rounded-md"
                           required
                         />
@@ -180,14 +180,14 @@ export default function Contact() {
                     </div>
 
                     <div>
-                      <label className="text-xs md:text-sm font-medium text-foreground/80 mb-1.5 block">Email</label>
+                      <label className="text-xs md:text-sm font-medium text-foreground/80 mb-1.5 block">{t.contact.emailLabel}</label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
                         <Input
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          placeholder="your@email.com"
+                          placeholder={t.contact.emailPlaceholder}
                           className="pl-10 h-11 md:h-10 text-base md:text-sm rounded-xl md:rounded-md"
                           required
                         />
@@ -195,11 +195,11 @@ export default function Contact() {
                     </div>
 
                     <div>
-                      <label className="text-xs md:text-sm font-medium text-foreground/80 mb-1.5 block">Message</label>
+                      <label className="text-xs md:text-sm font-medium text-foreground/80 mb-1.5 block">{t.contact.messageLabel}</label>
                       <Textarea
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="How can we help you?"
+                        placeholder={t.contact.messagePlaceholder}
                         rows={4}
                         className="text-base md:text-sm rounded-xl md:rounded-md"
                         required
@@ -214,12 +214,12 @@ export default function Contact() {
                       {sendMessage.isPending ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Sending...
+                          {t.contact.sending}
                         </>
                       ) : (
                         <>
                           <Send className="w-4 h-4" />
-                          Send Message
+                          {t.contact.sendMessage}
                         </>
                       )}
                     </Button>

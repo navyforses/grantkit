@@ -1163,7 +1163,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-secondary">
-      <SEO title="Admin Panel" />
+      <SEO title={t.seo.adminTitle} />
 
       {/* Header */}
       <div className="bg-card border-b border-border sticky top-0 z-30">

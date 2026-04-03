@@ -17,8 +17,8 @@ export default function Privacy() {
   return (
     <div className="min-h-screen flex flex-col bg-card">
       <SEO
-        title="Privacy Policy"
-        description="GrantKit Privacy Policy. Learn how we collect, use, and protect your personal information."
+        title={t.seo.privacyTitle}
+        description={t.seo.privacyDescription}
         canonicalPath="/privacy"
       />
       <Navbar />

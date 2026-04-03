@@ -91,7 +91,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen flex flex-col bg-secondary">
-      <SEO title="Profile" noIndex />
+      <SEO title={t.seo.profileTitle} noIndex />
       <Navbar />
 
       <main className="flex-1 py-5 md:py-16 pb-24 md:pb-16">

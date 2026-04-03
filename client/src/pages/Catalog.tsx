@@ -244,8 +244,8 @@ export default function Catalog() {
   return (
     <div ref={containerRef} className="min-h-screen flex flex-col bg-background theme-transition">
       <SEO
-        title="Browse Grants & Resources"
-        description="Search and filter 3,650+ grants for medical treatment, financial assistance, academic scholarships, and startup funding. Find the right grant for you."
+        title={t.seo.catalogTitle}
+        description={t.seo.catalogDescription}
         canonicalPath="/catalog"
         keywords="grant catalog, search grants, medical grants, startup funding, scholarships, financial aid"
       />
