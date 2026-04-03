@@ -175,6 +175,12 @@ export const en: Translations = {
     ctaTitle: "Need help finding the right grant?",
     ctaSubtitle: "Get full access to all 3,650+ entries with monthly updates and new opportunities.",
     ctaButton: "Get Access — $9/month",
+    prev: "Prev",
+    next: "Next",
+    searching: "Searching...",
+    loginRegister: "Login / Register",
+    activeSubscriber: "Active Subscriber",
+    grantsRefreshed: "Grants refreshed",
   },
   categories: {
     all: "All Categories",
@@ -280,6 +286,7 @@ export const en: Translations = {
     nationwideUSA: "Nationwide (USA)",
     open: "Open",
     b2VisaOK: "B-2 Visa OK",
+    more: "more",
   },
   profile: {
     title: "My Account",

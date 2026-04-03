@@ -742,7 +742,7 @@ export default function GrantDetail() {
                           </span>
                         ))}
                         {content.targetDiagnosis.split(",").length > 5 && (
-                          <span className="text-xs text-muted-foreground/60">+{content.targetDiagnosis.split(",").length - 5} more</span>
+                          <span className="text-xs text-muted-foreground/60">+{content.targetDiagnosis.split(",").length - 5} {t.grantDetail.more}</span>
                         )}
                       </div>
                     </div>

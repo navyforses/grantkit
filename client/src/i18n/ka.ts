@@ -175,6 +175,12 @@ export const ka: Translations = {
     ctaTitle: "გსურთ დახმარება სწორი გრანტის მოძებნაში?",
     ctaSubtitle: "მიიღეთ სრული წვდომა ყველა 3,650+ ჩანაწერზე ყოველთვიური განახლებებით.",
     ctaButton: "წვდომის მიღება — $9/თვეში",
+    prev: "წინა",
+    next: "შემდეგი",
+    searching: "ძიება...",
+    loginRegister: "შესვლა / რეგისტრაცია",
+    activeSubscriber: "აქტიური გამომწერი",
+    grantsRefreshed: "გრანტები განახლდა",
   },
   categories: {
     all: "ყველა კატეგორია",
@@ -280,6 +286,7 @@ export const ka: Translations = {
     nationwideUSA: "მთელი ქვეყანა (აშშ)",
     open: "ღია",
     b2VisaOK: "B-2 ვიზა OK",
+    more: "სხვა",
   },
   profile: {
     title: "ჩემი ანგარიში",

@@ -175,6 +175,12 @@ export const ru: Translations = {
     ctaTitle: "Нужна помощь в поиске подходящего гранта?",
     ctaSubtitle: "Получите полный доступ ко всем 3,650+ записям с ежемесячными обновлениями.",
     ctaButton: "Получить доступ — $9/месяц",
+    prev: "Назад",
+    next: "Далее",
+    searching: "Поиск...",
+    loginRegister: "Войти / Регистрация",
+    activeSubscriber: "Активный подписчик",
+    grantsRefreshed: "Гранты обновлены",
   },
   categories: {
     all: "Все категории",
@@ -280,6 +286,7 @@ export const ru: Translations = {
     nationwideUSA: "По всей стране (США)",
     open: "Открыт",
     b2VisaOK: "Виза B-2 OK",
+    more: "ещё",
   },
   profile: {
     title: "Мой аккаунт",

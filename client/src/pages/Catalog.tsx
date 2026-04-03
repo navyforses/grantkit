@@ -24,10 +24,30 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useIsMobile } from "@/hooks/useMobile";
+import { useLocation, useSearch } from "wouter";
 
 const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
 const SEARCH_DEBOUNCE_MS = 300;
+
+/** Read filter state from URL search params */
+function readFiltersFromURL(search: string) {
+  const params = new URLSearchParams(search);
+  return {
+    category: (params.get("category") || "all") as CategoryValue,
+    country: (params.get("country") || "all") as CountryValue,
+    type: (params.get("type") || "all") as TypeValue,
+    search: params.get("q") || "",
+    sortBy: (params.get("sort") || "name_asc") as SortValue,
+    page: parseInt(params.get("page") || "1", 10) || 1,
+    fundingType: params.get("funding") || "all",
+    targetDiagnosis: params.get("diagnosis") || "all",
+    b2VisaEligible: params.get("b2visa") || "all",
+    hasDeadline: params.get("deadline") === "1",
+    state: params.get("state") || "all",
+    city: params.get("city") || "all",
+  };
+}
 
 /** Custom hook for debounced value */
 function useDebouncedValue<T>(value: T, delay: number): T {
@@ -40,21 +60,48 @@ function useDebouncedValue<T>(value: T, delay: number): T {
 }
 
 export default function Catalog() {
-  const [selectedCategory, setSelectedCategory] = useState<CategoryValue>("all");
-  const [selectedCountry, setSelectedCountry] = useState<CountryValue>("all");
-  const [selectedType, setSelectedType] = useState<TypeValue>("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortValue>("name_asc");
-  const [page, setPage] = useState(1);
+  const search = useSearch();
+  const [, navigate] = useLocation();
+  // Read initial filter state from URL only on mount (empty deps intentional to avoid
+  // feedback loop with the URL-sync effect below)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initial = useMemo(() => readFiltersFromURL(search), []);
+
+  const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(initial.category);
+  const [selectedCountry, setSelectedCountry] = useState<CountryValue>(initial.country);
+  const [selectedType, setSelectedType] = useState<TypeValue>(initial.type);
+  const [searchQuery, setSearchQuery] = useState(initial.search);
+  const [sortBy, setSortBy] = useState<SortValue>(initial.sortBy);
+  const [page, setPage] = useState(initial.page);
   // Enrichment filters
-  const [fundingType, setFundingType] = useState("all");
-  const [targetDiagnosis, setTargetDiagnosis] = useState("all");
-  const [b2VisaEligible, setB2VisaEligible] = useState("all");
-  const [hasDeadline, setHasDeadline] = useState(false);
-  const [selectedState, setSelectedState] = useState("all");
-  const [selectedCity, setSelectedCity] = useState("all");
+  const [fundingType, setFundingType] = useState(initial.fundingType);
+  const [targetDiagnosis, setTargetDiagnosis] = useState(initial.targetDiagnosis);
+  const [b2VisaEligible, setB2VisaEligible] = useState(initial.b2VisaEligible);
+  const [hasDeadline, setHasDeadline] = useState(initial.hasDeadline);
+  const [selectedState, setSelectedState] = useState(initial.state);
+  const [selectedCity, setSelectedCity] = useState(initial.city);
   const { t, tCategory, tCountry, language } = useLanguage();
   const { isAuthenticated, loading: authLoading } = useAuth();
+
+  // Sync filter state to URL query params
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (selectedCategory !== "all") params.set("category", selectedCategory);
+    if (selectedCountry !== "all") params.set("country", selectedCountry);
+    if (selectedType !== "all") params.set("type", selectedType);
+    if (searchQuery) params.set("q", searchQuery);
+    if (sortBy !== "name_asc") params.set("sort", sortBy);
+    if (page > 1) params.set("page", String(page));
+    if (fundingType !== "all") params.set("funding", fundingType);
+    if (targetDiagnosis !== "all") params.set("diagnosis", targetDiagnosis);
+    if (b2VisaEligible !== "all") params.set("b2visa", b2VisaEligible);
+    if (hasDeadline) params.set("deadline", "1");
+    if (selectedState !== "all") params.set("state", selectedState);
+    if (selectedCity !== "all") params.set("city", selectedCity);
+    const qs = params.toString();
+    const newPath = qs ? `/catalog?${qs}` : "/catalog";
+    navigate(newPath, { replace: true });
+  }, [selectedCategory, selectedCountry, selectedType, searchQuery, sortBy, page, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, navigate]);
 
   // Debounce search query to avoid excessive API calls
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
@@ -77,7 +124,7 @@ export default function Catalog() {
         utils.catalog.count.invalidate(),
         utils.grants.savedList.invalidate(),
       ]);
-      toast.success("Grants refreshed");
+      toast.success(t.catalog.grantsRefreshed);
     },
     enabled: isMobile,
     threshold: 80,
@@ -135,7 +182,7 @@ export default function Catalog() {
     },
     onError: (_err: unknown, _vars: unknown, ctx: { prev?: { grantIds: string[] } } | undefined) => {
       if (ctx?.prev) utils.grants.savedList.setData(undefined, ctx.prev);
-      toast.error("Failed to save grant");
+      toast.error(t.grantDetail.failedToSave);
     },
     onSettled: () => {
       utils.grants.savedList.invalidate();
@@ -189,6 +236,8 @@ export default function Catalog() {
     setTargetDiagnosis("all");
     setB2VisaEligible("all");
     setHasDeadline(false);
+    setSelectedState("all");
+    setSelectedCity("all");
     setPage(1);
   };
 
@@ -196,7 +245,7 @@ export default function Catalog() {
     <div ref={containerRef} className="min-h-screen flex flex-col bg-background theme-transition">
       <SEO
         title="Browse Grants & Resources"
-        description="Search and filter 600+ grants for medical treatment, financial assistance, academic scholarships, and startup funding. Find the right grant for you."
+        description="Search and filter 3,650+ grants for medical treatment, financial assistance, academic scholarships, and startup funding. Find the right grant for you."
         canonicalPath="/catalog"
         keywords="grant catalog, search grants, medical grants, startup funding, scholarships, financial aid"
       />
@@ -262,7 +311,7 @@ export default function Catalog() {
             {isSearching && (
               <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Searching...</span>
+                <span>{t.catalog.searching}</span>
               </div>
             )}
 
@@ -289,7 +338,7 @@ export default function Catalog() {
                       disabled={page === 1}
                       className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg active:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
-                      Prev
+                      {t.catalog.prev}
                     </button>
                     <div className="flex items-center gap-0.5 md:gap-1">
                       {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
@@ -318,7 +367,7 @@ export default function Catalog() {
                       disabled={page === totalPages}
                       className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg active:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
-                      Next
+                      {t.catalog.next}
                     </button>
                   </div>
                 )}
@@ -369,7 +418,7 @@ export default function Catalog() {
                             className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-primary-foreground bg-primary rounded-xl active:bg-primary/90 transition-colors"
                           >
                             <LogIn className="w-4 h-4" />
-                            Login / Register
+                            {t.catalog.loginRegister}
                           </a>
                           <PricingCTA text={t.catalog.ctaButton} />
                         </div>
@@ -397,7 +446,7 @@ export default function Catalog() {
               <div className="mt-8 md:mt-12 bg-secondary rounded-xl p-6 md:p-8 text-center border border-border">
                 <h3 className="text-lg md:text-xl font-bold text-foreground mb-2">{t.catalog.ctaTitle}</h3>
                 <p className="text-muted-foreground text-sm md:text-base mb-4 md:mb-6 max-w-md mx-auto">{t.catalog.ctaSubtitle}</p>
-                <p className="text-brand-green text-sm font-medium">Active Subscriber</p>
+                <p className="text-brand-green text-sm font-medium">{t.catalog.activeSubscriber}</p>
               </div>
             )}
           </>
