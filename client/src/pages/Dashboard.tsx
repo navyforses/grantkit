@@ -87,7 +87,7 @@ export default function Dashboard() {
     },
     onError: (_err: unknown, _vars: unknown, ctx: { prev?: { grantIds: string[] } } | undefined) => {
       if (ctx?.prev) utils.grants.savedList.setData(undefined, ctx.prev);
-      toast.error("Failed to remove saved grant");
+      toast.error(t.dashboard.toastRemoveError);
     },
     onSettled: () => {
       utils.grants.savedList.invalidate();
@@ -114,12 +114,12 @@ export default function Dashboard() {
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="text-center max-w-md">
             <LayoutDashboard className="w-10 h-10 md:w-12 md:h-12 text-muted-foreground/40 mx-auto mb-3 md:mb-4" />
-            <h2 className="text-lg md:text-xl font-bold text-foreground mb-2">Sign in to access your Dashboard</h2>
+            <h2 className="text-lg md:text-xl font-bold text-foreground mb-2">{t.dashboard.signInTitle}</h2>
             <p className="text-sm text-muted-foreground mb-5 md:mb-6">
-              Save grants, track your favorites, and manage your subscription all in one place.
+              {t.dashboard.signInSubtitle}
             </p>
             <a href={getLoginUrl()}>
-              <Button className="bg-primary hover:bg-primary h-11 md:h-10 w-full md:w-auto px-8">Sign In</Button>
+              <Button className="bg-primary hover:bg-primary h-11 md:h-10 w-full md:w-auto px-8">{t.dashboard.signInButton}</Button>
             </a>
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen flex flex-col bg-secondary">
-      <SEO title="Dashboard" noIndex />
+      <SEO title={t.seo.dashboardTitle} noIndex />
       <Navbar />
 
       {/* Header — compact on mobile */}
@@ -142,12 +142,12 @@ export default function Dashboard() {
               <h1 className="text-lg md:text-3xl font-bold text-foreground tracking-tight">
                 Welcome{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
               </h1>
-              <p className="text-muted-foreground text-xs md:text-base mt-0.5 md:mt-1">Your personalized grant hub</p>
+              <p className="text-muted-foreground text-xs md:text-base mt-0.5 md:mt-1">{t.dashboard.subtitle}</p>
             </div>
             <Link href="/profile">
               <Button variant="outline" size="sm" className="border-white/20 text-foreground/70 hover:bg-white/10 gap-1.5 h-9 text-xs md:text-sm">
                 <Settings className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                <span className="hidden md:inline">Settings</span>
+                <span className="hidden md:inline">{t.dashboard.settings}</span>
               </Button>
             </Link>
           </div>
@@ -160,22 +160,22 @@ export default function Dashboard() {
         <div className="md:hidden flex gap-3 mb-4">
           <div className="flex-1 bg-gradient-to-br from-[#0f172a] to-[#1e3a5f] rounded-xl p-3 text-white">
             <p className="text-xl font-bold">{savedGrantIds.length}</p>
-            <p className="text-[10px] text-primary-foreground/70">Saved</p>
+            <p className="text-[10px] text-primary-foreground/70">{t.dashboard.saved}</p>
           </div>
           <div className="flex-1 bg-gradient-to-br from-[#0f172a] to-[#1e3a5f] rounded-xl p-3 text-white">
             <p className="text-xl font-bold">{countData?.total || "643"}</p>
-            <p className="text-[10px] text-primary-foreground/70">Available</p>
+            <p className="text-[10px] text-primary-foreground/70">{t.dashboard.available}</p>
           </div>
           <div className="flex-1 bg-card border border-border rounded-xl p-3">
             {isActive ? (
               <>
                 <Crown className="w-5 h-5 text-yellow-500 mb-0.5" />
-                <p className="text-[10px] font-medium text-foreground/80">Active</p>
+                <p className="text-[10px] font-medium text-foreground/80">{t.dashboard.active}</p>
               </>
             ) : (
               <Link href="/#pricing">
                 <Sparkles className="w-5 h-5 text-emerald-500 mb-0.5" />
-                <p className="text-[10px] font-medium text-emerald-600">Upgrade</p>
+                <p className="text-[10px] font-medium text-emerald-600">{t.dashboard.upgrade}</p>
               </Link>
             )}
           </div>
@@ -187,12 +187,12 @@ export default function Dashboard() {
             <div className="flex items-center gap-3">
               <Sparkles className="w-8 h-8 text-emerald-500 shrink-0" />
               <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground">Unlock Full Access</p>
-                <p className="text-xs text-muted-foreground">Get access to {countData?.total || "643"}+ grants</p>
+                <p className="text-sm font-semibold text-foreground">{t.dashboard.unlockTitle}</p>
+                <p className="text-xs text-muted-foreground">{t.dashboard.unlockDesc.replace("{count}", String(countData?.total || "643"))}</p>
               </div>
               <Link href="/#pricing">
                 <Button size="sm" className="bg-emerald-600 active:bg-emerald-700 text-white h-9 text-xs rounded-lg">
-                  $9/mo
+                  {t.dashboard.priceMonth}
                 </Button>
               </Link>
             </div>
@@ -211,7 +211,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-3 md:mb-4">
                 <h2 className="text-sm md:text-lg font-semibold text-foreground flex items-center gap-2">
                   <Bookmark className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
-                  Saved Grants
+                  {t.dashboard.savedGrants}
                   {savedItems.length > 0 && (
                     <span className="text-xs md:text-sm font-normal text-muted-foreground">({savedItems.length})</span>
                   )}
@@ -219,7 +219,7 @@ export default function Dashboard() {
                 <Link href="/catalog">
                   <Button variant="ghost" size="sm" className="text-primary gap-1 h-8 text-xs md:text-sm">
                     <Search className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                    Browse
+                    {t.dashboard.browse}
                   </Button>
                 </Link>
               </div>
@@ -231,14 +231,14 @@ export default function Dashboard() {
               ) : savedItems.length === 0 ? (
                 <div className="bg-card border border-border rounded-xl md:rounded-lg p-6 md:p-8 text-center">
                   <BookmarkX className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground/40 mx-auto mb-2 md:mb-3" />
-                  <h3 className="font-medium text-foreground/80 text-sm md:text-base mb-1">No saved grants yet</h3>
+                  <h3 className="font-medium text-foreground/80 text-sm md:text-base mb-1">{t.dashboard.noSavedTitle}</h3>
                   <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
-                    Browse the catalog and tap the bookmark icon to save grants.
+                    {t.dashboard.noSavedDesc}
                   </p>
                   <Link href="/catalog">
                     <Button variant="outline" size="sm" className="gap-1.5 h-10 md:h-9 text-xs md:text-sm rounded-lg md:rounded-md">
                       <Search className="w-4 h-4" />
-                      Explore Catalog
+                      {t.dashboard.exploreCatalog}
                     </Button>
                   </Link>
                 </div>
@@ -276,7 +276,7 @@ export default function Dashboard() {
                           <button
                             onClick={() => toggleSave.mutate({ grantId: item.id })}
                             className="p-2 md:p-1.5 rounded-lg md:rounded-md active:bg-red-50 md:hover:bg-red-50 text-muted-foreground/60 active:text-red-500 md:hover:text-red-500 transition-colors shrink-0"
-                            title="Remove from saved"
+                            title={t.dashboard.removeFromSaved}
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -290,24 +290,24 @@ export default function Dashboard() {
 
             {/* Mobile: Quick Actions */}
             <div className="md:hidden">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">Quick Actions</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">{t.dashboard.quickActions}</h3>
               <div className="grid grid-cols-3 gap-2">
                 <Link href="/catalog">
                   <div className="bg-card border border-border rounded-xl p-3 text-center active:bg-secondary">
                     <Search className="w-5 h-5 text-muted-foreground/60 mx-auto mb-1" />
-                    <p className="text-[10px] font-medium text-foreground/80">Browse</p>
+                    <p className="text-[10px] font-medium text-foreground/80">{t.dashboard.browse}</p>
                   </div>
                 </Link>
                 <Link href="/contact">
                   <div className="bg-card border border-border rounded-xl p-3 text-center active:bg-secondary">
                     <ExternalLink className="w-5 h-5 text-muted-foreground/60 mx-auto mb-1" />
-                    <p className="text-[10px] font-medium text-foreground/80">Support</p>
+                    <p className="text-[10px] font-medium text-foreground/80">{t.dashboard.support}</p>
                   </div>
                 </Link>
                 <Link href="/profile">
                   <div className="bg-card border border-border rounded-xl p-3 text-center active:bg-secondary">
                     <Settings className="w-5 h-5 text-muted-foreground/60 mx-auto mb-1" />
-                    <p className="text-[10px] font-medium text-foreground/80">Settings</p>
+                    <p className="text-[10px] font-medium text-foreground/80">{t.dashboard.settings}</p>
                   </div>
                 </Link>
               </div>
@@ -323,32 +323,32 @@ export default function Dashboard() {
               transition={{ duration: 0.3, delay: 0.1 }}
               className="bg-card border border-border rounded-lg p-6"
             >
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Subscription</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">{t.dashboard.subscription}</h3>
               {isActive ? (
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <Crown className="w-5 h-5 text-yellow-500" />
-                    <span className="font-semibold text-foreground">Active Member</span>
+                    <span className="font-semibold text-foreground">{t.dashboard.activeMember}</span>
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
-                    You have full access to all grants and resources in the catalog.
+                    {t.dashboard.activeMessage}
                   </p>
                   <Link href="/profile">
                     <Button variant="outline" size="sm" className="w-full gap-1.5">
                       <Settings className="w-4 h-4" />
-                      Manage Subscription
+                      {t.dashboard.manageSubscription}
                     </Button>
                   </Link>
                 </div>
               ) : (
                 <div>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Subscribe to unlock full access to {countData?.total || "643"}+ grants and resources.
+                    {t.dashboard.subscribePrompt.replace("{count}", String(countData?.total || "643"))}
                   </p>
                   <Link href="/#pricing">
                     <Button size="sm" className="w-full bg-brand-green hover:bg-brand-green-hover gap-1.5">
                       <Sparkles className="w-4 h-4" />
-                      Get Access — $9/mo
+                      {t.dashboard.subscribeCta}
                     </Button>
                   </Link>
                 </div>
@@ -362,13 +362,13 @@ export default function Dashboard() {
               transition={{ duration: 0.3, delay: 0.15 }}
               className="bg-card border border-border rounded-lg p-6"
             >
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Quick Actions</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">{t.dashboard.quickActions}</h3>
               <div className="space-y-2">
                 <Link href="/catalog">
                   <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-secondary transition-colors text-left">
                     <span className="flex items-center gap-2 text-sm font-medium text-foreground/80">
                       <Search className="w-4 h-4 text-muted-foreground/60" />
-                      Browse Catalog
+                      {t.dashboard.browseCatalog}
                     </span>
                     <ArrowRight className="w-4 h-4 text-muted-foreground/60" />
                   </button>
@@ -377,7 +377,7 @@ export default function Dashboard() {
                   <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-secondary transition-colors text-left">
                     <span className="flex items-center gap-2 text-sm font-medium text-foreground/80">
                       <ExternalLink className="w-4 h-4 text-muted-foreground/60" />
-                      Contact Support
+                      {t.dashboard.contactSupport}
                     </span>
                     <ArrowRight className="w-4 h-4 text-muted-foreground/60" />
                   </button>
@@ -386,7 +386,7 @@ export default function Dashboard() {
                   <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-secondary transition-colors text-left">
                     <span className="flex items-center gap-2 text-sm font-medium text-foreground/80">
                       <Settings className="w-4 h-4 text-muted-foreground/60" />
-                      Account Settings
+                      {t.dashboard.accountSettings}
                     </span>
                     <ArrowRight className="w-4 h-4 text-muted-foreground/60" />
                   </button>
@@ -401,15 +401,15 @@ export default function Dashboard() {
               transition={{ duration: 0.3, delay: 0.2 }}
               className="bg-gradient-to-br from-[#0f172a] to-[#1e3a5f] rounded-lg p-6 text-white"
             >
-              <h3 className="text-sm font-semibold text-primary-foreground/70 uppercase tracking-wider mb-4">Your Activity</h3>
+              <h3 className="text-sm font-semibold text-primary-foreground/70 uppercase tracking-wider mb-4">{t.dashboard.yourActivity}</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-2xl font-bold">{savedGrantIds.length}</p>
-                  <p className="text-xs text-primary-foreground/70">Saved Grants</p>
+                  <p className="text-xs text-primary-foreground/70">{t.dashboard.savedGrants}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{countData?.total || "643"}</p>
-                  <p className="text-xs text-primary-foreground/70">Total Available</p>
+                  <p className="text-xs text-primary-foreground/70">{t.dashboard.totalAvailable}</p>
                 </div>
               </div>
             </motion.div>

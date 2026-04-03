@@ -17,8 +17,8 @@ export default function Terms() {
   return (
     <div className="min-h-screen flex flex-col bg-card">
       <SEO
-        title="Terms of Service"
-        description="GrantKit Terms of Service. Read our terms and conditions for using the platform."
+        title={t.seo.termsTitle}
+        description={t.seo.termsDescription}
         canonicalPath="/terms"
       />
       <Navbar />

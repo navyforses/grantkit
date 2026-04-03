@@ -17,8 +17,8 @@ export default function Refund() {
   return (
     <div className="min-h-screen flex flex-col bg-card">
       <SEO
-        title="Refund Policy"
-        description="GrantKit Refund Policy. Learn about our refund eligibility, process, and timeline."
+        title={t.seo.refundTitle}
+        description={t.seo.refundDescription}
         canonicalPath="/refund"
       />
       <Navbar />
