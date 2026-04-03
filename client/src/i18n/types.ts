@@ -653,4 +653,98 @@ export interface Translations {
     refundContactTitle: string;
     refundContactText: string;
   };
+
+  // Contact page
+  contact: {
+    pageTitle: string;
+    pageDescription: string;
+    backHome: string;
+    heading: string;
+    subheading: string;
+    successTitle: string;
+    successMessage: string;
+    sendAnother: string;
+    browseCatalog: string;
+    emailLabel: string;
+    responseLabel: string;
+    responseTime: string;
+    getInTouch: string;
+    responseTimeLabel: string;
+    usualResponseTime: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    emailPlaceholder: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    sending: string;
+    sendMessage: string;
+    toastSuccess: string;
+    toastError: string;
+    toastValidation: string;
+  };
+
+  // Dashboard page
+  dashboard: {
+    pageTitle: string;
+    signInTitle: string;
+    signInSubtitle: string;
+    signInButton: string;
+    subtitle: string;
+    settings: string;
+    saved: string;
+    available: string;
+    active: string;
+    upgrade: string;
+    unlockTitle: string;
+    unlockDesc: string;
+    priceMonth: string;
+    savedGrants: string;
+    browse: string;
+    noSavedTitle: string;
+    noSavedDesc: string;
+    exploreCatalog: string;
+    quickActions: string;
+    support: string;
+    subscription: string;
+    activeMember: string;
+    activeMessage: string;
+    manageSubscription: string;
+    subscribePrompt: string;
+    subscribeCta: string;
+    browseCatalog: string;
+    contactSupport: string;
+    accountSettings: string;
+    yourActivity: string;
+    totalAvailable: string;
+    removeFromSaved: string;
+    toastRemoveError: string;
+  };
+
+  // Dashboard layout
+  dashboardLayout: {
+    signInTitle: string;
+    signInMessage: string;
+    signInButton: string;
+    navigation: string;
+    signOut: string;
+  };
+
+  // SEO meta tags
+  seo: {
+    homeTitle: string;
+    homeDescription: string;
+    catalogTitle: string;
+    catalogDescription: string;
+    contactTitle: string;
+    contactDescription: string;
+    dashboardTitle: string;
+    adminTitle: string;
+    profileTitle: string;
+    privacyTitle: string;
+    privacyDescription: string;
+    termsTitle: string;
+    termsDescription: string;
+    refundTitle: string;
+    refundDescription: string;
+  };
 }
