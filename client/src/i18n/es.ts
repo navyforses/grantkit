@@ -518,7 +518,7 @@ export const es: Translations = {
     international: "Internacional",
   },
 
-legal: {
+  legal: {
     backToHome: "Volver a Inicio",
     lastUpdated: "Última actualización",
     privacyTitle: "Política de Privacidad",
