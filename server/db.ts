@@ -441,7 +441,35 @@ export async function listGrants(options?: {
   activeOnly?: boolean;
 }) {
   const db = await getDb();
-  if (!db) return { grants: [], total: 0 };
+  if (!db) {
+    // Static fallback: serve from catalog.json when DB is unavailable
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const catalogPath = path.resolve(process.cwd(), "client/src/data/catalog.json");
+      const raw = fs.readFileSync(catalogPath, "utf-8");
+      const allGrants: any[] = JSON.parse(raw);
+      const { search, category, country, type, limit = 50, offset = 0 } = options || {};
+      let filtered = allGrants;
+      if (search) {
+        const q = search.toLowerCase();
+        filtered = filtered.filter((g: any) =>
+          (g.name || "").toLowerCase().includes(q) ||
+          (g.description || "").toLowerCase().includes(q) ||
+          (g.organization || "").toLowerCase().includes(q)
+        );
+      }
+      if (category && category !== "all") filtered = filtered.filter((g: any) => g.category === category);
+      if (country && country !== "all") filtered = filtered.filter((g: any) => g.country === country);
+      if (type && type !== "all") filtered = filtered.filter((g: any) => g.type === type);
+      const total = filtered.length;
+      const page = filtered.slice(offset, offset + limit);
+      return { grants: page, total };
+    } catch (e) {
+      console.warn("[DB] Static fallback failed:", e);
+      return { grants: [], total: 0 };
+    }
+  }
 
   const { search, language, category, country, type, sortBy = "name_asc", fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, state, city, limit = 50, offset = 0, activeOnly = true } = options || {};
 
@@ -625,8 +653,15 @@ function getOrderByClause(sortBy?: string) {
 /** Get a single grant by itemId */
 export async function getGrantByItemId(itemId: string) {
   const db = await getDb();
-  if (!db) return null;
-
+  if (!db) {
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const catalogPath = path.resolve(process.cwd(), "client/src/data/catalog.json");
+      const allGrants: any[] = JSON.parse(fs.readFileSync(catalogPath, "utf-8"));
+      return allGrants.find((g: any) => g.id === itemId || g.itemId === itemId) || null;
+    } catch { return null; }
+  }
   const result = await db.select().from(grants).where(eq(grants.itemId, itemId)).limit(1);
   return result.length > 0 ? result[0] : null;
 }
@@ -634,7 +669,15 @@ export async function getGrantByItemId(itemId: string) {
 /** Get translations for a grant */
 export async function getGrantTranslations(itemId: string) {
   const db = await getDb();
-  if (!db) return {};
+  if (!db) {
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const translationsPath = path.resolve(process.cwd(), "client/src/data/catalogTranslations.json");
+      const all: any = JSON.parse(fs.readFileSync(translationsPath, "utf-8"));
+      return all[itemId] || {};
+    } catch { return {}; }
+  }
 
   const result = await db
     .select()
@@ -661,7 +704,19 @@ export async function getGrantTranslations(itemId: string) {
 /** Get translations for multiple grants at once */
 export async function getBulkGrantTranslations(itemIds: string[]) {
   const db = await getDb();
-  if (!db || itemIds.length === 0) return {};
+  if (!db) {
+    if (itemIds.length === 0) return {};
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const translationsPath = path.resolve(process.cwd(), "client/src/data/catalogTranslations.json");
+      const all: any = JSON.parse(fs.readFileSync(translationsPath, "utf-8"));
+      const result: Record<string, any> = {};
+      for (const id of itemIds) { if (all[id]) result[id] = all[id]; }
+      return result;
+    } catch { return {}; }
+  }
+  if (itemIds.length === 0) return {};
 
   const result = await db
     .select()
