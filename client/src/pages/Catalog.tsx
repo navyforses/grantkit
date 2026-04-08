@@ -112,8 +112,10 @@ export default function Catalog() {
     retry: false,
   });
 
-  const isActive = subStatus?.isActive || false;
-  const isAuthLoading = authLoading || (isAuthenticated && subLoading);
+  // On static deployments (no API), treat as active so all content is visible
+  const isStaticMode = !catalogData && !!staticFallback;
+  const isActive = isStaticMode || subStatus?.isActive || false;
+  const isAuthLoading = isStaticMode ? false : (authLoading || (isAuthenticated && subLoading));
   const isMobile = useIsMobile();
 
   // Pull-to-refresh: invalidate catalog data on pull
