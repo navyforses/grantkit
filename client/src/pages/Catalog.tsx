@@ -152,7 +152,7 @@ export default function Catalog() {
     [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, page, isActive]
   );
 
-  const { data: catalogData, isLoading: catalogLoading, isFetching, isError: catalogError } = trpc.catalog.list.useQuery(catalogInput, {
+  const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
     retry: false,
     placeholderData: (prev: any) => prev,
   });
@@ -160,16 +160,16 @@ export default function Catalog() {
   // Get total count for display
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
-  // Static fallback: when API is unavailable (e.g. Vercel static deployment),
-  // load grants directly from the bundled catalog.json
+  // Always load static catalog.json eagerly as fallback
+  // (used when API is unavailable, e.g. Vercel static deployment)
   const [staticFallback, setStaticFallback] = useState<any[] | null>(null);
   useEffect(() => {
-    if (catalogError && !staticFallback) {
+    if (!staticFallback) {
       import("@/data/catalog.json").then((mod) => {
         setStaticFallback(mod.default || mod);
       }).catch(() => {});
     }
-  }, [catalogError, staticFallback]);
+  }, []);
 
   // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
@@ -258,8 +258,9 @@ export default function Catalog() {
     return [];
   }, [catalogData, language, staticFallback, selectedCategory, selectedCountry, selectedType, debouncedSearch, page]);
 
-  const totalItems = staticFallback?.length || catalogData?.total || 0;
-  const totalPages = staticFallback ? Math.ceil(staticFallback.length / PAGE_SIZE) : (catalogData?.totalPages || 1);
+  const usingStatic = !catalogData?.grants && !!staticFallback;
+  const totalItems = catalogData?.total || (usingStatic ? staticFallback.length : 0);
+  const totalPages = catalogData?.totalPages || (usingStatic ? Math.ceil(staticFallback.length / PAGE_SIZE) : 1);
   const isLoading = isAuthLoading || (catalogLoading && !staticFallback);
   const isSearching = isFetching && !!debouncedSearch;
 

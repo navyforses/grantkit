@@ -58,16 +58,16 @@ export default function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch diverse preview items from database (one per category)
-  const { data: previewData, isError: previewError } = trpc.catalog.preview.useQuery(
+  const { data: previewData } = trpc.catalog.preview.useQuery(
     undefined,
     { retry: false }
   );
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
-  // Static fallback for when API is unavailable (Vercel static deployment)
+  // Always load static preview eagerly (used when API is unavailable)
   const [staticPreview, setStaticPreview] = useState<any[] | null>(null);
   useEffect(() => {
-    if (previewError && !staticPreview) {
+    if (!staticPreview) {
       import("@/data/catalog.json").then((mod) => {
         const all = mod.default || mod;
         // Pick 5 diverse items (one per category)
@@ -82,7 +82,7 @@ export default function Home() {
         setStaticPreview(picks);
       }).catch(() => {});
     }
-  }, [previewError, staticPreview]);
+  }, []);
 
   const previewItems: CatalogItem[] = useMemo(() => {
     const source = previewData?.grants || staticPreview;
