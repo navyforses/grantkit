@@ -31,6 +31,10 @@ const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
 const SEARCH_DEBOUNCE_MS = 300;
 
+// Module-level constants — immune to Vite's minifier variable reordering
+const STATIC_CATALOG = catalogItems;
+const HAS_STATIC_DATA = STATIC_CATALOG.length > 0;
+
 /** Read filter state from URL search params */
 function readFiltersFromURL(search: string) {
   const params = new URLSearchParams(search);
@@ -107,6 +111,8 @@ export default function Catalog() {
   // Debounce search query to avoid excessive API calls
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
 
+  // Use module-level constants for static data (avoids Vite minifier TDZ issues)
+
   const { data: subStatus, isLoading: subLoading } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
@@ -145,10 +151,10 @@ export default function Catalog() {
       hasDeadline: hasDeadline || undefined,
       state: selectedState !== "all" ? selectedState : undefined,
       city: selectedCity !== "all" ? selectedCity : undefined,
-      page: (subStatus?.isActive || staticFallback.length > 0) ? page : 1,
-      pageSize: (subStatus?.isActive || staticFallback.length > 0) ? PAGE_SIZE : PREVIEW_ITEMS,
+      page: (subStatus?.isActive || HAS_STATIC_DATA) ? page : 1,
+      pageSize: (subStatus?.isActive || HAS_STATIC_DATA) ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
-    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, page, subStatus?.isActive, staticFallback.length]
+    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, page, subStatus?.isActive, HAS_STATIC_DATA]
   );
 
   const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
@@ -159,12 +165,8 @@ export default function Catalog() {
   // Get total count for display
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
-  // Static fallback: catalogItems is always available (synchronous import via dedicated module)
-  const staticFallback = catalogItems;
-
   // On static deployments (no API), treat as active so all content is visible
-  // IMPORTANT: must be AFTER catalogData is defined (avoids TDZ in Vite production build)
-  const isStaticMode = !catalogData && staticFallback.length > 0;
+  const isStaticMode = !catalogData && HAS_STATIC_DATA;
   const isActive = isStaticMode || subStatus?.isActive || false;
   const isAuthLoading = isStaticMode ? false : (authLoading || (isAuthenticated && subLoading));
 
@@ -232,8 +234,8 @@ export default function Catalog() {
     }
 
     // Static fallback: filter and paginate from bundled catalog.json
-    if (staticFallback) {
-      let filtered = staticFallback;
+    if (STATIC_CATALOG) {
+      let filtered = STATIC_CATALOG;
       if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
       if (selectedCountry !== "all") filtered = filtered.filter((g: any) => g.country === selectedCountry);
       if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
@@ -253,12 +255,12 @@ export default function Catalog() {
     }
 
     return [];
-  }, [catalogData, language, staticFallback, selectedCategory, selectedCountry, selectedType, debouncedSearch, page]);
+  }, [catalogData, language, STATIC_CATALOG, selectedCategory, selectedCountry, selectedType, debouncedSearch, page]);
 
-  const usingStatic = !catalogData?.grants && staticFallback.length > 0;
-  const totalItems = catalogData?.total || (usingStatic ? staticFallback.length : 0);
-  const totalPages = catalogData?.totalPages || (usingStatic ? Math.ceil(staticFallback.length / PAGE_SIZE) : 1);
-  const isLoading = isAuthLoading || (catalogLoading && staticFallback.length === 0);
+  const usingStatic = !catalogData?.grants && HAS_STATIC_DATA;
+  const totalItems = catalogData?.total || (usingStatic ? STATIC_CATALOG.length : 0);
+  const totalPages = catalogData?.totalPages || (usingStatic ? Math.ceil(STATIC_CATALOG.length / PAGE_SIZE) : 1);
+  const isLoading = isAuthLoading || (catalogLoading && !HAS_STATIC_DATA);
   const isSearching = isFetching && !!debouncedSearch;
 
   const resetFilters = () => {
