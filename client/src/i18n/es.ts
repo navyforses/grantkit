@@ -651,6 +651,7 @@ export const es: Translations = {
     toastValidation: "Por favor, completa todos los campos",
   },
   dashboard: {
+    welcome: "Bienvenido",
     pageTitle: "Panel",
     signInTitle: "Inicia sesión para acceder a tu panel",
     signInSubtitle: "Guarda subvenciones, sigue tus favoritos y gestiona tu suscripción en un solo lugar.",
@@ -691,6 +692,16 @@ export const es: Translations = {
     signInButton: "Iniciar sesión",
     navigation: "Navegación",
     signOut: "Cerrar sesión",
+  },
+  notFound: {
+    title: "Página no encontrada",
+    description: "Lo sentimos, la página que buscas no existe.",
+    descriptionLine2: "Es posible que haya sido movida o eliminada.",
+    goHome: "Ir al inicio",
+  },
+  errorBoundary: {
+    title: "Se produjo un error inesperado.",
+    reload: "Recargar página",
   },
   seo: {
     homeTitle: "Encuentra subvenciones médicas y de startups en todo el mundo",

@@ -685,6 +685,7 @@ export interface Translations {
 
   // Dashboard page
   dashboard: {
+    welcome: string;
     pageTitle: string;
     signInTitle: string;
     signInSubtitle: string;
@@ -727,6 +728,20 @@ export interface Translations {
     signInButton: string;
     navigation: string;
     signOut: string;
+  };
+
+  // Not Found page
+  notFound: {
+    title: string;
+    description: string;
+    descriptionLine2: string;
+    goHome: string;
+  };
+
+  // Error Boundary
+  errorBoundary: {
+    title: string;
+    reload: string;
   };
 
   // SEO meta tags

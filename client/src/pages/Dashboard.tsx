@@ -140,7 +140,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-lg md:text-3xl font-bold text-foreground tracking-tight">
-                Welcome{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
+                {t.dashboard.welcome}{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
               </h1>
               <p className="text-muted-foreground text-xs md:text-base mt-0.5 md:mt-1">{t.dashboard.subtitle}</p>
             </div>

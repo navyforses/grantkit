@@ -653,6 +653,7 @@ export const en: Translations = {
     toastValidation: "Please fill in all fields",
   },
   dashboard: {
+    welcome: "Welcome",
     pageTitle: "Dashboard",
     signInTitle: "Sign in to access your Dashboard",
     signInSubtitle: "Save grants, track your favorites, and manage your subscription all in one place.",
@@ -693,6 +694,16 @@ export const en: Translations = {
     signInButton: "Sign in",
     navigation: "Navigation",
     signOut: "Sign out",
+  },
+  notFound: {
+    title: "Page Not Found",
+    description: "Sorry, the page you are looking for doesn't exist.",
+    descriptionLine2: "It may have been moved or deleted.",
+    goHome: "Go Home",
+  },
+  errorBoundary: {
+    title: "An unexpected error occurred.",
+    reload: "Reload Page",
   },
   seo: {
     homeTitle: "Find Medical & Startup Grants Worldwide",

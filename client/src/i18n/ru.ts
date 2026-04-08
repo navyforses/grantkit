@@ -651,6 +651,7 @@ export const ru: Translations = {
     toastValidation: "Пожалуйста, заполните все поля",
   },
   dashboard: {
+    welcome: "Добро пожаловать",
     pageTitle: "Панель",
     signInTitle: "Войдите для доступа к панели",
     signInSubtitle: "Сохраняйте гранты, отслеживайте избранное и управляйте подпиской в одном месте.",
@@ -691,6 +692,16 @@ export const ru: Translations = {
     signInButton: "Войти",
     navigation: "Навигация",
     signOut: "Выйти",
+  },
+  notFound: {
+    title: "Страница не найдена",
+    description: "Извините, запрашиваемая страница не существует.",
+    descriptionLine2: "Возможно, она была перемещена или удалена.",
+    goHome: "На главную",
+  },
+  errorBoundary: {
+    title: "Произошла непредвиденная ошибка.",
+    reload: "Перезагрузить страницу",
   },
   seo: {
     homeTitle: "Найдите медицинские и стартап-гранты по всему миру",
