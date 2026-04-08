@@ -516,22 +516,6 @@ export const es: Translations = {
 
     unitedStates: "Estados Unidos",
     international: "Internacional",
-
-    tabExternal: "Búsqueda externa",
-    extSearchPlaceholder: "Buscar entre 84.000+ subvenciones...",
-    extSourceAll: "Todas las fuentes",
-    extSourceFederal: "Federal",
-    extSourceFoundation: "Fundación",
-    extSourceState: "Estatal",
-    extSourceIntl: "Internacional",
-    extSearchBtn: "Buscar",
-    extResults: "Resultados",
-    extSearching: "Buscando en bases de datos externas...",
-    extLoadingDetail: "Cargando detalles...",
-    extMappedCategory: "Categoría auto-asignada",
-    extAddToCatalog: "Añadir al catálogo",
-    extAddAndNotify: "Añadir y notificar a suscriptores",
-    extDetailNotFound: "No se pudieron cargar los detalles de la subvención",
   },
 
   legal: {
