@@ -9,7 +9,18 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000,
+    },
+    mutations: {
+      retry: false,
+    },
+  },
+});
 
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
@@ -26,12 +37,18 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
   }
 };
 
+const loggedErrors = new Set<string>();
+
 queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.query.state.error;
     redirectToLoginIfUnauthorized(error);
     if (error instanceof TRPCClientError && error.message === "API unavailable") return;
-    console.error("[API Query Error]", error);
+    const key = String(error);
+    if (!loggedErrors.has(key)) {
+      loggedErrors.add(key);
+      console.warn("[API Query Error]", error);
+    }
   }
 });
 
@@ -40,7 +57,11 @@ queryClient.getMutationCache().subscribe(event => {
     const error = event.mutation.state.error;
     redirectToLoginIfUnauthorized(error);
     if (error instanceof TRPCClientError && error.message === "API unavailable") return;
-    console.error("[API Mutation Error]", error);
+    const key = String(error);
+    if (!loggedErrors.has(key)) {
+      loggedErrors.add(key);
+      console.warn("[API Mutation Error]", error);
+    }
   }
 });
 
