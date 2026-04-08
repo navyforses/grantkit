@@ -110,6 +110,7 @@ export default function Catalog() {
 
   // Debounce search query to avoid excessive API calls
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
+  const staticFilteredRef = useRef(STATIC_CATALOG.length);
 
   // Use module-level constants for static data (avoids Vite minifier TDZ issues)
 
@@ -235,7 +236,7 @@ export default function Catalog() {
 
     // Static fallback: filter and paginate from bundled catalog.json
     if (STATIC_CATALOG) {
-      let filtered = STATIC_CATALOG;
+      let filtered: any[] = STATIC_CATALOG;
       if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
       if (selectedCountry !== "all") filtered = filtered.filter((g: any) => g.country === selectedCountry);
       if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
@@ -247,6 +248,7 @@ export default function Catalog() {
           (g.description || "").toLowerCase().includes(q)
         );
       }
+      staticFilteredRef.current = filtered.length;
       const start = (page - 1) * PAGE_SIZE;
       return filtered.slice(start, start + PAGE_SIZE).map((g: any) => ({
         ...g,
@@ -258,8 +260,8 @@ export default function Catalog() {
   }, [catalogData, language, STATIC_CATALOG, selectedCategory, selectedCountry, selectedType, debouncedSearch, page]);
 
   const usingStatic = !catalogData?.grants && HAS_STATIC_DATA;
-  const totalItems = catalogData?.total || (usingStatic ? STATIC_CATALOG.length : 0);
-  const totalPages = catalogData?.totalPages || (usingStatic ? Math.ceil(STATIC_CATALOG.length / PAGE_SIZE) : 1);
+  const totalItems = catalogData?.total || (usingStatic ? staticFilteredRef.current : 0);
+  const totalPages = catalogData?.totalPages || (usingStatic ? Math.ceil(staticFilteredRef.current / PAGE_SIZE) : 1);
   const isLoading = isAuthLoading || (catalogLoading && !HAS_STATIC_DATA);
   const isSearching = isFetching && !!debouncedSearch;
 
