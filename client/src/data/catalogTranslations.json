@@ -45,12 +45,12 @@
   },
   "item_0003": {
     "fr": {
-      "name": "Acoustics pour Autism",
+      "name": "Acoustics for Autism",
       "description": "PROJET iAm",
       "eligibility": ""
     },
     "es": {
-      "name": "Acoustics para Autism",
+      "name": "Acoustics for Autism",
       "description": "PROYECTO soy",
       "eligibility": ""
     },
@@ -111,17 +111,17 @@
   },
   "item_0006": {
     "fr": {
-      "name": "Addi's Faith Fondation",
+      "name": "Addi's Faith Foundation",
       "description": "Financement des prothèses oculaires",
       "eligibility": ""
     },
     "es": {
-      "name": "Addi's Faith Fundación",
+      "name": "Addi's Faith Foundation",
       "description": "Financiamiento de prótesis oculares",
       "eligibility": ""
     },
     "ru": {
-      "name": "Addi's Faith Фонд",
+      "name": "Addi's Faith Foundation",
       "description": "Финансирование протезирования глаз",
       "eligibility": ""
     },
@@ -353,22 +353,22 @@
   },
   "item_0017": {
     "fr": {
-      "name": "Américain Transplantation Fondation",
+      "name": "American Transplant Foundation",
       "description": "Frais de logement post-transplantation (médicaments, loyer)",
       "eligibility": "Visa B-2 : ✅ Oui — le statut n'est pas exigé"
     },
     "es": {
-      "name": "Americano Trasplante Fundación",
+      "name": "American Transplant Foundation",
       "description": "Gastos de vivienda post-transplante (medicamentos, alquiler)",
       "eligibility": "Visa B-2: ✅ Sí — no se requiere estatus"
     },
     "ru": {
-      "name": "Американский Трансплантация Фонд",
+      "name": "American Transplant Foundation",
       "description": "Расходы на проживание после трансплантации (медикаменты, аренда)",
       "eligibility": "Виза B-2: ✅ Да — статус не проверяется"
     },
     "ka": {
-      "name": "ამერიკული ტრანსპლანტაცია ფონდი",
+      "name": "American Transplant Foundation",
       "description": "პოსტ-ტრანსპლანტაციის საცხოვრებელი ხარჯები (მედიკამენტები, ქირა)",
       "eligibility": "B-2 ვიზა: ✅ დიახ — სტატუსი არ ითვალისწინება"
     }
@@ -397,17 +397,17 @@
   },
   "item_0019": {
     "fr": {
-      "name": "Ange Vol / Mercy Médical Angels 🆕",
+      "name": "Angel Flight / Mercy Medical Angels 🆕",
       "description": "Vols intérieurs américains gratuits (transport uniquement)",
       "eligibility": "Visa B-2 : ❓ incertain"
     },
     "es": {
-      "name": "Ángel Vuelo / Mercy Médico Angels 🆕",
+      "name": "Angel Flight / Mercy Medical Angels 🆕",
       "description": "Vuelos domésticos gratuitos en EE. UU. (solo transporte)",
       "eligibility": "Visa B-2: ❓ incierto"
     },
     "ru": {
-      "name": "Ангел Перелёт / Mercy Медицинский Angels 🆕",
+      "name": "Angel Flight / Mercy Medical Angels 🆕",
       "description": "Бесплатные внутренние рейсы в США (только транспорт)",
       "eligibility": "Виза B-2: ❓ неясно"
     },
@@ -419,22 +419,22 @@
   },
   "item_0020": {
     "fr": {
-      "name": "Ange Vol West",
+      "name": "Angel Flight West",
       "description": "Vols médicaux gratuits",
       "eligibility": ""
     },
     "es": {
-      "name": "Ángel Vuelo West",
+      "name": "Angel Flight West",
       "description": "Vuelos médicos gratuitos",
       "eligibility": ""
     },
     "ru": {
-      "name": "Ангел Перелёт West",
+      "name": "Angel Flight West",
       "description": "Бесплатные медицинские авиабилеты",
       "eligibility": ""
     },
     "ka": {
-      "name": "ანგელოზი ფრენა West",
+      "name": "Angel Flight West",
       "description": "უფასო სამედიცინო ფრენები",
       "eligibility": ""
     }
@@ -529,12 +529,12 @@
   },
   "item_0025": {
     "fr": {
-      "name": "Assoc. pour Education & Rehabilitation",
+      "name": "Assoc. for Education & Rehabilitation",
       "description": "Bourse AER",
       "eligibility": ""
     },
     "es": {
-      "name": "Assoc. para Education & Rehabilitation",
+      "name": "Assoc. for Education & Rehabilitation",
       "description": "Beca AER",
       "eligibility": ""
     },
@@ -551,22 +551,22 @@
   },
   "item_0026": {
     "fr": {
-      "name": "Association pour Autism",
+      "name": "Association for Autism",
       "description": "Bourse Daniel Braun",
       "eligibility": ""
     },
     "es": {
-      "name": "Asociación para Autism",
+      "name": "Association for Autism",
       "description": "Beca Daniel Braun",
       "eligibility": ""
     },
     "ru": {
-      "name": "Ассоциация for Autism",
+      "name": "Association for Autism",
       "description": "Стипендия Даниэля Брауна",
       "eligibility": ""
     },
     "ka": {
-      "name": "ასოციაცია for Autism",
+      "name": "Association for Autism",
       "description": "დანიელ ბრაუნის სტიპენდია",
       "eligibility": ""
     }
@@ -595,44 +595,44 @@
   },
   "item_0028": {
     "fr": {
-      "name": "Aubrey Rose Fondation 🆕",
+      "name": "Aubrey Rose Foundation 🆕",
       "description": "Frais médicaux pour enfants à l'étranger",
       "eligibility": "Visa B-2 : ✅ Oui — 3 familles internationales ont été aidées"
     },
     "es": {
-      "name": "Aubrey Rose Fundación 🆕",
+      "name": "Aubrey Rose Foundation 🆕",
       "description": "Gastos médicos para niños en el extranjero",
       "eligibility": "Visa B-2: ✅ Sí — 3 familias internacionales han sido ayudadas"
     },
     "ru": {
-      "name": "Aubrey Rose Фонд 🆕",
+      "name": "Aubrey Rose Foundation 🆕",
       "description": "Медицинские расходы для детей за рубежом",
       "eligibility": "Виза B-2: ✅ Да — помогли 3 международным семьям"
     },
     "ka": {
-      "name": "Aubrey Rose ფონდი 🆕",
+      "name": "Aubrey Rose Foundation 🆕",
       "description": "სამედიცინო ხარჯები ბავშვებისთვის საზღვარგარეთ",
       "eligibility": "B-2 ვიზა: ✅ დიახ — 3 საერთაშორისო ოჯახს დახმარებია"
     }
   },
   "item_0029": {
     "fr": {
-      "name": "Autism Spectrum Disorder Fondation",
+      "name": "Autism Spectrum Disorder Foundation",
       "description": "Programmes multiples",
       "eligibility": ""
     },
     "es": {
-      "name": "Autism Spectrum Disorder Fundación",
+      "name": "Autism Spectrum Disorder Foundation",
       "description": "Múltiples Programas",
       "eligibility": ""
     },
     "ru": {
-      "name": "Autism Spectrum Disorder Фонд",
+      "name": "Autism Spectrum Disorder Foundation",
       "description": "Несколько программ",
       "eligibility": ""
     },
     "ka": {
-      "name": "Autism Spectrum Disorder ფონდი",
+      "name": "Autism Spectrum Disorder Foundation",
       "description": "მრავალ პროგრამები",
       "eligibility": ""
     }
@@ -705,44 +705,44 @@
   },
   "item_0033": {
     "fr": {
-      "name": "Beckwith Weidemann Fondation",
+      "name": "Beckwith Weidemann Foundation",
       "description": "Bourse d'études",
       "eligibility": ""
     },
     "es": {
-      "name": "Beckwith Weidemann Fundación",
+      "name": "Beckwith Weidemann Foundation",
       "description": "Beca",
       "eligibility": ""
     },
     "ru": {
-      "name": "Beckwith Weidemann Фонд",
+      "name": "Beckwith Weidemann Foundation",
       "description": "Стипендия",
       "eligibility": ""
     },
     "ka": {
-      "name": "Beckwith Weidemann ფონდი",
+      "name": "Beckwith Weidemann Foundation",
       "description": "სტიპენდია",
       "eligibility": ""
     }
   },
   "item_0034": {
     "fr": {
-      "name": "Begin Again Fondation",
+      "name": "Begin Again Foundation",
       "description": "Programme Papillon",
       "eligibility": ""
     },
     "es": {
-      "name": "Begin Again Fundación",
+      "name": "Begin Again Foundation",
       "description": "Programa Mariposa",
       "eligibility": ""
     },
     "ru": {
-      "name": "Begin Again Фонд",
+      "name": "Begin Again Foundation",
       "description": "Программа 'Бабочка'",
       "eligibility": ""
     },
     "ka": {
-      "name": "Begin Again ფონდი",
+      "name": "Begin Again Foundation",
       "description": "პეპლის პროგრამა",
       "eligibility": ""
     }
@@ -859,39 +859,39 @@
   },
   "item_0040": {
     "fr": {
-      "name": "Blink Santé",
+      "name": "Blink Health",
       "description": "Prix plus bas",
       "eligibility": ""
     },
     "es": {
-      "name": "Blink Salud",
+      "name": "Blink Health",
       "description": "Precios mas bajos",
       "eligibility": ""
     },
     "ru": {
-      "name": "Blink Здоровье",
+      "name": "Blink Health",
       "description": "Более низкие цены",
       "eligibility": ""
     },
     "ka": {
-      "name": "Blink ჯანმრთელობა",
+      "name": "Blink Health",
       "description": "დაბალი ფასები",
       "eligibility": ""
     }
   },
   "item_0041": {
     "fr": {
-      "name": "BMT InfoNet — Patient Aide Fonds 🆕",
+      "name": "BMT InfoNet — Patient Assistance Fund 🆕",
       "description": "Subvention unique : hébergement, transport, nourriture",
       "eligibility": "Visa B-2 : ❓ incertain — résidents aux États-Unis"
     },
     "es": {
-      "name": "BMT InfoNet — Paciente Asistencia Fondo 🆕",
+      "name": "BMT InfoNet — Patient Assistance Fund 🆕",
       "description": "Subvención única: alojamiento, transporte, comida",
       "eligibility": "Visa B-2: ❓ incierto — residentes en EE. UU."
     },
     "ru": {
-      "name": "BMT InfoNet — Пациент Помощь Фонд 🆕",
+      "name": "BMT InfoNet — Patient Assistance Fund 🆕",
       "description": "Единовременный грант: проживание, транспорт, питание",
       "eligibility": "Виза B-2: ❓ неясно — проживающие в США"
     },
@@ -903,17 +903,17 @@
   },
   "item_0042": {
     "fr": {
-      "name": "Bone Marrow & Cancer Fondation 🆕",
+      "name": "Bone Marrow & Cancer Foundation 🆕",
       "description": "Fonds Lifeline : médicaments, transports, hébergement + Airbnb gratuit",
       "eligibility": "Visa B-2 : ❓ Inconnu — restriction de citoyenneté absente"
     },
     "es": {
-      "name": "Bone Marrow & Cancer Fundación 🆕",
+      "name": "Bone Marrow & Cancer Foundation 🆕",
       "description": "Fondo Lifeline: medicinas, transporte, alojamiento + Airbnb gratis",
       "eligibility": "Visa B-2: ❓ Desconocido — no hay restricción de ciudadanía"
     },
     "ru": {
-      "name": "Bone Marrow & Cancer Фонд 🆕",
+      "name": "Bone Marrow & Cancer Foundation 🆕",
       "description": "Фонд Lifeline: медикаменты, транспорт, проживание + бесплатный Airbnb",
       "eligibility": "Виза B-2: ❓ Неизвестно — ограничений по гражданству нет"
     },
@@ -925,22 +925,22 @@
   },
   "item_0043": {
     "fr": {
-      "name": "Boomer Esiason Fondation",
+      "name": "Boomer Esiason Foundation",
       "description": "Bourse/FC",
       "eligibility": ""
     },
     "es": {
-      "name": "Boomer Esiason Fundación",
+      "name": "Boomer Esiason Foundation",
       "description": "Beca/CF",
       "eligibility": ""
     },
     "ru": {
-      "name": "Boomer Esiason Фонд",
+      "name": "Boomer Esiason Foundation",
       "description": "Стипендия/CF",
       "eligibility": ""
     },
     "ka": {
-      "name": "Boomer Esiason ფონდი",
+      "name": "Boomer Esiason Foundation",
       "description": "სტიპენდია/CF",
       "eligibility": ""
     }
@@ -1167,22 +1167,22 @@
   },
   "item_0054": {
     "fr": {
-      "name": "CHARGE Syndrome Fondation",
+      "name": "CHARGE Syndrome Foundation",
       "description": "Bourse pour frères et sœurs",
       "eligibility": ""
     },
     "es": {
-      "name": "CHARGE Syndrome Fundación",
+      "name": "CHARGE Syndrome Foundation",
       "description": "Beca para hermanos",
       "eligibility": ""
     },
     "ru": {
-      "name": "CHARGE Syndrome Фонд",
+      "name": "CHARGE Syndrome Foundation",
       "description": "Стипендия для братьев и сестер",
       "eligibility": ""
     },
     "ka": {
-      "name": "CHARGE Syndrome ფონდი",
+      "name": "CHARGE Syndrome Foundation",
       "description": "და-ძმის სტიპენდია",
       "eligibility": ""
     }
@@ -1299,17 +1299,17 @@
   },
   "item_0060": {
     "fr": {
-      "name": "Child Neurology Fondation",
+      "name": "Child Neurology Foundation",
       "description": "Programme de soutien aux familles",
       "eligibility": ""
     },
     "es": {
-      "name": "Child Neurology Fundación",
+      "name": "Child Neurology Foundation",
       "description": "Programa de apoyo familiar",
       "eligibility": ""
     },
     "ru": {
-      "name": "Child Neurology Фонд",
+      "name": "Child Neurology Foundation",
       "description": "Программа поддержки семьи",
       "eligibility": ""
     },
@@ -1343,22 +1343,22 @@
   },
   "item_0062": {
     "fr": {
-      "name": "Enfants Craniofacial Association",
+      "name": "Children's Craniofacial Association",
       "description": "Paquet de soins",
       "eligibility": ""
     },
     "es": {
-      "name": "Niños Craniofacial Asociación",
+      "name": "Children's Craniofacial Association",
       "description": "Paquete de atención",
       "eligibility": ""
     },
     "ru": {
-      "name": "Дети Craniofacial Ассоциация",
+      "name": "Children's Craniofacial Association",
       "description": "Пакет помощи",
       "eligibility": ""
     },
     "ka": {
-      "name": "ბავშვთა Craniofacial ასოციაცია",
+      "name": "Children's Craniofacial Association",
       "description": "მზრუნველობის პაკეტი",
       "eligibility": ""
     }
@@ -1387,22 +1387,22 @@
   },
   "item_0064": {
     "fr": {
-      "name": "Enfants Hemiplegia & Stroke Assoc.",
+      "name": "Children's Hemiplegia & Stroke Assoc.",
       "description": "Programmes multiples",
       "eligibility": ""
     },
     "es": {
-      "name": "Niños Hemiplegia & Stroke Assoc.",
+      "name": "Children's Hemiplegia & Stroke Assoc.",
       "description": "Programas múltiples",
       "eligibility": ""
     },
     "ru": {
-      "name": "Дети Hemiplegia & Stroke Assoc.",
+      "name": "Children's Hemiplegia & Stroke Assoc.",
       "description": "Несколько программ",
       "eligibility": ""
     },
     "ka": {
-      "name": "ბავშვთა Hemiplegia & Stroke Assoc.",
+      "name": "Children's Hemiplegia & Stroke Assoc.",
       "description": "მრავალი პროგრამა",
       "eligibility": ""
     }
@@ -1424,7 +1424,7 @@
       "eligibility": "Виза B-2: ❓ Неопределенная — по усмотрению Герцога."
     },
     "ka": {
-      "name": "ბავშვთა Miracle ქსელი — Duke 🆕",
+      "name": "Children's Miracle Network — Duke 🆕",
       "description": "Duke Children's Hospital-ის CMN თავი",
       "eligibility": "B-2 Visa: ❓ გაურკვეველი — Duke-ის გადაწყვეტილებით"
     }
@@ -1585,22 +1585,22 @@
   },
   "item_0073": {
     "fr": {
-      "name": "Cora Fondation",
+      "name": "Cora Foundation",
       "description": "Bourse Marcher avec Cora",
       "eligibility": ""
     },
     "es": {
-      "name": "Cora Fundación",
+      "name": "Cora Foundation",
       "description": "Beca Caminando con Cora",
       "eligibility": ""
     },
     "ru": {
-      "name": "Cora Фонд",
+      "name": "Cora Foundation",
       "description": "Грант «Прогулка с Корой»",
       "eligibility": ""
     },
     "ka": {
-      "name": "Cora ფონდი",
+      "name": "Cora Foundation",
       "description": "გრანტი \"კორასთან ერთად სიარული\"",
       "eligibility": ""
     }
@@ -1651,66 +1651,66 @@
   },
   "item_0076": {
     "fr": {
-      "name": "Cynthia Solomon Holmes Fondation",
+      "name": "Cynthia Solomon Holmes Foundation",
       "description": "Journée des maladies rares",
       "eligibility": ""
     },
     "es": {
-      "name": "Cynthia Solomon Holmes Fundación",
+      "name": "Cynthia Solomon Holmes Foundation",
       "description": "Día de las Enfermedades Raras",
       "eligibility": ""
     },
     "ru": {
-      "name": "Cynthia Solomon Holmes Фонд",
+      "name": "Cynthia Solomon Holmes Foundation",
       "description": "День редких заболеваний",
       "eligibility": ""
     },
     "ka": {
-      "name": "Cynthia Solomon Holmes ფონდი",
+      "name": "Cynthia Solomon Holmes Foundation",
       "description": "იშვიათი დაავადების დღე",
       "eligibility": ""
     }
   },
   "item_0077": {
     "fr": {
-      "name": "Danielle's Fondation 🆕",
+      "name": "Danielle's Foundation 🆕",
       "description": "Traumatisme / lésion cérébrale",
       "eligibility": "Visa B-2 : ❓ Aucune barrière de citoyenneté confirmée"
     },
     "es": {
-      "name": "Danielle's Fundación 🆕",
+      "name": "Danielle's Foundation 🆕",
       "description": "Trauma / lesión cerebral",
       "eligibility": "Visa B-2: ❓ No se ha confirmado barrera de ciudadanía"
     },
     "ru": {
-      "name": "Danielle's Фонд 🆕",
+      "name": "Danielle's Foundation 🆕",
       "description": "Травма / повреждение мозга",
       "eligibility": "Виза B-2: ❓ Барьер гражданства не подтвержден"
     },
     "ka": {
-      "name": "Danielle's ფონდი 🆕",
+      "name": "Danielle's Foundation 🆕",
       "description": "ტვინის ტრავმა / დაზიანება",
       "eligibility": "B-2 ვიზა: ❓ მოქალაქეობის ბარიერი არ დადასტურებულა"
     }
   },
   "item_0078": {
     "fr": {
-      "name": "Dental Lifeline Réseau",
+      "name": "Dental Lifeline Network",
       "description": "Soins dentaires offerts",
       "eligibility": ""
     },
     "es": {
-      "name": "Dental Lifeline Red",
+      "name": "Dental Lifeline Network",
       "description": "Dental donado",
       "eligibility": ""
     },
     "ru": {
-      "name": "Dental Lifeline Сеть",
+      "name": "Dental Lifeline Network",
       "description": "Пожертвованная стоматология",
       "eligibility": ""
     },
     "ka": {
-      "name": "Dental Lifeline ქსელი",
+      "name": "Dental Lifeline Network",
       "description": "შემოწირული სტომატოლოგიური",
       "eligibility": ""
     }
@@ -1842,7 +1842,7 @@
       "eligibility": "B-2 Visa: Да ✓"
     },
     "ka": {
-      "name": "Duke PTCT ოჯახი Support პროგრამა",
+      "name": "Duke PTCT Family Support Program",
       "description": "Duke Family Support Program for Transplantation and Cell Therapy.It has been working since 1997.The Parent's Guide to Cord Blood confirms: \"Some parents have received partial reimbursement from this program.\"Free meals, activities, caregiver support.",
       "eligibility": "B-2 Visa: Yes ✓"
     }
@@ -2025,22 +2025,22 @@
   },
   "item_0093": {
     "fr": {
-      "name": "EveryLife Fondation",
+      "name": "EveryLife Foundation",
       "description": "Bourse/mentorat RAREis",
       "eligibility": ""
     },
     "es": {
-      "name": "EveryLife Fundación",
+      "name": "EveryLife Foundation",
       "description": "Beca/Tutoría RAREis",
       "eligibility": ""
     },
     "ru": {
-      "name": "EveryLife Фонд",
+      "name": "EveryLife Foundation",
       "description": "Стипендия/наставничество RAREis",
       "eligibility": ""
     },
     "ka": {
-      "name": "EveryLife ფონდი",
+      "name": "EveryLife Foundation",
       "description": "RAREis სტიპენდია/მენტორობა",
       "eligibility": ""
     }
@@ -2201,39 +2201,39 @@
   },
   "item_0101": {
     "fr": {
-      "name": "Famille Voices",
+      "name": "Family Voices",
       "description": "Ressources pour les familles",
       "eligibility": ""
     },
     "es": {
-      "name": "Familia Voices",
+      "name": "Family Voices",
       "description": "Recursos para familias",
       "eligibility": ""
     },
     "ru": {
-      "name": "Семья Voices",
+      "name": "Family Voices",
       "description": "Ресурсы для семей",
       "eligibility": ""
     },
     "ka": {
-      "name": "ოჯახი Voices",
+      "name": "Family Voices",
       "description": "რესურსები ოჯახებისთვის",
       "eligibility": ""
     }
   },
   "item_0102": {
     "fr": {
-      "name": "Famille Voices (MA)",
+      "name": "Family Voices (MA)",
       "description": "Réseau familial pour les enfants handicapés. Branche MA!",
       "eligibility": ""
     },
     "es": {
-      "name": "Familia Voices (MA)",
+      "name": "Family Voices (MA)",
       "description": "Red familiar de niños con discapacidad. ¡Sucursal de MA!",
       "eligibility": ""
     },
     "ru": {
-      "name": "Семья Voices (MA)",
+      "name": "Family Voices (MA)",
       "description": "Сеть семей с детьми-инвалидами. Филиал в Массачусетсе!",
       "eligibility": ""
     },
@@ -2487,17 +2487,17 @@
   },
   "item_0114": {
     "fr": {
-      "name": "Global Médical Relief Fonds (GMRF) 🆕",
+      "name": "Global Medical Relief Fund (GMRF) 🆕",
       "description": "Traitement, voyage, hébergement, réhabilitation aux États-Unis",
       "eligibility": "Visa B-2 : ❓ incertain — plus de 40 pays"
     },
     "es": {
-      "name": "Global Médico Relief Fondo (GMRF) 🆕",
+      "name": "Global Medical Relief Fund (GMRF) 🆕",
       "description": "Tratamiento, viaje, alojamiento, rehabilitación en EE. UU.",
       "eligibility": "Visa B-2: ❓ incierto — más de 40 países"
     },
     "ru": {
-      "name": "Global Медицинский Relief Фонд (GMRF) 🆕",
+      "name": "Global Medical Relief Fund (GMRF) 🆕",
       "description": "Лечение, поездки, проживание, реабилитация в США",
       "eligibility": "Виза B-2: ❓ неясно — более 40 стран"
     },
@@ -2641,12 +2641,12 @@
   },
   "item_0121": {
     "fr": {
-      "name": "Grottoes de North America",
+      "name": "Grottoes of North America",
       "description": "Programme dentaire",
       "eligibility": ""
     },
     "es": {
-      "name": "Grottoes de North America",
+      "name": "Grottoes of North America",
       "description": "Programa dental",
       "eligibility": ""
     },
@@ -2729,17 +2729,17 @@
   },
   "item_0125": {
     "fr": {
-      "name": "Healing les Enfants 🆕",
+      "name": "Healing the Children 🆕",
       "description": "Soins médicaux pour enfants aux États-Unis",
       "eligibility": "Visa B-2 : ❓ Inconnu"
     },
     "es": {
-      "name": "Healing los Niños 🆕",
+      "name": "Healing the Children 🆕",
       "description": "Atención médica para niños en EE. UU.",
       "eligibility": "Visa B-2: ❓ Desconocido"
     },
     "ru": {
-      "name": "Healing the Дети 🆕",
+      "name": "Healing the Children 🆕",
       "description": "Медицинское обслуживание детей в США",
       "eligibility": "Виза B-2: ❓ Неизвестно"
     },
@@ -2795,17 +2795,17 @@
   },
   "item_0128": {
     "fr": {
-      "name": "Healthcare Hospitality Réseau (HHN)",
+      "name": "Healthcare Hospitality Network (HHN)",
       "description": "Service gratuit. Utilisez le localisateur Web. Recherchez par code postal : 27705 (Durham) et 27511 (Cary). RMH Durham est probablement membre du HHN, mais d'autres options peuvent apparaître.",
       "eligibility": "Réseau national de plus de 200 établissements d'hébergement à but non lucratif pour les familles en voyage médical. Recherchez par code postal près de Durham ou Cary. B-2 : Non"
     },
     "es": {
-      "name": "Healthcare Hospitality Red (HHN)",
+      "name": "Healthcare Hospitality Network (HHN)",
       "description": "Servicio gratuito. Utilice el localizador web. Busque por código postal: 27705 (Durham) y 27511 (Cary). Es probable que RMH Durham sea miembro de HHN, pero pueden aparecer otras opciones.",
       "eligibility": "Red nacional de más de 200 instalaciones de alojamiento sin fines de lucro para familias que viajan por motivos médicos. Busque por código postal cerca de Durham o Cary. B-2: No"
     },
     "ru": {
-      "name": "Healthcare Hospitality Сеть (HHN)",
+      "name": "Healthcare Hospitality Network (HHN)",
       "description": "Бесплатный сервис. Используйте веб-локатор. Поиск по почтовому индексу: 27705 (Дарем) и 27511 (Кэри). RMH Дарем, вероятно, является членом HHN, но могут появиться и другие варианты.",
       "eligibility": "Национальная сеть из более чем 200 некоммерческих организаций, предоставляющих жилье для семей, путешествующих с медицинскими целями. Поиск по почтовому индексу рядом с Даремом или Кэри. B-2: Нет"
     },
@@ -2898,29 +2898,29 @@
       "eligibility": "200+ объектов. ZIP: 27705/27511.. B-2: 🟢"
     },
     "ka": {
-      "name": "HHN (Healthcare Hospitality ქსელი)",
+      "name": "HHN (Healthcare Hospitality Network)",
       "description": "უფასო სერვისი. ვებ ლოკატორი.",
       "eligibility": "200+ ობიექტი. ZIP: 27705/27511.. B-2: 🟢"
     }
   },
   "item_0133": {
     "fr": {
-      "name": "Espoir pour HIE",
+      "name": "Hope for HIE",
       "description": "Orientation vers les ressources, connexion avec les cliniciens",
       "eligibility": "Visa B-2 : ✅ Oui — mondial"
     },
     "es": {
-      "name": "Esperanza para HIE",
+      "name": "Hope for HIE",
       "description": "Navegación de recursos, conexión con clínicos",
       "eligibility": "Visa B-2: ✅ Sí — mundial"
     },
     "ru": {
-      "name": "Надежда for HIE",
+      "name": "Hope for HIE",
       "description": "Навигация по ресурсам, связь с клиницистами",
       "eligibility": "Виза B-2: ✅ Да — мировой"
     },
     "ka": {
-      "name": "იმედი for HIE",
+      "name": "Hope for HIE",
       "description": "რესურსების ნავიგაცია, კლინიცისტებთან კავშირი",
       "eligibility": "B-2 Visa: ✅ დიახ — მსოფლიო"
     }
@@ -3191,22 +3191,22 @@
   },
   "item_0146": {
     "fr": {
-      "name": "Joshua Harr Shane Fondation",
+      "name": "Joshua Harr Shane Foundation",
       "description": "Soutien pour les maladies graves",
       "eligibility": ""
     },
     "es": {
-      "name": "Joshua Harr Shane Fundación",
+      "name": "Joshua Harr Shane Foundation",
       "description": "Apoyo para enfermedades graves",
       "eligibility": ""
     },
     "ru": {
-      "name": "Joshua Harr Shane Фонд",
+      "name": "Joshua Harr Shane Foundation",
       "description": "Поддержка при серьезных заболеваниях",
       "eligibility": ""
     },
     "ka": {
-      "name": "Joshua Harr Shane ფონდი",
+      "name": "Joshua Harr Shane Foundation",
       "description": "მძიმე დაავადებების მხარდაჭერა",
       "eligibility": ""
     }
@@ -3228,7 +3228,7 @@
       "eligibility": "Виза B-2: Нет ❌"
     },
     "ka": {
-      "name": "Julian Robertson ფონდი",
+      "name": "Julian Robertson Foundation",
       "description": "Duke cord blood clinical trials-ის მთავარი ფონდატორი. \"Robertson Cell and Translational Therapy Program.\" მხოლოდ კვლევის დაფინანსება.",
       "eligibility": "B-2 Visa: ვერა ❌"
     }
@@ -3279,22 +3279,22 @@
   },
   "item_0150": {
     "fr": {
-      "name": "Kids Mobilité Réseau",
+      "name": "Kids Mobility Network",
       "description": "TECHNOLOGIE DE RÉADAPTATION COMPLEXE Kids Mobility Network dispose d'un entrepôt rempli de technologies de réadaptation complexe (CRT) et d'équipements médicaux durables (DME) de qualité, disponibles EN STOCK AUJOURD'HUI ! Si votre enfant ne dispose pas d'un équipement adéquat qui lui permet d'optimiser sa mobilité, son indépendance et sa sécurité, veuillez remplir une demande dès aujourd'hui afin que nous puissions vous aider. Visitez notre page FAQ pour obtenir des réponses à quelques questions courantes ou consultez notre page Témoignages pour lire les commentaires des bénéficiaires et t...",
       "eligibility": "Âges 0-100 ; Diagnostic général ; Lieu : USA"
     },
     "es": {
-      "name": "Kids Movilidad Red",
+      "name": "Kids Mobility Network",
       "description": "TECNOLOGÍA DE REHABILITACIÓN COMPLEJA Kids Mobility Network tiene un almacén lleno de tecnología de rehabilitación compleja (CRT) y equipo médico duradero (DME) de calidad que está en stock HOY MISMO. Si su hijo no cuenta con el equipo adecuado que le permita optimizar su movilidad, independencia y seguridad, por favor complete una solicitud hoy para que podamos ayudarle. Visite nuestra página de Preguntas Frecuentes para obtener respuestas a algunas preguntas comunes o visite nuestra página de Testimonios para revisar comentarios de los beneficiarios y t...",
       "eligibility": "Edades 0-100; Diagnóstico general; Ubicación: USA"
     },
     "ru": {
-      "name": "Kids Мобильность Сеть",
+      "name": "Kids Mobility Network",
       "description": "КОМПЛЕКСНЫЕ РЕАБИЛИТАЦИОННЫЕ ТЕХНОЛОГИИ Kids Mobility Network имеет склад, полный качественных комплексных реабилитационных технологий (CRT) и прочного медицинского оборудования (DME), которые есть в наличии СЕГОДНЯ! Если у вашего ребенка нет подходящего оборудования, позволяющего оптимизировать его или её мобильность, независимость и безопасность, пожалуйста, заполните заявку сегодня, чтобы мы могли помочь. Посетите нашу страницу FAQ, чтобы получить ответы на несколько распространенных вопросов, или посетите нашу страницу отзывов, чтобы ознакомиться с комментариями получателей и т...",
       "eligibility": "Возраст 0-100; Общий диагноз; Местоположение: USA"
     },
     "ka": {
-      "name": "Kids მობილობა ქსელი",
+      "name": "Kids Mobility Network",
       "description": "კომპლექსური რეაბილიტაციის ტექნოლოგია Kids Mobility Network-ს აქვს საწყობი, სავსე ხარისხიანი კომპლექსური რეაბილიტაციის ტექნოლოგიით (CRT) და გამძლე სამედიცინო აღჭურვილობით (DME), რომელიც ხელმისაწვდომია დღესვე! თუ თქვენს ბავშვს არ აქვს შესაბამისი აღჭურვილობა, რომელიც საშუალებას მისცემს მას ოპტიმიზაცია გაუკეთოს თავისი მობილობას, დამოუკიდებლობას და უსაფრთხოებას, გთხოვთ, შეავსოთ განაცხადი დღესვე, რათა ჩვენ დაგეხმაროთ. ეწვიეთ ჩვენს ხშირად დასმული კითხვების გვერდს, რათა მიიღოთ პასუხები რამდენიმე გავრცელებულ კითხვაზე, ან ეწვიეთ ჩვენ მოწონებების გვერდს, რათა დაათვალიეროთ მიმოხილვები მიმღებთა და ა...",
       "eligibility": "ასაკი 0-100; ზოგადი დიაგნოზი; მდებარეობა: USA"
     }
@@ -3411,22 +3411,22 @@
   },
   "item_0156": {
     "fr": {
-      "name": "Lilly Cares Fondation",
+      "name": "Lilly Cares Foundation",
       "description": "Médicaments",
       "eligibility": ""
     },
     "es": {
-      "name": "Lilly Cares Fundación",
+      "name": "Lilly Cares Foundation",
       "description": "Medicamentos",
       "eligibility": ""
     },
     "ru": {
-      "name": "Lilly Cares Фонд",
+      "name": "Lilly Cares Foundation",
       "description": "Лекарства",
       "eligibility": ""
     },
     "ka": {
-      "name": "Lilly Cares ფონდი",
+      "name": "Lilly Cares Foundation",
       "description": "მედიკამენტები",
       "eligibility": ""
     }
@@ -3455,22 +3455,22 @@
   },
   "item_0158": {
     "fr": {
-      "name": "Little Baby Face Fondation",
+      "name": "Little Baby Face Foundation",
       "description": "Chirurgie du visage",
       "eligibility": ""
     },
     "es": {
-      "name": "Little Baby Face Fundación",
+      "name": "Little Baby Face Foundation",
       "description": "Cirugía de la cara",
       "eligibility": ""
     },
     "ru": {
-      "name": "Little Baby Face Фонд",
+      "name": "Little Baby Face Foundation",
       "description": "Лицевая хирургия",
       "eligibility": ""
     },
     "ka": {
-      "name": "Little Baby Face ფონდი",
+      "name": "Little Baby Face Foundation",
       "description": "სახის ქირურგია",
       "eligibility": ""
     }
@@ -3526,7 +3526,7 @@
       "eligibility": "Patients de Duke. Navette gratuite. B-2 : 🟢"
     },
     "es": {
-      "name": "Lodge at Duke Médico Center",
+      "name": "Lodge at Duke Medical Center",
       "description": "Tarifa médica. Conserje: 919-684-5887.",
       "eligibility": "Pacientes de Duke. Transporte gratuito. B-2: 🟢"
     },
@@ -3609,17 +3609,17 @@
   },
   "item_0165": {
     "fr": {
-      "name": "Making Headway Fondation",
+      "name": "Making Headway Foundation",
       "description": "Thérapie individuelle ou de groupe",
       "eligibility": ""
     },
     "es": {
-      "name": "Making Headway Fundación",
+      "name": "Making Headway Foundation",
       "description": "Terapia individual o grupal",
       "eligibility": ""
     },
     "ru": {
-      "name": "Making Headway Фонд",
+      "name": "Making Headway Foundation",
       "description": "Индивидуальная или групповая терапия",
       "eligibility": ""
     },
@@ -3646,29 +3646,29 @@
       "eligibility": "Виза B-2: Нет ❌"
     },
     "ka": {
-      "name": "Marcus ფონდი (Atlanta)",
+      "name": "Marcus Foundation (Atlanta)",
       "description": "$15M+ Duke-ის კორდის სისხლის კვლევისთვის. \"Marcus Center for Cellular Cures\" მათ სახელზეა. მაგრამ: ინდივიდუალურ ოჯახებს არ აფინანსებენ. 2022-დან regenerative medicine გრანტები შეწყვიტეს.",
       "eligibility": "B-2 Visa: ვერა ❌"
     }
   },
   "item_0167": {
     "fr": {
-      "name": "Maryam Parman Fondation",
+      "name": "Maryam Parman Foundation",
       "description": "Soins infirmiers/Thérapie/Appareils",
       "eligibility": ""
     },
     "es": {
-      "name": "Maryam Parman Fundación",
+      "name": "Maryam Parman Foundation",
       "description": "Enfermería/Terapia/Dispositivos",
       "eligibility": ""
     },
     "ru": {
-      "name": "Maryam Parman Фонд",
+      "name": "Maryam Parman Foundation",
       "description": "Уход/Терапия/Устройства",
       "eligibility": ""
     },
     "ka": {
-      "name": "Maryam Parman ფონდი",
+      "name": "Maryam Parman Foundation",
       "description": "მედდა/თერაპია/მოწყობილობები",
       "eligibility": ""
     }
@@ -3939,22 +3939,22 @@
   },
   "item_0180": {
     "fr": {
-      "name": "Move pour Jenn Fondation",
+      "name": "Move for Jenn Foundation",
       "description": "Prothèse",
       "eligibility": ""
     },
     "es": {
-      "name": "Move para Jenn Fundación",
+      "name": "Move for Jenn Foundation",
       "description": "Prótesis",
       "eligibility": ""
     },
     "ru": {
-      "name": "Move for Jenn Фонд",
+      "name": "Move for Jenn Foundation",
       "description": "Протез",
       "eligibility": ""
     },
     "ka": {
-      "name": "Move for Jenn ფონდი",
+      "name": "Move for Jenn Foundation",
       "description": "პროთეზი",
       "eligibility": ""
     }
@@ -4010,17 +4010,17 @@
       "eligibility": ""
     },
     "es": {
-      "name": "Nacional Autism Asociación",
+      "name": "National Autism Association",
       "description": "Programas múltiples",
       "eligibility": ""
     },
     "ru": {
-      "name": "Национальный Autism Ассоциация",
+      "name": "National Autism Association",
       "description": "Несколько программ",
       "eligibility": ""
     },
     "ka": {
-      "name": "ეროვნული Autism ასოციაცია",
+      "name": "National Autism Association",
       "description": "მრავალი პროგრამა",
       "eligibility": ""
     }
@@ -4049,17 +4049,17 @@
   },
   "item_0185": {
     "fr": {
-      "name": "National Neutropenia Réseau",
+      "name": "National Neutropenia Network",
       "description": "Cartes d'urgence",
       "eligibility": ""
     },
     "es": {
-      "name": "Nacional Neutropenia Red",
+      "name": "National Neutropenia Network",
       "description": "Tarjetas de emergencia",
       "eligibility": ""
     },
     "ru": {
-      "name": "Национальный Neutropenia Сеть",
+      "name": "National Neutropenia Network",
       "description": "Карты экстренной помощи",
       "eligibility": ""
     },
@@ -4093,12 +4093,12 @@
   },
   "item_0187": {
     "fr": {
-      "name": "NC DHHS + Families In Focus + The Arc de NC",
+      "name": "NC DHHS + Families In Focus + The Arc of NC",
       "description": "Service de référence gratuit. Appelez FIF Durham au (919) 251-8368 — renseignez-vous sur la disponibilité des ressources communautaires. La ligne d'assistance du NC DHHS peut vous mettre en contact avec les programmes de l'État + les programmes communautaires + les sources de financement.",
       "eligibility": "Ligne d'assistance du NC DHHS pour les enfants ayant des besoins de santé spéciaux — service de référence gratuit. Families In Focus (FIF) Durham : aide les familles d'enfants ayant des retards de développement/handicaps. The Arc of NC : coordinateurs des ressources en logement. ⚠️ La plupart des programmes de la Caroline du Nord exigent la citoyenneté/carte verte — limité pour le visa B-2. B-2 : ⚠️ Limité — la plupart des programmes de l'État de la Caroline du Nord exigent la citoyenneté ou la résidence permanente."
     },
     "es": {
-      "name": "NC DHHS + Families In Focus + The Arc de NC",
+      "name": "NC DHHS + Families In Focus + The Arc of NC",
       "description": "Servicio de referencia gratuito. Llame a FIF Durham al (919) 251-8368 — pregunte sobre la disponibilidad de recursos comunitarios. La línea de ayuda del NC DHHS puede conectarlo con programas estatales + programas comunitarios + fuentes de financiamiento.",
       "eligibility": "Línea de ayuda para niños con necesidades especiales de atención médica del NC DHHS — servicio de referencia gratuito. Families In Focus (FIF) Durham: ayuda a las familias de niños con retrasos en el desarrollo/discapacidades. The Arc of NC: coordinadores de recursos de vivienda. ⚠️ La mayoría de los programas de Carolina del Norte requieren ciudadanía/tarjeta verde — limitado para la visa B-2. B-2: ⚠️ Limitado — la mayoría de los programas estatales de Carolina del Norte requieren ciudadanía o residencia permanente."
     },
@@ -4203,44 +4203,44 @@
   },
   "item_0192": {
     "fr": {
-      "name": "Novartis Patient Aide",
+      "name": "Novartis Patient Assistance",
       "description": "Pharmaceutique",
       "eligibility": ""
     },
     "es": {
-      "name": "Novartis Paciente Asistencia",
+      "name": "Novartis Patient Assistance",
       "description": "Farmacéutico",
       "eligibility": ""
     },
     "ru": {
-      "name": "Novartis Пациент Помощь",
+      "name": "Novartis Patient Assistance",
       "description": "Фармацевтический",
       "eligibility": ""
     },
     "ka": {
-      "name": "Novartis პაციენტი დახმარება",
+      "name": "Novartis Patient Assistance",
       "description": "ფარმაცევტული",
       "eligibility": ""
     }
   },
   "item_0193": {
     "fr": {
-      "name": "Oley Fondation",
+      "name": "Oley Foundation",
       "description": "Prix Joan Bishop",
       "eligibility": ""
     },
     "es": {
-      "name": "Oley Fundación",
+      "name": "Oley Foundation",
       "description": "Premio Joan Bishop",
       "eligibility": ""
     },
     "ru": {
-      "name": "Oley Фонд",
+      "name": "Oley Foundation",
       "description": "Премия Джоан Бишоп",
       "eligibility": ""
     },
     "ka": {
-      "name": "Oley ფონდი",
+      "name": "Oley Foundation",
       "description": "ჯოან ბიშოპის ჯილდო",
       "eligibility": ""
     }
@@ -4416,29 +4416,29 @@
       "eligibility": "Виза B-2: информация"
     },
     "ka": {
-      "name": "Parent's Guide to Cord Blood ფონდი",
+      "name": "Parent's Guide to Cord Blood Foundation",
       "description": "ყველაზე ავტორიტეტული დამოუკიდებელი წყარო Duke EAP-ის შესახებ. დაფუძნებულია ფრენსის ვერტერის, PhD-ის მიერ. Duke EAP-ის ხარჯების შემთხვევების ანალიზი. თანამშრომლობა დოქტორ კურტცბერგთან.",
       "eligibility": "B-2 ვიზა: ინფორმაცია"
     }
   },
   "item_0202": {
     "fr": {
-      "name": "Patient Défenseur Fondation",
+      "name": "Patient Advocate Foundation",
       "description": "Services PAF",
       "eligibility": ""
     },
     "es": {
-      "name": "Paciente Defensor Fundación",
+      "name": "Patient Advocate Foundation",
       "description": "Servicios PAF",
       "eligibility": ""
     },
     "ru": {
-      "name": "Пациент Защитник Фонд",
+      "name": "Patient Advocate Foundation",
       "description": "Услуги PAF",
       "eligibility": ""
     },
     "ka": {
-      "name": "პაციენტი ადვოკატი ფონდი",
+      "name": "Patient Advocate Foundation",
       "description": "PAF სერვისები",
       "eligibility": ""
     }
@@ -4511,17 +4511,17 @@
   },
   "item_0206": {
     "fr": {
-      "name": "Philoptochos Enfants Médical Fonds 🆕",
+      "name": "Philoptochos Children's Medical Fund 🆕",
       "description": "Subventions aux organisations à but non lucratif (pas aux individus)",
       "eligibility": "Visa B-2 : ❓ incertain"
     },
     "es": {
-      "name": "Philoptochos Niños Médico Fondo 🆕",
+      "name": "Philoptochos Children's Medical Fund 🆕",
       "description": "Subvenciones a organizaciones sin fines de lucro (no a individuos)",
       "eligibility": "Visa B-2: ❓ incierto"
     },
     "ru": {
-      "name": "Philoptochos Дети Медицинский Фонд 🆕",
+      "name": "Philoptochos Children's Medical Fund 🆕",
       "description": "Гранты некоммерческим организациям (не физическим лицам)",
       "eligibility": "Виза B-2: ❓ неясно"
     },
@@ -4621,39 +4621,39 @@
   },
   "item_0211": {
     "fr": {
-      "name": "Raising Spécial Kids",
+      "name": "Raising Special Kids",
       "description": "Mentorat pour les réfugiés et les demandeurs d'asile",
       "eligibility": ""
     },
     "es": {
-      "name": "Raising Especial Kids",
+      "name": "Raising Special Kids",
       "description": "Tutoría para refugiados y asilados",
       "eligibility": ""
     },
     "ru": {
-      "name": "Raising Особый Kids",
+      "name": "Raising Special Kids",
       "description": "Наставничество для беженцев и лиц, ищущих убежища",
       "eligibility": ""
     },
     "ka": {
-      "name": "Raising განსაკუთრებული Kids",
+      "name": "Raising Special Kids",
       "description": "ლტოლვილთა და თავშესაფრის მაძიებელთა მენტორობა",
       "eligibility": ""
     }
   },
   "item_0212": {
     "fr": {
-      "name": "Raleigh-Cary Jewish Famille Services",
+      "name": "Raleigh-Cary Jewish Family Services",
       "description": "Aide financière (loyer, services publics, urgence). Appelez directement. Expliquez la situation médicale. Demandez une affectation de gestionnaire de cas + une aide financière d'urgence pour le logement.",
       "eligibility": "Gestion de cas et aide financière temporaire. Sert les personnes de toutes confessions. Le gestionnaire de cas vous aidera à naviguer dans d'autres ressources de logement. B-2 : Inconnu — à déterminer"
     },
     "es": {
-      "name": "Raleigh-Cary Jewish Familia Servicios",
+      "name": "Raleigh-Cary Jewish Family Services",
       "description": "Asistencia financiera (alquiler, servicios públicos, emergencia). Llame directamente. Explique la situación médica. Pregunte sobre la asignación de un administrador de casos + asistencia financiera de emergencia para la vivienda.",
       "eligibility": "Gestión de casos y asistencia financiera temporal. Sirve a personas de todas las religiones. El administrador de casos lo ayudará a navegar por otros recursos de vivienda. B-2: Desconocido — por determinar"
     },
     "ru": {
-      "name": "Raleigh-Cary Jewish Семья Службы",
+      "name": "Raleigh-Cary Jewish Family Services",
       "description": "Финансовая помощь (аренда, коммунальные услуги, экстренная помощь). Звоните напрямую. Объясните медицинскую ситуацию. Узнайте о назначении куратора + экстренной финансовой помощи на жилье.",
       "eligibility": "Ведение дел и временная финансовая помощь. Обслуживает людей всех вероисповеданий. Куратор поможет вам сориентироваться в других жилищных ресурсах. B-2: Неизвестно — уточняется"
     },
@@ -4731,7 +4731,7 @@
   },
   "item_0216": {
     "fr": {
-      "name": "Resources pour families",
+      "name": "Resources for families",
       "description": "Family Voices est une organisation nationale à but non lucratif dirigée par des familles et des amis d'enfants et de jeunes ayant des besoins particuliers en matière de santé (CYSHCN) et des handicaps. Nous mettons en relation un réseau d'organisations dirigées par des familles à travers les États-Unis, qui apportent un soutien aux familles de CYSHCN. Nous favorisons la collaboration avec les jeunes et les familles à tous les niveaux des soins de santé, depuis les soins individuels jusqu'à l'élaboration des politiques et la prise de décisions, afin d'améliorer les politiques et les systèmes de soins pour les enfants. Âge minimum : 0 Âge maximum : 21 Vérification financière...",
       "eligibility": "Âges 0-21 ; Diagnostic général ; Lieu : USA"
     },
@@ -4753,12 +4753,12 @@
   },
   "item_0217": {
     "fr": {
-      "name": "Ronald McDonald Soins Mobile",
+      "name": "Ronald McDonald Care Mobile",
       "description": "Les programmes Ronald McDonald Care Mobile apportent des ressources dentaires, médicales et de santé aux communautés mal desservies du monde entier. Programmes Ronald McDonald Care Mobile Des millions de familles dans le monde n'ont pas accès aux soins médicaux et dentaires les plus élémentaires pour leurs enfants. Ce besoin urgent et déchirant est la raison pour laquelle RMHC fournit des dizaines de milliers de visites médicales, dentaires et d'éducation à la santé aux communautés, en partenariat avec des prestataires de services cliniques locaux, à travers...",
       "eligibility": "Âge 0-21 ans ; Diagnostic général ; Lieu : États-Unis"
     },
     "es": {
-      "name": "Ronald McDonald Cuidado Mobile",
+      "name": "Ronald McDonald Care Mobile",
       "description": "Los programas Ronald McDonald Care Mobile llevan recursos dentales, médicos y de atención médica a comunidades desatendidas de todo el mundo. Programas Ronald McDonald Care Mobile Millones de familias en todo el mundo carecen de acceso incluso a la atención médica y dental más básica para sus hijos. Esta necesidad urgente y desgarradora es la razón por la que RMHC realiza decenas de miles de visitas médicas, dentales y de educación para la salud a las comunidades, en asociación with proveedores de servicios clínicos locales, a través de...",
       "eligibility": "Edades 0-21; Diagnóstico general; Ubicación: EE. UU."
     },
@@ -4885,17 +4885,17 @@
   },
   "item_0223": {
     "fr": {
-      "name": "SECU Caring Maison (Duke Cancer)",
+      "name": "SECU Caring House (Duke Cancer)",
       "description": "45 $/nuit. Recommandation d'un travailleur social de Duke.",
       "eligibility": "Adultes atteints de cancer de Duke. ⚠️ Pas de pédiatrie. B-2 : 🟢"
     },
     "es": {
-      "name": "SECU Caring Casa (Duke Cancer)",
+      "name": "SECU Caring House (Duke Cancer)",
       "description": "45 $/noche. Se requiere la derivación de un trabajador social de Duke.",
       "eligibility": "Adultos con cáncer de Duke. ⚠️ No pediátrico. B-2: 🟢"
     },
     "ru": {
-      "name": "SECU Caring Дом (Duke Cancer)",
+      "name": "SECU Caring House (Duke Cancer)",
       "description": "45 долларов в сутки. Требуется направление от социального работника Duke.",
       "eligibility": "Взрослые пациенты с онкологическими заболеваниями Duke. ⚠️ Не для детей. B-2: 🟢"
     },
@@ -4907,17 +4907,17 @@
   },
   "item_0224": {
     "fr": {
-      "name": "SECU Famille Maison (UNC)",
+      "name": "SECU Family House (UNC)",
       "description": "54–72 $/nuit. Nécessite une référence UNC.",
       "eligibility": "Patients UNC Health.. B-2 : 🟢"
     },
     "es": {
-      "name": "SECU Familia Casa (UNC)",
+      "name": "SECU Family House (UNC)",
       "description": "$54–72/noche. Se requiere referencia de UNC.",
       "eligibility": "Pacientes de UNC Health.. B-2: 🟢"
     },
     "ru": {
-      "name": "SECU Семья Дом (UNC)",
+      "name": "SECU Family House (UNC)",
       "description": "$54–72 за ночь. Требуется направление от UNC.",
       "eligibility": "Пациенты UNC Health.. B-2: 🟢"
     },
@@ -4929,7 +4929,7 @@
   },
   "item_0225": {
     "fr": {
-      "name": "SECU Famille Maison at UNC",
+      "name": "SECU Family House at UNC",
       "description": "54 $/nuit (standard) ou 72 $/nuit (luxe). Une référence de UNC Health est nécessaire. Demandez au travailleur social de Duke — ils peuvent coordonner avec UNC. Alternative : Duke IPS (intps@duke.edu) peut aider.",
       "eligibility": "Patients adultes et familles de UNC Health. Alexandra est traitée à Duke, pas à UNC — une référence de UNC Health est nécessaire. De Chapel Hill à Duke environ 7 miles (~15 min). B-2 : non — basé sur le statut du patient."
     },
@@ -4973,22 +4973,22 @@
   },
   "item_0227": {
     "fr": {
-      "name": "Show Espoir",
+      "name": "Show Hope",
       "description": "Bourses de soins médicaux pour les personnes adoptées",
       "eligibility": ""
     },
     "es": {
-      "name": "Show Esperanza",
+      "name": "Show Hope",
       "description": "Becas de atención médica para adoptados",
       "eligibility": ""
     },
     "ru": {
-      "name": "Show Надежда",
+      "name": "Show Hope",
       "description": "Гранты на медицинское обслуживание для усыновленных",
       "eligibility": ""
     },
     "ka": {
-      "name": "Show იმედი",
+      "name": "Show Hope",
       "description": "სამედიცინო დახმარების გრანტები ნაშვილებისთვის",
       "eligibility": ""
     }
@@ -5061,17 +5061,17 @@
   },
   "item_0231": {
     "fr": {
-      "name": "Shriners Hospitals pour Enfants",
+      "name": "Shriners Hospitals for Children",
       "description": "Des soins de qualité",
       "eligibility": ""
     },
     "es": {
-      "name": "Shriners Hospitals para Niños",
+      "name": "Shriners Hospitals for Children",
       "description": "Atención de calidad",
       "eligibility": ""
     },
     "ru": {
-      "name": "Shriners Hospitals for Дети",
+      "name": "Shriners Hospitals for Children",
       "description": "Качественный уход",
       "eligibility": ""
     },
@@ -5149,12 +5149,12 @@
   },
   "item_0235": {
     "fr": {
-      "name": "SPARK pour Autism",
+      "name": "SPARK for Autism",
       "description": "Recherche SPARK sur l'autisme",
       "eligibility": ""
     },
     "es": {
-      "name": "SPARK para Autism",
+      "name": "SPARK for Autism",
       "description": "SPARK Investigación sobre el autismo",
       "eligibility": ""
     },
@@ -5281,44 +5281,44 @@
   },
   "item_0241": {
     "fr": {
-      "name": "St. Jude Enfants Research Hôpital",
+      "name": "St. Jude Children's Research Hospital",
       "description": "Soins et traitement",
       "eligibility": ""
     },
     "es": {
-      "name": "St. Jude Niños Research Hospital",
+      "name": "St. Jude Children's Research Hospital",
       "description": "Cuidado y tratamiento",
       "eligibility": ""
     },
     "ru": {
-      "name": "St. Jude Дети Research Больница",
+      "name": "St. Jude Children's Research Hospital",
       "description": "Уход и лечение",
       "eligibility": ""
     },
     "ka": {
-      "name": "St. Jude ბავშვთა Research საავადმყოფო",
+      "name": "St. Jude Children's Research Hospital",
       "description": "მოვლა და მკურნალობა",
       "eligibility": ""
     }
   },
   "item_0242": {
     "fr": {
-      "name": "Starlight Enfants Fondation",
+      "name": "Starlight Children's Foundation",
       "description": "Programmes hospitaliers",
       "eligibility": ""
     },
     "es": {
-      "name": "Starlight Niños Fundación",
+      "name": "Starlight Children's Foundation",
       "description": "Programas hospitalarios",
       "eligibility": ""
     },
     "ru": {
-      "name": "Starlight Дети Фонд",
+      "name": "Starlight Children's Foundation",
       "description": "Больничные программы",
       "eligibility": ""
     },
     "ka": {
-      "name": "Starlight ბავშვთა ფონდი",
+      "name": "Starlight Children's Foundation",
       "description": "საავადმყოფოს პროგრამები",
       "eligibility": ""
     }
@@ -5340,7 +5340,7 @@
       "eligibility": "Виза B-2: ❓ Неопределенная — 47 государств."
     },
     "ka": {
-      "name": "Team Luke იმედი for Minds 🆕",
+      "name": "Team Luke Hope for Minds 🆕",
       "description": "შეძენილი პედიატრიული ტვინის ტრავმა (HIE!)",
       "eligibility": "B-2 ვიზა: ❓ გაურკვეველი — 47 შტატი"
     }
@@ -5391,44 +5391,44 @@
   },
   "item_0246": {
     "fr": {
-      "name": "The Aide Fonds",
+      "name": "The Assistance Fund",
       "description": "Fonds pour les spasmes infantiles",
       "eligibility": ""
     },
     "es": {
-      "name": "The Asistencia Fondo",
+      "name": "The Assistance Fund",
       "description": "Fondo para espasmos infantiles",
       "eligibility": ""
     },
     "ru": {
-      "name": "The Помощь Фонд",
+      "name": "The Assistance Fund",
       "description": "Фонд детских спазмов",
       "eligibility": ""
     },
     "ka": {
-      "name": "The დახმარება ფონდი",
+      "name": "The Assistance Fund",
       "description": "ინფანტილური სპაზმების ფონდი",
       "eligibility": ""
     }
   },
   "item_0247": {
     "fr": {
-      "name": "The Avalon Fondation",
+      "name": "The Avalon Foundation",
       "description": "Programme PainBox",
       "eligibility": ""
     },
     "es": {
-      "name": "The Avalon Fundación",
+      "name": "The Avalon Foundation",
       "description": "Programa PainBox",
       "eligibility": ""
     },
     "ru": {
-      "name": "The Avalon Фонд",
+      "name": "The Avalon Foundation",
       "description": "Программа PainBox",
       "eligibility": ""
     },
     "ka": {
-      "name": "The Avalon ფონდი",
+      "name": "The Avalon Foundation",
       "description": "PainBox პროგრამა",
       "eligibility": ""
     }
@@ -5479,22 +5479,22 @@
   },
   "item_0250": {
     "fr": {
-      "name": "The Lodge at Duke Médical Center",
+      "name": "The Lodge at Duke Medical Center",
       "description": "Tarif médical spécial (pas gratuit — à prix réduit). Appelez pour demander le tarif patient Duke Health. Ou réservez via le concierge Duke Health : 919-684-5887.",
       "eligibility": "Patients et familles Duke Health.. B-2 : non — basé sur le statut du patient."
     },
     "es": {
-      "name": "The Lodge at Duke Médico Center",
+      "name": "The Lodge at Duke Medical Center",
       "description": "Tarifa médica especial (no gratis — con descuento). Llame para solicitar la tarifa para pacientes de Duke Health. O reserve a través del conserje de Duke Health: 919-684-5887.",
       "eligibility": "Pacientes y familias de Duke Health.. B-2: no — basado en el estatus del paciente."
     },
     "ru": {
-      "name": "The Lodge at Duke Медицинский Center",
+      "name": "The Lodge at Duke Medical Center",
       "description": "Специальный медицинский тариф (не бесплатно — со скидкой). Позвоните и запросите тариф для пациентов Duke Health. Или забронируйте через консьержа Duke Health: 919-684-5887.",
       "eligibility": "Пациенты и семьи Duke Health.. B-2: нет — основано на статусе пациента."
     },
     "ka": {
-      "name": "The Lodge at Duke სამედიცინო Center",
+      "name": "The Lodge at Duke Medical Center",
       "description": "სპეციალური სამედიცინო ტარიფი (არა უფასო — ფასდაკლებით). დარეკეთ და მოითხოვეთ Duke Health-ის პაციენტის ტარიფი. ან დაჯავშნეთ Duke Health კონსიერჟის მეშვეობით: 919-684-5887.",
       "eligibility": "Duke Health-ის პაციენტები და ოჯახები.. B-2: არა — პაციენტის სტატუსზეა დაფუძნებული."
     }
@@ -5714,7 +5714,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "Tucson ალიანსი for Autism",
+      "name": "Tucson Alliance for Autism",
       "description": "შეფასებები და შეფასებები",
       "eligibility": ""
     }
@@ -5726,12 +5726,12 @@
       "eligibility": "Visa B-2 : ✅ Oui — communauté géorgienne"
     },
     "es": {
-      "name": "Tvistomi Asociación (Brooklyn, NY) 🆕",
+      "name": "Tvistomi Association (Brooklyn, NY) 🆕",
       "description": "Ayuda social, médica y legal para georgianos en EE. UU.",
       "eligibility": "Visa B-2: ✅ Sí — comunidad georgiana"
     },
     "ru": {
-      "name": "Tvistomi Ассоциация (Brooklyn, NY) 🆕",
+      "name": "Tvistomi Association (Brooklyn, NY) 🆕",
       "description": "Социальная, медицинская и юридическая помощь грузинам в США",
       "eligibility": "Виза B-2: ✅ Да — грузинская община"
     },
@@ -5787,17 +5787,17 @@
   },
   "item_0264": {
     "fr": {
-      "name": "United Healthcare Enfants Fondation",
+      "name": "United Healthcare Children's Foundation",
       "description": "Subvention médicale de l'UHCCF",
       "eligibility": ""
     },
     "es": {
-      "name": "United Healthcare Niños Fundación",
+      "name": "United Healthcare Children's Foundation",
       "description": "Beca médica UHCCF",
       "eligibility": ""
     },
     "ru": {
-      "name": "United Healthcare Дети Фонд",
+      "name": "United Healthcare Children's Foundation",
       "description": "Медицинский грант UHCCF",
       "eligibility": ""
     },
@@ -5809,22 +5809,22 @@
   },
   "item_0265": {
     "fr": {
-      "name": "United Spécial Sportsman Alliance (USSA) - 2025 Referral Programme",
+      "name": "United Special Sportsman Alliance (USSA) - 2025 Referral Program",
       "description": "Limitations Doit concerner un enfant, un jeune ou un vétéran qui bénéficierait d'un voyage souhaité en plein air. La référence doit inclure les détails personnels et les besoins spécifiques du candidat.",
       "eligibility": "Diagnostic général, militaire/vétérans ; Lieu : États-Unis"
     },
     "es": {
-      "name": "United Especial Sportsman Alianza (USSA) - 2025 Referral Programa",
+      "name": "United Special Sportsman Alliance (USSA) - 2025 Referral Program",
       "description": "Limitaciones Debe referirse a un niño, joven o veterano que se beneficiaría de un viaje al aire libre deseado. La referencia debe incluir los detalles personales y las necesidades especiales del solicitante.",
       "eligibility": "Diagnóstico general, militares/veteranos; Ubicación: EE. UU."
     },
     "ru": {
-      "name": "United Особый Sportsman Альянс (USSA) - 2025 Referral Программа",
+      "name": "United Special Sportsman Alliance (USSA) - 2025 Referral Program",
       "description": "Ограничения Должен касаться ребёнка, молодёжи или ветерана, которые могли бы получить пользу от поездки на открытом воздухе по их желанию. Реферал должен включать личные данные и особые потребности заявителя.",
       "eligibility": "Общий диагноз, военнослужащие/ветераны; Местоположение: США"
     },
     "ka": {
-      "name": "United განსაკუთრებული Sportsman ალიანსი (USSA) - 2025 Referral პროგრამა",
+      "name": "United Special Sportsman Alliance (USSA) - 2025 Referral Program",
       "description": "შემცირე პირობები უნდა შეეხოს ბავშვს, ახალგაზრდას ან ვეტერანს, ვისაც სარგებელი მოუტანს გარე სურვილის მოგზაურობა. გადამისამართება უნდა შეიცავდეს აპლიკანტის პირად მონაცემებს და სპეციალურ საჭიროებებს.",
       "eligibility": "საერთო დიაგნოზი, სამხედროები/ვეტერანები; ადგილმდებარეობა: აშშ"
     }
@@ -6535,22 +6535,22 @@
   },
   "item_0298": {
     "fr": {
-      "name": "Accessia Santé",
+      "name": "Accessia Health",
       "description": "Plusieurs programmes",
       "eligibility": ""
     },
     "es": {
-      "name": "Accessia Salud",
+      "name": "Accessia Health",
       "description": "Múltiples programas",
       "eligibility": ""
     },
     "ru": {
-      "name": "Accessia Здоровье",
+      "name": "Accessia Health",
       "description": "Несколько программ",
       "eligibility": ""
     },
     "ka": {
-      "name": "Accessia ჯანმრთელობა",
+      "name": "Accessia Health",
       "description": "მრავალი პროგრამა",
       "eligibility": ""
     }
@@ -6623,61 +6623,61 @@
   },
   "item_0302": {
     "fr": {
-      "name": "ADI - Aide Chiens International",
+      "name": "ADI - Assistance Dogs International",
       "description": "Chiens d'assistance",
       "eligibility": ""
     },
     "es": {
-      "name": "ADI - Asistencia Perros Internacional",
+      "name": "ADI - Assistance Dogs International",
       "description": "Perros de asistencia",
       "eligibility": ""
     },
     "ru": {
-      "name": "ADI - Помощь Собаки Международный",
+      "name": "ADI - Assistance Dogs International",
       "description": "Собаки-поводыри",
       "eligibility": ""
     },
     "ka": {
-      "name": "ADI - დახმარება ძაღლები საერთაშორისო",
+      "name": "ADI - Assistance Dogs International",
       "description": "დამხმარე ძაღლები",
       "eligibility": ""
     }
   },
   "item_0303": {
     "fr": {
-      "name": "Air Soins Alliance",
+      "name": "Air Care Alliance",
       "description": "Vol d'intérêt public",
       "eligibility": ""
     },
     "es": {
-      "name": "Air Cuidado Alianza",
+      "name": "Air Care Alliance",
       "description": "Vuelo de beneficio público",
       "eligibility": ""
     },
     "ru": {
-      "name": "Air Забота Альянс",
+      "name": "Air Care Alliance",
       "description": "Полеты в общественных интересах",
       "eligibility": ""
     },
     "ka": {
-      "name": "Air ზრუნვა ალიანსი",
+      "name": "Air Care Alliance",
       "description": "საზოგადოებრივი სარგებლობის ფრენა",
       "eligibility": ""
     }
   },
   "item_0304": {
     "fr": {
-      "name": "Air Charity Réseau",
+      "name": "Air Charity Network",
       "description": "Vols gratuits.",
       "eligibility": ""
     },
     "es": {
-      "name": "Air Charity Red",
+      "name": "Air Charity Network",
       "description": "Vuelos gratuitos.",
       "eligibility": ""
     },
     "ru": {
-      "name": "Air Charity Сеть",
+      "name": "Air Charity Network",
       "description": "Бесплатные рейсы.",
       "eligibility": ""
     },
@@ -6689,12 +6689,12 @@
   },
   "item_0305": {
     "fr": {
-      "name": "Alyssa V Phillips Fondation",
+      "name": "Alyssa V Phillips Foundation",
       "description": "Fonds de la fondation",
       "eligibility": ""
     },
     "es": {
-      "name": "Alyssa V Phillips Fundación",
+      "name": "Alyssa V Phillips Foundation",
       "description": "Fondo de la Fundación",
       "eligibility": ""
     },
@@ -6777,34 +6777,34 @@
   },
   "item_0309": {
     "fr": {
-      "name": "Ariana Rye Fondation",
+      "name": "Ariana Rye Foundation",
       "description": "Demander de l'aide",
       "eligibility": ""
     },
     "es": {
-      "name": "Ariana Rye Fundación",
+      "name": "Ariana Rye Foundation",
       "description": "Solicitar ayuda",
       "eligibility": ""
     },
     "ru": {
-      "name": "Ariana Rye Фонд",
+      "name": "Ariana Rye Foundation",
       "description": "Подать заявку на помощь",
       "eligibility": ""
     },
     "ka": {
-      "name": "Ariana Rye ფონდი",
+      "name": "Ariana Rye Foundation",
       "description": "დახმარების თხოვნა",
       "eligibility": ""
     }
   },
   "item_0310": {
     "fr": {
-      "name": "Association de Horizon, Inc",
+      "name": "Association of Horizon, Inc",
       "description": "Subvention Horizon Connects",
       "eligibility": ""
     },
     "es": {
-      "name": "Asociación de Horizon, Inc",
+      "name": "Association of Horizon, Inc",
       "description": "Subvención Horizon Connects",
       "eligibility": ""
     },
@@ -6843,22 +6843,22 @@
   },
   "item_0312": {
     "fr": {
-      "name": "Autism Soins Today",
+      "name": "Autism Care Today",
       "description": "Subvention SOS/Militaire/Générale",
       "eligibility": ""
     },
     "es": {
-      "name": "Autism Cuidado Today",
+      "name": "Autism Care Today",
       "description": "Subvención SOS/Militar/General",
       "eligibility": ""
     },
     "ru": {
-      "name": "Autism Забота Today",
+      "name": "Autism Care Today",
       "description": "грант SOS/военный/общий",
       "eligibility": ""
     },
     "ka": {
-      "name": "Autism ზრუნვა Today",
+      "name": "Autism Care Today",
       "description": "SOS/სამხედრო/ზოგადი გრანტი",
       "eligibility": ""
     }
@@ -7173,22 +7173,22 @@
   },
   "item_0327": {
     "fr": {
-      "name": "Doug Flutie Jr. Fondation",
+      "name": "Doug Flutie Jr. Foundation",
       "description": "Financier/STARS",
       "eligibility": ""
     },
     "es": {
-      "name": "Doug Flutie Jr. Fundación",
+      "name": "Doug Flutie Jr. Foundation",
       "description": "Financiero/STARS",
       "eligibility": ""
     },
     "ru": {
-      "name": "Doug Flutie Jr. Фонд",
+      "name": "Doug Flutie Jr. Foundation",
       "description": "Финансовый/STARS",
       "eligibility": ""
     },
     "ka": {
-      "name": "Doug Flutie Jr. ფონდი",
+      "name": "Doug Flutie Jr. Foundation",
       "description": "ფინანსები/STARS",
       "eligibility": ""
     }
@@ -7239,12 +7239,12 @@
   },
   "item_0330": {
     "fr": {
-      "name": "Elderly ou Handicapés Living (EDL)",
+      "name": "Elderly or Disabled Living (EDL)",
       "description": "Assistance financière",
       "eligibility": ""
     },
     "es": {
-      "name": "Elderly o Discapacitados Living (EDL)",
+      "name": "Elderly or Disabled Living (EDL)",
       "description": "Asistencia financiera",
       "eligibility": ""
     },
@@ -7305,22 +7305,22 @@
   },
   "item_0333": {
     "fr": {
-      "name": "Foreseeable Future Fondation",
+      "name": "Foreseeable Future Foundation",
       "description": "Financement pour un avenir prévisible",
       "eligibility": ""
     },
     "es": {
-      "name": "Foreseeable Future Fundación",
+      "name": "Foreseeable Future Foundation",
       "description": "Financiación para un futuro previsible",
       "eligibility": ""
     },
     "ru": {
-      "name": "Foreseeable Future Фонд",
+      "name": "Foreseeable Future Foundation",
       "description": "Финансирование обозримого будущего",
       "eligibility": ""
     },
     "ka": {
-      "name": "Foreseeable Future ფონდი",
+      "name": "Foreseeable Future Foundation",
       "description": "ხილვადი მომავლის დაფინანსება",
       "eligibility": ""
     }
@@ -7349,12 +7349,12 @@
   },
   "item_0335": {
     "fr": {
-      "name": "Friends de Man",
+      "name": "Friends of Man",
       "description": "Assistance Nationale",
       "eligibility": ""
     },
     "es": {
-      "name": "Friends de Man",
+      "name": "Friends of Man",
       "description": "Asistencia Nacional",
       "eligibility": ""
     },
@@ -7481,22 +7481,22 @@
   },
   "item_0341": {
     "fr": {
-      "name": "Granted Vœu Fondation",
+      "name": "Granted Wish Foundation",
       "description": "Demande de souhait",
       "eligibility": ""
     },
     "es": {
-      "name": "Granted Deseo Fundación",
+      "name": "Granted Wish Foundation",
       "description": "Solicitud de Deseo",
       "eligibility": ""
     },
     "ru": {
-      "name": "Granted Желание Фонд",
+      "name": "Granted Wish Foundation",
       "description": "Запрос на желание",
       "eligibility": ""
     },
     "ka": {
-      "name": "Granted სურვილი ფონდი",
+      "name": "Granted Wish Foundation",
       "description": "სურვილის მოთხოვნა",
       "eligibility": ""
     }
@@ -7525,12 +7525,12 @@
   },
   "item_0343": {
     "fr": {
-      "name": "Help Espoir Live",
+      "name": "Help Hope Live",
       "description": "Plateforme de collecte de fonds déductible d'impôt pour situations médicales catastrophiques. Contrairement à GoFundMe, les donateurs bénéficient d'une déduction fiscale. Plus de 40 ans d'expérience.",
       "eligibility": "Visa B-2 : possible"
     },
     "es": {
-      "name": "Help Esperanza Live",
+      "name": "Help Hope Live",
       "description": "Plataforma de recaudación de fondos deducible de impuestos para situaciones médicas catastróficas. A diferencia de GoFundMe, los donantes reciben una deducción de impuestos. Más de 40 años de experiencia.",
       "eligibility": "Visa B-2: Posiblemente"
     },
@@ -7540,29 +7540,29 @@
       "eligibility": "Виза B-2: Возможно"
     },
     "ka": {
-      "name": "Help იმედი Live",
+      "name": "Help Hope Live",
       "description": "კატასტროფული სამედიცინო სიტუაციებისთვის გადასახადიდან გათავისუფლებული ფონდშემოწირულობის პლატფორმა. GoFundMe-სგან განსხვავებით, დონორები იღებენ გადასახადის შემცირებას. 40+ წლის გამოცდილება.",
       "eligibility": "B-2 ვიზა: შესაძლოა"
     }
   },
   "item_0344": {
     "fr": {
-      "name": "High Fives Fondation",
+      "name": "High Fives Foundation",
       "description": "Fonds d'autonomisation",
       "eligibility": ""
     },
     "es": {
-      "name": "High Fives Fundación",
+      "name": "High Fives Foundation",
       "description": "Fondo de empoderamiento",
       "eligibility": ""
     },
     "ru": {
-      "name": "High Fives Фонд",
+      "name": "High Fives Foundation",
       "description": "Фонд расширения прав и возможностей",
       "eligibility": ""
     },
     "ka": {
-      "name": "High Fives ფონდი",
+      "name": "High Fives Foundation",
       "description": "გაძლიერების ფონდი",
       "eligibility": ""
     }
@@ -7640,17 +7640,17 @@
       "eligibility": ""
     },
     "es": {
-      "name": "Esperanza Floats Fundación",
+      "name": "Hope Floats Foundation",
       "description": "Asistencia",
       "eligibility": ""
     },
     "ru": {
-      "name": "Надежда Floats Фонд",
+      "name": "Hope Floats Foundation",
       "description": "Помощь",
       "eligibility": ""
     },
     "ka": {
-      "name": "იმედი Floats ფონდი",
+      "name": "Hope Floats Foundation",
       "description": "დახმარება",
       "eligibility": ""
     }
@@ -7679,29 +7679,29 @@
   },
   "item_0350": {
     "fr": {
-      "name": "J-Rob Fondation",
+      "name": "J-Rob Foundation",
       "description": "Subvention JRob",
       "eligibility": ""
     },
     "es": {
-      "name": "J-Rob Fundación",
+      "name": "J-Rob Foundation",
       "description": "Beca JRob",
       "eligibility": ""
     },
     "ru": {
-      "name": "J-Rob Фонд",
+      "name": "J-Rob Foundation",
       "description": "Грант JRob",
       "eligibility": ""
     },
     "ka": {
-      "name": "J-Rob ფონდი",
+      "name": "J-Rob Foundation",
       "description": "JRob გრანტი",
       "eligibility": ""
     }
   },
   "item_0351": {
     "fr": {
-      "name": "Jewish Famille Services",
+      "name": "Jewish Family Services",
       "description": "Aide financière... Appelez. Nomination d'un administrateur.",
       "eligibility": "Toutes les croyances. Gérant des affaires. B-2 : 🟡"
     },
@@ -7711,7 +7711,7 @@
       "eligibility": "Todas las creencias. Administrador de casos. B-2: 🟡"
     },
     "ru": {
-      "name": "Jewish Семья Службы",
+      "name": "Jewish Family Services",
       "description": "Финансовая помощь. Звоните. Назначение управляющего делами.",
       "eligibility": "Все верят. Управляющий делами. B-2: 🟡"
     },
@@ -7745,12 +7745,12 @@
   },
   "item_0353": {
     "fr": {
-      "name": "Joni et Friends",
+      "name": "Joni and Friends",
       "description": "Fonds chrétien pour les personnes handicapées",
       "eligibility": ""
     },
     "es": {
-      "name": "Joni y Friends",
+      "name": "Joni and Friends",
       "description": "Fondo Cristiano para Discapacitados",
       "eligibility": ""
     },
@@ -7767,12 +7767,12 @@
   },
   "item_0354": {
     "fr": {
-      "name": "Joseph Groh Fondation",
+      "name": "Joseph Groh Foundation",
       "description": "Programme d'assistance",
       "eligibility": ""
     },
     "es": {
-      "name": "Joseph Groh Fundación",
+      "name": "Joseph Groh Foundation",
       "description": "Programa de asistencia",
       "eligibility": ""
     },
@@ -7789,22 +7789,22 @@
   },
   "item_0355": {
     "fr": {
-      "name": "June et Jessee Memorial Fondation",
+      "name": "June and Jessee Memorial Foundation",
       "description": "Soutien financier",
       "eligibility": ""
     },
     "es": {
-      "name": "June y Jessee Memorial Fundación",
+      "name": "June and Jessee Memorial Foundation",
       "description": "Apoyo financiero",
       "eligibility": ""
     },
     "ru": {
-      "name": "June and Jessee Memorial Фонд",
+      "name": "June and Jessee Memorial Foundation",
       "description": "Финансовая поддержка",
       "eligibility": ""
     },
     "ka": {
-      "name": "June and Jessee Memorial ფონდი",
+      "name": "June and Jessee Memorial Foundation",
       "description": "ფინანსური მხარდაჭერა",
       "eligibility": ""
     }
@@ -7833,17 +7833,17 @@
   },
   "item_0357": {
     "fr": {
-      "name": "Kids Vœu Réseau",
+      "name": "Kids Wish Network",
       "description": "Réalisation de Vœux & Héros",
       "eligibility": ""
     },
     "es": {
-      "name": "Kids Deseo Red",
+      "name": "Kids Wish Network",
       "description": "Cumplimiento de Deseos y Héroes",
       "eligibility": ""
     },
     "ru": {
-      "name": "Kids Желание Сеть",
+      "name": "Kids Wish Network",
       "description": "Исполнение Желаний и Герои",
       "eligibility": ""
     },
@@ -7899,110 +7899,110 @@
   },
   "item_0360": {
     "fr": {
-      "name": "Light pour Levi Fondation",
+      "name": "Light for Levi Foundation",
       "description": "Programme de subventions",
       "eligibility": ""
     },
     "es": {
-      "name": "Light para Levi Fundación",
+      "name": "Light for Levi Foundation",
       "description": "Programa de subvenciones",
       "eligibility": ""
     },
     "ru": {
-      "name": "Light for Levi Фонд",
+      "name": "Light for Levi Foundation",
       "description": "Грантовая программа",
       "eligibility": ""
     },
     "ka": {
-      "name": "Light for Levi ფონდი",
+      "name": "Light for Levi Foundation",
       "description": "საგранტო პროგრამა",
       "eligibility": ""
     }
   },
   "item_0361": {
     "fr": {
-      "name": "Lion's Espoir Nonprofit",
+      "name": "Lion's Hope Nonprofit",
       "description": "Aide financière",
       "eligibility": ""
     },
     "es": {
-      "name": "Lion's Esperanza Nonprofit",
+      "name": "Lion's Hope Nonprofit",
       "description": "Asistencia financiera",
       "eligibility": ""
     },
     "ru": {
-      "name": "Lion's Надежда Nonprofit",
+      "name": "Lion's Hope Nonprofit",
       "description": "Финансовая помощь",
       "eligibility": ""
     },
     "ka": {
-      "name": "Lion's იმედი Nonprofit",
+      "name": "Lion's Hope Nonprofit",
       "description": "Ფინანსური დახმარება",
       "eligibility": ""
     }
   },
   "item_0362": {
     "fr": {
-      "name": "Love Them All Fondation",
+      "name": "Love Them All Foundation",
       "description": "Collecte de fonds annuelle",
       "eligibility": ""
     },
     "es": {
-      "name": "Love Them All Fundación",
+      "name": "Love Them All Foundation",
       "description": "Caridad Anual",
       "eligibility": ""
     },
     "ru": {
-      "name": "Love Them All Фонд",
+      "name": "Love Them All Foundation",
       "description": "Ежегодная благотворительная акция",
       "eligibility": ""
     },
     "ka": {
-      "name": "Love Them All ფონდი",
+      "name": "Love Them All Foundation",
       "description": "წლიური საქველმოქმედო ღონისძიება",
       "eligibility": ""
     }
   },
   "item_0363": {
     "fr": {
-      "name": "Maggie Welby Fondation",
+      "name": "Maggie Welby Foundation",
       "description": "Bourse d'études",
       "eligibility": ""
     },
     "es": {
-      "name": "Maggie Welby Fundación",
+      "name": "Maggie Welby Foundation",
       "description": "Beca",
       "eligibility": ""
     },
     "ru": {
-      "name": "Maggie Welby Фонд",
+      "name": "Maggie Welby Foundation",
       "description": "Стипендия",
       "eligibility": ""
     },
     "ka": {
-      "name": "Maggie Welby ფონდი",
+      "name": "Maggie Welby Foundation",
       "description": "სტიპენდია",
       "eligibility": ""
     }
   },
   "item_0364": {
     "fr": {
-      "name": "Make-A-Vœu America",
+      "name": "Make-A-Wish America",
       "description": "Réalisation de vœux",
       "eligibility": ""
     },
     "es": {
-      "name": "Make-A-Deseo America",
+      "name": "Make-A-Wish America",
       "description": "Concesión de Deseos",
       "eligibility": ""
     },
     "ru": {
-      "name": "Make-A-Желание America",
+      "name": "Make-A-Wish America",
       "description": "Исполнение желаний",
       "eligibility": ""
     },
     "ka": {
-      "name": "Make-A-სურვილი America",
+      "name": "Make-A-Wish America",
       "description": "სურვილების ასრულება",
       "eligibility": ""
     }
@@ -8031,22 +8031,22 @@
   },
   "item_0366": {
     "fr": {
-      "name": "Mesa Angels Fondation",
+      "name": "Mesa Angels Foundation",
       "description": "Aide financière",
       "eligibility": ""
     },
     "es": {
-      "name": "Mesa Angels Fundación",
+      "name": "Mesa Angels Foundation",
       "description": "Asistencia financiera",
       "eligibility": ""
     },
     "ru": {
-      "name": "Mesa Angels Фонд",
+      "name": "Mesa Angels Foundation",
       "description": "Финансовая помощь",
       "eligibility": ""
     },
     "ka": {
-      "name": "Mesa Angels ფონდი",
+      "name": "Mesa Angels Foundation",
       "description": "ფინანსური დახმარება",
       "eligibility": ""
     }
@@ -8097,22 +8097,22 @@
   },
   "item_0369": {
     "fr": {
-      "name": "Modest Needs Fondation",
+      "name": "Modest Needs Foundation",
       "description": "Besoins modestes",
       "eligibility": ""
     },
     "es": {
-      "name": "Modest Needs Fundación",
+      "name": "Modest Needs Foundation",
       "description": "Necesidades modestas",
       "eligibility": ""
     },
     "ru": {
-      "name": "Modest Needs Фонд",
+      "name": "Modest Needs Foundation",
       "description": "Скромные потребности",
       "eligibility": ""
     },
     "ka": {
-      "name": "Modest Needs ფონდი",
+      "name": "Modest Needs Foundation",
       "description": "მოკრძალებული საჭიროებები",
       "eligibility": ""
     }
@@ -8163,22 +8163,22 @@
   },
   "item_0372": {
     "fr": {
-      "name": "New Espoir Aide Chiens Inc",
+      "name": "New Hope Assistance Dogs Inc",
       "description": "Chien d'assistance",
       "eligibility": ""
     },
     "es": {
-      "name": "New Esperanza Asistencia Perros Inc",
+      "name": "New Hope Assistance Dogs Inc",
       "description": "Perro de asistencia",
       "eligibility": ""
     },
     "ru": {
-      "name": "New Надежда Помощь Собаки Inc",
+      "name": "New Hope Assistance Dogs Inc",
       "description": "Служебная собака",
       "eligibility": ""
     },
     "ka": {
-      "name": "New იმედი დახმარება ძაღლები Inc",
+      "name": "New Hope Assistance Dogs Inc",
       "description": "დამხმარე ძაღლი",
       "eligibility": ""
     }
@@ -8251,22 +8251,22 @@
   },
   "item_0376": {
     "fr": {
-      "name": "Patient Access Réseau Fondation",
+      "name": "Patient Access Network Foundation",
       "description": "Subventions pour frais de déplacement et frais médicaux",
       "eligibility": ""
     },
     "es": {
-      "name": "Paciente Access Red Fundación",
+      "name": "Patient Access Network Foundation",
       "description": "Subvenciones para viajes y gastos médicos",
       "eligibility": ""
     },
     "ru": {
-      "name": "Пациент Access Сеть Фонд",
+      "name": "Patient Access Network Foundation",
       "description": "Гранты на проезд/медицинские услуги",
       "eligibility": ""
     },
     "ka": {
-      "name": "პაციენტი Access ქსელი ფონდი",
+      "name": "Patient Access Network Foundation",
       "description": "სამოგზაურო/სამედიცინო გრანტები",
       "eligibility": ""
     }
@@ -8295,22 +8295,22 @@
   },
   "item_0378": {
     "fr": {
-      "name": "Pervis Jackson Jr Fondation",
+      "name": "Pervis Jackson Jr Foundation",
       "description": "Mini-subventions essentielles",
       "eligibility": ""
     },
     "es": {
-      "name": "Pervis Jackson Jr Fundación",
+      "name": "Pervis Jackson Jr Foundation",
       "description": "Mini subvenciones esenciales",
       "eligibility": ""
     },
     "ru": {
-      "name": "Pervis Jackson Jr Фонд",
+      "name": "Pervis Jackson Jr Foundation",
       "description": "Основные мини-гранты",
       "eligibility": ""
     },
     "ka": {
-      "name": "Pervis Jackson Jr ფონდი",
+      "name": "Pervis Jackson Jr Foundation",
       "description": "აუცილებელი მინი გრანტები",
       "eligibility": ""
     }
@@ -8339,22 +8339,22 @@
   },
   "item_0380": {
     "fr": {
-      "name": "Ragan's Espoir",
+      "name": "Ragan's Hope",
       "description": "Soutien familial",
       "eligibility": ""
     },
     "es": {
-      "name": "Ragan's Esperanza",
+      "name": "Ragan's Hope",
       "description": "Apoyo familiar",
       "eligibility": ""
     },
     "ru": {
-      "name": "Ragan's Надежда",
+      "name": "Ragan's Hope",
       "description": "Семейная поддержка",
       "eligibility": ""
     },
     "ka": {
-      "name": "Ragan's იმედი",
+      "name": "Ragan's Hope",
       "description": "ოჯახის მხარდაჭერა",
       "eligibility": ""
     }
@@ -8383,22 +8383,22 @@
   },
   "item_0382": {
     "fr": {
-      "name": "Ryans Espoir AZ",
+      "name": "Ryans Hope AZ",
       "description": "Aide financière",
       "eligibility": ""
     },
     "es": {
-      "name": "Ryans Esperanza AZ",
+      "name": "Ryans Hope AZ",
       "description": "Asistencia financiera",
       "eligibility": ""
     },
     "ru": {
-      "name": "Ryans Надежда AZ",
+      "name": "Ryans Hope AZ",
       "description": "Финансовая помощь",
       "eligibility": ""
     },
     "ka": {
-      "name": "Ryans იმედი AZ",
+      "name": "Ryans Hope AZ",
       "description": "Ფინანსური დახმარება",
       "eligibility": ""
     }
@@ -8515,12 +8515,12 @@
   },
   "item_0388": {
     "fr": {
-      "name": "Spécial Angels Fondation",
+      "name": "Special Angels Foundation",
       "description": "Programme de subventions",
       "eligibility": ""
     },
     "es": {
-      "name": "Especial Angels Fundación",
+      "name": "Special Angels Foundation",
       "description": "Programa de subvenciones",
       "eligibility": ""
     },
@@ -8647,44 +8647,44 @@
   },
   "item_0394": {
     "fr": {
-      "name": "The Enfants Rêve Fonds",
+      "name": "The Children's Dream Fund",
       "description": "Subventions de rêve",
       "eligibility": ""
     },
     "es": {
-      "name": "The Niños Sueño Fondo",
+      "name": "The Children's Dream Fund",
       "description": "Becas de ensueño",
       "eligibility": ""
     },
     "ru": {
-      "name": "The Дети Мечта Фонд",
+      "name": "The Children's Dream Fund",
       "description": "Гранты мечты",
       "eligibility": ""
     },
     "ka": {
-      "name": "The ბავშვთა ოცნება ფონდი",
+      "name": "The Children's Dream Fund",
       "description": "ოცნების გრანტები",
       "eligibility": ""
     }
   },
   "item_0395": {
     "fr": {
-      "name": "The Dane Fondation",
+      "name": "The Dane Foundation",
       "description": "Soutien à la qualité de vie",
       "eligibility": ""
     },
     "es": {
-      "name": "The Dane Fundación",
+      "name": "The Dane Foundation",
       "description": "Apoyo a la calidad de vida",
       "eligibility": ""
     },
     "ru": {
-      "name": "The Dane Фонд",
+      "name": "The Dane Foundation",
       "description": "Поддержка качества жизни",
       "eligibility": ""
     },
     "ka": {
-      "name": "The Dane ფონდი",
+      "name": "The Dane Foundation",
       "description": "ცხოვრების ხარისხის მხარდაჭერა",
       "eligibility": ""
     }
@@ -8757,66 +8757,66 @@
   },
   "item_0399": {
     "fr": {
-      "name": "The Spécial Needs Trust",
+      "name": "The Special Needs Trust",
       "description": "Fiducie/Bourses d'études",
       "eligibility": ""
     },
     "es": {
-      "name": "The Especial Needs Trust",
+      "name": "The Special Needs Trust",
       "description": "Fideicomiso/Becas",
       "eligibility": ""
     },
     "ru": {
-      "name": "The Особый Needs Trust",
+      "name": "The Special Needs Trust",
       "description": "Траст/Стипендии",
       "eligibility": ""
     },
     "ka": {
-      "name": "The განსაკუთრებული Needs Trust",
+      "name": "The Special Needs Trust",
       "description": "ტრასტი/სტიპენდიები",
       "eligibility": ""
     }
   },
   "item_0400": {
     "fr": {
-      "name": "Travis Burkhart Fondation",
+      "name": "Travis Burkhart Foundation",
       "description": "Demander de l'aide",
       "eligibility": ""
     },
     "es": {
-      "name": "Travis Burkhart Fundación",
+      "name": "Travis Burkhart Foundation",
       "description": "Solicitar asistencia",
       "eligibility": ""
     },
     "ru": {
-      "name": "Travis Burkhart Фонд",
+      "name": "Travis Burkhart Foundation",
       "description": "Запросить помощь",
       "eligibility": ""
     },
     "ka": {
-      "name": "Travis Burkhart ფონდი",
+      "name": "Travis Burkhart Foundation",
       "description": "დახმარების მოთხოვნა",
       "eligibility": ""
     }
   },
   "item_0401": {
     "fr": {
-      "name": "Tyler Schrenk Fondation",
+      "name": "Tyler Schrenk Foundation",
       "description": "Démontrer son indépendance",
       "eligibility": ""
     },
     "es": {
-      "name": "Tyler Schrenk Fundación",
+      "name": "Tyler Schrenk Foundation",
       "description": "Demostrando independencia",
       "eligibility": ""
     },
     "ru": {
-      "name": "Tyler Schrenk Фонд",
+      "name": "Tyler Schrenk Foundation",
       "description": "Демонстрация независимости",
       "eligibility": ""
     },
     "ka": {
-      "name": "Tyler Schrenk ფონდი",
+      "name": "Tyler Schrenk Foundation",
       "description": "დამოუკიდებლობის დემონსტრირება",
       "eligibility": ""
     }
@@ -8828,17 +8828,17 @@
       "eligibility": ""
     },
     "es": {
-      "name": "Vital Options Internacional",
+      "name": "Vital Options International",
       "description": "Beca Selma Schimmel",
       "eligibility": ""
     },
     "ru": {
-      "name": "Vital Options Международный",
+      "name": "Vital Options International",
       "description": "Грант Сельмы Шиммель",
       "eligibility": ""
     },
     "ka": {
-      "name": "Vital Options საერთაშორისო",
+      "name": "Vital Options International",
       "description": "სელმა შიმელის გრანტი",
       "eligibility": ""
     }
@@ -8999,44 +8999,44 @@
   },
   "item_0410": {
     "fr": {
-      "name": "Chariots 4 Espoir",
+      "name": "Chariots 4 Hope",
       "description": "Camps sportifs adaptés",
       "eligibility": ""
     },
     "es": {
-      "name": "Chariots 4 Esperanza",
+      "name": "Chariots 4 Hope",
       "description": "Campamentos deportivos adaptados",
       "eligibility": ""
     },
     "ru": {
-      "name": "Chariots 4 Надежда",
+      "name": "Chariots 4 Hope",
       "description": "Адаптивные спортивные лагеря",
       "eligibility": ""
     },
     "ka": {
-      "name": "Chariots 4 იმედი",
+      "name": "Chariots 4 Hope",
       "description": "ადაპტური სპორტული ბანაკები",
       "eligibility": ""
     }
   },
   "item_0411": {
     "fr": {
-      "name": "Chase Warrior Fondation",
+      "name": "Chase Warrior Foundation",
       "description": "Équipement adapté",
       "eligibility": ""
     },
     "es": {
-      "name": "Chase Warrior Fundación",
+      "name": "Chase Warrior Foundation",
       "description": "Equipo de adaptación",
       "eligibility": ""
     },
     "ru": {
-      "name": "Chase Warrior Фонд",
+      "name": "Chase Warrior Foundation",
       "description": "Адаптивное оборудование",
       "eligibility": ""
     },
     "ka": {
-      "name": "Chase Warrior ფონდი",
+      "name": "Chase Warrior Foundation",
       "description": "ადაპტური აღჭურვილობა",
       "eligibility": ""
     }
@@ -9109,22 +9109,22 @@
   },
   "item_0415": {
     "fr": {
-      "name": "Gifts de Mobilité Fondation",
+      "name": "Gifts of Mobility Foundation",
       "description": "Dons de mobilité",
       "eligibility": ""
     },
     "es": {
-      "name": "Gifts de Movilidad Fundación",
+      "name": "Gifts of Mobility Foundation",
       "description": "Regalos de movilidad",
       "eligibility": ""
     },
     "ru": {
-      "name": "Gifts of Мобильность Фонд",
+      "name": "Gifts of Mobility Foundation",
       "description": "Дары мобильности",
       "eligibility": ""
     },
     "ka": {
-      "name": "Gifts of მობილობა ფონდი",
+      "name": "Gifts of Mobility Foundation",
       "description": "მობილობის საჩუქრები",
       "eligibility": ""
     }
@@ -9175,66 +9175,66 @@
   },
   "item_0418": {
     "fr": {
-      "name": "Espoir Haven International",
+      "name": "Hope Haven International",
       "description": "Demande de fauteuil roulant",
       "eligibility": ""
     },
     "es": {
-      "name": "Esperanza Haven Internacional",
+      "name": "Hope Haven International",
       "description": "Solicitud de silla de ruedas",
       "eligibility": ""
     },
     "ru": {
-      "name": "Надежда Haven Международный",
+      "name": "Hope Haven International",
       "description": "Заявление на получение инвалидной коляски",
       "eligibility": ""
     },
     "ka": {
-      "name": "იმედი Haven საერთაშორისო",
+      "name": "Hope Haven International",
       "description": "ეტლით მოსარგებლის განაცხადი",
       "eligibility": ""
     }
   },
   "item_0419": {
     "fr": {
-      "name": "Kids Mobilité Réseau",
+      "name": "Kids Mobility Network",
       "description": "Équipement thérapeutique",
       "eligibility": ""
     },
     "es": {
-      "name": "Kids Movilidad Red",
+      "name": "Kids Mobility Network",
       "description": "Equipo terapéutico",
       "eligibility": ""
     },
     "ru": {
-      "name": "Kids Мобильность Сеть",
+      "name": "Kids Mobility Network",
       "description": "Терапевтическое оборудование",
       "eligibility": ""
     },
     "ka": {
-      "name": "Kids მობილობა ქსელი",
+      "name": "Kids Mobility Network",
       "description": "თერაპიული აღჭურვილობა",
       "eligibility": ""
     }
   },
   "item_0420": {
     "fr": {
-      "name": "Kourageous Karter Fondation",
+      "name": "Kourageous Karter Foundation",
       "description": "TREXO Robotics Entraîneur de démarche",
       "eligibility": ""
     },
     "es": {
-      "name": "Kourageous Karter Fundación",
+      "name": "Kourageous Karter Foundation",
       "description": "Entrenador de marcha robótica TREXO",
       "eligibility": ""
     },
     "ru": {
-      "name": "Kourageous Karter Фонд",
+      "name": "Kourageous Karter Foundation",
       "description": "Тренажер походки TREXO Robotics",
       "eligibility": ""
     },
     "ka": {
-      "name": "Kourageous Karter ფონდი",
+      "name": "Kourageous Karter Foundation",
       "description": "TREXO Robotics სიარულის ტრენერი",
       "eligibility": ""
     }
@@ -9373,22 +9373,22 @@
   },
   "item_0427": {
     "fr": {
-      "name": "Orange Effect Fondation",
+      "name": "Orange Effect Foundation",
       "description": "Financement de la parole/CAA",
       "eligibility": ""
     },
     "es": {
-      "name": "Orange Effect Fundación",
+      "name": "Orange Effect Foundation",
       "description": "Financiación de discursos/CAA",
       "eligibility": ""
     },
     "ru": {
-      "name": "Orange Effect Фонд",
+      "name": "Orange Effect Foundation",
       "description": "Речь/Финансирование AAC",
       "eligibility": ""
     },
     "ka": {
-      "name": "Orange Effect ფონდი",
+      "name": "Orange Effect Foundation",
       "description": "გამოსვლა/AAC დაფინანსება",
       "eligibility": ""
     }
@@ -9461,22 +9461,22 @@
   },
   "item_0431": {
     "fr": {
-      "name": "Surfgimp Fondation",
+      "name": "Surfgimp Foundation",
       "description": "Équipement adapté/Financement",
       "eligibility": ""
     },
     "es": {
-      "name": "Surfgimp Fundación",
+      "name": "Surfgimp Foundation",
       "description": "Equipo de adaptación/financiación",
       "eligibility": ""
     },
     "ru": {
-      "name": "Surfgimp Фонд",
+      "name": "Surfgimp Foundation",
       "description": "Адаптивное оборудование/финансирование",
       "eligibility": ""
     },
     "ka": {
-      "name": "Surfgimp ფონდი",
+      "name": "Surfgimp Foundation",
       "description": "ადაპტური მოწყობილობები/დაფინანსება",
       "eligibility": ""
     }
@@ -9505,22 +9505,22 @@
   },
   "item_0433": {
     "fr": {
-      "name": "The Arya Fondation",
+      "name": "The Arya Foundation",
       "description": "Jouets adaptatifs des Fêtes",
       "eligibility": ""
     },
     "es": {
-      "name": "The Arya Fundación",
+      "name": "The Arya Foundation",
       "description": "Juguetes adaptables para las fiestas",
       "eligibility": ""
     },
     "ru": {
-      "name": "The Arya Фонд",
+      "name": "The Arya Foundation",
       "description": "Праздничные адаптивные игрушки",
       "eligibility": ""
     },
     "ka": {
-      "name": "The Arya ფონდი",
+      "name": "The Arya Foundation",
       "description": "სადღესასწაულო ადაპტური სათამაშოები",
       "eligibility": ""
     }
@@ -9549,22 +9549,22 @@
   },
   "item_0435": {
     "fr": {
-      "name": "The Orange Effect Fondation",
+      "name": "The Orange Effect Foundation",
       "description": "Effet orange (parole/AAC)",
       "eligibility": ""
     },
     "es": {
-      "name": "The Orange Effect Fundación",
+      "name": "The Orange Effect Foundation",
       "description": "Efecto Naranja (Habla/AAC)",
       "eligibility": ""
     },
     "ru": {
-      "name": "The Orange Effect Фонд",
+      "name": "The Orange Effect Foundation",
       "description": "Оранжевый эффект (речь/AAC)",
       "eligibility": ""
     },
     "ka": {
-      "name": "The Orange Effect ფონდი",
+      "name": "The Orange Effect Foundation",
       "description": "ნარინჯისფერი ეფექტი (მეტყველება/AAC)",
       "eligibility": ""
     }
@@ -9593,44 +9593,44 @@
   },
   "item_0437": {
     "fr": {
-      "name": "Triumph Fondation",
+      "name": "Triumph Foundation",
       "description": "Échange d’équipement et de fournitures",
       "eligibility": ""
     },
     "es": {
-      "name": "Triumph Fundación",
+      "name": "Triumph Foundation",
       "description": "Intercambio de equipos y suministros",
       "eligibility": ""
     },
     "ru": {
-      "name": "Triumph Фонд",
+      "name": "Triumph Foundation",
       "description": "Обмен оборудованием и расходными материалами",
       "eligibility": ""
     },
     "ka": {
-      "name": "Triumph ფონდი",
+      "name": "Triumph Foundation",
       "description": "აღჭურვილობისა და მომარაგების გაცვლა",
       "eligibility": ""
     }
   },
   "item_0438": {
     "fr": {
-      "name": "Fauteuil roulant Fondation",
+      "name": "Wheelchair Foundation",
       "description": "Don de fauteuil roulant",
       "eligibility": ""
     },
     "es": {
-      "name": "Silla de ruedas Fundación",
+      "name": "Wheelchair Foundation",
       "description": "Donación de silla de ruedas",
       "eligibility": ""
     },
     "ru": {
-      "name": "Инвалидное кресло Фонд",
+      "name": "Wheelchair Foundation",
       "description": "Пожертвование инвалидной коляски",
       "eligibility": ""
     },
     "ka": {
-      "name": "ეტლი ფონდი",
+      "name": "Wheelchair Foundation",
       "description": "ინვალიდის ეტლის დონაცია",
       "eligibility": ""
     }
@@ -9791,12 +9791,12 @@
   },
   "item_0446": {
     "fr": {
-      "name": "A Moment de Magic",
+      "name": "A Moment of Magic",
       "description": "Un moment de magie",
       "eligibility": ""
     },
     "es": {
-      "name": "A Moment de Magic",
+      "name": "A Moment of Magic",
       "description": "Un momento de magia",
       "eligibility": ""
     },
@@ -9813,7 +9813,7 @@
   },
   "item_0447": {
     "fr": {
-      "name": "Aide",
+      "name": "Assistance",
       "description": "FAITES UNE DEMANDE D'AIDE POUR LES COURS DE NATATION Hope Floats attribue des bourses pour des cours de natation aux familles qui répondent aux critères d'éligibilité de revenu USDA. Pour demander une aide, les familles doivent remplir une Demande Confidentielle de Soutien aux Frais de Scolarité et fournir une copie de leur dernière déclaration fiscale fédérale déposée, avec les numéros de sécurité sociale supprimés. Veuillez vous assurer que votre demande est complète avant de cliquer sur « Soumettre ». Les demandes incomplètes ne seront pas prises en compte. CLIQUEZ ICI POUR POSTULER...",
       "eligibility": "Âges 0-18 ; Diagnostic général ; Lieu : USA"
     },
@@ -9835,22 +9835,22 @@
   },
   "item_0448": {
     "fr": {
-      "name": "Autism Communauté in Action",
+      "name": "Autism Community in Action",
       "description": "Programmes TACA",
       "eligibility": ""
     },
     "es": {
-      "name": "Autism Comunidad in Action",
+      "name": "Autism Community in Action",
       "description": "Programas TACA",
       "eligibility": ""
     },
     "ru": {
-      "name": "Autism Сообщество in Action",
+      "name": "Autism Community in Action",
       "description": "Программы TACA",
       "eligibility": ""
     },
     "ka": {
-      "name": "Autism საზოგადოება in Action",
+      "name": "Autism Community in Action",
       "description": "TACA პროგრამები",
       "eligibility": ""
     }
@@ -9867,12 +9867,12 @@
       "eligibility": ""
     },
     "ru": {
-      "name": "Be An Ангел",
+      "name": "Be An Angel",
       "description": "Лагерь Be An Angel",
       "eligibility": ""
     },
     "ka": {
-      "name": "Be An ანგელოზი",
+      "name": "Be An Angel",
       "description": "კამპი Be An Angel",
       "eligibility": ""
     }
@@ -9884,12 +9884,12 @@
       "eligibility": ""
     },
     "es": {
-      "name": "Campamento Accomplish",
+      "name": "Camp Accomplish",
       "description": "Campamentos de día/nocturnos",
       "eligibility": ""
     },
     "ru": {
-      "name": "Лагерь Accomplish",
+      "name": "Camp Accomplish",
       "description": "Дневной/Ночной/Лагеря",
       "eligibility": ""
     },
@@ -9901,61 +9901,61 @@
   },
   "item_0451": {
     "fr": {
-      "name": "Canin Assistants",
+      "name": "Canine Assistants",
       "description": "Chien d'assistance",
       "eligibility": ""
     },
     "es": {
-      "name": "Canino Assistants",
+      "name": "Canine Assistants",
       "description": "Perro de servicio",
       "eligibility": ""
     },
     "ru": {
-      "name": "Собачий Assistants",
+      "name": "Canine Assistants",
       "description": "Служебная собака",
       "eligibility": ""
     },
     "ka": {
-      "name": "ძაღლის Assistants",
+      "name": "Canine Assistants",
       "description": "სამსახური ძაღლი",
       "eligibility": ""
     }
   },
   "item_0452": {
     "fr": {
-      "name": "Canin Companions",
+      "name": "Canine Companions",
       "description": "Chiens d'assistance",
       "eligibility": ""
     },
     "es": {
-      "name": "Canino Companions",
+      "name": "Canine Companions",
       "description": "Perros de servicio",
       "eligibility": ""
     },
     "ru": {
-      "name": "Собачий Companions",
+      "name": "Canine Companions",
       "description": "Собаки-помощники",
       "eligibility": ""
     },
     "ka": {
-      "name": "ძაღლის Companions",
+      "name": "Canine Companions",
       "description": "მომსახურე ძაღლები",
       "eligibility": ""
     }
   },
   "item_0453": {
     "fr": {
-      "name": "Canin Partners pour Life",
+      "name": "Canine Partners for Life",
       "description": "Chien d'assistance",
       "eligibility": ""
     },
     "es": {
-      "name": "Canino Partners para Life",
+      "name": "Canine Partners for Life",
       "description": "Perro de servicio",
       "eligibility": ""
     },
     "ru": {
-      "name": "Собачий Partners for Life",
+      "name": "Canine Partners for Life",
       "description": "Служебная собака",
       "eligibility": ""
     },
@@ -9977,7 +9977,7 @@
       "eligibility": ""
     },
     "ru": {
-      "name": "Catch-A-Мечта Фонд",
+      "name": "Catch-A-Dream Foundation",
       "description": "Поймай мечту",
       "eligibility": ""
     },
@@ -10077,22 +10077,22 @@
   },
   "item_0459": {
     "fr": {
-      "name": "Communauté Connections Inc.",
+      "name": "Community Connections Inc.",
       "description": "Habilitation Jour",
       "eligibility": ""
     },
     "es": {
-      "name": "Comunidad Connections Inc.",
+      "name": "Community Connections Inc.",
       "description": "Habilitación diurna",
       "eligibility": ""
     },
     "ru": {
-      "name": "Сообщество Connections Inc.",
+      "name": "Community Connections Inc.",
       "description": "Дневная абилитация",
       "eligibility": ""
     },
     "ka": {
-      "name": "საზოგადოება Connections Inc.",
+      "name": "Community Connections Inc.",
       "description": "დღე ჰაბილიტაცია",
       "eligibility": ""
     }
@@ -10121,22 +10121,22 @@
   },
   "item_0461": {
     "fr": {
-      "name": "Deepwood Fondation",
+      "name": "Deepwood Foundation",
       "description": "Assistance communautaire",
       "eligibility": ""
     },
     "es": {
-      "name": "Deepwood Fundación",
+      "name": "Deepwood Foundation",
       "description": "Asistencia comunitaria",
       "eligibility": ""
     },
     "ru": {
-      "name": "Deepwood Фонд",
+      "name": "Deepwood Foundation",
       "description": "Помощь сообществу",
       "eligibility": ""
     },
     "ka": {
-      "name": "Deepwood ფონდი",
+      "name": "Deepwood Foundation",
       "description": "საზოგადოების დახმარება",
       "eligibility": ""
     }
@@ -10165,22 +10165,22 @@
   },
   "item_0463": {
     "fr": {
-      "name": "Rêve Factory Inc",
+      "name": "Dream Factory Inc",
       "description": "Usine de rêves d’enfants",
       "eligibility": ""
     },
     "es": {
-      "name": "Sueño Factory Inc",
+      "name": "Dream Factory Inc",
       "description": "Fábrica de sueños para niños",
       "eligibility": ""
     },
     "ru": {
-      "name": "Мечта Factory Inc",
+      "name": "Dream Factory Inc",
       "description": "Фабрика детской мечты",
       "eligibility": ""
     },
     "ka": {
-      "name": "ოცნება Factory Inc",
+      "name": "Dream Factory Inc",
       "description": "ბავშვების ოცნების ქარხანა",
       "eligibility": ""
     }
@@ -10363,17 +10363,17 @@
   },
   "item_0472": {
     "fr": {
-      "name": "Leader Chiens For The Aveugles",
+      "name": "Leader Dogs For The Blind",
       "description": "Pour les aveugles.",
       "eligibility": ""
     },
     "es": {
-      "name": "Leader Perros For The Ciegos",
+      "name": "Leader Dogs For The Blind",
       "description": "Para los ciegos.",
       "eligibility": ""
     },
     "ru": {
-      "name": "Leader Собаки For The Слепых",
+      "name": "Leader Dogs For The Blind",
       "description": "Для слепых.",
       "eligibility": ""
     },
@@ -10407,17 +10407,17 @@
   },
   "item_0474": {
     "fr": {
-      "name": "Little Angels Service Chiens",
+      "name": "Little Angels Service Dogs",
       "description": "Chiens d'assistance pour la mobilité",
       "eligibility": ""
     },
     "es": {
-      "name": "Little Angels Service Perros",
+      "name": "Little Angels Service Dogs",
       "description": "Perros de movilidad",
       "eligibility": ""
     },
     "ru": {
-      "name": "Little Angels Service Собаки",
+      "name": "Little Angels Service Dogs",
       "description": "Собаки для мобильности",
       "eligibility": ""
     },
@@ -10473,22 +10473,22 @@
   },
   "item_0477": {
     "fr": {
-      "name": "One Simple Vœu",
+      "name": "One Simple Wish",
       "description": "Un Vœu Simple",
       "eligibility": ""
     },
     "es": {
-      "name": "One Simple Deseo",
+      "name": "One Simple Wish",
       "description": "Un Deseo Simple",
       "eligibility": ""
     },
     "ru": {
-      "name": "One Simple Желание",
+      "name": "One Simple Wish",
       "description": "Одно простое желание",
       "eligibility": ""
     },
     "ka": {
-      "name": "One Simple სურვილი",
+      "name": "One Simple Wish",
       "description": "ერთი მარტივი სურვილი",
       "eligibility": ""
     }
@@ -10539,44 +10539,44 @@
   },
   "item_0480": {
     "fr": {
-      "name": "SeriousFun Enfants Réseau",
+      "name": "SeriousFun Children's Network",
       "description": "Camps sérieux",
       "eligibility": ""
     },
     "es": {
-      "name": "SeriousFun Niños Red",
+      "name": "SeriousFun Children's Network",
       "description": "Campamentos Serios",
       "eligibility": ""
     },
     "ru": {
-      "name": "SeriousFun Дети Сеть",
+      "name": "SeriousFun Children's Network",
       "description": "Серьёзные лагеря",
       "eligibility": ""
     },
     "ka": {
-      "name": "SeriousFun ბავშვთა ქსელი",
+      "name": "SeriousFun Children's Network",
       "description": "სერიოზული ბანაკები",
       "eligibility": ""
     }
   },
   "item_0481": {
     "fr": {
-      "name": "Service Chiens Project",
+      "name": "Service Dog Project",
       "description": "Chien d'assistance",
       "eligibility": ""
     },
     "es": {
-      "name": "Service Perros Project",
+      "name": "Service Dog Project",
       "description": "Perro de servicio",
       "eligibility": ""
     },
     "ru": {
-      "name": "Service Собаки Project",
+      "name": "Service Dog Project",
       "description": "Собака-поводырь",
       "eligibility": ""
     },
     "ka": {
-      "name": "Service ძაღლები Project",
+      "name": "Service Dog Project",
       "description": "სამსახურის ძაღლი",
       "eligibility": ""
     }
@@ -10598,7 +10598,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "SIT Service ძაღლები",
+      "name": "SIT Service Dogs",
       "description": "მომსახურე ძაღლები",
       "eligibility": ""
     }
@@ -10610,7 +10610,7 @@
       "eligibility": ""
     },
     "es": {
-      "name": "Sunshine Fundación",
+      "name": "Sunshine Foundation",
       "description": "Programas de Sueños",
       "eligibility": ""
     },
@@ -10620,7 +10620,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "Sunshine ფონდი",
+      "name": "Sunshine Foundation",
       "description": "ოცნების პროგრამები",
       "eligibility": ""
     }
@@ -10671,22 +10671,22 @@
   },
   "item_0486": {
     "fr": {
-      "name": "United Spécial Sportsman Alliance",
+      "name": "United Special Sportsman Alliance",
       "description": "Souhaits spéciaux d'enfants 2025",
       "eligibility": ""
     },
     "es": {
-      "name": "United Especial Sportsman Alianza",
+      "name": "United Special Sportsman Alliance",
       "description": "Deseo especial para niños 2025",
       "eligibility": ""
     },
     "ru": {
-      "name": "United Особый Sportsman Альянс",
+      "name": "United Special Sportsman Alliance",
       "description": "Особое детское пожелание на 2025 год",
       "eligibility": ""
     },
     "ka": {
-      "name": "United განსაკუთრებული Sportsman ალიანსი",
+      "name": "United Special Sportsman Alliance",
       "description": "სპეციალური საბავშვო სურვილები 2025 წელი",
       "eligibility": ""
     }
@@ -10759,22 +10759,22 @@
   },
   "item_0490": {
     "fr": {
-      "name": "ABC Médical",
+      "name": "ABC Medical",
       "description": "Bourse Médicale ABC",
       "eligibility": ""
     },
     "es": {
-      "name": "ABC Médico",
+      "name": "ABC Medical",
       "description": "Beca Médica ABC",
       "eligibility": ""
     },
     "ru": {
-      "name": "ABC Медицинский",
+      "name": "ABC Medical",
       "description": "Стипендия ABC Medical",
       "eligibility": ""
     },
     "ka": {
-      "name": "ABC სამედიცინო",
+      "name": "ABC Medical",
       "description": "ABC სამედიცინო სტიპენდია",
       "eligibility": ""
     }
@@ -10830,7 +10830,7 @@
       "eligibility": ""
     },
     "es": {
-      "name": "Americano Biblioteca Asociación",
+      "name": "American Library Association",
       "description": "Beca ALA Century",
       "eligibility": ""
     },
@@ -10840,7 +10840,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "ამერიკული ბიბლიოთეკა ასოციაცია",
+      "name": "American Library Association",
       "description": "ALA Century სტიპენდია",
       "eligibility": ""
     }
@@ -10869,22 +10869,22 @@
   },
   "item_0495": {
     "fr": {
-      "name": "AvaCare Médical",
+      "name": "AvaCare Medical",
       "description": "Bourse d'études",
       "eligibility": ""
     },
     "es": {
-      "name": "AvaCare Médico",
+      "name": "AvaCare Medical",
       "description": "Beca",
       "eligibility": ""
     },
     "ru": {
-      "name": "AvaCare Медицинский",
+      "name": "AvaCare Medical",
       "description": "Стипендия",
       "eligibility": ""
     },
     "ka": {
-      "name": "AvaCare სამედიცინო",
+      "name": "AvaCare Medical",
       "description": "სტიპენდია",
       "eligibility": ""
     }
@@ -10896,17 +10896,17 @@
       "eligibility": ""
     },
     "es": {
-      "name": "Be Perfect Fundación",
+      "name": "Be Perfect Foundation",
       "description": "Beca",
       "eligibility": ""
     },
     "ru": {
-      "name": "Be Perfect Фонд",
+      "name": "Be Perfect Foundation",
       "description": "Стипендия",
       "eligibility": ""
     },
     "ka": {
-      "name": "Be Perfect ფონდი",
+      "name": "Be Perfect Foundation",
       "description": "სტიპენდია",
       "eligibility": ""
     }
@@ -10935,22 +10935,22 @@
   },
   "item_0498": {
     "fr": {
-      "name": "Canines pour Handicapés Kids",
+      "name": "Canines for Disabled Kids",
       "description": "Bourse d'études",
       "eligibility": ""
     },
     "es": {
-      "name": "Canines para Discapacitados Kids",
+      "name": "Canines for Disabled Kids",
       "description": "Beca",
       "eligibility": ""
     },
     "ru": {
-      "name": "Canines for Инвалидов Kids",
+      "name": "Canines for Disabled Kids",
       "description": "стипендия",
       "eligibility": ""
     },
     "ka": {
-      "name": "Canines for შშმ პირთა Kids",
+      "name": "Canines for Disabled Kids",
       "description": "სტიპენდია",
       "eligibility": ""
     }
@@ -11089,12 +11089,12 @@
   },
   "item_0505": {
     "fr": {
-      "name": "Mays Mission pour les Handicapped",
+      "name": "Mays Mission for the Handicapped",
       "description": "Bourses d'études / Bourses de camp",
       "eligibility": ""
     },
     "es": {
-      "name": "Mays Mission para los Handicapped",
+      "name": "Mays Mission for the Handicapped",
       "description": "Becas / Becas para campamentos",
       "eligibility": ""
     },
@@ -11192,29 +11192,29 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "The Jared Monroe ფონდი",
+      "name": "The Jared Monroe Foundation",
       "description": "სტიპენდია",
       "eligibility": ""
     }
   },
   "item_0510": {
     "fr": {
-      "name": "Victoria's Victory Fondation",
+      "name": "Victoria's Victory Foundation",
       "description": "Bourse d'études Victory",
       "eligibility": ""
     },
     "es": {
-      "name": "Victoria's Victory Fundación",
+      "name": "Victoria's Victory Foundation",
       "description": "Beca Victoria",
       "eligibility": ""
     },
     "ru": {
-      "name": "Victoria's Victory Фонд",
+      "name": "Victoria's Victory Foundation",
       "description": "Стипендия Победы",
       "eligibility": ""
     },
     "ka": {
-      "name": "Victoria's Victory ფონდი",
+      "name": "Victoria's Victory Foundation",
       "description": "ვიქტორიას გამარჯვების სტიპენდია",
       "eligibility": ""
     }
@@ -11441,17 +11441,17 @@
   },
   "item_0521": {
     "fr": {
-      "name": "Doopa's Maison de Soins",
+      "name": "Doopa's House of Care",
       "description": "Abordable. Formulaire Web. Renseignez-vous sur l'éligibilité HIE/EAP.",
       "eligibility": "Cancer/transplantation. 55 chambres, pas de liste d'attente !. B-2: 🟢"
     },
     "es": {
-      "name": "Doopa's Casa de Cuidado",
+      "name": "Doopa's House of Care",
       "description": "Asequible. Formulario web. Pregunte por la elegibilidad de HIE/EAP.",
       "eligibility": "Cáncer/trasplante. 55 habitaciones, ¡sin lista de espera!. B-2: 🟢"
     },
     "ru": {
-      "name": "Doopa's Дом of Забота",
+      "name": "Doopa's House of Care",
       "description": "Доступный. Веб-форма. Узнайте о соответствии требованиям HIE/EAP.",
       "eligibility": "Рак/трансплантация. 55 комнат, без очереди!. B-2: 🟢"
     },
@@ -11485,22 +11485,22 @@
   },
   "item_0523": {
     "fr": {
-      "name": "Famille Promise de les Triangle",
+      "name": "Family Promise of the Triangle",
       "description": "Gratuit (abri d'urgence et logement de transition). Comté de Durham : Appelez Entry Point Durham (984) 287-8313\nComté de Wake : Allez à Oak City Cares, 1430 S. Wilmington St., Raleigh, NC 27603\nExpliquez le besoin d'un logement médical temporaire.",
       "eligibility": "Familles avec enfants sans abri ou à risque. Abri d'urgence pour 8 à 12 semaines. B-2 : Inconnu — contactez pour confirmer. Ils servent les familles en crise."
     },
     "es": {
-      "name": "Familia Promise de los Triangle",
+      "name": "Family Promise of the Triangle",
       "description": "Gratis (refugio de emergencia y vivienda de transición). Condado de Durham: Llame a Entry Point Durham (984) 287-8313\nCondado de Wake: Vaya a Oak City Cares, 1430 S. Wilmington St., Raleigh, NC 27603\nExplique la necesidad de una vivienda médica temporal.",
       "eligibility": "Familias con niños sin hogar o en riesgo de quedarse sin hogar. Refugio de emergencia por 8-12 semanas. B-2: Desconocido — contacte para confirmar. Atienden a familias en crisis."
     },
     "ru": {
-      "name": "Семья Promise of the Triangle",
+      "name": "Family Promise of the Triangle",
       "description": "Бесплатно (экстренное убежище и временное жилье). Округ Дарем: звоните в Entry Point Durham (984) 287-8313\nОкруг Уэйк: идите в Oak City Cares, 1430 S. Wilmington St., Raleigh, NC 27603\nОбъясните потребность во временном медицинском жилье.",
       "eligibility": "Семьи с детьми, оказавшиеся бездомными или рискующие остаться без крова. Экстренное убежище на 8-12 недель. B-2: Неизвестно — свяжитесь для уточнения. Они обслуживают семьи в кризисе."
     },
     "ka": {
-      "name": "ოჯახი Promise of the Triangle",
+      "name": "Family Promise of the Triangle",
       "description": "Free (emergency shelter and transitional housing).Durham County: Call Entry Point Durham at (984) 287-8313\\nWake County: Go to Oak City Cares, 1430 S. Wilmington St., Raleigh, NC 27603\\nExplain the need for temporary medical accommodation.",
       "eligibility": "Families with children at risk of homelessness or homelessness.Emergency shelter for 8-12 weeks.. B-2: Unknown — contact to clarify.They serve families in crisis."
     }
@@ -11654,7 +11654,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "Healthcare Hospitality ქსელი",
+      "name": "Healthcare Hospitality Network",
       "description": "სამედიცინო საცხოვრებელი",
       "eligibility": ""
     }
@@ -11676,7 +11676,7 @@
       "eligibility": "Семьи, чей ребенок проходит лечение в педиатрическом центре Triangle (Duke/UNC Children's). У них нет ограничений по времени (\"мы не устанавливаем временной период\"). У них есть дом в Дареме. B-2: Барьеров не видно — основное внимание уделяется лечению ребенка. Подготовьте паспорта + подтверждение медицинского визита."
     },
     "ka": {
-      "name": "Hearts and იმედი ფონდი — სახლი of Hearts and იმედი",
+      "name": "Hearts and Hope Foundation — House of Hearts and Hope",
       "description": "Free (\"no cost\" — confirmed by media report).Direct contact by e-mail/phone.Prepare the child's medical records and Duke EAP confirmation.It is also possible to contact via Facebook.",
       "eligibility": "Families whose child is being treated at Triangle Pediatric Center (Duke/UNC Children's).They don't have a time limit (\"we don't put a time period on it\").They have a house in Durham.Prepare passports + confirmation of medical visit."
     }
@@ -11705,12 +11705,12 @@
   },
   "item_0533": {
     "fr": {
-      "name": "Jay's Maison Inc",
+      "name": "Jay's House Inc",
       "description": "Services de support",
       "eligibility": ""
     },
     "es": {
-      "name": "Jay's Casa Inc",
+      "name": "Jay's House Inc",
       "description": "Servicios de soporte",
       "eligibility": ""
     },
@@ -11749,22 +11749,22 @@
   },
   "item_0535": {
     "fr": {
-      "name": "Joys de Living Aide Chiens",
+      "name": "Joys of Living Assistance Dogs",
       "description": "Programme de chiens d'établissement",
       "eligibility": ""
     },
     "es": {
-      "name": "Joys de Living Asistencia Perros",
+      "name": "Joys of Living Assistance Dogs",
       "description": "Programa de perros de instalación",
       "eligibility": ""
     },
     "ru": {
-      "name": "Joys of Living Помощь Собаки",
+      "name": "Joys of Living Assistance Dogs",
       "description": "Программа для служебных собак",
       "eligibility": ""
     },
     "ka": {
-      "name": "Joys of Living დახმარება ძაღლები",
+      "name": "Joys of Living Assistance Dogs",
       "description": "Facility Dog პროგრამა",
       "eligibility": ""
     }
@@ -11896,7 +11896,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "MBA Opens Doors ფონდი",
+      "name": "MBA Opens Doors Foundation",
       "description": "იპოთეკური და ქირავნობის დახმარება",
       "eligibility": ""
     }
@@ -11984,7 +11984,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "Ronald McDonald სახლი Charities",
+      "name": "Ronald McDonald House Charities",
       "description": "სახლი და საოჯახო ოთახი",
       "eligibility": ""
     }
@@ -12189,17 +12189,17 @@
   },
   "item_0555": {
     "fr": {
-      "name": "W.E. Stanley Mission Maison",
+      "name": "W.E. Stanley Mission House",
       "description": "Gratuit. Concierge de Duke (919-681-4947) ou direct.",
       "eligibility": "Patients en ambulatoire. Réseau Duke Host Homes.. B-2: 🟢"
     },
     "es": {
-      "name": "W.E. Stanley Mission Casa",
+      "name": "W.E. Stanley Mission House",
       "description": "Gratis. Conserje de Duke (919-681-4947) o directo.",
       "eligibility": "Pacientes ambulatorios. Red de Duke Host Homes.. B-2: 🟢"
     },
     "ru": {
-      "name": "W.E. Stanley Mission Дом",
+      "name": "W.E. Stanley Mission House",
       "description": "Бесплатно. Консьерж Duke (919-681-4947) или напрямую.",
       "eligibility": "Амбулаторные пациенты. Сеть Duke Host Homes.. B-2: 🟢"
     },
@@ -12233,22 +12233,22 @@
   },
   "item_0557": {
     "fr": {
-      "name": "Welcome Maison / CBF NC",
+      "name": "Welcome House / CBF NC",
       "description": "10 $/jour ou gratuit. WebForm. Le statut de refuge est un plus.",
       "eligibility": "Réseau d'églises pour les réfugiés/immigrants. B-2 : 🟢"
     },
     "es": {
-      "name": "Welcome Casa / CBF NC",
+      "name": "Welcome House / CBF NC",
       "description": "~$10/día o gratis. Webform. El estatus de asilo es un plus.",
       "eligibility": "Red de iglesias para refugiados/inmigrantes. B-2: 🟢"
     },
     "ru": {
-      "name": "Welcome Дом / CBF NC",
+      "name": "Welcome House / CBF NC",
       "description": "~10 долларов/день или бесплатно. Веб-форма. Статус убежища — плюс.",
       "eligibility": "Сеть церквей для беженцев/иммигрантов.. B-2: 🟢"
     },
     "ka": {
-      "name": "Welcome სახლი / CBF NC",
+      "name": "Welcome House / CBF NC",
       "description": "~$10/დღე ან უფასო. ვებფორმა. თავშესაფრის სტატუსი პლუსია.",
       "eligibility": "ეკლესიის ქსელი ლტოლვ./იმიგრანტებისთვის.. B-2: 🟢"
     }
@@ -12321,22 +12321,22 @@
   },
   "item_0561": {
     "fr": {
-      "name": "Ange Vol Northeast",
+      "name": "Angel Flight Northeast",
       "description": "Basé à Boston ! Plus de 450 pilotes. \"Jamais dit non.\" Partenariat JetBlue/Cape Air. Citoyenneté non requise.",
       "eligibility": "Visa B-2 : Oui ✓"
     },
     "es": {
-      "name": "Ángel Vuelo Northeast",
+      "name": "Angel Flight Northeast",
       "description": "¡Con sede en Boston! Más de 450 pilotos. \"Nunca he dicho que no.\" Asociación JetBlue/Cape Air. No se requiere ciudadanía.",
       "eligibility": "Visa B-2: Sí ✓"
     },
     "ru": {
-      "name": "Ангел Перелёт Northeast",
+      "name": "Angel Flight Northeast",
       "description": "Базируется в Бостоне! Более 450 пилотов. \"Никогда не говорил нет.\" Партнерство JetBlue/Cape Air. Гражданство не требуется.",
       "eligibility": "B-2 Visa: Да ✓"
     },
     "ka": {
-      "name": "ანგელოზი ფრენა Northeast",
+      "name": "Angel Flight Northeast",
       "description": "უფასო ფრენები დაზარალებულთათვის! 450+ მძღოლები. \"არასოდეს უარს თქვა დახმარებაზე.\" JetBlue/Cape Air პარტნიორობა. დახმარების მიღება და რეგისტრაცია.",
       "eligibility": "B-2 სავიზო: საჭიროა ✓"
     }
@@ -12365,22 +12365,22 @@
   },
   "item_0563": {
     "fr": {
-      "name": "Enfants Vol de Espoir",
+      "name": "Children's Flight of Hope",
       "description": "Basé en Caroline du Nord. American Airlines/Southwest. Enfant + 1 parent. 14 jours à l'avance.",
       "eligibility": "Visa B-2 : Oui ✓"
     },
     "es": {
-      "name": "Niños Vuelo de Esperanza",
+      "name": "Children's Flight of Hope",
       "description": "Con sede en Carolina del Norte. American Airlines/Southwest. Niño + 1 padre. 14 días de antelación.",
       "eligibility": "Visa B-2: Sí ✓"
     },
     "ru": {
-      "name": "Дети Перелёт of Надежда",
+      "name": "Children's Flight of Hope",
       "description": "Базируется в Северной Каролине. American Airlines/Southwest. Ребенок + 1 родитель. За 14 дней.",
       "eligibility": "B-2 Visa: Да ✓"
     },
     "ka": {
-      "name": "ბავშვთა ფრენა of იმედი",
+      "name": "Children's Flight of Hope",
       "description": "NC-გლობალური დახმარება. American Airlines/Southwest. ბავშვი + 1 მიმდევარი. 14 დღე Aufenthalt.",
       "eligibility": "B-2 ვიზა: საჭირო ✓"
     }
@@ -12453,22 +12453,22 @@
   },
   "item_0567": {
     "fr": {
-      "name": "Mercy Médical Angels",
+      "name": "Mercy Medical Angels",
       "description": "Le plus grand transport médical caritatif. Billet d'avion + bon Uber/Lyft + carburant.",
       "eligibility": "Visa B-2 : Oui ✓"
     },
     "es": {
-      "name": "Mercy Médico Angels",
+      "name": "Mercy Medical Angels",
       "description": "El transporte médico benéfico más grande. Boleto de avión + cupón de Uber/Lyft + combustible.",
       "eligibility": "Visa B-2: Sí ✓"
     },
     "ru": {
-      "name": "Mercy Медицинский Angels",
+      "name": "Mercy Medical Angels",
       "description": "Крупнейший благотворительный медицинский транспорт. Авиабилет + ваучер Uber/Lyft + топливо.",
       "eligibility": "B-2 Visa: Да ✓"
     },
     "ka": {
-      "name": "Mercy სამედიცინო Angels",
+      "name": "Mercy Medical Angels",
       "description": "სამედიცინო დახმარების სამედიცინო სერვისების ორგანიზაცია. ავიაბილეთები + Uber/Lyft მომსახურება + სემინარები.",
       "eligibility": "B-2 ვიზა: დიახ ✓"
     }
@@ -12524,17 +12524,17 @@
       "eligibility": "Visa B-2 : Oui ✓"
     },
     "es": {
-      "name": "Paciente AirLift Servicios (PALS)",
+      "name": "Patient AirLift Services (PALS)",
       "description": "Costa Este. 5 días hábiles de antelación son suficientes. Boston-Durham = su zona.",
       "eligibility": "Visa B-2: Sí ✓"
     },
     "ru": {
-      "name": "Пациент AirLift Службы (PALS)",
+      "name": "Patient AirLift Services (PALS)",
       "description": "Восточное побережье. Достаточно 5 рабочих дней. Бостон-Дарем = их зона.",
       "eligibility": "B-2 Visa: Да ✓"
     },
     "ka": {
-      "name": "პაციენტი AirLift სერვისები (PALS)",
+      "name": "Patient AirLift Services (PALS)",
       "description": "პაციენტის გადაყვანის სერვისები. 5 ადგილი ადრეული დახმარებისთვის. Boston-Durham = ერთი საათი.",
       "eligibility": "B-2 ვიზა: დიახ ✓"
     }
@@ -12607,22 +12607,22 @@
   },
   "item_0574": {
     "fr": {
-      "name": "COTA (Enfants Organ Transplantation Assoc.)",
+      "name": "COTA (Children's Organ Transplant Assoc.)",
       "description": "Pour les familles de transplantation d'organe/moelle osseuse/sang de cordon. Subvention défi de 10 000 $ + infrastructure de collecte de fonds exonérée d'impôts. Le cas Duke EAP n'est pas confirmé, mais le sang de cordon fait partie de leur mission.",
       "eligibility": "Visa B-2 : Peut-être"
     },
     "es": {
-      "name": "COTA (Niños Organ Trasplante Assoc.)",
+      "name": "COTA (Children's Organ Transplant Assoc.)",
       "description": "Órgano/médula ósea/sangre del cordón umbilical para familias de trasplante. Subvención de desafío de $10,000 + infraestructura de recaudación de fondos exenta de impuestos. No está confirmado el caso Duke EAP, pero la sangre del cordón está en su misión.",
       "eligibility": "Visa B-2: posiblemente"
     },
     "ru": {
-      "name": "COTA (Дети Organ Трансплантация Assoc.)",
+      "name": "COTA (Children's Organ Transplant Assoc.)",
       "description": "Органо/костный мозг/cord blood для семей трансплантатов. Грант вызова в размере $10,000 + инфраструктура для сбора средств с налоговыми льготами. Duke EAP case не подтвержден, но cord blood входит в их миссию.",
       "eligibility": "B-2 Виза: შესაძლოა"
     },
     "ka": {
-      "name": "COTA (ბავშვთა Organ ტრანსპლანტაცია Assoc.)",
+      "name": "COTA (Children's Organ Transplant Assoc.)",
       "description": "ღარიგა/ლფხისი ევიხლი/cord blood ერამსმქალმზახის ეჰაანჱბიხსხისი. $10,000 challenge grant + tax-exempt fundraising Ⴒლფრასნრუყუ რურა. აარ არნის დაფასნრუპუხი Duke EAP case, ხაგრახ cord blood ხახ ხისიხარია.",
       "eligibility": "B-2 Visa: ვისალყა"
     }
@@ -12634,17 +12634,17 @@
       "eligibility": "Visa B-2 : Vera ❌"
     },
     "es": {
-      "name": "Cryo-Cell Internacional",
+      "name": "Cryo-Cell International",
       "description": "Duke tuvo una licencia exclusiva para 2021-2025. Duke la rescindió en mayo de 2025. No financiaron a familias individuales.",
       "eligibility": "Visa B-2: Vera ❌"
     },
     "ru": {
-      "name": "Cryo-Cell Международный",
+      "name": "Cryo-Cell International",
       "description": "У Duke была эксклюзивная лицензия на 2021-2025 годы. Duke расторгла ее в мае 2025 года. Они не финансировали отдельные семьи.",
       "eligibility": "Виза B-2: Вера ❌"
     },
     "ka": {
-      "name": "Cryo-Cell საერთაშორისო",
+      "name": "Cryo-Cell International",
       "description": "2021-2025 წლებში ჰქონდა ექსკლუზიური ლიცენზია Duke-თან. Duke-მა ხელშეკრულება 2025 წლის მაისში შეწყვიტა. არ აფინანსებდა ცალკეულ ოჯახებს.",
       "eligibility": "B-2 ვიზა: არა ❌"
     }
@@ -12673,44 +12673,44 @@
   },
   "item_0577": {
     "fr": {
-      "name": "Oracle Santé Fondation",
+      "name": "Oracle Health Foundation",
       "description": "Fondation Oracle. Subvention pédiatrique jusqu'à 17 000 $. Accepté à l'international. Problème : exclut le \"traitement expérimental\". Mais EAP = essai autorisé par la FDA, non expérimental.",
       "eligibility": "Visa B-2 : Peut-être"
     },
     "es": {
-      "name": "Oracle Salud Fundación",
+      "name": "Oracle Health Foundation",
       "description": "Fondo de Oracle. Subvención pediátrica de hasta $17,000. Se acepta internacionalmente. Problema: excluye el \"tratamiento experimental\". Pero EAP = autorizado por la FDA, no un ensayo experimental.",
       "eligibility": "Visa B-2: Posiblemente"
     },
     "ru": {
-      "name": "Oracle Здоровье Фонд",
+      "name": "Oracle Health Foundation",
       "description": "Фонд Oracle. Педиатрический грант до $17,000. Международный прием. Проблема: исключает \"экспериментальное лечение\". Но EAP = утверждено FDA, не экспериментальное исследование.",
       "eligibility": "B-2 Visa: Возможно"
     },
     "ka": {
-      "name": "Oracle ჯანმრთელობა ფონდი",
+      "name": "Oracle Health Foundation",
       "description": "Oracle-ის ფონდია. მედიკამენტური გრანტები $17,000-მდე. სამედიცინო კვლევები. მარეგულირებელი: \"ჰელსმერკეტინგული გამოყენებისა\" შესახებ. პროგრამა EAP = FDA-ის ავთენტიფიცირება, ან ჰელსმერკეტინგული trial.",
       "eligibility": "B-2 ვიზა: ვიზალბობა"
     }
   },
   "item_0578": {
     "fr": {
-      "name": "Ray Tye Médical Aid Fondation",
+      "name": "Ray Tye Medical Aid Foundation",
       "description": "Près de Boston (Braintree, MA). Pour les personnes non assurées et financièrement en difficulté. Patients internationaux : Égypte, Belize, Antigua. La citoyenneté n'est pas requise.",
       "eligibility": "Visa B-2 : Peut-être"
     },
     "es": {
-      "name": "Ray Tye Médico Aid Fundación",
+      "name": "Ray Tye Medical Aid Foundation",
       "description": "Cerca de Boston (Braintree, MA). Para personas sin seguro y con dificultades financieras. Pacientes internacionales: Egipto, Belice, Antigua. No se requiere ciudadanía.",
       "eligibility": "Visa B-2: Posiblemente"
     },
     "ru": {
-      "name": "Ray Tye Медицинский Aid Фонд",
+      "name": "Ray Tye Medical Aid Foundation",
       "description": "Рядом с Бостоном (Braintree, MA). Для незастрахованных, финансово затруднённых людей. Международные пациенты: Египет, Белиз, Антигуа. Гражданство не требуется.",
       "eligibility": "B-2 Visa: Возможно"
     },
     "ka": {
-      "name": "Ray Tye სამედიცინო Aid ფონდი",
+      "name": "Ray Tye Medical Aid Foundation",
       "description": "მედიკალური დახმარების ფონდი (Braintree, MA). ორგანიზაცია, რომელიც უზრუნველყოფს ფიზიკურ და გალირიობულ დახმარებას. სატელეფონო მომსახურება მოიცავს: ჰიგიენას, დახმარებას და სერვისებს.",
       "eligibility": "B-2 ვიზა: ვიზიტორთა"
     }
@@ -12761,22 +12761,22 @@
   },
   "item_0581": {
     "fr": {
-      "name": "Américain Conseil de les Aveugles",
+      "name": "American Council of the Blind",
       "description": "Accessibilité",
       "eligibility": ""
     },
     "es": {
-      "name": "Americano Consejo de los Ciegos",
+      "name": "American Council of the Blind",
       "description": "Accesibilidad",
       "eligibility": ""
     },
     "ru": {
-      "name": "Американский Совет of the Слепых",
+      "name": "American Council of the Blind",
       "description": "Доступность",
       "eligibility": ""
     },
     "ka": {
-      "name": "ამერიკული საბჭო of the უსინათლოთა",
+      "name": "American Council of the Blind",
       "description": "ხელმისაწვდომობა",
       "eligibility": ""
     }
@@ -12798,7 +12798,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "Askate ფონდი",
+      "name": "Askate Foundation",
       "description": "იკითხე და შექმენი",
       "eligibility": ""
     }
@@ -12827,22 +12827,22 @@
   },
   "item_0584": {
     "fr": {
-      "name": "Austin Hatcher Fondation",
+      "name": "Austin Hatcher Foundation",
       "description": "Conseil",
       "eligibility": ""
     },
     "es": {
-      "name": "Austin Hatcher Fundación",
+      "name": "Austin Hatcher Foundation",
       "description": "Asesoramiento",
       "eligibility": ""
     },
     "ru": {
-      "name": "Austin Hatcher Фонд",
+      "name": "Austin Hatcher Foundation",
       "description": "Консультирование",
       "eligibility": ""
     },
     "ka": {
-      "name": "Austin Hatcher ფონდი",
+      "name": "Austin Hatcher Foundation",
       "description": "კონსულტაცია",
       "eligibility": ""
     }
@@ -13025,7 +13025,7 @@
   },
   "item_0593": {
     "fr": {
-      "name": "Challenged Athletes Fondation",
+      "name": "Challenged Athletes Foundation",
       "description": "Programmes multiples",
       "eligibility": ""
     },
@@ -13113,44 +13113,44 @@
   },
   "item_0597": {
     "fr": {
-      "name": "Down Syndrome Association de CT",
+      "name": "Down Syndrome Association of CT",
       "description": "Tests prénatals",
       "eligibility": ""
     },
     "es": {
-      "name": "Down Syndrome Asociación de CT",
+      "name": "Down Syndrome Association of CT",
       "description": "Pruebas prenatales",
       "eligibility": ""
     },
     "ru": {
-      "name": "Down Syndrome Ассоциация of CT",
+      "name": "Down Syndrome Association of CT",
       "description": "Пренатальное тестирование",
       "eligibility": ""
     },
     "ka": {
-      "name": "Down Syndrome ასოციაცია of CT",
+      "name": "Down Syndrome Association of CT",
       "description": "პრენატალური ტესტირება",
       "eligibility": ""
     }
   },
   "item_0598": {
     "fr": {
-      "name": "Enchanted Peach Enfants Fondation",
+      "name": "Enchanted Peach Children's Foundation",
       "description": "Mise au point familiale/Verger",
       "eligibility": ""
     },
     "es": {
-      "name": "Enchanted Peach Niños Fundación",
+      "name": "Enchanted Peach Children's Foundation",
       "description": "Enfoque familiar/Huerto",
       "eligibility": ""
     },
     "ru": {
-      "name": "Enchanted Peach Дети Фонд",
+      "name": "Enchanted Peach Children's Foundation",
       "description": "Семейный фокус/фруктовый сад",
       "eligibility": ""
     },
     "ka": {
-      "name": "Enchanted Peach ბავშვთა ფონდი",
+      "name": "Enchanted Peach Children's Foundation",
       "description": "საოჯახო ფოკუსი/ბაღი",
       "eligibility": ""
     }
@@ -13179,17 +13179,17 @@
   },
   "item_0600": {
     "fr": {
-      "name": "Famille Promise Triangle",
+      "name": "Family Promise Triangle",
       "description": "Gratuit. Appelez directement (pas d'entrée coordonnée).",
       "eligibility": "Familles avec enfants. 30+ partenaires. Église... B-2 : 🟡"
     },
     "es": {
-      "name": "Familia Promise Triangle",
+      "name": "Family Promise Triangle",
       "description": "Gratuito. Llame directamente (no a la Entrada Coordinada).",
       "eligibility": "Familias con niños. 30+ socios. Iglesia. B-2: 🟡"
     },
     "ru": {
-      "name": "Семья Promise Triangle",
+      "name": "Family Promise Triangle",
       "description": "Бесплатно. Звоните напрямую (не Coordinated Entry).",
       "eligibility": "Семьи с детьми. 30+ партнеров. Церковь.. B-2: 🟡"
     },
@@ -13245,44 +13245,44 @@
   },
   "item_0603": {
     "fr": {
-      "name": "Hearts et Espoir Fondation",
+      "name": "Hearts and Hope Foundation",
       "description": "Gratuit. E-mail/tél. Documentation médicale + Duke EAP.",
       "eligibility": "Familles Duke/UNC. Pas de limite de temps !. B-2: 🟢"
     },
     "es": {
-      "name": "Hearts y Esperanza Fundación",
+      "name": "Hearts and Hope Foundation",
       "description": "Gratis. Correo electrónico/tel. Documentación médica + Duke EAP.",
       "eligibility": "Familias de Duke/UNC. ¡Sin límite de tiempo!. B-2: 🟢"
     },
     "ru": {
-      "name": "Hearts and Надежда Фонд",
+      "name": "Hearts and Hope Foundation",
       "description": "Бесплатно. Электронная почта/тел. Медицинская документация + Duke EAP.",
       "eligibility": "Семьи Duke/UNC. Без ограничения по времени!. B-2: 🟢"
     },
     "ka": {
-      "name": "Hearts and იმედი ფონდი",
+      "name": "Hearts and Hope Foundation",
       "description": "უფასო. ელ-ფოსტა/ტელეფონი. სამედიცინო დოკუმენტაცია + Duke EAP.",
       "eligibility": "Duke/UNC ოჯახები. დროითი ლიმიტი არ აქვთ! B-2: 🟢"
     }
   },
   "item_0604": {
     "fr": {
-      "name": "Hunt de a Lifetime Fondation",
+      "name": "Hunt of a Lifetime Foundation",
       "description": "Chasse d'une vie",
       "eligibility": ""
     },
     "es": {
-      "name": "Hunt de a Lifetime Fundación",
+      "name": "Hunt of a Lifetime Foundation",
       "description": "Caza de tu vida",
       "eligibility": ""
     },
     "ru": {
-      "name": "Hunt of a Lifetime Фонд",
+      "name": "Hunt of a Lifetime Foundation",
       "description": "Охота всей жизни",
       "eligibility": ""
     },
     "ka": {
-      "name": "Hunt of a Lifetime ფონდი",
+      "name": "Hunt of a Lifetime Foundation",
       "description": "ცხოვრების ნადირობა",
       "eligibility": ""
     }
@@ -13377,22 +13377,22 @@
   },
   "item_0609": {
     "fr": {
-      "name": "Kyle Pease Fondation",
+      "name": "Kyle Pease Foundation",
       "description": "Plusieurs programmes",
       "eligibility": ""
     },
     "es": {
-      "name": "Kyle Pease Fundación",
+      "name": "Kyle Pease Foundation",
       "description": "Múltiples programas",
       "eligibility": ""
     },
     "ru": {
-      "name": "Kyle Pease Фонд",
+      "name": "Kyle Pease Foundation",
       "description": "Несколько программ",
       "eligibility": ""
     },
     "ka": {
-      "name": "Kyle Pease ფონდი",
+      "name": "Kyle Pease Foundation",
       "description": "მრავალი პროგრამა",
       "eligibility": ""
     }
@@ -13509,17 +13509,17 @@
   },
   "item_0615": {
     "fr": {
-      "name": "National Federation de les Aveugles",
+      "name": "National Federation of the Blind",
       "description": "Canne blanche gratuite",
       "eligibility": ""
     },
     "es": {
-      "name": "Nacional Federation de los Ciegos",
+      "name": "National Federation of the Blind",
       "description": "Bastón blanco gratuito",
       "eligibility": ""
     },
     "ru": {
-      "name": "Национальный Federation of the Слепых",
+      "name": "National Federation of the Blind",
       "description": "Бесплатная белая трость",
       "eligibility": ""
     },
@@ -13531,12 +13531,12 @@
   },
   "item_0616": {
     "fr": {
-      "name": "NC DHHS / FIF / Arc de NC",
+      "name": "NC DHHS / FIF / Arc of NC",
       "description": "Service gratuit. Appelez FIF pour des ressources générales.",
       "eligibility": "⚠️ Limité pour le visa B-2 !. B-2 : 🔴"
     },
     "es": {
-      "name": "NC DHHS / FIF / Arc de NC",
+      "name": "NC DHHS / FIF / Arc of NC",
       "description": "Servicio gratuito. Llame a FIF para recursos generales.",
       "eligibility": "⚠️ ¡Limitado para visa B-2!. B-2: 🔴"
     },
@@ -13641,22 +13641,22 @@
   },
   "item_0621": {
     "fr": {
-      "name": "Safe Families pour Enfants RDU",
+      "name": "Safe Families for Children RDU",
       "description": "Gratuit. Auto-référence ! Appelez directement.",
       "eligibility": "Familles en crise. Tous statuts d'immigration !. B-2: 🟢"
     },
     "es": {
-      "name": "Safe Families para Niños RDU",
+      "name": "Safe Families for Children RDU",
       "description": "Gratis. Auto-referencia! Llame directamente.",
       "eligibility": "Familias en crisis. ¡Todos los estados migratorios!. B-2: 🟢"
     },
     "ru": {
-      "name": "Safe Families for Дети RDU",
+      "name": "Safe Families for Children RDU",
       "description": "Бесплатно. Самонаправление! Звоните напрямую.",
       "eligibility": "Семьи в кризисе. Все иммиграционные статусы!. B-2: 🟢"
     },
     "ka": {
-      "name": "Safe Families for ბავშვთა RDU",
+      "name": "Safe Families for Children RDU",
       "description": "უფასო. თვითმიმართვა! დარეკეთ პირდაპირ.",
       "eligibility": "კრიზისში ოჯახები. ყველა იმიგრ. სტატუსი!. B-2: 🟢"
     }
@@ -13678,7 +13678,7 @@
       "eligibility": ""
     },
     "ka": {
-      "name": "Songs of Love ფონდი",
+      "name": "Songs of Love Foundation",
       "description": "სიმღერა თქვენი ბავშვისთვის",
       "eligibility": ""
     }
@@ -13707,17 +13707,17 @@
   },
   "item_0624": {
     "fr": {
-      "name": "Spécial Needs Resource Project",
+      "name": "Special Needs Resource Project",
       "description": "Ressources.",
       "eligibility": ""
     },
     "es": {
-      "name": "Especial Needs Resource Project",
+      "name": "Special Needs Resource Project",
       "description": "Recursos.",
       "eligibility": ""
     },
     "ru": {
-      "name": "Особый Needs Resource Project",
+      "name": "Special Needs Resource Project",
       "description": "Ресурсы.",
       "eligibility": ""
     },
@@ -13751,22 +13751,22 @@
   },
   "item_0626": {
     "fr": {
-      "name": "Spécial Wants",
+      "name": "Special Wants",
       "description": "Souhaits spéciaux pour les Fêtes",
       "eligibility": ""
     },
     "es": {
-      "name": "Especial Wants",
+      "name": "Special Wants",
       "description": "Deseos especiales de vacaciones",
       "eligibility": ""
     },
     "ru": {
-      "name": "Особый Wants",
+      "name": "Special Wants",
       "description": "Особые праздничные пожелания",
       "eligibility": ""
     },
     "ka": {
-      "name": "განსაკუთრებული Wants",
+      "name": "Special Wants",
       "description": "სპეციალური სადღესასწაულო სურვილები",
       "eligibility": ""
     }
@@ -13905,22 +13905,22 @@
   },
   "item_0633": {
     "fr": {
-      "name": "The Shannon Fondation",
+      "name": "The Shannon Foundation",
       "description": "Fondation Shannon",
       "eligibility": ""
     },
     "es": {
-      "name": "The Shannon Fundación",
+      "name": "The Shannon Foundation",
       "description": "Fundación Shannon",
       "eligibility": ""
     },
     "ru": {
-      "name": "The Shannon Фонд",
+      "name": "The Shannon Foundation",
       "description": "Фонд Шеннона",
       "eligibility": ""
     },
     "ka": {
-      "name": "The Shannon ფონდი",
+      "name": "The Shannon Foundation",
       "description": "შენონ ფონდი",
       "eligibility": ""
     }
