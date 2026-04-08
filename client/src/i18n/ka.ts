@@ -653,6 +653,7 @@ export const ka: Translations = {
     toastValidation: "გთხოვთ, შეავსოთ ყველა ველი",
   },
   dashboard: {
+    welcome: "მოგესალმებით",
     pageTitle: "დაფა",
     signInTitle: "შედით დაფაზე წვდომისთვის",
     signInSubtitle: "შეინახეთ გრანტები, თვალყური ადევნეთ ფავორიტებს და მართეთ გამოწერა ერთ ადგილას.",
@@ -693,6 +694,16 @@ export const ka: Translations = {
     signInButton: "შესვლა",
     navigation: "ნავიგაცია",
     signOut: "გასვლა",
+  },
+  notFound: {
+    title: "გვერდი ვერ მოიძებნა",
+    description: "ბოდიშით, თქვენ მიერ მოძიებული გვერდი არ არსებობს.",
+    descriptionLine2: "შესაძლოა, ის გადატანილია ან წაშლილია.",
+    goHome: "მთავარ გვერდზე დაბრუნება",
+  },
+  errorBoundary: {
+    title: "მოხდა მოულოდნელი შეცდომა.",
+    reload: "გვერდის გადატვირთვა",
   },
   seo: {
     homeTitle: "იპოვეთ სამედიცინო და სტარტაპ გრანტები მსოფლიოში",
