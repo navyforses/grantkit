@@ -518,6 +518,22 @@ export const en: Translations = {
 
     unitedStates: "United States",
     international: "International",
+
+    tabExternal: "External Search",
+    extSearchPlaceholder: "Search 84,000+ grants...",
+    extSourceAll: "All Sources",
+    extSourceFederal: "Federal",
+    extSourceFoundation: "Foundation",
+    extSourceState: "State",
+    extSourceIntl: "International",
+    extSearchBtn: "Search",
+    extResults: "Results",
+    extSearching: "Searching external databases...",
+    extLoadingDetail: "Loading details...",
+    extMappedCategory: "Auto-mapped category",
+    extAddToCatalog: "Add to Catalog",
+    extAddAndNotify: "Add & Notify Subscribers",
+    extDetailNotFound: "Could not load grant details",
   },
 
   legal: {
