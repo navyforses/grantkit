@@ -112,10 +112,6 @@ export default function Catalog() {
     retry: false,
   });
 
-  // On static deployments (no API), treat as active so all content is visible
-  const isStaticMode = !catalogData && staticFallback.length > 0;
-  const isActive = isStaticMode || subStatus?.isActive || false;
-  const isAuthLoading = isStaticMode ? false : (authLoading || (isAuthenticated && subLoading));
   const isMobile = useIsMobile();
 
   // Pull-to-refresh: invalidate catalog data on pull
@@ -149,10 +145,10 @@ export default function Catalog() {
       hasDeadline: hasDeadline || undefined,
       state: selectedState !== "all" ? selectedState : undefined,
       city: selectedCity !== "all" ? selectedCity : undefined,
-      page: isActive ? page : 1,
-      pageSize: isActive ? PAGE_SIZE : PREVIEW_ITEMS,
+      page: (subStatus?.isActive || staticFallback.length > 0) ? page : 1,
+      pageSize: (subStatus?.isActive || staticFallback.length > 0) ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
-    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, page, isActive]
+    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, page, subStatus?.isActive, staticFallback.length]
   );
 
   const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
@@ -165,6 +161,12 @@ export default function Catalog() {
 
   // Static fallback: catalogItems is always available (synchronous import via dedicated module)
   const staticFallback = catalogItems;
+
+  // On static deployments (no API), treat as active so all content is visible
+  // IMPORTANT: must be AFTER catalogData is defined (avoids TDZ in Vite production build)
+  const isStaticMode = !catalogData && staticFallback.length > 0;
+  const isActive = isStaticMode || subStatus?.isActive || false;
+  const isAuthLoading = isStaticMode ? false : (authLoading || (isAuthenticated && subLoading));
 
   // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
