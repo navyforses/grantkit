@@ -1,8 +1,15 @@
 import { cn } from "@/lib/utils";
 import { LanguageContext } from "@/contexts/LanguageContext";
 import { en } from "@/i18n/en";
+import { fr } from "@/i18n/fr";
+import { es } from "@/i18n/es";
+import { ru } from "@/i18n/ru";
+import { ka } from "@/i18n/ka";
+import type { Translations } from "@/i18n/types";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Component, ReactNode } from "react";
+
+const langMap: Record<string, Translations> = { en, fr, es, ru, ka };
 
 interface Props {
   children: ReactNode;
@@ -28,7 +35,9 @@ class ErrorBoundary extends Component<Props, State> {
       return (
         <LanguageContext.Consumer>
           {(ctx) => {
-            const t = ctx?.t ?? en;
+            // Use context language, or fall back to localStorage preference
+            const savedLang = typeof localStorage !== "undefined" ? localStorage.getItem("grantkit-lang") : null;
+            const t = ctx?.t ?? langMap[savedLang || "en"] ?? en;
             return (
               <div className="flex items-center justify-center min-h-screen p-8 bg-background">
                 <div className="flex flex-col items-center w-full max-w-2xl p-8">

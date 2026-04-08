@@ -48,23 +48,11 @@ const trpcClient = trpc.createClient({
       url: "/api/trpc",
       transformer: superjson,
       async fetch(input, init) {
-        const maxRetries = 2;
-        for (let attempt = 0; attempt <= maxRetries; attempt++) {
-          const res = await globalThis.fetch(input, {
-            ...(init ?? {}),
-            credentials: "include",
-          });
-          const contentType = res.headers.get("content-type") || "";
-          // If we got HTML instead of JSON, retry (likely SPA fallback race condition)
-          if (!contentType.includes("application/json") && attempt < maxRetries) {
-            console.warn(`[tRPC] Got non-JSON response (${contentType}), retrying... (${attempt + 1}/${maxRetries})`);
-            await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
-            continue;
-          }
-          return res;
-        }
-        // Fallback: should not reach here, but return last fetch
-        return globalThis.fetch(input, { ...(init ?? {}), credentials: "include" });
+        const res = await globalThis.fetch(input, {
+          ...(init ?? {}),
+          credentials: "include",
+        });
+        return res;
       },
     }),
   ],

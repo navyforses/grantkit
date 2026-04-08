@@ -15,7 +15,6 @@ import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
 import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
-import staticCatalog from "@/data/catalog.json";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -163,9 +162,11 @@ export default function Catalog() {
   // Get total count for display
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
-  // Static catalog data — bundled with the app, available immediately
-  // Used as fallback when API is unavailable (e.g. Vercel static deployment)
-  const staticFallback = staticCatalog as any[];
+  // Static fallback: load catalog.json for when API is unavailable (Vercel static deployment)
+  const [staticFallback, setStaticFallback] = useState<any[] | null>(null);
+  useEffect(() => {
+    import("@/data/catalog.json").then((mod) => setStaticFallback(mod.default || mod)).catch(() => {});
+  }, []);
 
   // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
