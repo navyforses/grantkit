@@ -1245,7 +1245,7 @@ export default function Admin() {
             { key: "users" as const, icon: Users, label: a.tabUsers },
             { key: "grants" as const, icon: Database, label: a.tabGrants },
             { key: "newsletter" as const, icon: Mail, label: a.tabNewsletter },
-            { key: "external" as const, icon: Globe, label: a.tabExternal ?? "External Search" },
+            { key: "external" as const, icon: Globe, label: a.tabExternal },
           ]).map((tab) => (
             <button
               key={tab.key}
@@ -1729,14 +1729,14 @@ export default function Admin() {
             <div className="bg-card rounded-xl border border-border shadow-sm p-5">
               <h2 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
                 <Globe className="w-5 h-5 text-primary" />
-                {a.tabExternal ?? "External Grant Search"}
+                {a.tabExternal}
               </h2>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
                   <input
                     type="text"
-                    placeholder={a.extSearchPlaceholder ?? "Search 84,000+ grants..."}
+                    placeholder={a.extSearchPlaceholder}
                     value={extQuery}
                     onChange={(e) => setExtQuery(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter" && extQuery.trim()) setExtSearchTrigger(extQuery.trim()); }}
@@ -1748,11 +1748,11 @@ export default function Admin() {
                   onChange={(e) => setExtSource(e.target.value)}
                   className="px-3 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-card"
                 >
-                  <option value="all">{a.extSourceAll ?? "All Sources"}</option>
-                  <option value="federal">{a.extSourceFederal ?? "Federal"}</option>
-                  <option value="foundation">{a.extSourceFoundation ?? "Foundation"}</option>
-                  <option value="state">{a.extSourceState ?? "State"}</option>
-                  <option value="international">{a.extSourceIntl ?? "International"}</option>
+                  <option value="all">{a.extSourceAll}</option>
+                  <option value="federal">{a.extSourceFederal}</option>
+                  <option value="foundation">{a.extSourceFoundation}</option>
+                  <option value="state">{a.extSourceState}</option>
+                  <option value="international">{a.extSourceIntl}</option>
                 </select>
                 <button
                   onClick={() => { if (extQuery.trim()) setExtSearchTrigger(extQuery.trim()); }}
@@ -1760,7 +1760,7 @@ export default function Admin() {
                   className="px-6 py-2.5 text-sm font-medium text-white bg-primary hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-2"
                 >
                   {extLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                  {a.extSearchBtn ?? "Search"}
+                  {a.extSearchBtn}
                 </button>
               </div>
             </div>
@@ -1770,7 +1770,7 @@ export default function Admin() {
               <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
                 <div className="px-5 py-4 border-b border-border">
                   <h3 className="text-sm font-semibold text-foreground">
-                    {a.extResults ?? "Results"}{" "}
+                    {a.extResults}{" "}
                     <span className="text-muted-foreground font-normal">
                       {extLoading ? "..." : `(${extResults?.results?.length ?? 0})`}
                     </span>
@@ -1780,7 +1780,7 @@ export default function Admin() {
                 {extLoading ? (
                   <div className="p-12 text-center">
                     <Loader2 className="w-6 h-6 animate-spin text-muted-foreground mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">{a.extSearching ?? "Searching external databases..."}</p>
+                    <p className="text-sm text-muted-foreground">{a.extSearching}</p>
                   </div>
                 ) : !extResults?.results?.length ? (
                   <div className="p-12 text-center">
@@ -1832,7 +1832,7 @@ export default function Admin() {
                 {extDetailLoading ? (
                   <div className="p-8 text-center">
                     <Loader2 className="w-6 h-6 animate-spin text-muted-foreground mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">{a.extLoadingDetail ?? "Loading details..."}</p>
+                    <p className="text-sm text-muted-foreground">{a.extLoadingDetail}</p>
                   </div>
                 ) : extDetail?.detail ? (
                   <div>
@@ -1851,29 +1851,29 @@ export default function Admin() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                       <div className="bg-secondary/50 rounded-lg p-3">
-                        <p className="text-xs text-muted-foreground">{a.formAmount ?? "Amount"}</p>
+                        <p className="text-xs text-muted-foreground">{a.formAmount}</p>
                         <p className="text-sm font-medium text-foreground">{extDetail.detail.amount || "N/A"}</p>
                       </div>
                       <div className="bg-secondary/50 rounded-lg p-3">
-                        <p className="text-xs text-muted-foreground">{a.formDeadline ?? "Deadline"}</p>
+                        <p className="text-xs text-muted-foreground">{a.formDeadline}</p>
                         <p className="text-sm font-medium text-foreground">{extDetail.detail.deadline || "No deadline"}</p>
                       </div>
                       <div className="bg-secondary/50 rounded-lg p-3">
-                        <p className="text-xs text-muted-foreground">{a.formStatus ?? "Status"}</p>
+                        <p className="text-xs text-muted-foreground">{a.formStatus}</p>
                         <p className="text-sm font-medium text-foreground">{extDetail.detail.status || "Active"}</p>
                       </div>
                     </div>
 
                     {extDetail.detail.summary && (
                       <div className="mb-4">
-                        <p className="text-xs font-medium text-muted-foreground mb-1">{a.formDescription ?? "Description"}</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">{a.formDescription}</p>
                         <p className="text-sm text-foreground leading-relaxed">{extDetail.detail.summary}</p>
                       </div>
                     )}
 
                     {extDetail.detail.eligibility && (
                       <div className="mb-4">
-                        <p className="text-xs font-medium text-muted-foreground mb-1">{a.formEligibility ?? "Eligibility"}</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">{a.formEligibility}</p>
                         <p className="text-sm text-foreground leading-relaxed">{extDetail.detail.eligibility}</p>
                       </div>
                     )}
@@ -1886,14 +1886,14 @@ export default function Admin() {
                         className="inline-flex items-center gap-1 text-sm text-primary hover:underline mb-4"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
-                        {a.formWebsite ?? "Website"}
+                        {a.formWebsite}
                       </a>
                     )}
 
                     {/* Category preview from mapping */}
                     {extDetail.mappedGrant && (
                       <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/10">
-                        <p className="text-xs font-medium text-primary mb-2">{a.extMappedCategory ?? "Auto-mapped category"}:</p>
+                        <p className="text-xs font-medium text-primary mb-2">{a.extMappedCategory}:</p>
                         <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
                           {categoryLabels[extDetail.mappedGrant.category] || extDetail.mappedGrant.category}
                         </span>
@@ -1919,7 +1919,7 @@ export default function Admin() {
                         ) : (
                           <PlusCircle className="w-4 h-4" />
                         )}
-                        {a.extAddToCatalog ?? "Add to Catalog"}
+                        {a.extAddToCatalog}
                       </button>
                       <button
                         onClick={() => {
@@ -1934,14 +1934,14 @@ export default function Admin() {
                         className="px-6 py-2.5 text-sm font-medium text-white bg-primary hover:bg-[#162d4a] rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-2"
                       >
                         <Bell className="w-4 h-4" />
-                        {a.extAddAndNotify ?? "Add & Notify Subscribers"}
+                        {a.extAddAndNotify}
                       </button>
                     </div>
                   </div>
                 ) : (
                   <div className="p-8 text-center">
                     <AlertCircle className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">{a.extDetailNotFound ?? "Could not load grant details"}</p>
+                    <p className="text-sm text-muted-foreground">{a.extDetailNotFound}</p>
                   </div>
                 )}
               </div>

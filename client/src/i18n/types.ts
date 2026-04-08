@@ -545,6 +545,23 @@ export interface Translations {
     // Country labels
     unitedStates: string;
     international: string;
+
+    // External search tab
+    tabExternal: string;
+    extSearchPlaceholder: string;
+    extSourceAll: string;
+    extSourceFederal: string;
+    extSourceFoundation: string;
+    extSourceState: string;
+    extSourceIntl: string;
+    extSearchBtn: string;
+    extResults: string;
+    extSearching: string;
+    extLoadingDetail: string;
+    extMappedCategory: string;
+    extAddToCatalog: string;
+    extAddAndNotify: string;
+    extDetailNotFound: string;
   };
 
   // Legal pages
