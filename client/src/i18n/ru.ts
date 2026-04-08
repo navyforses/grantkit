@@ -516,22 +516,6 @@ export const ru: Translations = {
 
     unitedStates: "Соединённые Штаты",
     international: "Международный",
-
-    tabExternal: "Внешний поиск",
-    extSearchPlaceholder: "Поиск среди 84 000+ грантов...",
-    extSourceAll: "Все источники",
-    extSourceFederal: "Федеральные",
-    extSourceFoundation: "Фонды",
-    extSourceState: "Штаты",
-    extSourceIntl: "Международные",
-    extSearchBtn: "Искать",
-    extResults: "Результаты",
-    extSearching: "Поиск во внешних базах данных...",
-    extLoadingDetail: "Загрузка деталей...",
-    extMappedCategory: "Авто-категория",
-    extAddToCatalog: "Добавить в каталог",
-    extAddAndNotify: "Добавить и уведомить подписчиков",
-    extDetailNotFound: "Не удалось загрузить данные гранта",
   },
 
   legal: {

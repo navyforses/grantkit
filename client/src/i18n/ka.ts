@@ -518,22 +518,6 @@ export const ka: Translations = {
 
     unitedStates: "ამერიკის შეერთებული შტატები",
     international: "საერთაშორისო",
-
-    tabExternal: "გარე ძებნა",
-    extSearchPlaceholder: "მოძებნეთ 84,000+ გრანტში...",
-    extSourceAll: "ყველა წყარო",
-    extSourceFederal: "ფედერალური",
-    extSourceFoundation: "ფონდი",
-    extSourceState: "შტატი",
-    extSourceIntl: "საერთაშორისო",
-    extSearchBtn: "ძებნა",
-    extResults: "შედეგები",
-    extSearching: "გარე მონაცემთა ბაზებში ძებნა...",
-    extLoadingDetail: "დეტალების ჩატვირთვა...",
-    extMappedCategory: "ავტო-კატეგორია",
-    extAddToCatalog: "კატალოგში დამატება",
-    extAddAndNotify: "დამატება და გამომწერების შეტყობინება",
-    extDetailNotFound: "გრანტის დეტალები ვერ ჩაიტვირთა",
   },
 
   legal: {
