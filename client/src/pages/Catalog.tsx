@@ -152,13 +152,24 @@ export default function Catalog() {
     [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, page, isActive]
   );
 
-  const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
+  const { data: catalogData, isLoading: catalogLoading, isFetching, isError: catalogError } = trpc.catalog.list.useQuery(catalogInput, {
     retry: false,
     placeholderData: (prev: any) => prev,
   });
 
   // Get total count for display
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
+
+  // Static fallback: when API is unavailable (e.g. Vercel static deployment),
+  // load grants directly from the bundled catalog.json
+  const [staticFallback, setStaticFallback] = useState<any[] | null>(null);
+  useEffect(() => {
+    if (catalogError && !staticFallback) {
+      import("@/data/catalog.json").then((mod) => {
+        setStaticFallback(mod.default || mod);
+      }).catch(() => {});
+    }
+  }, [catalogError, staticFallback]);
 
   // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
@@ -191,40 +202,65 @@ export default function Catalog() {
 
   // Map DB results to CatalogItem shape for CatalogCard
   const displayItems: CatalogItem[] = useMemo(() => {
-    if (!catalogData?.grants) return [];
-    return catalogData.grants.map((g) => {
-      const trans = (g as any).translations?.[language];
-      return {
-        id: g.id,
-        name: trans?.name || g.name,
-        organization: g.organization,
-        description: trans?.description || g.description,
-        category: g.category,
-        type: g.type as "grant" | "resource",
-        country: g.country,
-        eligibility: trans?.eligibility || g.eligibility,
-        website: g.website,
-        phone: g.phone,
-        email: g.email,
-        amount: g.amount,
-        status: g.status,
-        applicationProcess: g.applicationProcess,
-        deadline: g.deadline,
-        fundingType: g.fundingType,
-        targetDiagnosis: g.targetDiagnosis,
-        ageRange: g.ageRange,
-        geographicScope: g.geographicScope,
-        documentsRequired: g.documentsRequired,
-        b2VisaEligible: g.b2VisaEligible,
-        state: g.state,
+    // If API returned data, use it
+    if (catalogData?.grants) {
+      return catalogData.grants.map((g) => {
+        const trans = (g as any).translations?.[language];
+        return {
+          id: g.id,
+          name: trans?.name || g.name,
+          organization: g.organization,
+          description: trans?.description || g.description,
+          category: g.category,
+          type: g.type as "grant" | "resource",
+          country: g.country,
+          eligibility: trans?.eligibility || g.eligibility,
+          website: g.website,
+          phone: g.phone,
+          email: g.email,
+          amount: g.amount,
+          status: g.status,
+          applicationProcess: g.applicationProcess,
+          deadline: g.deadline,
+          fundingType: g.fundingType,
+          targetDiagnosis: g.targetDiagnosis,
+          ageRange: g.ageRange,
+          geographicScope: g.geographicScope,
+          documentsRequired: g.documentsRequired,
+          b2VisaEligible: g.b2VisaEligible,
+          state: g.state,
         city: g.city,
       };
     });
-  }, [catalogData, language]);
+    }
 
-  const totalItems = catalogData?.total || 0;
-  const totalPages = catalogData?.totalPages || 1;
-  const isLoading = isAuthLoading || catalogLoading;
+    // Static fallback: filter and paginate from bundled catalog.json
+    if (staticFallback) {
+      let filtered = staticFallback;
+      if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
+      if (selectedCountry !== "all") filtered = filtered.filter((g: any) => g.country === selectedCountry);
+      if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
+      if (debouncedSearch) {
+        const q = debouncedSearch.toLowerCase();
+        filtered = filtered.filter((g: any) =>
+          (g.name || "").toLowerCase().includes(q) ||
+          (g.organization || "").toLowerCase().includes(q) ||
+          (g.description || "").toLowerCase().includes(q)
+        );
+      }
+      const start = (page - 1) * PAGE_SIZE;
+      return filtered.slice(start, start + PAGE_SIZE).map((g: any) => ({
+        ...g,
+        type: g.type as "grant" | "resource",
+      }));
+    }
+
+    return [];
+  }, [catalogData, language, staticFallback, selectedCategory, selectedCountry, selectedType, debouncedSearch, page]);
+
+  const totalItems = staticFallback?.length || catalogData?.total || 0;
+  const totalPages = staticFallback ? Math.ceil(staticFallback.length / PAGE_SIZE) : (catalogData?.totalPages || 1);
+  const isLoading = isAuthLoading || (catalogLoading && !staticFallback);
   const isSearching = isFetching && !!debouncedSearch;
 
   const resetFilters = () => {

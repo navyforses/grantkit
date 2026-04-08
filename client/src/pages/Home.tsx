@@ -20,7 +20,7 @@ import {
   UserPlus,
   Zap,
 } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Footer from "@/components/Footer";
 import CatalogCard from "@/components/CatalogCard";
 import CatalogCardSkeleton from "@/components/CatalogCardSkeleton";
@@ -58,15 +58,36 @@ export default function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch diverse preview items from database (one per category)
-  const { data: previewData } = trpc.catalog.preview.useQuery(
+  const { data: previewData, isError: previewError } = trpc.catalog.preview.useQuery(
     undefined,
     { retry: false }
   );
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
+  // Static fallback for when API is unavailable (Vercel static deployment)
+  const [staticPreview, setStaticPreview] = useState<any[] | null>(null);
+  useEffect(() => {
+    if (previewError && !staticPreview) {
+      import("@/data/catalog.json").then((mod) => {
+        const all = mod.default || mod;
+        // Pick 5 diverse items (one per category)
+        const seen = new Set<string>();
+        const picks: any[] = [];
+        for (const g of all) {
+          if (!seen.has(g.category) && picks.length < 5) {
+            seen.add(g.category);
+            picks.push(g);
+          }
+        }
+        setStaticPreview(picks);
+      }).catch(() => {});
+    }
+  }, [previewError, staticPreview]);
+
   const previewItems: CatalogItem[] = useMemo(() => {
-    if (!previewData?.grants) return [];
-    return previewData.grants.map((g) => {
+    const source = previewData?.grants || staticPreview;
+    if (!source) return [];
+    return source.map((g: any) => {
       const trans = (g as any).translations?.[language];
       return {
         id: g.id,
@@ -94,7 +115,7 @@ export default function Home() {
         city: g.city || "",
       };
     });
-  }, [previewData, language]);
+  }, [previewData, staticPreview, language]);
 
   const totalGrants = countData?.total || 3650;
 
