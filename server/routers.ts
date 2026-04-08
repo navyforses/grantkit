@@ -19,6 +19,10 @@ import {
   type GrantEmailData,
 } from "./emailService";
 import { parseCSV, parseExcel, validateBatch, type ImportParseResult } from "./importGrants";
+import {
+  searchExternalGrants, getExternalGrantDetail, searchExternalFunders,
+  mapExternalGrantToLocal,
+} from "./externalGrants";
 import { z } from "zod";
 
 export const appRouter = router({
@@ -841,6 +845,128 @@ export const appRouter = router({
           errors: result.errors,
           total: result.total,
         };
+      }),
+
+    // ----- External grants search (GrantedAI API) -----
+
+    /** Search external grant databases (84,000+ grants) */
+    searchExternal: adminProcedure
+      .input(z.object({
+        query: z.string().min(1),
+        source: z.enum(["federal", "state", "international", "foundation"]).optional(),
+        state: z.string().max(2).optional(),
+        orgType: z.string().optional(),
+        limit: z.number().min(1).max(15).optional(),
+      }))
+      .query(async ({ input }) => {
+        const results = await searchExternalGrants({
+          query: input.query,
+          source: input.source,
+          state: input.state,
+          orgType: input.orgType,
+          limit: input.limit ?? 15,
+        });
+        return { results };
+      }),
+
+    /** Get full details for a specific external grant */
+    getExternalDetail: adminProcedure
+      .input(z.object({
+        slug: z.string().min(1),
+      }))
+      .query(async ({ input }) => {
+        const detail = await getExternalGrantDetail(input.slug);
+        if (!detail) {
+          return { detail: null, mappedGrant: null };
+        }
+        const mappedGrant = mapExternalGrantToLocal(detail);
+        return { detail, mappedGrant };
+      }),
+
+    /** Import an external grant into the local catalog */
+    importExternal: adminProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        organization: z.string().optional(),
+        description: z.string().optional(),
+        category: z.string(),
+        type: z.enum(["grant", "resource"]).default("grant"),
+        country: z.string().default("US"),
+        eligibility: z.string().optional(),
+        website: z.string().optional(),
+        amount: z.string().optional(),
+        status: z.string().optional(),
+        deadline: z.string().optional(),
+        fundingType: z.string().optional(),
+        geographicScope: z.string().optional(),
+        notifySubscribers: z.boolean().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { notifySubscribers, ...grantData } = input;
+        const result = await createGrant(grantData);
+
+        // Auto-notify subscribers if requested
+        if (notifySubscribers) {
+          const grant = await getGrantByItemId(result.itemId);
+          if (grant) {
+            const subscribers = await getActiveNewsletterSubscribers();
+            if (subscribers.length > 0) {
+              const grantEmailData: GrantEmailData = {
+                itemId: grant.itemId,
+                name: grant.name,
+                organization: grant.organization || "",
+                category: grant.category,
+                country: grant.country,
+                description: grant.description || "",
+                amount: grant.amount || "",
+              };
+              const subject = buildNewGrantsSubject(1);
+              const notifId = await createNotificationRecord({
+                subject,
+                grantItemIds: [result.itemId],
+                recipientCount: subscribers.length,
+                sentBy: ctx.user.id,
+              });
+              sendBatchNewGrantNotifications(subscribers, [grantEmailData], subject)
+                .then(async (r) => {
+                  await updateNotificationRecord(notifId, {
+                    status: "completed",
+                    successCount: r.successCount,
+                    failureCount: r.failureCount,
+                  });
+                })
+                .catch(async () => {
+                  await updateNotificationRecord(notifId, { status: "failed" });
+                });
+            }
+          }
+        }
+
+        return { success: true, itemId: result.itemId };
+      }),
+
+    /** Search external funders (133,000+ US foundations) */
+    searchFunders: adminProcedure
+      .input(z.object({
+        query: z.string().optional(),
+        state: z.string().max(2).optional(),
+        ntee: z.string().max(3).optional(),
+        assetsMin: z.number().optional(),
+        assetsMax: z.number().optional(),
+        limit: z.number().min(1).max(15).optional(),
+        sort: z.enum(["relevance", "name", "assets_desc", "income_desc"]).optional(),
+      }))
+      .query(async ({ input }) => {
+        const results = await searchExternalFunders({
+          query: input.query,
+          state: input.state,
+          ntee: input.ntee,
+          assetsMin: input.assetsMin,
+          assetsMax: input.assetsMax,
+          limit: input.limit ?? 15,
+          sort: input.sort,
+        });
+        return { results };
       }),
   }),
 });
