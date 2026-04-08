@@ -38,14 +38,14 @@ import { useMemo } from "react";
 const fadeInUp = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
+  viewport: { once: true, margin: "-100px", amount: 0.05 },
   transition: { duration: 0.5, ease: "easeOut" as const },
 };
 
 const stagger = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
+  viewport: { once: true, amount: 0.05 },
 };
 
 export default function Home() {
