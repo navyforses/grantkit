@@ -20,7 +20,7 @@ import {
   UserPlus,
   Zap,
 } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Footer from "@/components/Footer";
 import CatalogCard from "@/components/CatalogCard";
 import CatalogCardSkeleton from "@/components/CatalogCardSkeleton";
@@ -32,6 +32,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import SEO from "@/components/SEO";
 import { OrganizationJsonLd, WebSiteJsonLd, FaqJsonLd } from "@/components/JsonLd";
 import { trpc } from "@/lib/trpc";
+import { catalogItems } from "@/data/catalogData";
 import { useMemo } from "react";
 
 const fadeInUp = {
@@ -64,21 +65,17 @@ export default function Home() {
   );
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
-  // Static preview — load 5 diverse items from catalog.json as fallback
-  const [staticPreview, setStaticPreview] = useState<any[] | null>(null);
-  useEffect(() => {
-    import("@/data/catalog.json").then((mod) => {
-      const all = mod.default || mod;
-      const seen = new Set<string>();
-      const picks: any[] = [];
-      for (const g of all) {
-        if (!seen.has(g.category) && picks.length < 5) {
-          seen.add(g.category);
-          picks.push(g);
-        }
+  // Static preview — pick 5 diverse items from bundled catalog (available immediately)
+  const staticPreview = useMemo(() => {
+    const seen = new Set<string>();
+    const picks: any[] = [];
+    for (const g of catalogItems) {
+      if (!seen.has(g.category) && picks.length < 5) {
+        seen.add(g.category);
+        picks.push(g);
       }
-      setStaticPreview(picks);
-    }).catch(() => {});
+    }
+    return picks;
   }, []);
 
   const previewItems: CatalogItem[] = useMemo(() => {

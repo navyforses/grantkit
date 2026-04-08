@@ -15,6 +15,7 @@ import Navbar from "@/components/Navbar";
 import PricingCTA from "@/components/PricingCTA";
 import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
+import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -112,7 +113,7 @@ export default function Catalog() {
   });
 
   // On static deployments (no API), treat as active so all content is visible
-  const isStaticMode = !catalogData && !!staticFallback;
+  const isStaticMode = !catalogData && staticFallback.length > 0;
   const isActive = isStaticMode || subStatus?.isActive || false;
   const isAuthLoading = isStaticMode ? false : (authLoading || (isAuthenticated && subLoading));
   const isMobile = useIsMobile();
@@ -162,11 +163,8 @@ export default function Catalog() {
   // Get total count for display
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
-  // Static fallback: load catalog.json for when API is unavailable (Vercel static deployment)
-  const [staticFallback, setStaticFallback] = useState<any[] | null>(null);
-  useEffect(() => {
-    import("@/data/catalog.json").then((mod) => setStaticFallback(mod.default || mod)).catch(() => {});
-  }, []);
+  // Static fallback: catalogItems is always available (synchronous import via dedicated module)
+  const staticFallback = catalogItems;
 
   // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
@@ -255,10 +253,10 @@ export default function Catalog() {
     return [];
   }, [catalogData, language, staticFallback, selectedCategory, selectedCountry, selectedType, debouncedSearch, page]);
 
-  const usingStatic = !catalogData?.grants && !!staticFallback;
+  const usingStatic = !catalogData?.grants && staticFallback.length > 0;
   const totalItems = catalogData?.total || (usingStatic ? staticFallback.length : 0);
   const totalPages = catalogData?.totalPages || (usingStatic ? Math.ceil(staticFallback.length / PAGE_SIZE) : 1);
-  const isLoading = isAuthLoading || (catalogLoading && !staticFallback);
+  const isLoading = isAuthLoading || (catalogLoading && staticFallback.length === 0);
   const isSearching = isFetching && !!debouncedSearch;
 
   const resetFilters = () => {

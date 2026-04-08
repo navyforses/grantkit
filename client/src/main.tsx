@@ -30,6 +30,7 @@ queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.query.state.error;
     redirectToLoginIfUnauthorized(error);
+    if (error instanceof TRPCClientError && error.message === "API unavailable") return;
     console.error("[API Query Error]", error);
   }
 });
@@ -38,6 +39,7 @@ queryClient.getMutationCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.mutation.state.error;
     redirectToLoginIfUnauthorized(error);
+    if (error instanceof TRPCClientError && error.message === "API unavailable") return;
     console.error("[API Mutation Error]", error);
   }
 });
@@ -52,6 +54,14 @@ const trpcClient = trpc.createClient({
           ...(init ?? {}),
           credentials: "include",
         });
+        // Detect static deployment: API returns HTML (SPA fallback) instead of JSON
+        const ct = res.headers.get("content-type") || "";
+        if (ct.includes("text/html")) {
+          return new Response(
+            JSON.stringify([{ error: { message: "API unavailable", data: { code: "INTERNAL_SERVER_ERROR" } } }]),
+            { status: 500, headers: { "content-type": "application/json" } },
+          );
+        }
         return res;
       },
     }),
