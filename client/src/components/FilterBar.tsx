@@ -495,255 +495,190 @@ export default function FilterBar({
         </div>
       )}
 
-      {/* ===== DESKTOP FILTER BAR ===== */}
-      <div className="hidden md:block sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-border">
-        <div className="container py-4">
-          {/* Category tabs + inline search */}
-          <div className="flex items-center justify-between gap-4 mb-3">
-            <div className="flex flex-wrap gap-2 flex-1 min-w-0">
-              {CATEGORIES.map((cat) => {
-                const label = cat.value === "all" ? t.categories.all : tCategory(cat.value);
-                return (
-                  <button
-                    key={cat.value}
-                    onClick={() => onCategoryChange(cat.value)}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
-                      selectedCategory === cat.value
-                        ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                        : "bg-card text-muted-foreground border-border hover:border-border hover:bg-secondary"
-                    }`}
-                  >
-                    <span className="text-sm">{cat.icon}</span>
-                    <span>{label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Inline search */}
+      {/* ===== DESKTOP FILTER BAR — Minimal Single Row ===== */}
+      <div className="hidden md:block sticky top-16 z-20 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="container py-3">
+          <div className="flex items-center gap-2.5">
+            {/* Search */}
             {onSearchChange && (
-              <div className="relative w-full max-w-[280px] shrink-0">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
+              <div className="relative flex-1 max-w-xs">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery || ""}
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder={t.catalog.searchPlaceholder}
-                  className="w-full text-sm border border-border rounded-lg pl-9 pr-9 h-9 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/60 transition-all"
+                  className="w-full text-sm border border-border rounded-lg pl-9 pr-8 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/50"
                 />
                 {searchQuery && (
-                  <button
-                    onClick={() => onSearchChange("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-                    aria-label="Clear search"
-                  >
-                    <X className="w-4 h-4" />
+                  <button onClick={() => onSearchChange("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground" aria-label="Clear">
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
             )}
+
+            {/* Category dropdown */}
+            <select
+              value={selectedCategory}
+              onChange={(e) => onCategoryChange(e.target.value as CategoryValue)}
+              className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.icon} {cat.value === "all" ? t.categories.all : tCategory(cat.value)}
+                </option>
+              ))}
+            </select>
+
+            {/* Type */}
+            <select
+              value={selectedType}
+              onChange={(e) => onTypeChange(e.target.value as TypeValue)}
+              className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            >
+              <option value="all">{t.catalog.typeAll}</option>
+              <option value="grant">{t.catalog.typeGrant}</option>
+              <option value="resource">{t.catalog.typeResource}</option>
+            </select>
+
+            {/* State */}
+            {onStateChange && (
+              <select
+                value={selectedState || "all"}
+                onChange={(e) => onStateChange(e.target.value)}
+                className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              >
+                <option value="all">{t.filters.allStates}</option>
+                <option value="Nationwide">{t.filters.nationwide}</option>
+                {statesData?.states?.map((s: string) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            )}
+
+            {/* Sort */}
+            {onSortChange && (
+              <select
+                value={sortBy || "name_asc"}
+                onChange={(e) => onSortChange(e.target.value as SortValue)}
+                className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              >
+                <option value="name_asc">{t.filters.sortAZ}</option>
+                <option value="name_desc">{t.filters.sortZA}</option>
+                <option value="newest">{t.filters.sortNewest}</option>
+                <option value="category">{t.filters.sortCategory}</option>
+                <option value="state">{t.filters.sortState}</option>
+              </select>
+            )}
+
+            {/* More Filters toggle */}
+            <button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className={`inline-flex items-center gap-1.5 px-3 h-9 text-sm font-medium rounded-lg border transition-all shrink-0 ${
+                activeAdvancedCount > 0
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-card text-muted-foreground border-border hover:bg-secondary"
+              }`}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              {activeAdvancedCount > 0 && (
+                <span className="bg-white/20 text-xs px-1.5 rounded-full">{activeAdvancedCount}</span>
+              )}
+            </button>
+
+            {/* Count */}
+            <span className="text-sm text-muted-foreground whitespace-nowrap ml-auto">
+              <span className="font-semibold text-foreground">{itemCount}</span> {t.catalog.itemsCount}
+            </span>
           </div>
 
+          {/* Search result text */}
           {searchQuery && (
-            <p className="mb-2 text-xs text-muted-foreground">
+            <p className="mt-1.5 text-xs text-muted-foreground">
               {searchResultText(itemCount, searchQuery)}
             </p>
           )}
 
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            {/* Type + State + Sort + count + Advanced toggle */}
-            <div className="flex items-center gap-3 flex-wrap">
-              {!searchQuery && (
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
-                  <span className="font-semibold text-foreground">{itemCount}</span> {t.catalog.itemsCount}
-                </span>
-              )}
-
-              <select
-                value={selectedType}
-                onChange={(e) => onTypeChange(e.target.value as TypeValue)}
-                className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              >
-                <option value="all">{t.catalog.typeAll}</option>
-                <option value="grant">{t.catalog.typeGrant}</option>
-                <option value="resource">{t.catalog.typeResource}</option>
-              </select>
-
-              {/* State filter (replaces Country — 99% US data) */}
-              {onStateChange && (
-                <select
-                  value={selectedState || "all"}
-                  onChange={(e) => onStateChange(e.target.value)}
-                  className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                >
-                  <option value="all">{t.filters.allStates}</option>
-                  <option value="Nationwide">{t.filters.nationwide}</option>
-                  {statesData?.states?.map((s: string) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-              )}
-
-              {onSortChange && (
-                <select
-                  value={sortBy || "name_asc"}
-                  onChange={(e) => onSortChange(e.target.value as SortValue)}
-                  className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                >
-                  <option value="name_asc">{t.filters.sortAZ}</option>
-                  <option value="name_desc">{t.filters.sortZA}</option>
-                  <option value="newest">{t.filters.sortNewest}</option>
-                  <option value="category">{t.filters.sortCategory}</option>
-                  <option value="state">{t.filters.sortState}</option>
-                </select>
-              )}
-            </div>
-
-            {/* Advanced Filters Toggle */}
-            <button
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${
-                activeAdvancedCount > 0
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-card text-muted-foreground border-border hover:border-border hover:bg-secondary"
-              }`}
-            >
-              <Filter className="w-3.5 h-3.5" />
-              {t.filters.filters}
-              {activeAdvancedCount > 0 && (
-                <span className="bg-white/20 text-white text-xs px-1.5 py-0.5 rounded-full ml-0.5">
-                  {activeAdvancedCount}
-                </span>
-              )}
-              {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-            </button>
-          </div>
-
-          {/* Advanced Filters Panel — desktop */}
+          {/* Advanced Filters Panel */}
           {showAdvanced && (
             <div className="mt-3 pt-3 border-t border-border">
               <div className="flex flex-wrap gap-3 items-center">
-                {/* State filter */}
-                {onStateChange && statesData && statesData.length > 0 && (
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.state}</label>
-                    <select
-                      value={selectedState || "all"}
-                      onChange={(e) => onStateChange(e.target.value)}
-                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    >
-                      <option value="all">{t.filters.allStates}</option>
-                      <option value="Nationwide">🇺🇸 {t.filters.nationwide}</option>
-                      {statesData
-                        .filter(s => s.state !== "Nationwide" && s.state !== "International")
-                        .map((s) => (
-                          <option key={s.state} value={s.state}>
-                            {s.state} ({s.count})
-                          </option>
-                        ))}
-                      <option value="International">🌐 {t.filters.international}</option>
-                    </select>
-                  </div>
-                )}
-
-                {/* City (cascading from state) */}
-                {onCityChange && isStateSelected && citiesData && citiesData.length > 0 && (
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.city}</label>
-                    <select
-                      value={selectedCity || "all"}
-                      onChange={(e) => onCityChange(e.target.value)}
-                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    >
-                      <option value="all">{t.filters.allCities}</option>
-                      {citiesData.map((c) => (
-                        <option key={c.city} value={c.city}>
-                          {c.city} ({c.count})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                {onCityChange && selectedState && selectedState !== "all" && selectedState !== "Nationwide" && selectedState !== "International" && (
+                  <select
+                    value={selectedCity || "all"}
+                    onChange={(e) => onCityChange(e.target.value)}
+                    className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  >
+                    <option value="all">{t.filters.allCities}</option>
+                    {citiesData?.map((c: any) => (
+                      <option key={c.city || c} value={c.city || c}>{c.city || c}</option>
+                    ))}
+                  </select>
                 )}
 
                 {onTargetDiagnosisChange && (
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.condition}</label>
-                    <select
-                      value={targetDiagnosis || "all"}
-                      onChange={(e) => onTargetDiagnosisChange(e.target.value)}
-                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    >
-                      {DIAGNOSIS_VALUES.map((val) => (
-                        <option key={val} value={val}>{diagnosisLabelMap[val]}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    value={targetDiagnosis || "all"}
+                    onChange={(e) => onTargetDiagnosisChange(e.target.value)}
+                    className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  >
+                    {DIAGNOSIS_VALUES.map((val) => (
+                      <option key={val} value={val}>{diagnosisLabelMap[val]}</option>
+                    ))}
+                  </select>
                 )}
 
                 {onFundingTypeChange && (
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.fundingType}</label>
-                    <select
-                      value={fundingType || "all"}
-                      onChange={(e) => onFundingTypeChange(e.target.value)}
-                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    >
-                      {FUNDING_TYPE_VALUES.map((val) => (
-                        <option key={val} value={val}>{fundingTypeLabelMap[val]}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    value={fundingType || "all"}
+                    onChange={(e) => onFundingTypeChange(e.target.value)}
+                    className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  >
+                    {FUNDING_TYPE_VALUES.map((val) => (
+                      <option key={val} value={val}>{fundingTypeLabelMap[val]}</option>
+                    ))}
+                  </select>
                 )}
 
                 {onB2VisaChange && (
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.b2Visa}</label>
-                    <select
-                      value={b2VisaEligible || "all"}
-                      onChange={(e) => onB2VisaChange(e.target.value)}
-                      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    >
-                      {B2_VISA_VALUES.map((val) => (
-                        <option key={val} value={val}>{b2VisaLabelMap[val]}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    value={b2VisaEligible || "all"}
+                    onChange={(e) => onB2VisaChange(e.target.value)}
+                    className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  >
+                    {B2_VISA_VALUES.map((val) => (
+                      <option key={val} value={val}>{b2VisaLabelMap[val]}</option>
+                    ))}
+                  </select>
                 )}
 
                 {onHasDeadlineChange && (
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{t.filters.deadline}</label>
-                    <button
-                      onClick={() => onHasDeadlineChange(!hasDeadline)}
-                      className={`text-sm px-3 py-1.5 rounded-lg border transition-all ${
-                        hasDeadline
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-card text-muted-foreground border-border hover:border-border"
-                      }`}
-                    >
-                      {hasDeadline ? t.filters.hasDeadline : t.filters.anyDeadline}
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => onHasDeadlineChange(!hasDeadline)}
+                    className={`text-sm px-3 h-9 rounded-lg border transition-all ${
+                      hasDeadline ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border"
+                    }`}
+                  >
+                    {hasDeadline ? t.filters.hasDeadline : t.filters.anyDeadline}
+                  </button>
                 )}
 
                 {activeAdvancedCount > 0 && (
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-medium text-transparent">Clear</label>
-                    <button
-                      onClick={() => {
-                        onFundingTypeChange?.("all");
-                        onTargetDiagnosisChange?.("all");
-                        onB2VisaChange?.("all");
-                        onHasDeadlineChange?.(false);
-                        onStateChange?.("all");
-                        onCityChange?.("all");
-                      }}
-                      className="text-sm text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg border border-red-200 hover:border-red-300 transition-all flex items-center gap-1"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                      {t.filters.clearFilters}
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => {
+                      onFundingTypeChange?.("all");
+                      onTargetDiagnosisChange?.("all");
+                      onB2VisaChange?.("all");
+                      onHasDeadlineChange?.(false);
+                      onStateChange?.("all");
+                      onCityChange?.("all");
+                    }}
+                    className="text-sm text-destructive hover:underline flex items-center gap-1"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    {t.filters.clearFilters}
+                  </button>
                 )}
               </div>
             </div>
