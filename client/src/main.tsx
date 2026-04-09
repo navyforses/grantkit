@@ -47,7 +47,7 @@ queryClient.getQueryCache().subscribe(event => {
     const key = String(error);
     if (!loggedErrors.has(key)) {
       loggedErrors.add(key);
-      console.warn("[API Query Error]", error);
+      if (import.meta.env.DEV) console.warn("[API Query Error]", error);
     }
   }
 });
@@ -60,7 +60,7 @@ queryClient.getMutationCache().subscribe(event => {
     const key = String(error);
     if (!loggedErrors.has(key)) {
       loggedErrors.add(key);
-      console.warn("[API Mutation Error]", error);
+      if (import.meta.env.DEV) console.warn("[API Mutation Error]", error);
     }
   }
 });

@@ -33,7 +33,10 @@ export default function Contact() {
       toast.success(t.contact.toastSuccess);
     },
     onError: () => {
-      toast.error(t.contact.toastError);
+      // Fallback to mailto when API is unavailable (static deployment)
+      const mailtoUrl = `mailto:hello@grantkit.co?subject=${encodeURIComponent(`Contact Form: ${name}`)}&body=${encodeURIComponent(`From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+      window.location.href = mailtoUrl;
+      toast.info((t.contact as any).toastFallback || "Opening your email client...");
     },
   });
 

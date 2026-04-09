@@ -318,7 +318,7 @@ export default function GrantDetail() {
         </div>
 
         {/* Title */}
-        <h1 className="text-lg font-bold text-white leading-snug">
+        <h1 className="text-lg font-bold text-primary-foreground leading-snug">
           {content.name}
         </h1>
         {item.organization && item.organization !== item.name && (

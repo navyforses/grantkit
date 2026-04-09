@@ -7,7 +7,7 @@ export const getLoginUrl = () => {
 
   // If OAuth is not configured (e.g. static deployment), return a fallback
   if (!oauthPortalUrl || !appId) {
-    return "/login";
+    return "/";
   }
 
   const redirectUri = `${window.location.origin}/api/oauth/callback`;
