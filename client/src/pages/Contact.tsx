@@ -16,6 +16,7 @@ import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
+import { useApiHealth } from "@/hooks/useApiHealth";
 import { toast } from "sonner";
 
 export default function Contact() {
@@ -24,6 +25,7 @@ export default function Contact() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { isStaticMode } = useApiHealth();
 
   const sendMessage = trpc.system.notifyOwner.useMutation({
     onSuccess: () => {
@@ -209,7 +211,7 @@ export default function Contact() {
                     <Button
                       type="submit"
                       className="w-full bg-primary hover:bg-primary gap-2 h-12 md:h-10 text-sm rounded-xl md:rounded-md"
-                      disabled={sendMessage.isPending}
+                      disabled={sendMessage.isPending || isStaticMode}
                     >
                       {sendMessage.isPending ? (
                         <>
@@ -223,6 +225,11 @@ export default function Contact() {
                         </>
                       )}
                     </Button>
+                    {isStaticMode && (
+                      <p className="text-sm text-muted-foreground mt-2 text-center">
+                        {(t as any).staticMode?.contactDisabled || "Contact form is temporarily unavailable."}
+                      </p>
+                    )}
                   </form>
                 </div>
               </div>

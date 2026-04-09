@@ -1,12 +1,12 @@
 # GrantKit
 
-> Curated database of **3,650+ grants**, foundations, and support resources for individuals, families, and caregivers across **29 countries**. Organized by category, country, and eligibility. Updated monthly.
+> Curated database of **643+ grants**, foundations, and support resources for individuals, families, and caregivers across **29 countries**. Organized by category, country, and eligibility. Updated monthly.
 
 ---
 
 ## Features
 
-- **Grants & Resources Catalog** — Browse, search, and filter 3,650+ entries by category, country, condition, funding type, and more
+- **Grants & Resources Catalog** — Browse, search, and filter 643+ entries by category, country, condition, funding type, and more
 - **5-Language Support** — Full UI and catalog content in English, French, Spanish, Russian, and Georgian
 - **Advanced Filters** — Filter by diagnosis, B-2 visa eligibility, funding type, deadline, state, and city
 - **User Dashboard** — Save grants, track favorites, manage subscription
@@ -98,7 +98,7 @@ pnpm dev
 The landing page features a hero section, problem statement, feature categories, preview entries, testimonials, pricing, and FAQ — all fully translated in 5 languages.
 
 ### Grants Catalog
-Browse and filter 3,650+ grants with advanced search, category/country filters, condition filters, and pagination.
+Browse and filter 643+ grants with advanced search, category/country filters, condition filters, and pagination.
 
 ### Admin Panel
 Manage users, grants, newsletter subscribers, and search external grant databases with the integrated GrantedAI API.
