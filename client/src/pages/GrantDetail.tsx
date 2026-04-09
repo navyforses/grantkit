@@ -43,6 +43,7 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { GrantJsonLd } from "@/components/JsonLd";
 import GrantDetailSkeleton from "@/components/GrantDetailSkeleton";
+import { catalogItems } from "@/data/catalogData";
 
 /** Collapsible section for mobile — expands/collapses content */
 function CollapsibleSection({
@@ -106,13 +107,22 @@ export default function GrantDetail() {
     { enabled: !!itemId, retry: false }
   );
 
+  // Static fallback: find grant from bundled catalog when API unavailable
+  const staticGrant = useMemo(() => {
+    if (detailData?.grant) return null; // API data available, no fallback needed
+    return catalogItems.find((g: any) => g.id === itemId || g.itemId === itemId) || null;
+  }, [detailData, itemId]);
+
+  // Use API data if available, otherwise static fallback
+  const grant = detailData?.grant || staticGrant;
+
   // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
   });
   const savedSet = useMemo(() => new Set(savedData?.grantIds || []), [savedData]);
-  const isSaved = detailData?.grant ? savedSet.has(detailData.grant.id) : false;
+  const isSaved = grant ? savedSet.has(grant.id) : false;
 
   const utils = trpc.useUtils();
   const toggleSave = trpc.grants.toggleSave.useMutation({
@@ -137,8 +147,8 @@ export default function GrantDetail() {
     },
   });
 
-  // Loading state — show skeleton matching the page layout
-  if (isLoading) {
+  // Loading state — show skeleton (only if no static fallback available)
+  if (isLoading && !grant) {
     return (
       <div className="min-h-screen flex flex-col bg-secondary">
         <Navbar />
@@ -148,7 +158,7 @@ export default function GrantDetail() {
   }
 
   // Not found
-  if (!detailData?.grant) {
+  if (!grant) {
     return (
       <div className="min-h-screen flex flex-col bg-secondary">
         <Navbar />
@@ -168,9 +178,9 @@ export default function GrantDetail() {
     );
   }
 
-  const item = detailData.grant;
-  const translations = detailData.translations || {};
-  const relatedItems = detailData.related || [];
+  const item = grant;
+  const translations = detailData?.translations || {};
+  const relatedItems = detailData?.related || [];
 
   const trans = language !== "en" ? translations[language] : null;
   const content = {
