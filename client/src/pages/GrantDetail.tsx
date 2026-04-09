@@ -98,7 +98,7 @@ function CollapsibleSection({
 export default function GrantDetail() {
   const params = useParams<{ id: string }>();
   const [, navigate] = useLocation();
-  const { t, tCategory, tCountry, language } = useLanguage();
+  const { t, tCategory, tCountry, tCatalogContent, language } = useLanguage();
   const { isAuthenticated } = useAuth();
 
   const itemId = params.id || "";
@@ -182,17 +182,22 @@ export default function GrantDetail() {
   const translations = detailData?.translations || {};
   const relatedItems = detailData?.related || [];
 
-  const trans = language !== "en" ? translations[language] : null;
+  // Use API translations if available, otherwise use static catalogTranslations.json
+  const apiTrans = language !== "en" ? translations[language] : null;
+  const staticTrans = language !== "en" && !apiTrans
+    ? tCatalogContent(item.itemId || item.id, { name: item.name, description: item.description || "", eligibility: item.eligibility || "" })
+    : null;
+
   const content = {
-    name: trans?.name || item.name,
-    description: trans?.description || item.description,
-    eligibility: trans?.eligibility || item.eligibility,
-    applicationProcess: trans?.applicationProcess || item.applicationProcess,
-    deadline: trans?.deadline || item.deadline,
-    targetDiagnosis: trans?.targetDiagnosis || item.targetDiagnosis,
-    ageRange: trans?.ageRange || item.ageRange,
-    geographicScope: trans?.geographicScope || item.geographicScope,
-    documentsRequired: trans?.documentsRequired || item.documentsRequired,
+    name: apiTrans?.name || staticTrans?.name || item.name,
+    description: apiTrans?.description || staticTrans?.description || item.description,
+    eligibility: apiTrans?.eligibility || staticTrans?.eligibility || item.eligibility,
+    applicationProcess: apiTrans?.applicationProcess || item.applicationProcess,
+    deadline: apiTrans?.deadline || item.deadline,
+    targetDiagnosis: apiTrans?.targetDiagnosis || item.targetDiagnosis,
+    ageRange: apiTrans?.ageRange || item.ageRange,
+    geographicScope: apiTrans?.geographicScope || item.geographicScope,
+    documentsRequired: apiTrans?.documentsRequired || item.documentsRequired,
   };
 
   const translatedCategory = tCategory(item.category);
