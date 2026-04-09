@@ -83,12 +83,13 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
               <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${getCategoryStyle(item.category)}`}>
                 {translatedCategory}
               </span>
-              <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
-                item.type === "grant" 
-                  ? "bg-emerald-50 text-emerald-600" 
+              <span className={`inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
+                item.type === "grant"
+                  ? "bg-emerald-50 text-emerald-600"
                   : "bg-blue-50 text-blue-600"
               }`}>
-                {typeLabel}
+                <span className={`w-1.5 h-1.5 rounded-full ${item.type === "grant" ? "bg-emerald-500" : "bg-blue-500"}`} />
+                {item.status === "Open" ? item.status : typeLabel}
               </span>
             </div>
           </div>
@@ -108,7 +109,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
                 ? `${item.city ? item.city + ", " : ""}${item.state}`
                 : translatedCountry}
             </span>
-            {item.amount && (
+            {item.amount && item.amount !== "Varies" && item.amount !== "" && (
               <span className="flex items-center gap-1 text-emerald-600 font-medium">
                 <DollarSign className="w-3.5 h-3.5" />
                 {item.amount}
@@ -153,30 +154,24 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
               </span>
             )}
             {item.phone && (
-              <span
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.location.href = `tel:${item.phone}`;
-                }}
+              <a
+                href={`tel:${item.phone}`}
+                onClick={(e) => e.stopPropagation()}
                 className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Phone className="w-3 h-3" />
                 <span className="hidden sm:inline">{item.phone}</span>
-              </span>
+              </a>
             )}
             {item.email && (
-              <span
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.location.href = `mailto:${item.email}`;
-                }}
+              <a
+                href={`mailto:${item.email}`}
+                onClick={(e) => e.stopPropagation()}
                 className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Mail className="w-3 h-3" />
                 <span className="hidden sm:inline truncate max-w-[140px]">{item.email}</span>
-              </span>
+              </a>
             )}
           </div>
         </div>

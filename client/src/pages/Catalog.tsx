@@ -345,7 +345,7 @@ export default function Catalog() {
       {/* Cards grid — single column on mobile, multi on desktop */}
       <div className="container px-4 md:px-0 py-4 md:py-8 flex-1 pb-24 md:pb-8">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
             {Array.from({ length: isMobile ? 4 : 9 }).map((_, i) => (
               <CatalogCardSkeleton key={i} index={i} />
             ))}
@@ -362,7 +362,7 @@ export default function Catalog() {
 
             {displayItems.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
                   {displayItems.map((item, i) => (
                     <CatalogCard
                       key={item.id}
@@ -433,7 +433,7 @@ export default function Catalog() {
             {!isActive && (
               <div className="relative mt-4 md:mt-6">
                 {/* Blurred placeholder cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 blur-sm opacity-40 pointer-events-none select-none">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 blur-sm opacity-40 pointer-events-none select-none">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} className="bg-card border border-border rounded-lg p-4 md:p-5 h-40 md:h-48">
                       <div className="h-4 bg-muted rounded w-3/4 mb-3" />

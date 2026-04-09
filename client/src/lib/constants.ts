@@ -4,6 +4,7 @@
  * Single unified catalog combining grants + resources
  */
 
+export const GRANT_COUNT_DISPLAY = "620+";
 
 // ===== Unified Catalog Item =====
 export interface CatalogItem {

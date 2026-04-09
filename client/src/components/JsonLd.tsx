@@ -4,6 +4,7 @@
  */
 
 import { Helmet } from "react-helmet-async";
+import { GRANT_COUNT_DISPLAY } from "@/lib/constants";
 
 /** Organization schema for GrantKit */
 export function OrganizationJsonLd() {
@@ -14,7 +15,7 @@ export function OrganizationJsonLd() {
     url: typeof window !== "undefined" ? window.location.origin : "https://grantkit-ne96tb4y.manus.space",
     logo: "https://d2xsxph8kpxj0f.cloudfront.net/310519663102724389/ne96tB4yURpkfMNLLJuy9T/og-image-LT43qbv2mf3WDHuJv8pmuH.png",
     description:
-      "Curated database of 600+ grants for medical treatment, financial assistance, and academic scholarships worldwide.",
+      `Curated database of ${GRANT_COUNT_DISPLAY} grants for medical treatment, financial assistance, and academic scholarships worldwide.`,
     contactPoint: {
       "@type": "ContactPoint",
       email: "hello@grantkit.co",
