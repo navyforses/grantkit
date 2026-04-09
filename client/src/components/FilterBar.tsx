@@ -291,7 +291,7 @@ export default function FilterBar({
             onClick={() => setShowMobileSheet(false)}
           />
           {/* Sheet */}
-          <div className="absolute bottom-0 left-0 right-0 bg-card rounded-t-2xl max-h-[85vh] overflow-y-auto animate-slide-up safe-area-bottom">
+          <div className="absolute bottom-0 left-0 right-0 bg-card rounded-t-2xl max-h-[60vh] overflow-y-auto animate-slide-up safe-area-bottom">
             {/* Handle */}
             <div className="sticky top-0 bg-card pt-3 pb-2 px-5 border-b border-border rounded-t-2xl z-10">
               <div className="w-10 h-1 bg-muted-foreground/40 rounded-full mx-auto mb-3" />
@@ -498,39 +498,9 @@ export default function FilterBar({
       {/* ===== DESKTOP FILTER BAR ===== */}
       <div className="hidden md:block sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-border">
         <div className="container py-4">
-          {/* Search bar */}
-          {onSearchChange && (
-            <div className="mb-3">
-              <div className="relative w-full sm:max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
-                <input
-                  type="text"
-                  value={searchQuery || ""}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  placeholder={t.catalog.searchPlaceholder}
-                  className="w-full text-sm border border-border rounded-lg pl-9 pr-9 py-2.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/60 transition-all"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => onSearchChange("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-                    aria-label="Clear search"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-              {searchQuery && (
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  {searchResultText(itemCount, searchQuery)}
-                </p>
-              )}
-            </div>
-          )}
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            {/* Category tabs */}
-            <div className="flex flex-wrap gap-2">
+          {/* Category tabs + inline search */}
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <div className="flex flex-wrap gap-2 flex-1 min-w-0">
               {CATEGORIES.map((cat) => {
                 const label = cat.value === "all" ? t.categories.all : tCategory(cat.value);
                 return (
@@ -550,7 +520,38 @@ export default function FilterBar({
               })}
             </div>
 
-            {/* Type filter + Country filter + Sort + count */}
+            {/* Inline search */}
+            {onSearchChange && (
+              <div className="relative w-full max-w-[280px] shrink-0">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery || ""}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  placeholder={t.catalog.searchPlaceholder}
+                  className="w-full text-sm border border-border rounded-lg pl-9 pr-9 h-9 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/60 transition-all"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => onSearchChange("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {searchQuery && (
+            <p className="mb-2 text-xs text-muted-foreground">
+              {searchResultText(itemCount, searchQuery)}
+            </p>
+          )}
+
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            {/* Type + State + Sort + count + Advanced toggle */}
             <div className="flex items-center gap-3 flex-wrap">
               {!searchQuery && (
                 <span className="text-sm text-muted-foreground whitespace-nowrap">
@@ -568,20 +569,20 @@ export default function FilterBar({
                 <option value="resource">{t.catalog.typeResource}</option>
               </select>
 
-              <select
-                value={selectedCountry}
-                onChange={(e) => onCountryChange(e.target.value as CountryValue)}
-                className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              >
-                {COUNTRIES.map((country) => {
-                  const label = country.value === "all" ? t.countries.all : tCountry(country.value);
-                  return (
-                    <option key={country.value} value={country.value}>
-                      {country.flag} {label}
-                    </option>
-                  );
-                })}
-              </select>
+              {/* State filter (replaces Country — 99% US data) */}
+              {onStateChange && (
+                <select
+                  value={selectedState || "all"}
+                  onChange={(e) => onStateChange(e.target.value)}
+                  className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                >
+                  <option value="all">{t.filters.allStates}</option>
+                  <option value="Nationwide">{t.filters.nationwide}</option>
+                  {statesData?.states?.map((s: string) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              )}
 
               {onSortChange && (
                 <select
@@ -593,30 +594,29 @@ export default function FilterBar({
                   <option value="name_desc">{t.filters.sortZA}</option>
                   <option value="newest">{t.filters.sortNewest}</option>
                   <option value="category">{t.filters.sortCategory}</option>
-                  <option value="country">{t.filters.sortCountry}</option>
                   <option value="state">{t.filters.sortState}</option>
                 </select>
               )}
-
-              {/* Advanced Filters Toggle */}
-              <button
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${
-                  activeAdvancedCount > 0
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-card text-muted-foreground border-border hover:border-border hover:bg-secondary"
-                }`}
-              >
-                <Filter className="w-3.5 h-3.5" />
-                {t.filters.filters}
-                {activeAdvancedCount > 0 && (
-                  <span className="bg-white/20 text-white text-xs px-1.5 py-0.5 rounded-full ml-0.5">
-                    {activeAdvancedCount}
-                  </span>
-                )}
-                {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-              </button>
             </div>
+
+            {/* Advanced Filters Toggle */}
+            <button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${
+                activeAdvancedCount > 0
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-card text-muted-foreground border-border hover:border-border hover:bg-secondary"
+              }`}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              {t.filters.filters}
+              {activeAdvancedCount > 0 && (
+                <span className="bg-white/20 text-white text-xs px-1.5 py-0.5 rounded-full ml-0.5">
+                  {activeAdvancedCount}
+                </span>
+              )}
+              {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
           </div>
 
           {/* Advanced Filters Panel — desktop */}
