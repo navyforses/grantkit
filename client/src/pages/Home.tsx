@@ -111,7 +111,7 @@ export default function Home() {
     });
   }, [previewData, staticPreview, language]);
 
-  const totalGrants = countData?.total || 3650;
+  const totalGrants = countData?.total || 640;
 
   const newsletterMutation = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => {

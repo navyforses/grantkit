@@ -296,13 +296,13 @@ export default function Catalog() {
       />
       <Navbar />
 
-      {/* Page header — compact on mobile */}
-      <div className="bg-secondary py-6 md:py-10 border-b border-border">
+      {/* Page header — compact */}
+      <div className="bg-secondary py-4 md:py-6 border-b border-border">
         <div className="container px-4 md:px-0">
-          <h1 className="text-xl md:text-3xl font-bold text-foreground tracking-tight mb-1 md:mb-2">
+          <h1 className="text-lg md:text-2xl font-bold text-foreground tracking-tight mb-0.5">
             {t.catalog.title}
           </h1>
-          <p className="text-muted-foreground text-sm md:text-base max-w-xl">
+          <p className="text-muted-foreground text-xs md:text-sm max-w-xl">
             {t.catalog.subtitle}
           </p>
         </div>
@@ -343,7 +343,7 @@ export default function Catalog() {
       />
 
       {/* Cards grid — single column on mobile, multi on desktop */}
-      <div className="container px-4 md:px-0 py-4 md:py-8 flex-1 pb-24 md:pb-8">
+      <div className="container px-4 md:px-0 py-3 md:py-4 flex-1 pb-24 md:pb-8">
 
         {/* Results summary bar */}
         {!isLoading && displayItems.length > 0 && (
