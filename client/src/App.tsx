@@ -20,7 +20,6 @@ import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
 import Admin from "./pages/Admin";
 import OnboardingModal from "./components/OnboardingModal";
-import { StaticModeBanner } from "./components/StaticModeBanner";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -57,7 +56,6 @@ function App() {
             <Toaster />
             <PaddleInitializer />
             <OnboardingModal />
-            <StaticModeBanner />
             {/* Mobile-only header (hidden on md+) */}
             <MobileHeader />
             {/* Main content with bottom padding on mobile for bottom nav */}
