@@ -19,7 +19,7 @@ import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, LogIn, Loader2 } from "lucide-react";
+import { Lock, LogIn, Loader2, X as XIcon, Search as SearchIcon } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
@@ -344,6 +344,42 @@ export default function Catalog() {
 
       {/* Cards grid — single column on mobile, multi on desktop */}
       <div className="container px-4 md:px-0 py-4 md:py-8 flex-1 pb-24 md:pb-8">
+
+        {/* Results summary bar */}
+        {!isLoading && displayItems.length > 0 && (
+          <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
+            <span>
+              <span className="font-semibold text-foreground">{totalItems}</span> {t.catalog.itemsCount}
+              {searchQuery && <span> — "{searchQuery}"</span>}
+            </span>
+          </div>
+        )}
+
+        {/* Active filter chips */}
+        {(() => {
+          const chips: { key: string; label: string; clear: () => void }[] = [];
+          if (selectedCategory !== "all") chips.push({ key: "cat", label: tCategory(selectedCategory), clear: () => { setSelectedCategory("all"); setPage(1); } });
+          if (selectedType !== "all") chips.push({ key: "type", label: selectedType === "grant" ? t.catalog.typeGrant : t.catalog.typeResource, clear: () => { setSelectedType("all"); setPage(1); } });
+          if (selectedState !== "all") chips.push({ key: "state", label: selectedState, clear: () => { setSelectedState("all"); setSelectedCity("all"); setPage(1); } });
+          if (selectedCity !== "all") chips.push({ key: "city", label: selectedCity, clear: () => { setSelectedCity("all"); setPage(1); } });
+          if (targetDiagnosis !== "all") chips.push({ key: "diag", label: targetDiagnosis, clear: () => { setTargetDiagnosis("all"); setPage(1); } });
+          if (fundingType !== "all") chips.push({ key: "fund", label: fundingType, clear: () => { setFundingType("all"); setPage(1); } });
+          if (chips.length === 0) return null;
+          return (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {chips.map((f) => (
+                <span key={f.key} className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">
+                  {f.label}
+                  <button onClick={f.clear} className="hover:text-primary/70"><XIcon className="w-3 h-3" /></button>
+                </span>
+              ))}
+              <button onClick={resetFilters} className="text-xs text-destructive hover:underline ml-1">
+                {t.catalog.clearFilters}
+              </button>
+            </div>
+          );
+        })()}
+
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
             {Array.from({ length: isMobile ? 4 : 9 }).map((_, i) => (
@@ -418,14 +454,15 @@ export default function Catalog() {
                 )}
               </>
             ) : (
-              <div className="text-center py-16 md:py-20">
-                <p className="text-muted-foreground text-base md:text-lg mb-2">{t.catalog.noResults}</p>
-                <button
-                  onClick={resetFilters}
-                  className="text-sm text-brand-green active:underline"
-                >
-                  {t.catalog.clearFilters}
-                </button>
+              <div className="col-span-full py-16 text-center">
+                <SearchIcon className="w-12 h-12 text-muted-foreground/20 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">{t.catalog.noResults}</h3>
+                <p className="text-sm text-muted-foreground mb-6">{t.catalog.noResultsHint}</p>
+                <div className="flex gap-3 justify-center">
+                  <button onClick={resetFilters} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-secondary transition-colors">
+                    {t.catalog.clearFilters}
+                  </button>
+                </div>
               </div>
             )}
 
