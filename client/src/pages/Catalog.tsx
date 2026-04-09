@@ -240,6 +240,13 @@ export default function Catalog() {
       if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
       if (selectedCountry !== "all") filtered = filtered.filter((g: any) => g.country === selectedCountry);
       if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
+      // Extended filters for enriched data
+      if (selectedState !== "all") filtered = filtered.filter((g: any) => g.state === selectedState || g.state === "Nationwide");
+      if (selectedCity !== "all") filtered = filtered.filter((g: any) => !g.city || g.city === selectedCity);
+      if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
+      if (fundingType !== "all") filtered = filtered.filter((g: any) => g.fundingType === fundingType);
+      if (b2VisaEligible !== "all") filtered = filtered.filter((g: any) => g.b2VisaEligible === b2VisaEligible);
+      if (hasDeadline) filtered = filtered.filter((g: any) => g.deadline && g.deadline !== "");
       if (debouncedSearch) {
         const q = debouncedSearch.toLowerCase();
         filtered = filtered.filter((g: any) =>
@@ -257,7 +264,7 @@ export default function Catalog() {
     }
 
     return [];
-  }, [catalogData, language, STATIC_CATALOG, selectedCategory, selectedCountry, selectedType, debouncedSearch, page]);
+  }, [catalogData, language, STATIC_CATALOG, selectedCategory, selectedCountry, selectedType, selectedState, selectedCity, targetDiagnosis, fundingType, b2VisaEligible, hasDeadline, debouncedSearch, page]);
 
   const usingStatic = !catalogData?.grants && HAS_STATIC_DATA;
   const totalItems = catalogData?.total || (usingStatic ? staticFilteredRef.current : 0);
