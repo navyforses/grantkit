@@ -6049,50 +6049,6 @@
       "eligibility": "ასაკი 0-18; ზოგადი დიაგნოზი; მდებარეობა: აშშ"
     }
   },
-  "item_0276": {
-    "fr": {
-      "name": "~20",
-      "description": "Vols gratuits pour traitement médical (Boston→Durham)",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "~20",
-      "description": "Vuelos gratuitos para tratamiento médico (Boston→Durham)",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "~20",
-      "description": "Бесплатные перелеты для лечения (Бостон→Дарем)",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "~20",
-      "description": "უფასო ფრენები სამედიცინო მკურნალობისთვის (ბოსტონი→დურჰემი)",
-      "eligibility": ""
-    }
-  },
-  "item_0277": {
-    "fr": {
-      "name": "~45",
-      "description": "Traitement médical, diagnostic, services spécialisés",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "~45",
-      "description": "Tratamiento médico, diagnóstico, servicios especializados",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "~45",
-      "description": "Медицинское лечение, диагностика, специализированные услуги",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "~45",
-      "description": "სამედიცინო მკურნალობა, დიაგნოსტიკა, სპეციალიზებული მომსახურება",
-      "eligibility": ""
-    }
-  },
   "item_0278": {
     "fr": {
       "name": "Sociétés de location meublée à court terme (Cary/Durham)",
@@ -6113,28 +6069,6 @@
       "name": "ავეჯიანი მოკლევადიანი ქირის კომპანიები (Cary/Durham)",
       "description": "$1,750–$4,200 (5-6 კვირა, მოლაპარაკებით). დაუკავშირდით ყველას პარალელურად. ახსენეთ სამედიცინო სიტუაცია. მოითხოვეთ სამედიცინო/სიძნელის ფასდაკლება. Carolina Furnished Rentals სპეციალურად სამედიცინო ოჯახებს ემსახურება.",
       "eligibility": "სამედიცინო ოჯახებისთვის ადაპტირებული. ავეჯიანი ბინები, სრული სამზარეულოთი. 30+ დღიანი ფასდაკლებები. B-2: არა — პასპორტი + გადახდის მეთოდი საჭიროა"
-    }
-  },
-  "item_0279": {
-    "fr": {
-      "name": "Ne couvre pas (statut expérimental EAP). Voyage/logement en supplément.",
-      "description": "",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "No cubre (estado experimental EAP). Viaje/alojamiento extra.",
-      "description": "",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "Не покрывает (экспериментальный статус EAP). Проезд/проживание оплачиваются дополнительно.",
-      "description": "",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "Not covered (EAP experimental status).Travel/accommodation extra.",
-      "description": "",
-      "eligibility": ""
     }
   },
   "item_0280": {
@@ -6181,28 +6115,6 @@
       "eligibility": ""
     }
   },
-  "item_0282": {
-    "fr": {
-      "name": "Urgence (âge idéal <3–5 ans ; fenêtre/délai attendu)",
-      "description": "",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "Urgencia (edad ideal <3–5 años; ventana/plazo esperado)",
-      "description": "",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "Срочность (идеальный возраст <3–5 лет; ожидаемое окно/срок)",
-      "description": "",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "Urgency/გადაუდებელობა (Age <3–5 ideal; Expected window/timeframe)",
-      "description": "",
-      "eligibility": ""
-    }
-  },
   "item_0283": {
     "fr": {
       "name": "Hôtels de séjour prolongé — Tarif médical Duke",
@@ -6245,50 +6157,6 @@
       "name": "დარჰემის სარწმუნოებრივი ორგანიზაციები 🆕",
       "description": "მცირე საგანგებო სამედიცინო/საცხოვრებელი დახმარება",
       "eligibility": "B-2 ვიზა: ❓ გაურკვეველი"
-    }
-  },
-  "item_0285": {
-    "fr": {
-      "name": "Détails",
-      "description": "",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "Detalles",
-      "description": "",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "Детали",
-      "description": "",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "Details",
-      "description": "",
-      "eligibility": ""
-    }
-  },
-  "item_0286": {
-    "fr": {
-      "name": "De manière cohérente, à partir de cas documentés",
-      "description": "",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "Consistentemente, a partir de casos documentados",
-      "description": "",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "Последовательно, из задокументированных случаев",
-      "description": "",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "თანამიმდევრულობით, დოკუმენტ. შემთხვევებიდან",
-      "description": "",
-      "eligibility": ""
     }
   },
   "item_0287": {
@@ -6357,28 +6225,6 @@
       "eligibility": "B-2 Visa: შესაძლოა"
     }
   },
-  "item_0290": {
-    "fr": {
-      "name": "Autres documents.",
-      "description": "Gentry Williams (PC, 2019), Evelyn (PC, 2023), Maisie (HIE, 2024), Nicholas (HIE, 2021), Ariana Rye Foundation (post-trial 2022, 15 000 $ en espèces/crédit). 15 000 $–30 000 $ chacun. Tous GoFundMe + appels communautaires",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "Otros documentos.",
-      "description": "Gentry Williams (PC, 2019), Evelyn (PC, 2023), Maisie (HIE, 2024), Nicholas (HIE, 2021), Ariana Rye Foundation (post-ensayo 2022, 15 000 $ en efectivo/crédito). 15 000 $–30 000 $ cada uno. Todos GoFundMe + apelaciones comunitarias",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "Другие документы.",
-      "description": "Gentry Williams (ДЦП, 2019), Evelyn (ДЦП, 2023), Maisie (HIE, 2024), Nicholas (HIE, 2021), Ariana Rye Foundation (пост-триал 2022, 15 000 $ наличными/кредит). 15 000–30 000 $ каждый. Все GoFundMe + общинные апелляции",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "სხვა დოკუმენტ.",
-      "description": "ჯენტრი უილიამსი (CP, 2019), ეველინი (CP, 2023), მეიზი (HIE, 2024), ნიკოლასი (HIE, 2021), არიანა რაის ფონდი (პოსტ-სატესტო 2022, $15k ნაღდი ფული/კრედიტი). $15k–$30k თითოეული. ყველა GoFundMe + საზოგადოების მიმართვები",
-      "eligibility": ""
-    }
-  },
   "item_0291": {
     "fr": {
       "name": "KarTsu Fund (Georgie)",
@@ -6443,72 +6289,6 @@
       "name": "ქართული სახელმწიფო საქველმოქმედო ფონდები",
       "description": "მკურნალობის თანადაფინანსება საზღვარგარეთ",
       "eligibility": "B-2 Visa: ✅ დიახ"
-    }
-  },
-  "item_0294": {
-    "fr": {
-      "name": "📊 Étude Cytotherapy 2020",
-      "description": "Analyse de 10 campagnes spécifiques à Duke sur l'autisme. Récits émotionnels, photo/vidéo de l'enfant, cadrage \"réparation cérébrale\". Campagnes Duke moins hyperboliques.. revue par les pairs. Analyse académique",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "📊 Estudio Cytotherapy 2020",
-      "description": "Análisis de 10 campañas específicas de Duke sobre autismo. Narrativas emocionales, foto/video del niño, encuadre \"reparación cerebral\". Campañas de Duke menos hiperbólicas.. revisado por pares. Análisis académico",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "📊 Исследование Cytotherapy 2020",
-      "description": "Анализ 10 кампаний Duke, посвящённых аутизму. Эмоциональные повествования, фото/видео ребёнка, фрейминг \"ремонт мозга\". Кампании Duke менее гиперболичны.. рецензируемое исследование. Академический анализ",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "📊 2020 Cytotherapy კვლევა",
-      "description": "10 Duke-სპეციფიკური აუტიზმის კამპანიის ანალიზი. ემოციური ნარატივები, ბავშვის ფოტო/ვიდეო, \\\"ტვინის რეპარაცია\\\" ფრეიმინგი. Duke კამპანიები ნაკლებად ჰიპერბოლურები.. peer-reviewed. აკადემიური ანალიზი",
-      "eligibility": ""
-    }
-  },
-  "item_0295": {
-    "fr": {
-      "name": "🟡 Théoriquement possible",
-      "description": "A aidé plus de 1 500 patients au total. Présenté en tant que partenaire sur le site Web de Duke PTCT. Infrastructure de collecte de fonds + subvention de défi de 10 000 $. Mais : l'éligibilité nécessite une transplantation « salvatrice » — la perfusion de CP EAP peut ne pas être claire.",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "🟡 Teóricamente posible",
-      "description": "Ayudó a más de 1500 pacientes en total. Aparece como socio en el sitio web de Duke PTCT. Infraestructura de recaudación de fondos + subvención de desafío de $10K. Pero: la elegibilidad requiere un trasplante que \"salve vidas\"; la infusión de CP EAP puede no estar clara.",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "🟡 Теоретически возможно",
-      "description": "Всего помог более 1500 пациентам. Указан в качестве партнера на веб-сайте Duke PTCT. Инфраструктура для сбора средств + грант в размере 10 тысяч долларов. Но: право на участие требует «жизненно важной» трансплантации — инфузия CP EAP может быть неясной.",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "🟡 Theoretically possible",
-      "description": "Helped 1,500+ patients in total. Shown as a partner on the Duke PTCT website. Fundraising infrastructure + $10K challenge grant. But: eligibility requires a \"life-saving\" transplant — CP EAP infusion may be unclear.",
-      "eligibility": ""
-    }
-  },
-  "item_0296": {
-    "fr": {
-      "name": "🟡 Partenariat avec Duke PTCT",
-      "description": "A aidé plus de 230 enfants à participer à des essais cliniques. Couvre les quote-parts et les franchises. Mais : principalement pour les patients des essais cliniques, et non spécifiquement pour le PAE. Cependant : il est de niveau 1 et vaut la peine d'appeler.",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "🟡 Asociación con Duke PTCT",
-      "description": "Ayudó a más de 230 niños a participar en ensayos clínicos. Cubre copagos/deducibles. Pero: principalmente para pacientes de ensayos clínicos, no específicamente para EAP. Sin embargo: es de nivel 1 y vale la pena llamar.",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "🟡 Партнерство с Duke PTCT",
-      "description": "Помог более 230 детям принять участие в клинических испытаниях. Покрывает доплаты/франшизы. Но: в первую очередь для пациентов клинических испытаний, а не специально для EAP. Однако: он находится на уровне 1, и ему стоит позвонить.",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "🟡 Partnership with Duke PTCT",
-      "description": "Helped 230+ children to participate in clinical trials. Covers copays/deductibles. But: primarily for clinical trial patients, not specifically for EAP. However: it is in Tier 1 and worth calling.",
-      "eligibility": ""
     }
   },
   "item_0297": {
@@ -8931,28 +8711,6 @@
       "eligibility": "ლტოლვილები/იმიგრანტები. თავშესაფრის მაძიებელი = უფლებამოსილი. B-2: 🟢"
     }
   },
-  "item_0407": {
-    "fr": {
-      "name": "~40",
-      "description": "Aide financière directe, paiement de factures, subventions",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "~40",
-      "description": "Asistencia financiera directa, pago de facturas, subvenciones",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "~40",
-      "description": "Прямая финансовая помощь, оплата счетов, гранты",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "~40",
-      "description": "პირდაპირი ფინანსური დახმარება, ბილეთების გადახდა, გრანტები",
-      "eligibility": ""
-    }
-  },
   "item_0408": {
     "fr": {
       "name": "Fondation 321",
@@ -9742,28 +9500,6 @@
     "ka": {
       "name": "WolfPups On Wheels, Inc.",
       "description": "გრანტი WolfPups on Wheels",
-      "eligibility": ""
-    }
-  },
-  "item_0444": {
-    "fr": {
-      "name": "~30",
-      "description": "Fauteuil roulant, équipement adapté, verticalisateur, mobilité",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "~30",
-      "description": "Silla de ruedas, equipo de adaptación, bipedestador, movilidad",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "~30",
-      "description": "Инвалидное кресло, адаптивное оборудование, стояк, мобильность",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "~30",
-      "description": "ეტლი, ადაპტური მოწყობილობა, სტენდი, მობილურობა",
       "eligibility": ""
     }
   },
@@ -13988,160 +13724,6 @@
     "ka": {
       "name": "ზაკი კითხულობს",
       "description": "ბანაკი",
-      "eligibility": ""
-    }
-  },
-  "item_0637": {
-    "fr": {
-      "name": "~12",
-      "description": "PT, OT, thérapie intensive, musicothérapie",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "~12",
-      "description": "Fisioterapia, terapia ocupacional, terapia intensiva, musicoterapia",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "~12",
-      "description": "Физиотерапия, трудотерапия, интенсивная терапия, музыкотерапия",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "~12",
-      "description": "ფიზიკური თერაპია, ოკუპაციური თერაპია, ინტენსიური თერაპია, მუსიკათერაპია",
-      "eligibility": ""
-    }
-  },
-  "item_0638": {
-    "fr": {
-      "name": "~25",
-      "description": "Bourses d'études — non pertinentes pour l'âge",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "~25",
-      "description": "Becas educativas — irrelevantes para la edad",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "~25",
-      "description": "Образовательные стипендии — не имеют отношения к возрасту",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "~25",
-      "description": "საგანმანათლებლო სტიპენდიები — ასაკთან შეუსაბამო",
-      "eligibility": ""
-    }
-  },
-  "item_0639": {
-    "fr": {
-      "name": "~304",
-      "description": "",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "~304",
-      "description": "",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "~304",
-      "description": "",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "~304",
-      "description": "",
-      "eligibility": ""
-    }
-  },
-  "item_0640": {
-    "fr": {
-      "name": "~80",
-      "description": "Organisations pour l'autisme, les camps, les sports, le diabète, l'audition — non pertinentes",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "~80",
-      "description": "Organizaciones de autismo, campamentos, deportes, diabetes, audición — irrelevantes",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "~80",
-      "description": "Организации по аутизму, лагерям, спорту, диабету, слуху — нерелевантно",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "~80",
-      "description": "აუტიზმის, ბანაკების, სპორტის, დიაბეტის, სმენის ორგანიზაციები — შეუსაბამო",
-      "eligibility": ""
-    }
-  },
-  "item_0641": {
-    "fr": {
-      "name": "Description détaillée",
-      "description": "",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "Descripción detallada",
-      "description": "",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "Подробное описание",
-      "description": "",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "დეტალური აღწერა",
-      "description": "",
-      "eligibility": ""
-    }
-  },
-  "item_0642": {
-    "fr": {
-      "name": "Organisation",
-      "description": "Ce qu'elle fait",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "Organización",
-      "description": "Lo que hace",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "Организация",
-      "description": "Что она делает",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "ორგანიზაცია",
-      "description": "რას აკეთებს",
-      "eligibility": ""
-    }
-  },
-  "item_0643": {
-    "fr": {
-      "name": "Quantité",
-      "description": "Ce qu'ils financent",
-      "eligibility": ""
-    },
-    "es": {
-      "name": "Cantidad",
-      "description": "Lo que financian",
-      "eligibility": ""
-    },
-    "ru": {
-      "name": "Количество",
-      "description": "Что они финансируют",
-      "eligibility": ""
-    },
-    "ka": {
-      "name": "რაოდენობა",
-      "description": "რას აფინანსებენ",
       "eligibility": ""
     }
   }
