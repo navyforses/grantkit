@@ -359,7 +359,7 @@ export default function FilterBar({
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">{t.filters.country}</label>
                 <select
                   value={selectedCountry}
-                  onChange={(e) => onCountryChange(e.target.value as CountryValue)}
+                  onChange={(e) => { onCountryChange(e.target.value as CountryValue); onStateChange?.("all"); }}
                   className="w-full text-sm border border-border rounded-xl px-4 py-3 bg-secondary text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   {COUNTRIES.map((country) => {
@@ -373,8 +373,8 @@ export default function FilterBar({
                 </select>
               </div>
 
-              {/* State / Location */}
-              {onStateChange && statesData && statesData.length > 0 && (
+              {/* State / Location — only when US selected or all countries */}
+              {onStateChange && (selectedCountry === "all" || selectedCountry === "US") && (
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
                     <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> {t.filters.stateLocation}</span>
@@ -386,7 +386,7 @@ export default function FilterBar({
                   >
                     <option value="all">{t.filters.allStates}</option>
                     <option value="Nationwide">🇺🇸 {t.filters.nationwide}</option>
-                    {(statesData?.length ? statesData.filter((s: any) => s.state !== "Nationwide" && s.state !== "International") : STATIC_STATES)
+                    {STATIC_STATES
                       .map((s: any) => (
                         <option key={s.state} value={s.state}>
                           {s.state} ({s.count})
@@ -554,8 +554,23 @@ export default function FilterBar({
               <option value="resource">{t.catalog.typeResource}</option>
             </select>
 
-            {/* State */}
-            {onStateChange && (
+            {/* Country */}
+            <select
+              value={selectedCountry}
+              onChange={(e) => {
+                onCountryChange(e.target.value as CountryValue);
+                onStateChange?.("all");
+              }}
+              className="text-sm border border-border rounded-lg px-3 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            >
+              {COUNTRIES.map((c) => {
+                const label = c.value === "all" ? t.countries.all : tCountry(c.value);
+                return <option key={c.value} value={c.value}>{c.flag} {label}</option>;
+              })}
+            </select>
+
+            {/* State — only visible when US is selected */}
+            {onStateChange && (selectedCountry === "all" || selectedCountry === "US") && (
               <select
                 value={selectedState || "all"}
                 onChange={(e) => onStateChange(e.target.value)}
@@ -563,11 +578,9 @@ export default function FilterBar({
               >
                 <option value="all">{t.filters.allStates}</option>
                 <option value="Nationwide">{t.filters.nationwide}</option>
-                {(statesData?.states || STATIC_STATES.map(s => s.state)).filter((s: string) => s !== "Nationwide" && s !== "International").map((s: string) => {
-                  const count = STATIC_STATES.find(st => st.state === s)?.count;
-                  return <option key={s} value={s}>{s}{count ? ` (${count})` : ""}</option>;
-                })}
-                <option value="International">🌐 {t.filters.international}</option>
+                {STATIC_STATES.map((s) => (
+                  <option key={s.state} value={s.state}>{s.state} ({s.count})</option>
+                ))}
               </select>
             )}
 
