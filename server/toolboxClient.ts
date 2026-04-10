@@ -1,59 +1,157 @@
 /**
- * MCP Toolbox for Databases — GrantKit integration
- * https://github.com/googleapis/mcp-toolbox
+ * Grant AI Assistant — direct database integration
  *
- * This module wraps @toolbox-sdk/core to provide:
- *   1. A lazy ToolboxClient that connects to the running toolbox server
- *   2. Static OpenAI-format tool definitions for the grant-assistant LLM call
- *   3. `runGrantAssistant(message)` — an agentic loop that lets the LLM
- *      call toolbox tools and return a final answer
+ * Implements the same tool-use interface as the googleapis/mcp-toolbox design,
+ * but calls the existing Drizzle ORM functions directly instead of going through
+ * a separate MCP Toolbox server. This works seamlessly with any DATABASE_URL
+ * (Railway, PlanetScale, etc.) without extra infrastructure.
  *
- * The toolbox server must be running before any tool calls are made:
- *   pnpm toolbox:start
+ * The agentic loop: user message → LLM picks tools → tools query DB → LLM answers.
  */
 
-import { ToolboxClient } from "@toolbox-sdk/core";
 import { ENV } from "./_core/env";
+import {
+  listGrants,
+  getGrantByItemId,
+} from "./db";
 
 // ---------------------------------------------------------------------------
-// Toolbox client — lazily initialised, singleton per process
+// Grant tools — thin wrappers around existing Drizzle queries
 // ---------------------------------------------------------------------------
 
-type ToolInstance = Awaited<ReturnType<ToolboxClient["loadToolset"]>>[number];
+type ToolParams = Record<string, unknown>;
+type ToolResult = unknown;
 
-let _client: ToolboxClient | null = null;
-let _publicTools: ToolInstance[] | null = null;
+const TOOLS: Record<string, (params: ToolParams) => Promise<ToolResult>> = {
+  /** Paginated list — used when no specific keyword is given */
+  list_grants: async ({ limit = 20, offset = 0 }) => {
+    const result = await listGrants({
+      limit: Number(limit),
+      offset: Number(offset),
+      activeOnly: true,
+    });
+    return result.grants.map((g) => ({
+      itemId: g.itemId,
+      name: g.name,
+      organization: g.organization,
+      category: g.category,
+      country: g.country,
+      amount: g.amount,
+      deadline: g.deadline,
+      fundingType: g.fundingType,
+      type: g.type,
+    }));
+  },
 
-function getClient(): ToolboxClient {
-  if (!_client) {
-    _client = new ToolboxClient(ENV.mcpToolboxUrl);
-  }
-  return _client;
-}
+  /** Full-text keyword search across name, description, organization */
+  search_grants_by_keyword: async ({ keyword = "", limit = 20 }) => {
+    const result = await listGrants({
+      search: String(keyword),
+      limit: Number(limit),
+      activeOnly: true,
+    });
+    return result.grants.map((g) => ({
+      itemId: g.itemId,
+      name: g.name,
+      organization: g.organization,
+      description: g.description,
+      category: g.category,
+      country: g.country,
+      amount: g.amount,
+      deadline: g.deadline,
+      website: g.website,
+      eligibility: g.eligibility,
+      fundingType: g.fundingType,
+      targetDiagnosis: g.targetDiagnosis,
+    }));
+  },
 
-/** Load (and cache) the 'public' toolset from the toolbox server. */
-async function getPublicTools(): Promise<ToolInstance[]> {
-  if (!_publicTools) {
-    _publicTools = await getClient().loadToolset("public");
-  }
-  return _publicTools;
-}
+  /** Filter by category */
+  list_grants_by_category: async ({ category = "" }) => {
+    const result = await listGrants({
+      category: String(category),
+      limit: 50,
+      activeOnly: true,
+    });
+    return result.grants.map((g) => ({
+      itemId: g.itemId,
+      name: g.name,
+      organization: g.organization,
+      description: g.description,
+      country: g.country,
+      amount: g.amount,
+      deadline: g.deadline,
+      website: g.website,
+      eligibility: g.eligibility,
+      fundingType: g.fundingType,
+    }));
+  },
 
-/** Invoke a single tool by name, forwarding `params` to the server. */
+  /** Filter by country */
+  list_grants_by_country: async ({ country = "" }) => {
+    const result = await listGrants({
+      country: String(country),
+      limit: 50,
+      activeOnly: true,
+    });
+    return result.grants.map((g) => ({
+      itemId: g.itemId,
+      name: g.name,
+      organization: g.organization,
+      description: g.description,
+      category: g.category,
+      amount: g.amount,
+      deadline: g.deadline,
+      website: g.website,
+      eligibility: g.eligibility,
+      fundingType: g.fundingType,
+    }));
+  },
+
+  /** Full record for a single grant */
+  get_grant_detail: async ({ item_id = "" }) => {
+    const grant = await getGrantByItemId(String(item_id));
+    if (!grant) return { error: `Grant '${item_id}' not found` };
+    return grant;
+  },
+
+  /** All distinct categories with counts */
+  list_categories: async () => {
+    const result = await listGrants({ limit: 1000, activeOnly: true });
+    const counts: Record<string, number> = {};
+    for (const g of result.grants) {
+      counts[g.category] = (counts[g.category] ?? 0) + 1;
+    }
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([category, grant_count]) => ({ category, grant_count }));
+  },
+
+  /** All distinct countries with counts */
+  list_countries: async () => {
+    const result = await listGrants({ limit: 1000, activeOnly: true });
+    const counts: Record<string, number> = {};
+    for (const g of result.grants) {
+      counts[g.country] = (counts[g.country] ?? 0) + 1;
+    }
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([country, grant_count]) => ({ country, grant_count }));
+  },
+};
+
+/** Execute any registered tool by name */
 export async function callToolboxTool(
   name: string,
-  params: Record<string, unknown>
-): Promise<unknown> {
-  const tools = await getPublicTools();
-  const tool = tools.find((t) => t.getName() === name);
-  if (!tool) {
-    throw new Error(`Toolbox tool '${name}' not found in public toolset`);
-  }
-  return tool.call(params);
+  params: ToolParams
+): Promise<ToolResult> {
+  const fn = TOOLS[name];
+  if (!fn) throw new Error(`Unknown tool: '${name}'`);
+  return fn(params);
 }
 
 // ---------------------------------------------------------------------------
-// OpenAI-format tool definitions (mirroring tools.yaml)
+// OpenAI-format tool definitions (sent to LLM on each turn)
 // ---------------------------------------------------------------------------
 
 export type OAITool = {
@@ -71,23 +169,20 @@ export const GRANT_ASSISTANT_TOOLS: OAITool[] = [
     function: {
       name: "search_grants_by_keyword",
       description:
-        "Search for grants whose name, description, or organization contains a keyword. " +
-        "Pass the same keyword for keyword, keyword2, and keyword3.",
+        "Search for grants whose name, description, or organization contains a keyword.",
       parameters: {
         type: "object",
         properties: {
           keyword: {
             type: "string",
-            description: "The search keyword (e.g. 'cancer', 'housing', 'disability')",
+            description: "Search keyword (e.g. 'cancer', 'housing', 'disability')",
           },
-          keyword2: { type: "string", description: "Same value as keyword" },
-          keyword3: { type: "string", description: "Same value as keyword" },
           limit: {
             type: "integer",
-            description: "Maximum results to return (default 20)",
+            description: "Max results to return (default 20)",
           },
         },
-        required: ["keyword", "keyword2", "keyword3", "limit"],
+        required: ["keyword", "limit"],
       },
     },
   },
@@ -97,13 +192,13 @@ export const GRANT_ASSISTANT_TOOLS: OAITool[] = [
       name: "list_grants_by_category",
       description:
         "List all active grants in a specific category (e.g. Medical, Housing, Education). " +
-        "Call list_categories first if you are unsure of valid category names.",
+        "Call list_categories first if unsure of valid category names.",
       parameters: {
         type: "object",
         properties: {
           category: {
             type: "string",
-            description: "Exact category name as returned by list_categories",
+            description: "Exact category name",
           },
         },
         required: ["category"],
@@ -116,13 +211,13 @@ export const GRANT_ASSISTANT_TOOLS: OAITool[] = [
       name: "list_grants_by_country",
       description:
         "List all active grants available in a specific country (e.g. USA, Canada, UK). " +
-        "Call list_countries first if you are unsure of the exact country name.",
+        "Call list_countries first if unsure of the exact country name.",
       parameters: {
         type: "object",
         properties: {
           country: {
             type: "string",
-            description: "Country name as returned by list_countries",
+            description: "Country name as it appears in the database",
           },
         },
         required: ["country"],
@@ -134,8 +229,8 @@ export const GRANT_ASSISTANT_TOOLS: OAITool[] = [
     function: {
       name: "get_grant_detail",
       description:
-        "Retrieve the full record for a single grant including application process, " +
-        "required documents, eligibility, contact info, and deadlines.",
+        "Retrieve the full record for a single grant: application process, required documents, " +
+        "eligibility, contact info, and deadlines.",
       parameters: {
         type: "object",
         properties: {
@@ -153,8 +248,8 @@ export const GRANT_ASSISTANT_TOOLS: OAITool[] = [
     function: {
       name: "list_categories",
       description:
-        "Return all grant categories in the database with their active-grant counts. " +
-        "Use this when you need to discover available categories.",
+        "Return all grant categories with their active-grant counts. " +
+        "Use this to discover available categories.",
       parameters: { type: "object", properties: {} },
     },
   },
@@ -164,7 +259,7 @@ export const GRANT_ASSISTANT_TOOLS: OAITool[] = [
       name: "list_countries",
       description:
         "Return all countries that have at least one active grant, with counts. " +
-        "Use this when you need to discover available countries.",
+        "Use this to discover valid country names.",
       parameters: { type: "object", properties: {} },
     },
   },
@@ -172,19 +267,12 @@ export const GRANT_ASSISTANT_TOOLS: OAITool[] = [
     type: "function",
     function: {
       name: "list_grants",
-      description:
-        "List active grants with pagination when no specific search term is needed.",
+      description: "List active grants with pagination when no specific search term is needed.",
       parameters: {
         type: "object",
         properties: {
-          limit: {
-            type: "integer",
-            description: "Number of grants to return (1–50)",
-          },
-          offset: {
-            type: "integer",
-            description: "Number of grants to skip (0 = first page)",
-          },
+          limit: { type: "integer", description: "Number of grants to return (1–50)" },
+          offset: { type: "integer", description: "Number of grants to skip (0 = first page)" },
         },
         required: ["limit", "offset"],
       },
@@ -233,13 +321,10 @@ Guidelines:
 /**
  * Run the grant-assistant agentic loop for a single user message.
  *
- * The function drives a tool-use loop (up to MAX_ITERATIONS rounds):
- *   1. Send the conversation to the LLM with the toolbox tools defined
- *   2. If the model returns tool calls, execute them via the toolbox server
+ * Drives a tool-use loop (up to MAX_ITERATIONS rounds):
+ *   1. Send messages + tools to the LLM
+ *   2. If the model returns tool calls, execute them via Drizzle
  *   3. Feed results back and repeat until the model gives a final text answer
- *
- * @param userMessage  The user's natural-language question
- * @returns            The assistant's final reply
  */
 export async function runGrantAssistant(userMessage: string): Promise<string> {
   const forgeApiUrl = ENV.forgeApiUrl || "https://forge.manus.im";
@@ -279,7 +364,7 @@ export async function runGrantAssistant(userMessage: string): Promise<string> {
     const data = (await response.json()) as OAIResponse;
     const choice = data.choices[0];
 
-    // No tool calls → final answer
+    // No tool calls → final text answer
     if (!choice.message.tool_calls || choice.message.tool_calls.length === 0) {
       return choice.message.content ?? "(No response)";
     }
@@ -291,11 +376,11 @@ export async function runGrantAssistant(userMessage: string): Promise<string> {
       tool_calls: choice.message.tool_calls,
     });
 
-    // Execute each tool call
+    // Execute each tool call against the Drizzle database
     for (const tc of choice.message.tool_calls) {
       let toolResult: unknown;
       try {
-        const args = JSON.parse(tc.function.arguments) as Record<string, unknown>;
+        const args = JSON.parse(tc.function.arguments) as ToolParams;
         toolResult = await callToolboxTool(tc.function.name, args);
       } catch (err) {
         toolResult = { error: String(err) };
