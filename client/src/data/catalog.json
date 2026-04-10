@@ -17,7 +17,7 @@
     "city": "",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -40,7 +40,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -63,7 +63,7 @@
     "city": "Dolgeville",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://adaptivemall.com",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -86,7 +86,7 @@
     "city": "Omaha",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.chariots4hope.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -109,7 +109,7 @@
     "city": "Prior Lake",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.chaseswarriorfoundation.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -132,7 +132,7 @@
     "city": "Austin",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://chivecharities.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -155,7 +155,7 @@
     "city": "Springfield",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://computerbanc.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -201,7 +201,7 @@
     "city": "Columbia",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://giftofmobility.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -224,7 +224,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.herorecycling.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -247,7 +247,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.herorecycling.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -293,7 +293,7 @@
     "city": "Centennial",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.kidsmobility.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -316,7 +316,7 @@
     "city": "Hugo",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://kourageouskarter.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -362,7 +362,7 @@
     "city": "Whitestown",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://lifenets.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -385,7 +385,7 @@
     "city": "Meridian",
     "targetDiagnosis": "Speech",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://LillysVoice.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -408,7 +408,7 @@
     "city": "Denver",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://littlewins.com",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -454,7 +454,7 @@
     "city": "Baton Rouge",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.mclindonfamilyfoundation.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -477,7 +477,7 @@
     "city": "Cleveland",
     "targetDiagnosis": "Speech",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://theorangeeffect.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -500,7 +500,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.ramps.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -523,7 +523,7 @@
     "city": "Eagleville",
     "targetDiagnosis": "Speech",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.smallstepsinspeech.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -546,7 +546,7 @@
     "city": "Roswell",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://sunshineonaranneyday.com/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -638,7 +638,7 @@
     "city": "Telluride",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://gohawkeye.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -661,7 +661,7 @@
     "city": "Cleveland",
     "targetDiagnosis": "Speech",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://theorangeeffect.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -684,7 +684,7 @@
     "city": "Ennis",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://theparkerleeproject.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -707,7 +707,7 @@
     "city": "Valencia",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -730,7 +730,7 @@
     "city": "Danville",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://wheelchairfoundation.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -753,7 +753,7 @@
     "city": "Tarpon Springs",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wheelchairs4kids.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -776,7 +776,7 @@
     "city": "Alpharetta",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wheelsofhappiness.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -799,7 +799,7 @@
     "city": "Berkeley",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://whirlwindwheelchair.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -822,7 +822,7 @@
     "city": "Pittsburgh",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wolfpupsonwheels.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -845,7 +845,7 @@
     "city": "Pittsburgh",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wolfpupsonwheels.org",
     "geographicScope": "National",
     "documentsRequired": "Medical prescription, proof of need, identification"
@@ -868,7 +868,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -960,7 +960,7 @@
     "city": "Prior Lake",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.chaseswarriorfoundation.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1006,7 +1006,7 @@
     "city": "Maumee",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://assistancedogsinternational.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1052,7 +1052,7 @@
     "city": "Norfolk",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://aircharitynetwork.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1075,7 +1075,7 @@
     "city": "Southlake",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://alyssavphillipsfoundation.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1121,7 +1121,7 @@
     "city": "Upland",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://lovethemall.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1190,7 +1190,7 @@
     "city": "Chicago",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://associationofhorizon.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1213,7 +1213,7 @@
     "city": "Cincinnati",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://aubreyrose.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1236,7 +1236,7 @@
     "city": "Woodland Hills",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.act-today.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1259,7 +1259,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://autismazing.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1282,7 +1282,7 @@
     "city": "Lincoln",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://autismandrace.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1328,7 +1328,7 @@
     "city": "Macomb",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.b4k.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1351,7 +1351,7 @@
     "city": "Raleigh",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://averysangels.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1443,7 +1443,7 @@
     "city": "Winamac",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.braunability.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1558,7 +1558,7 @@
     "city": "Portland",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://dollarfor.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1581,7 +1581,7 @@
     "city": "Waltham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1650,7 +1650,7 @@
     "city": "North Richland Hills",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.elderlyordisabledliving.com/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1696,7 +1696,7 @@
     "city": "New York",
     "targetDiagnosis": "Transplant",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://www.littlebabyface.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1719,7 +1719,7 @@
     "city": "New York",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://foreseeablefuturefoundation.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1765,7 +1765,7 @@
     "city": "Littleton",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://friendsofman.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1811,7 +1811,7 @@
     "city": "Winamac",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.braunability.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1834,7 +1834,7 @@
     "city": "Baton Rouge",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.garage10br.com/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1903,7 +1903,7 @@
     "city": "Canton",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://grantedwish.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -1972,7 +1972,7 @@
     "city": "Truckee",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://highfivesfoundation.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2018,7 +2018,7 @@
     "city": "Marina del Rey",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.holtonsheroes.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2041,7 +2041,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://hslda.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2064,7 +2064,7 @@
     "city": "Woodbridge",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://hopefloats.foundation. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2110,7 +2110,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.jrobfoundation.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2133,7 +2133,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.raleighcaryjfs.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2179,7 +2179,7 @@
     "city": "Agoura Hills",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://joniandfriends.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2202,7 +2202,7 @@
     "city": "McKinney",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.josephgrohfoundation.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2225,7 +2225,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://junejessee.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2271,7 +2271,7 @@
     "city": "Palm Harbor",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.kidswishnetwork.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2317,7 +2317,7 @@
     "city": "Gahanna",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.kyaskrusade.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2340,7 +2340,7 @@
     "city": "Zionsville",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://lightforlevi.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2363,7 +2363,7 @@
     "city": "Chicago",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://lionsforhopesc.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2386,7 +2386,7 @@
     "city": "Upland",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://lovethemall.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2432,7 +2432,7 @@
     "city": "Phoenix",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.wish.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2478,7 +2478,7 @@
     "city": "Phoenix",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.mesaangels.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2501,7 +2501,7 @@
     "city": "Irvine",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://miraclesforkids.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2547,7 +2547,7 @@
     "city": "New York",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.modestneeds.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2570,7 +2570,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://mygoalautism.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2593,7 +2593,7 @@
     "city": "Winamac",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.braunability.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2616,7 +2616,7 @@
     "city": "Warren",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://newhopedogs.net/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2639,7 +2639,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.nupharma24.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2662,7 +2662,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.nupharma24.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2685,7 +2685,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.onlinecardonation.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2731,7 +2731,7 @@
     "city": "Wayland",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://pawswithacause.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2754,7 +2754,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://pervisjackson.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2800,7 +2800,7 @@
     "city": "Dallas",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://raganshope.com/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2846,7 +2846,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://ryanshopeaz.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2869,7 +2869,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.salvationarmyusa.org/. Proof of financial need may be required.",
     "geographicScope": "State",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2892,7 +2892,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.salvationarmyusa.org/. Proof of financial need may be required.",
     "geographicScope": "State",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2915,7 +2915,7 @@
     "city": "Mentor",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.shareavision.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2938,7 +2938,7 @@
     "city": "Mentor",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.shareavision.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2961,7 +2961,7 @@
     "city": "Clayton",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -2984,7 +2984,7 @@
     "city": "Chino Hills",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.specialangelsfoundation.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3030,7 +3030,7 @@
     "city": "Chicago",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://specialkidsfoundation.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3053,7 +3053,7 @@
     "city": "Telluride",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://gohawkeye.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3168,7 +3168,7 @@
     "city": "Albany",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.oley.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3214,7 +3214,7 @@
     "city": "Clayton",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3237,7 +3237,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.sntf-sd.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3260,7 +3260,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.travisburkhartfoundation.com/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3283,7 +3283,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.thetsf.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3306,7 +3306,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://www.vitaloptions.org/. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3329,7 +3329,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wobeinc.org. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3352,7 +3352,7 @@
     "city": "Winamac",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.braunability.com. Proof of financial need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Proof of income, identification, financial need documentation"
@@ -3513,7 +3513,7 @@
     "city": "Baltimore",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.believeintomorrow.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3536,7 +3536,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.bestnestusa.com. Proof of medical travel need may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3559,7 +3559,7 @@
     "city": "Austin",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.caseyscircle.org/. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3605,7 +3605,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://deliverthedream.org/. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3674,7 +3674,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.familypromisetriangle.org/. Proof of medical travel need may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3720,7 +3720,7 @@
     "city": "",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://flyinghorsefarms.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3743,7 +3743,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://gigisplayhouse.org/. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3766,7 +3766,7 @@
     "city": "Durham",
     "targetDiagnosis": "Transplant",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://greystonechurch.com. Proof of medical travel need may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3789,7 +3789,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.harpershomenc.org/. Proof of medical travel need may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3812,7 +3812,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.harpershomenc.org. Proof of medical travel need may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3835,7 +3835,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://hhnetwork.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3858,7 +3858,7 @@
     "city": "Durham",
     "targetDiagnosis": "Heart",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://heartswithhopefoundation.org. Proof of medical travel need may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3904,7 +3904,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://jayshouseinc.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3950,7 +3950,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.joydogs.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3973,7 +3973,7 @@
     "city": "Arlington",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://chasa.org/. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -3996,7 +3996,7 @@
     "city": "Tarpon Springs",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wheelchairs4kids.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4019,7 +4019,7 @@
     "city": "New York",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://lighthouseguild.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4042,7 +4042,7 @@
     "city": "New York",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://lighthouseguild.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4134,7 +4134,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.redtreehouse.org/. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4157,7 +4157,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://rmhc.org/. Proof of medical travel need may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4180,7 +4180,7 @@
     "city": "Chicago",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://rmhc.org/. Proof of medical travel need may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4226,7 +4226,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://rmhctriangle.org. Proof of medical travel need may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4272,7 +4272,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://rmhctriangle.org. Proof of medical travel need may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4295,7 +4295,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://safe-families.org/. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4318,7 +4318,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://secucaringhouse.org. Proof of medical travel need may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4364,7 +4364,7 @@
     "city": "Centennial",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.kidsmobility.org. Proof of medical travel need may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4433,7 +4433,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wattsstreet.org. Proof of medical travel need may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical referral, proof of treatment, identification"
@@ -4525,7 +4525,7 @@
     "city": "",
     "targetDiagnosis": "Transplant",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://cota.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -4663,7 +4663,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -4686,7 +4686,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -4709,7 +4709,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -4732,7 +4732,7 @@
     "city": "Durham",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -4755,7 +4755,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -4824,7 +4824,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://acousticsforautism.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -4893,7 +4893,7 @@
     "city": "",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://addisfaith.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5008,7 +5008,7 @@
     "city": "Norfolk",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://aircharitynetwork.org. Medical documentation may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5100,7 +5100,7 @@
     "city": "High Point",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://ambucs.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5169,7 +5169,7 @@
     "city": "Lone Tree",
     "targetDiagnosis": "Hearing",
     "fundingType": "recurring",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.cochlear.com/us. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5215,7 +5215,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://angelflightwest.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5238,7 +5238,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://angelman.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5261,7 +5261,7 @@
     "city": "Sherman Oaks",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.mygymfoundation.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5284,7 +5284,7 @@
     "city": "Cleveland",
     "targetDiagnosis": "Speech",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://theorangeeffect.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5307,7 +5307,7 @@
     "city": "Homewood",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://askate.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5330,7 +5330,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://aerbvi.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5353,7 +5353,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://autismsociety.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5422,7 +5422,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://myasdf.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5445,7 +5445,7 @@
     "city": "Winamac",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.braunability.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5468,7 +5468,7 @@
     "city": "",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5514,7 +5514,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.beckwithwiedemann.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5537,7 +5537,7 @@
     "city": "Virginia Beach",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.beginagainfoundation.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5560,7 +5560,7 @@
     "city": "Virginia Beach",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.beginagainfoundation.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5606,7 +5606,7 @@
     "city": "",
     "targetDiagnosis": "Mental Health",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.beam.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5629,7 +5629,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://blessedgates.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5652,7 +5652,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://blessedgates.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5675,7 +5675,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.blinkhealth.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5767,7 +5767,7 @@
     "city": "Omaha",
     "targetDiagnosis": "Spinal",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.chariots4hope.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5790,7 +5790,7 @@
     "city": "Fitchburg",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.cameronscrusaders.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5813,7 +5813,7 @@
     "city": "Houston",
     "targetDiagnosis": "Hearing",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://beanangel.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5836,7 +5836,7 @@
     "city": "",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5882,7 +5882,7 @@
     "city": "Dallas",
     "targetDiagnosis": "Craniofacial",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://ccakids.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5905,7 +5905,7 @@
     "city": "Chapel Hill",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://cclvi.info/. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -5997,7 +5997,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.chargesyndrome.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6020,7 +6020,7 @@
     "city": "",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.chasa.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6043,7 +6043,7 @@
     "city": "Arlington",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://chasa.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6066,7 +6066,7 @@
     "city": "Arlington",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://chasa.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6089,7 +6089,7 @@
     "city": "Berkeley Heights",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.cherishedcreations.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6112,7 +6112,7 @@
     "city": "Berkeley Heights",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.cherishedcreations.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6135,7 +6135,7 @@
     "city": "Lexington",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.childneurologyfoundation.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6158,7 +6158,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.nj.gov/humanservices/cicrf/. Medical documentation may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6181,7 +6181,7 @@
     "city": "Dallas",
     "targetDiagnosis": "Craniofacial",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://ccakids.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6250,7 +6250,7 @@
     "city": "",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://chasa.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6273,7 +6273,7 @@
     "city": "Baltimore",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.believeintomorrow.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6342,7 +6342,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://cwsglobal.org/. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6365,7 +6365,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://tcapp.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6434,7 +6434,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6457,7 +6457,7 @@
     "city": "Austin",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://hatcherfoundation.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6480,7 +6480,7 @@
     "city": "Barkhamsted",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.crescentmooncaresfoundation.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6503,7 +6503,7 @@
     "city": "",
     "targetDiagnosis": "Rare Disease",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6549,7 +6549,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://dentallifeline.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6572,7 +6572,7 @@
     "city": "",
     "targetDiagnosis": "Diabetes",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://ourdogssavelives.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6618,7 +6618,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.dukehealth.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6756,7 +6756,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.dukehealth.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6779,7 +6779,7 @@
     "city": "Chicago",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.easterseals.com/. Medical documentation may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6802,7 +6802,7 @@
     "city": "Centennial",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.kidsmobility.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6825,7 +6825,7 @@
     "city": "Chicago",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.easterseals.com/. Medical documentation may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6871,7 +6871,7 @@
     "city": "Valencia",
     "targetDiagnosis": "Spinal",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6894,7 +6894,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6940,7 +6940,7 @@
     "city": "",
     "targetDiagnosis": "Cancer",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -6986,7 +6986,7 @@
     "city": "Atlanta",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://enchantedpeach.org/. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7009,7 +7009,7 @@
     "city": "Lexington",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.childneurologyfoundation.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7078,7 +7078,7 @@
     "city": "Albuquerque",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://familyvoices.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7101,7 +7101,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://familyvoices.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7170,7 +7170,7 @@
     "city": "Cornelius",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.sophias-voice.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7193,7 +7193,7 @@
     "city": "Cincinnati",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://aubreyrose.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7216,7 +7216,7 @@
     "city": "Baltimore",
     "targetDiagnosis": "Transplant",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.believeintomorrow.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7239,7 +7239,7 @@
     "city": "Baltimore",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://nfb.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7262,7 +7262,7 @@
     "city": "Littleton",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://friendsofman.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7308,7 +7308,7 @@
     "city": "",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7400,7 +7400,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.mygooddays.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7423,7 +7423,7 @@
     "city": "Santa Monica",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://goodrx.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7446,7 +7446,7 @@
     "city": "Santa Monica",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://goodrx.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7469,7 +7469,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.needymeds.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7492,7 +7492,7 @@
     "city": "Lone Tree",
     "targetDiagnosis": "Hearing",
     "fundingType": "recurring",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.cochlear.com/us. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7515,7 +7515,7 @@
     "city": "Pittsburgh",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wolfpupsonwheels.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7538,7 +7538,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://scgrotto.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7561,7 +7561,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.gsk.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7584,7 +7584,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7676,7 +7676,7 @@
     "city": "Blue Bell",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.angelflight.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7699,7 +7699,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.hhnetwork.org/. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7745,7 +7745,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.helprx.info. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7768,7 +7768,7 @@
     "city": "Fargo",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://herofargo.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7883,7 +7883,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://hslda.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7906,7 +7906,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7929,7 +7929,7 @@
     "city": "Chappaqua",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7952,7 +7952,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://insiderx.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -7975,7 +7975,7 @@
     "city": "Los Angeles",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://musicmovement.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8021,7 +8021,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.joeshouse.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8113,7 +8113,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.joshuaharrshane.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8159,7 +8159,7 @@
     "city": "City of Industry",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.karmanhealthcare.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8205,7 +8205,7 @@
     "city": "Centennial",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.kidsmobility.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8274,7 +8274,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8320,7 +8320,7 @@
     "city": "Arlington",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://chasa.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8366,7 +8366,7 @@
     "city": "Chicago",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://lionsforhopesc.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8389,7 +8389,7 @@
     "city": "New York",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://www.littlebabyface.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8412,7 +8412,7 @@
     "city": "",
     "targetDiagnosis": "Rare Disease",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://littlemisshannah.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8435,7 +8435,7 @@
     "city": "",
     "targetDiagnosis": "Mental Health",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.livingproofadvocacy.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8481,7 +8481,7 @@
     "city": "",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8504,7 +8504,7 @@
     "city": "Lakewood",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://magicmobilityvans.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8527,7 +8527,7 @@
     "city": "Chicago",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.easterseals.com/. Medical documentation may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8550,7 +8550,7 @@
     "city": "Chappaqua",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8596,7 +8596,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://mpforchildren.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8619,7 +8619,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8642,7 +8642,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8665,7 +8665,7 @@
     "city": "",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://arianaryefoundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8711,7 +8711,7 @@
     "city": "Alpharetta",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://wheelsofhappiness.org/. Medical documentation may be required.",
     "geographicScope": "International",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8757,7 +8757,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://medicineassistancetool.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8780,7 +8780,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.merckhelps.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8803,7 +8803,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://mimismission.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8826,7 +8826,7 @@
     "city": "Fort Lauderdale",
     "targetDiagnosis": "Heart",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://missionfishin.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8849,7 +8849,7 @@
     "city": "Jacksonville",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://dreamcometrue.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8895,7 +8895,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://moveforjenn.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8918,7 +8918,7 @@
     "city": "Los Angeles",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://musicmovement.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8941,7 +8941,7 @@
     "city": "Sherman Oaks",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.mygymfoundation.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -8964,7 +8964,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://nationalautismassociation.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9010,7 +9010,7 @@
     "city": "",
     "targetDiagnosis": "Rare Disease",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.neutropenianet.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9056,7 +9056,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://thearc.org/. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9102,7 +9102,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.needymeds.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9148,7 +9148,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.rarediseases.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9171,7 +9171,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://pap.novartis.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9194,7 +9194,7 @@
     "city": "Albany",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.oley.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9240,7 +9240,7 @@
     "city": "Kansas City",
     "targetDiagnosis": "Vision",
     "fundingType": "recurring",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.oraclehealthfoundation.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9263,7 +9263,7 @@
     "city": "Chapel Hill",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://enchantedpeach.org/. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9309,7 +9309,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.pdsfoundation.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9355,7 +9355,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://parentsguidecordblood.org/en. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9401,7 +9401,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.patientadvocate.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9424,7 +9424,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://palservices.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9447,7 +9447,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.paws4autism.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9470,7 +9470,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.peacepresbyterian.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9562,7 +9562,7 @@
     "city": "Alpharetta",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wheelsofhappiness.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9608,7 +9608,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.raisingspecialkids.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9631,7 +9631,7 @@
     "city": "Raleigh",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.raleighcaryjfs.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9654,7 +9654,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.180medical.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9700,7 +9700,7 @@
     "city": "Plainville",
     "targetDiagnosis": "Cancer",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.travisburkhartfoundation.com/. Medical documentation may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9723,7 +9723,7 @@
     "city": "Albuquerque",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://familyvoices.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9746,7 +9746,7 @@
     "city": "Chicago",
     "targetDiagnosis": "Heart",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://rmhc.org/. Medical documentation may be required.",
     "geographicScope": "State",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9930,7 +9930,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.secufamilyhouse.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -9953,7 +9953,7 @@
     "city": "",
     "targetDiagnosis": "Rare Disease",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://depts.washington.edu/registry. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10114,7 +10114,7 @@
     "city": "Cornelius",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.sophias-voice.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10137,7 +10137,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.beam.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10160,7 +10160,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://sparkforautism.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10183,7 +10183,7 @@
     "city": "",
     "targetDiagnosis": "Cancer",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://specialove.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10206,7 +10206,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://www.snrproject.com/. Medical documentation may be required.",
     "geographicScope": "International",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10275,7 +10275,7 @@
     "city": "Memphis",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://www.stjude.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10298,7 +10298,7 @@
     "city": "Memphis",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://www.stjude.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10390,7 +10390,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://aane.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10436,7 +10436,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10459,7 +10459,7 @@
     "city": "Marshfield",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://tcapp.org/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10482,7 +10482,7 @@
     "city": "Miami",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://theimpossibledream.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10505,7 +10505,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.180medical.com. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10528,7 +10528,7 @@
     "city": "Atlanta",
     "targetDiagnosis": "Cancer",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://kylepeasefoundation.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10551,7 +10551,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.180medical.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10574,7 +10574,7 @@
     "city": "",
     "targetDiagnosis": "Cancer",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10597,7 +10597,7 @@
     "city": "Centennial",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.kidsmobility.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10620,7 +10620,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10735,7 +10735,7 @@
     "city": "Tucson",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://tucsonallianceforautism.com/. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10873,7 +10873,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://versustexas.com/. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10942,7 +10942,7 @@
     "city": "Chapel Hill",
     "targetDiagnosis": "Cancer",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://specialove.org/. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10965,7 +10965,7 @@
     "city": "Raleigh",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://cbfnc.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -10988,7 +10988,7 @@
     "city": "Winamac",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.braunability.com. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11034,7 +11034,7 @@
     "city": "Los Angeles",
     "targetDiagnosis": "Speech",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://musicmovement.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11057,7 +11057,7 @@
     "city": "Temecula",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wishersanddreamers.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11080,7 +11080,7 @@
     "city": "Pittsburgh",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wolfpupsonwheels.org. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11103,7 +11103,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11126,7 +11126,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11172,7 +11172,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11195,7 +11195,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11218,7 +11218,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.dukehealth.org. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11264,7 +11264,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11287,7 +11287,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11310,7 +11310,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11379,7 +11379,7 @@
     "city": "",
     "targetDiagnosis": "Cerebral Palsy",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A. Medical documentation may be required.",
     "geographicScope": "National",
     "documentsRequired": "Medical records, proof of diagnosis, physician letter"
@@ -11471,7 +11471,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11494,7 +11494,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11517,7 +11517,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11540,7 +11540,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11563,7 +11563,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://amothersrest.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11586,7 +11586,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://allkidsareperfect.com",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11609,7 +11609,7 @@
     "city": "Chapel Hill",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://acb.org",
     "geographicScope": "Local",
     "documentsRequired": "Application form, identification documents"
@@ -11632,7 +11632,7 @@
     "city": "Homewood",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://askate.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11655,7 +11655,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://athleteshelpingathletes.net",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11678,7 +11678,7 @@
     "city": "Austin",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://hatcherfoundation.org",
     "geographicScope": "Local",
     "documentsRequired": "Application form, identification documents"
@@ -11701,7 +11701,7 @@
     "city": "Raleigh",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://averysangels.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11724,7 +11724,7 @@
     "city": "",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.beam.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11747,7 +11747,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.bertsbigadventure.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11770,7 +11770,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.bestnestusa.com",
     "geographicScope": "Local",
     "documentsRequired": "Application form, identification documents"
@@ -11816,7 +11816,7 @@
     "city": "Austin",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.caseyscircle.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11839,7 +11839,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.castforkids.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11862,7 +11862,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.cc4c.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11908,7 +11908,7 @@
     "city": "Berkeley Heights",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.cherishedcreations.com/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11931,7 +11931,7 @@
     "city": "",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.crescentmooncaresfoundation.com/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11954,7 +11954,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.doublehranch.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -11977,7 +11977,7 @@
     "city": "",
     "targetDiagnosis": "Down Syndrome",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.mydsact.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12000,7 +12000,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://enchantedpeach.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12023,7 +12023,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://fmfnc.org",
     "geographicScope": "Local",
     "documentsRequired": "Application form, identification documents"
@@ -12046,7 +12046,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://familypromiseofthetriangle.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12069,7 +12069,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12092,7 +12092,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.garysinisefoundation.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12138,7 +12138,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://huntofalifetime.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12161,7 +12161,7 @@
     "city": "",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://igotlegs.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12184,7 +12184,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://icingsmiles.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12207,7 +12207,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://www.iocc.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12230,7 +12230,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.kiddskids.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12253,7 +12253,7 @@
     "city": "",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://kylepeasefoundation.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12276,7 +12276,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.letsbuildbeds.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12299,7 +12299,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12322,7 +12322,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.miraclesinmotionva.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12368,7 +12368,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://nathanielshope.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12391,7 +12391,7 @@
     "city": "Baltimore",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://nfb.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12437,7 +12437,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.peacepresbyterian.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12460,7 +12460,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.risingkites.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12483,7 +12483,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://rmhctriangle.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12552,7 +12552,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://songsoflove.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12575,7 +12575,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.swhd.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12598,7 +12598,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.snrproject.com/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12644,7 +12644,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://specialwants.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12667,7 +12667,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://spectrumsailing.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12690,7 +12690,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.teamcatapult.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12713,7 +12713,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.teamimpact.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12759,7 +12759,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://allkidsareperfect.com",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12782,7 +12782,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.thecaryingplace.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12805,7 +12805,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://321foundation.com",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12828,7 +12828,7 @@
     "city": "",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.vsp.com/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12874,7 +12874,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.zacinc2.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12897,7 +12897,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12920,7 +12920,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12943,7 +12943,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via N/A",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -12966,7 +12966,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://aahd.us. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -12989,7 +12989,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://abclawcenters.com. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13012,7 +13012,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://abc-med.com. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13035,7 +13035,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.accessscholarships.com. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13058,7 +13058,7 @@
     "city": "High Point",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://ambucs.org. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13081,7 +13081,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://ala.org. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13127,7 +13127,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://avacaremedical.com. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13150,7 +13150,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.beperfectfoundation.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13173,7 +13173,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.bold.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13196,7 +13196,7 @@
     "city": "Worcester",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.caninesforkids.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13219,7 +13219,7 @@
     "city": "Lone Tree",
     "targetDiagnosis": "Hearing",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.cochlear.com/us. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13242,7 +13242,7 @@
     "city": "Chapel Hill",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://cclvi.info/. Academic records and essay may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13265,7 +13265,7 @@
     "city": "Jacksonville",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://dreamcometrue.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13288,7 +13288,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://helpamericahear.org. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13311,7 +13311,7 @@
     "city": "City of Industry",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.karmanhealthcare.com. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13380,7 +13380,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.pathfoundation.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13403,7 +13403,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://rubysrainbow.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13426,7 +13426,7 @@
     "city": "",
     "targetDiagnosis": "Hearing",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.sertomacenter.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13449,7 +13449,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.jaredmonroefoundation.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13472,7 +13472,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://victoriasvictory.org/. Academic records and essay may be required.",
     "geographicScope": "National",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13495,7 +13495,7 @@
     "city": "Chapel Hill",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.zacinc2.org/. Academic records and essay may be required.",
     "geographicScope": "Local",
     "documentsRequired": "Academic records, essay, proof of enrollment"
@@ -13518,7 +13518,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://weendream.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13541,7 +13541,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://amomentofmagic.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13564,7 +13564,7 @@
     "city": "Woodbridge",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://hopefloats.foundation",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13587,7 +13587,7 @@
     "city": "",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://tacanow.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13610,7 +13610,7 @@
     "city": "Houston",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://beanangel.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13633,7 +13633,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.campaccomplish.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13679,7 +13679,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.canine.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13702,7 +13702,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.k94life.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13725,7 +13725,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.catchadream.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13748,7 +13748,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.CatholicCharitiesRaleigh.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13817,7 +13817,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "yes",
     "applicationProcess": "Apply online via https://321foundation.com",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13840,7 +13840,7 @@
     "city": "South Yarmouth",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.communityconnectionsinc.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13863,7 +13863,7 @@
     "city": "Springfield",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://computerbanc.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13886,7 +13886,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.deepwoodfoundation.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13909,7 +13909,7 @@
     "city": "",
     "targetDiagnosis": "Diabetes",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.dogs4diabetics.com/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -13932,7 +13932,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.dreamfactoryinc.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14001,7 +14001,7 @@
     "city": "Durham",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://nc211.org",
     "geographicScope": "Local",
     "documentsRequired": "Application form, identification documents"
@@ -14047,7 +14047,7 @@
     "city": "Sylmar",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://guidedogsofamerica.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14070,7 +14070,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://ifbsolutions.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14093,7 +14093,7 @@
     "city": "Miami",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://theimpossibledream.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14139,7 +14139,7 @@
     "city": "",
     "targetDiagnosis": "Vision",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.leaderdog.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14162,7 +14162,7 @@
     "city": "South Yarmouth",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "recurring",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.communityconnectionsinc.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14185,7 +14185,7 @@
     "city": "",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://littleangelsservicedogs.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14208,7 +14208,7 @@
     "city": "Lakewood",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://magicmobilityvans.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14254,7 +14254,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.onesimplewish.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14300,7 +14300,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://pharmdog.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14323,7 +14323,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.seriousfun.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14346,7 +14346,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.servicedogproject.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14369,7 +14369,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.sitservicedogs.com/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14392,7 +14392,7 @@
     "city": "",
     "targetDiagnosis": "Multiple Sclerosis",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://sunshinefoundation.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14415,7 +14415,7 @@
     "city": "Worcester",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.caninesforkids.org/",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14484,7 +14484,7 @@
     "city": "Temecula",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://wishersanddreamers.org",
     "geographicScope": "National",
     "documentsRequired": "Application form, identification documents"
@@ -14553,7 +14553,7 @@
     "city": "Sylmar",
     "targetDiagnosis": "Autism",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://guidedogsofamerica.org",
     "geographicScope": "National",
     "documentsRequired": "Medical appointment confirmation, physician referral"
@@ -14645,7 +14645,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://footprintsflights.org",
     "geographicScope": "National",
     "documentsRequired": "Medical appointment confirmation, physician referral"
@@ -14714,7 +14714,7 @@
     "city": "",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://newdirectionstravel.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical appointment confirmation, physician referral"
@@ -14760,7 +14760,7 @@
     "city": "Chicago",
     "targetDiagnosis": "Mobility",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://specialkidsfoundation.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical appointment confirmation, physician referral"
@@ -14783,7 +14783,7 @@
     "city": "Raleigh",
     "targetDiagnosis": "General",
     "fundingType": "one_time",
-    "b2VisaEligible": "uncertain",
+    "b2VisaEligible": "no",
     "applicationProcess": "Apply online via https://www.childrensflightofhope.org/",
     "geographicScope": "National",
     "documentsRequired": "Medical appointment confirmation, physician referral"
