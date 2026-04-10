@@ -175,6 +175,285 @@ tools:
   # Admin / analytics tools
   # ------------------------------------------------------------------
 
+  search_grants_admin:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      List ALL grants (active and inactive) with admin-visible fields including
+      isActive status. Use this instead of list_grants when you need to review
+      or manage deactivated grants.
+    parameters:
+      - name: limit
+        type: integer
+        description: Number of grants to return (1–100)
+      - name: offset
+        type: integer
+        description: Number of grants to skip for pagination (0 = first page)
+    statement: |
+      SELECT itemId, name, organization, category, country,
+             amount, deadline, fundingType, type, isActive,
+             createdAt, updatedAt
+      FROM grants
+      ORDER BY updatedAt DESC
+      LIMIT ? OFFSET ?
+
+  list_incomplete_grants:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      Find active grants that are missing key fields: description, amount, or
+      deadline. Use this to identify which grants need AI enrichment. Returns
+      up to 50 results showing which fields are empty.
+    parameters:
+      - name: limit
+        type: integer
+        description: Maximum number of incomplete grants to return (default 50)
+    statement: |
+      SELECT itemId, name, organization, category, country,
+             CASE WHEN description IS NULL OR description = '' THEN 'YES' ELSE 'no' END AS missing_description,
+             CASE WHEN amount     IS NULL OR amount = ''      THEN 'YES' ELSE 'no' END AS missing_amount,
+             CASE WHEN deadline   IS NULL OR deadline = ''    THEN 'YES' ELSE 'no' END AS missing_deadline,
+             CASE WHEN website    IS NULL OR website = ''     THEN 'YES' ELSE 'no' END AS missing_website,
+             CASE WHEN eligibility IS NULL OR eligibility = '' THEN 'YES' ELSE 'no' END AS missing_eligibility
+      FROM grants
+      WHERE isActive = 1
+        AND (
+          description IS NULL OR description = ''
+          OR amount   IS NULL OR amount = ''
+          OR deadline IS NULL OR deadline = ''
+        )
+      ORDER BY name ASC
+      LIMIT ?
+
+  upsert_grant:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Insert a new grant or update it if a grant with the same itemId already
+      exists. This is the primary tool for bulk importing and updating grants.
+      All text fields accept empty string '' when the value is unknown.
+      - itemId: unique slug, e.g. "grant-cancer-care-fund" (no spaces)
+      - type: "grant" or "resource"
+      - status: "active" or "inactive"
+      - isActive: 1 (active) or 0 (inactive)
+      - b2VisaEligible: 1 (yes) or 0 (no/unknown)
+    statement: |
+      INSERT INTO grants (
+        itemId, name, organization, description, category, type,
+        country, state, city, eligibility, website, phone, email,
+        amount, status, applicationProcess, deadline, fundingType,
+        targetDiagnosis, ageRange, geographicScope, documentsRequired,
+        b2VisaEligible, isActive, language
+      ) VALUES (
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, 1, 'en'
+      )
+      ON DUPLICATE KEY UPDATE
+        name              = VALUES(name),
+        organization      = VALUES(organization),
+        description       = VALUES(description),
+        category          = VALUES(category),
+        type              = VALUES(type),
+        country           = VALUES(country),
+        state             = VALUES(state),
+        city              = VALUES(city),
+        eligibility       = VALUES(eligibility),
+        website           = VALUES(website),
+        phone             = VALUES(phone),
+        email             = VALUES(email),
+        amount            = VALUES(amount),
+        status            = VALUES(status),
+        applicationProcess = VALUES(applicationProcess),
+        deadline          = VALUES(deadline),
+        fundingType       = VALUES(fundingType),
+        targetDiagnosis   = VALUES(targetDiagnosis),
+        ageRange          = VALUES(ageRange),
+        geographicScope   = VALUES(geographicScope),
+        documentsRequired = VALUES(documentsRequired),
+        b2VisaEligible    = VALUES(b2VisaEligible),
+        isActive          = VALUES(isActive),
+        updatedAt         = NOW()
+    parameters:
+      - name: itemId
+        type: string
+        description: Unique slug identifier, e.g. "grant-cancer-care-fund" (no spaces, no special chars)
+      - name: name
+        type: string
+        description: Full grant name
+      - name: organization
+        type: string
+        description: Issuing organization / funder name
+      - name: description
+        type: string
+        description: Full description of the grant. Use '' if unknown.
+      - name: category
+        type: string
+        description: Category (e.g. Medical, Housing, Education, Legal, Food, Transportation)
+      - name: type
+        type: string
+        description: "grant" or "resource"
+      - name: country
+        type: string
+        description: Country name (e.g. USA, Canada, United Kingdom)
+      - name: state
+        type: string
+        description: State or province. Use '' if not applicable.
+      - name: city
+        type: string
+        description: City. Use '' if not applicable.
+      - name: eligibility
+        type: string
+        description: Eligibility requirements. Use '' if unknown.
+      - name: website
+        type: string
+        description: Application or info URL. Use '' if unknown.
+      - name: phone
+        type: string
+        description: Contact phone number. Use '' if unknown.
+      - name: email
+        type: string
+        description: Contact email. Use '' if unknown.
+      - name: amount
+        type: string
+        description: Grant amount or range (e.g. "Up to $5,000", "Varies"). Use '' if unknown.
+      - name: status
+        type: string
+        description: '"active" or "inactive"'
+      - name: applicationProcess
+        type: string
+        description: How to apply. Use '' if unknown.
+      - name: deadline
+        type: string
+        description: Application deadline (e.g. "December 31, 2025" or "Rolling"). Use '' if unknown.
+      - name: fundingType
+        type: string
+        description: Type of funding (e.g. Grant, Scholarship, Loan, Voucher). Use '' if unknown.
+      - name: targetDiagnosis
+        type: string
+        description: Specific medical condition targeted (e.g. "Cancer", "MS"). Use '' if not medical.
+      - name: ageRange
+        type: string
+        description: Age requirements (e.g. "18-65", "Under 18"). Use '' if no restriction.
+      - name: geographicScope
+        type: string
+        description: Geographic scope (e.g. "National", "State", "Local"). Use '' if unknown.
+      - name: documentsRequired
+        type: string
+        description: Required application documents. Use '' if unknown.
+      - name: b2VisaEligible
+        type: integer
+        description: 1 if eligible for B-2 visa holders, 0 otherwise
+
+  update_grant_description:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Update the description for a specific grant by itemId.
+      Use for AI enrichment after researching a grant's program details.
+    parameters:
+      - name: item_id
+        type: string
+        description: The unique itemId of the grant to update
+      - name: description
+        type: string
+        description: The new description text
+    statement: |
+      UPDATE grants SET description = ?, updatedAt = NOW() WHERE itemId = ?
+
+  update_grant_amount:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Update the amount field for a specific grant by itemId.
+      Use for AI enrichment, e.g. "Up to $5,000" or "Varies".
+    parameters:
+      - name: item_id
+        type: string
+        description: The unique itemId of the grant to update
+      - name: amount
+        type: string
+        description: Grant amount or range (e.g. "Up to $5,000", "Varies", "$500–$2,000")
+    statement: |
+      UPDATE grants SET amount = ?, updatedAt = NOW() WHERE itemId = ?
+
+  update_grant_deadline:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Update the application deadline for a specific grant by itemId.
+      Use for AI enrichment after checking the grant's website.
+    parameters:
+      - name: item_id
+        type: string
+        description: The unique itemId of the grant to update
+      - name: deadline
+        type: string
+        description: Deadline text (e.g. "December 31, 2025", "Rolling", "Annual - March 1")
+    statement: |
+      UPDATE grants SET deadline = ?, updatedAt = NOW() WHERE itemId = ?
+
+  update_grant_eligibility:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Update the eligibility requirements for a specific grant by itemId.
+    parameters:
+      - name: item_id
+        type: string
+        description: The unique itemId of the grant to update
+      - name: eligibility
+        type: string
+        description: Eligibility requirements text
+    statement: |
+      UPDATE grants SET eligibility = ?, updatedAt = NOW() WHERE itemId = ?
+
+  update_grant_website:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Update the website / application URL for a specific grant by itemId.
+    parameters:
+      - name: item_id
+        type: string
+        description: The unique itemId of the grant to update
+      - name: website
+        type: string
+        description: Full URL to the grant application or info page
+    statement: |
+      UPDATE grants SET website = ?, updatedAt = NOW() WHERE itemId = ?
+
+  deactivate_grant:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Soft-delete a grant by setting isActive = 0. The grant remains in the
+      database and can be reactivated later. Use this instead of deleting.
+    parameters:
+      - name: item_id
+        type: string
+        description: The unique itemId of the grant to deactivate
+    statement: |
+      UPDATE grants
+      SET isActive = 0, status = 'inactive', updatedAt = NOW()
+      WHERE itemId = ?
+
+  reactivate_grant:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Restore a previously deactivated grant by setting isActive = 1.
+    parameters:
+      - name: item_id
+        type: string
+        description: The unique itemId of the grant to reactivate
+    statement: |
+      UPDATE grants
+      SET isActive = 1, status = 'active', updatedAt = NOW()
+      WHERE itemId = ?
+
   grant_database_stats:
     kind: mysql-sql
     source: grantkit-mysql
@@ -204,8 +483,10 @@ tools:
     kind: mysql-execute-sql
     source: grantkit-mysql
     description: >
-      Execute a custom read-only SQL query against the GrantKit database.
-      For administrative use only — never expose this tool to end-users.
+      Execute any custom SQL query against the GrantKit database — SELECT, INSERT,
+      UPDATE, or DELETE. For administrative use only. Use for one-off queries,
+      bulk operations, or anything not covered by the specific named tools.
+      Example: UPDATE grants SET category = 'Medical' WHERE category = 'Health'
 
 toolsets:
   # Tools available to the public AI grant assistant
@@ -231,6 +512,16 @@ toolsets:
       - get_grant_detail
       - list_categories
       - list_countries
+      - search_grants_admin
+      - list_incomplete_grants
+      - upsert_grant
+      - update_grant_description
+      - update_grant_amount
+      - update_grant_deadline
+      - update_grant_eligibility
+      - update_grant_website
+      - deactivate_grant
+      - reactivate_grant
       - grant_database_stats
       - list_tables
       - execute_sql
