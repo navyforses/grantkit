@@ -19,6 +19,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
 import Admin from "./pages/Admin";
+import Analytics from "./pages/Analytics";
 import OnboardingModal from "./components/OnboardingModal";
 
 function Router() {
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/refund" component={Refund} />
       <Route path="/admin" component={Admin} />
+      <Route path="/analytics" component={Analytics} />
       <Route path="/login" component={Login} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
