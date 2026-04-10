@@ -7,10 +7,23 @@
 import { ArrowUpDown, ChevronDown, ChevronUp, Filter, MapPin, Search, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CATEGORIES, COUNTRIES, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
+import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 
 export type SortValue = "name_asc" | "name_desc" | "category" | "country" | "state" | "newest";
+
+// Static state list extracted from catalog data
+const STATIC_STATES = (() => {
+  const counts: Record<string, number> = {};
+  for (const g of catalogItems) {
+    const s = g.state || "";
+    if (s && s !== "Nationwide" && s !== "International") counts[s] = (counts[s] || 0) + 1;
+  }
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([state, count]) => ({ state, count }));
+})();
 
 // Diagnosis option values (labels come from i18n)
 const DIAGNOSIS_VALUES = [
@@ -373,9 +386,8 @@ export default function FilterBar({
                   >
                     <option value="all">{t.filters.allStates}</option>
                     <option value="Nationwide">🇺🇸 {t.filters.nationwide}</option>
-                    {statesData
-                      .filter(s => s.state !== "Nationwide" && s.state !== "International")
-                      .map((s) => (
+                    {(statesData?.length ? statesData.filter((s: any) => s.state !== "Nationwide" && s.state !== "International") : STATIC_STATES)
+                      .map((s: any) => (
                         <option key={s.state} value={s.state}>
                           {s.state} ({s.count})
                         </option>
@@ -551,9 +563,11 @@ export default function FilterBar({
               >
                 <option value="all">{t.filters.allStates}</option>
                 <option value="Nationwide">{t.filters.nationwide}</option>
-                {statesData?.states?.map((s: string) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
+                {(statesData?.states || STATIC_STATES.map(s => s.state)).filter((s: string) => s !== "Nationwide" && s !== "International").map((s: string) => {
+                  const count = STATIC_STATES.find(st => st.state === s)?.count;
+                  return <option key={s} value={s}>{s}{count ? ` (${count})` : ""}</option>;
+                })}
+                <option value="International">🌐 {t.filters.international}</option>
               </select>
             )}
 
