@@ -20,6 +20,7 @@ import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
 import Admin from "./pages/Admin";
 import Analytics from "./pages/Analytics";
+import AiAssistant from "./pages/AiAssistant";
 import OnboardingModal from "./components/OnboardingModal";
 
 function Router() {
@@ -37,6 +38,7 @@ function Router() {
       <Route path="/refund" component={Refund} />
       <Route path="/admin" component={Admin} />
       <Route path="/analytics" component={Analytics} />
+      <Route path="/ai-assistant" component={AiAssistant} />
       <Route path="/login" component={Login} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

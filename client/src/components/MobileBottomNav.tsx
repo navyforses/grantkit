@@ -4,7 +4,7 @@
  */
 
 import { Link, useLocation } from "wouter";
-import { Home, Search, LayoutDashboard, User, Shield } from "lucide-react";
+import { Home, Search, LayoutDashboard, User, Shield, Sparkles } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLoginUrl } from "@/const";
@@ -13,6 +13,8 @@ export default function MobileBottomNav() {
   const [location] = useLocation();
   const { user, isAuthenticated } = useAuth();
   const { t } = useLanguage();
+
+  const isAdmin = user?.role === "admin";
 
   const tabs = [
     {
@@ -27,6 +29,17 @@ export default function MobileBottomNav() {
       label: t.nav.catalog,
       active: location === "/catalog" || location.startsWith("/grant/"),
     },
+    // AI Assistant tab — shown only for non-admin users (admins already have 5 tabs)
+    ...(!isAdmin
+      ? [
+          {
+            href: "/ai-assistant",
+            icon: Sparkles,
+            label: "AI",
+            active: location === "/ai-assistant",
+          },
+        ]
+      : []),
     {
       href: isAuthenticated ? "/dashboard" : getLoginUrl(),
       icon: LayoutDashboard,
@@ -44,7 +57,7 @@ export default function MobileBottomNav() {
   ];
 
   // Add admin tab for admin users
-  if (user?.role === "admin") {
+  if (isAdmin) {
     tabs.push({
       href: "/admin",
       icon: Shield,
