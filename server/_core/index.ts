@@ -8,7 +8,7 @@ import { registerPaddleWebhookRoute } from "../paddleWebhook";
 import { registerSeoRoutes } from "../seoRoutes";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
-import { serveStatic, setupVite } from "./vite";
+import { serveStatic } from "./static";
 
 function unsubscribeHtml(success: boolean, message: string): string {
   const color = success ? "#16a34a" : "#dc2626";
@@ -88,7 +88,9 @@ async function startServer() {
   );
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
-    await setupVite(app, server);
+    // Dynamic import to avoid bundling vite in production
+    const viteModule = await (eval('import("./vite.js")') as Promise<any>);
+    await viteModule.setupVite(app, server);
   } else {
     serveStatic(app);
   }
