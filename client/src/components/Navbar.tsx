@@ -11,7 +11,7 @@ import ThemeToggle from "./ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { LayoutDashboard, LogIn, LogOut, User, Shield } from "lucide-react";
+import { LayoutDashboard, LogIn, LogOut, User, Shield, Sparkles } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 export default function Navbar() {
@@ -58,6 +58,17 @@ export default function Navbar() {
             }`}
           >
             {t.nav.catalog}
+          </Link>
+          <Link
+            href="/ai-assistant"
+            className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${
+              location === "/ai-assistant"
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            AI Assistant
           </Link>
 
           {/* Auth-aware CTA / User menu */}
