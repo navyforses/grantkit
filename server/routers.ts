@@ -23,6 +23,7 @@ import {
   searchExternalGrants, getExternalGrantDetail, searchExternalFunders,
   mapExternalGrantToLocal,
 } from "./externalGrants";
+import { runGrantAssistant } from "./toolboxClient";
 import { z } from "zod";
 
 export const appRouter = router({
@@ -925,6 +926,32 @@ export const appRouter = router({
       }))
       .query(async ({ input }) => {
         return { results: await searchExternalFunders({ ...input, limit: input.limit ?? 15 }) };
+      }),
+  }),
+
+  // =========================================================================
+  // AI Grant Assistant (powered by MCP Toolbox for Databases)
+  // =========================================================================
+  ai: router({
+    /**
+     * Natural-language grant search backed by the MCP Toolbox server.
+     * The assistant uses an agentic tool-use loop to query the live MySQL
+     * database and return a helpful, structured response.
+     *
+     * Requires:
+     *   - MCP Toolbox server running (pnpm toolbox:start)
+     *   - BUILT_IN_FORGE_API_KEY configured
+     *   - MCP_TOOLBOX_URL pointing at the running server (default: localhost:5000)
+     */
+    grantChat: publicProcedure
+      .input(
+        z.object({
+          message: z.string().min(1).max(1000),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const reply = await runGrantAssistant(input.message);
+        return { reply };
       }),
   }),
 });

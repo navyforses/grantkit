@@ -10,4 +10,6 @@ export const ENV = {
   paddleWebhookSecret: process.env.PADDLE_WEBHOOK_SECRET ?? "",
   paddleApiKey: process.env.PADDLE_API_KEY ?? "",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
+  // MCP Toolbox for Databases (https://github.com/googleapis/mcp-toolbox)
+  mcpToolboxUrl: process.env.MCP_TOOLBOX_URL ?? "http://localhost:5000",
 };

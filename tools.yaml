@@ -1,0 +1,236 @@
+# MCP Toolbox for Databases — GrantKit configuration
+# https://github.com/googleapis/mcp-toolbox
+#
+# Run the server:
+#   npx @toolbox-sdk/server --config tools.yaml
+# or (binary):
+#   ./toolbox --config tools.yaml
+#
+# Required environment variables:
+#   MYSQL_HOST, MYSQL_PORT, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD
+
+sources:
+  grantkit-mysql:
+    kind: mysql
+    host: ${MYSQL_HOST:127.0.0.1}
+    port: ${MYSQL_PORT:3306}
+    database: ${MYSQL_DATABASE:grantkit}
+    user: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:}
+
+tools:
+  # ------------------------------------------------------------------
+  # Grant catalog — public-facing search and lookup tools
+  # ------------------------------------------------------------------
+
+  list_grants:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      List active grants from the GrantKit catalog with pagination.
+      Use this as a starting point when no specific keyword or filter is given.
+    parameters:
+      - name: limit
+        type: integer
+        description: Number of grants to return (1–50)
+      - name: offset
+        type: integer
+        description: Number of grants to skip for pagination (0 = first page)
+    statement: |
+      SELECT itemId, name, organization, category, country,
+             amount, deadline, fundingType, type
+      FROM grants
+      WHERE isActive = 1
+      ORDER BY name ASC
+      LIMIT ? OFFSET ?
+
+  search_grants_by_keyword:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      Search for grants whose name, description, or organization contains the
+      given keyword. Returns up to `limit` results ordered alphabetically.
+    parameters:
+      - name: keyword
+        type: string
+        description: >
+          The search keyword (e.g. "cancer", "housing", "disability").
+          Matched case-insensitively against name, description and organization.
+      - name: keyword2
+        type: string
+        description: Same value as keyword — used for the second LIKE comparison.
+      - name: keyword3
+        type: string
+        description: Same value as keyword — used for the third LIKE comparison.
+      - name: limit
+        type: integer
+        description: Maximum number of results to return (recommended default 20)
+    statement: |
+      SELECT itemId, name, organization, description, category, country,
+             amount, deadline, website, eligibility, fundingType, targetDiagnosis
+      FROM grants
+      WHERE isActive = 1
+        AND (
+          name        LIKE CONCAT('%', ?, '%')
+          OR description LIKE CONCAT('%', ?, '%')
+          OR organization LIKE CONCAT('%', ?, '%')
+        )
+      ORDER BY name ASC
+      LIMIT ?
+
+  list_grants_by_category:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      List all active grants belonging to a specific category
+      (e.g. Medical, Housing, Education, Legal, Food).
+    parameters:
+      - name: category
+        type: string
+        description: >
+          Exact category name. Call list_categories first to see valid values.
+    statement: |
+      SELECT itemId, name, organization, description, country,
+             amount, deadline, website, eligibility, fundingType
+      FROM grants
+      WHERE isActive = 1
+        AND category = ?
+      ORDER BY name ASC
+      LIMIT 50
+
+  list_grants_by_country:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      List all active grants available in a specific country
+      (e.g. USA, Canada, United Kingdom, Australia).
+    parameters:
+      - name: country
+        type: string
+        description: >
+          Country name as stored in the database.
+          Call list_countries first to see exact valid values.
+    statement: |
+      SELECT itemId, name, organization, description, category,
+             amount, deadline, website, eligibility, fundingType
+      FROM grants
+      WHERE isActive = 1
+        AND country = ?
+      ORDER BY name ASC
+      LIMIT 50
+
+  get_grant_detail:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      Retrieve the complete record for a single grant including application
+      process, required documents, diagnosis scope, age range, B-2 visa
+      eligibility, and contact information.
+    parameters:
+      - name: item_id
+        type: string
+        description: >
+          The unique itemId of the grant (e.g. "grant-42").
+          Obtain this from search or list tools.
+    statement: |
+      SELECT itemId, name, organization, description, category, type,
+             country, state, city, eligibility, website, phone, email,
+             amount, status, applicationProcess, deadline, fundingType,
+             targetDiagnosis, ageRange, geographicScope, documentsRequired,
+             b2VisaEligible
+      FROM grants
+      WHERE itemId = ?
+        AND isActive = 1
+
+  list_categories:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      Return every distinct grant category in the database, together with
+      the number of active grants in each category. Useful for helping a
+      user narrow their search.
+    parameters: []
+    statement: |
+      SELECT category, COUNT(*) AS grant_count
+      FROM grants
+      WHERE isActive = 1
+      GROUP BY category
+      ORDER BY grant_count DESC
+
+  list_countries:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      Return every country that has at least one active grant, together with
+      the count. Useful for helping a user pick the right country filter.
+    parameters: []
+    statement: |
+      SELECT country, COUNT(*) AS grant_count
+      FROM grants
+      WHERE isActive = 1
+      GROUP BY country
+      ORDER BY grant_count DESC
+
+  # ------------------------------------------------------------------
+  # Admin / analytics tools
+  # ------------------------------------------------------------------
+
+  grant_database_stats:
+    kind: mysql-sql
+    source: grantkit-mysql
+    description: >
+      High-level statistics about the GrantKit grant database: total grants,
+      active vs inactive, category and country diversity, grant vs resource split.
+    parameters: []
+    statement: |
+      SELECT
+        COUNT(*)                                              AS total_grants,
+        SUM(CASE WHEN isActive = 1 THEN 1 ELSE 0 END)       AS active_grants,
+        SUM(CASE WHEN isActive = 0 THEN 1 ELSE 0 END)       AS inactive_grants,
+        COUNT(DISTINCT category)                             AS total_categories,
+        COUNT(DISTINCT country)                              AS total_countries,
+        SUM(CASE WHEN type = 'grant'    THEN 1 ELSE 0 END)  AS grants_count,
+        SUM(CASE WHEN type = 'resource' THEN 1 ELSE 0 END)  AS resources_count
+      FROM grants
+
+  list_tables:
+    kind: mysql-list-tables
+    source: grantkit-mysql
+    description: >
+      List all tables in the GrantKit database with their column definitions,
+      indexes, and constraints. Useful for schema exploration.
+
+  execute_sql:
+    kind: mysql-execute-sql
+    source: grantkit-mysql
+    description: >
+      Execute a custom read-only SQL query against the GrantKit database.
+      For administrative use only — never expose this tool to end-users.
+
+toolsets:
+  # Tools available to the public AI grant assistant
+  public:
+    name: public
+    tools:
+      - list_grants
+      - search_grants_by_keyword
+      - list_grants_by_category
+      - list_grants_by_country
+      - get_grant_detail
+      - list_categories
+      - list_countries
+
+  # Full toolset for admin AI assistant and DB exploration
+  admin:
+    name: admin
+    tools:
+      - list_grants
+      - search_grants_by_keyword
+      - list_grants_by_category
+      - list_grants_by_country
+      - get_grant_detail
+      - list_categories
+      - list_countries
+      - grant_database_stats
+      - list_tables
+      - execute_sql
