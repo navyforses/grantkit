@@ -11,7 +11,9 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
-    "toolbox:start": "bash scripts/start-toolbox.sh"
+    "toolbox:start": "bash scripts/start-toolbox.sh",
+    "gitnexus:analyze": "gitnexus analyze",
+    "gitnexus:serve": "gitnexus serve --port 4747"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
@@ -99,6 +101,7 @@
     "autoprefixer": "^10.4.20",
     "drizzle-kit": "^0.31.4",
     "esbuild": "^0.25.0",
+    "gitnexus": "^1.5.3",
     "pnpm": "^10.15.1",
     "postcss": "^8.4.47",
     "prettier": "^3.6.2",
@@ -123,7 +126,27 @@
       "esbuild"
     ],
     "onlyBuiltDependencies": [
-      "@tailwindcss/oxide"
+      "@tailwindcss/oxide",
+      "@ladybugdb/core",
+      "onnxruntime-node",
+      "tree-sitter",
+      "tree-sitter-c",
+      "tree-sitter-c-sharp",
+      "tree-sitter-cpp",
+      "tree-sitter-dart",
+      "tree-sitter-go",
+      "tree-sitter-java",
+      "tree-sitter-javascript",
+      "tree-sitter-kotlin",
+      "tree-sitter-php",
+      "tree-sitter-python",
+      "tree-sitter-ruby",
+      "tree-sitter-rust",
+      "tree-sitter-swift",
+      "tree-sitter-typescript",
+      "tree-sitter-cli",
+      "sharp",
+      "protobufjs"
     ]
   }
 }
