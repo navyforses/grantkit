@@ -947,10 +947,19 @@ export const appRouter = router({
       .input(
         z.object({
           message: z.string().min(1).max(1000),
+          history: z
+            .array(
+              z.object({
+                role: z.enum(["user", "assistant"]),
+                content: z.string().max(5000),
+              })
+            )
+            .max(20)
+            .optional(),
         })
       )
       .mutation(async ({ input }) => {
-        const reply = await runGrantAssistant(input.message);
+        const reply = await runGrantAssistant(input.message, input.history ?? []);
         return { reply };
       }),
   }),
