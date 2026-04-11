@@ -15,7 +15,8 @@
     "gitnexus:analyze": "gitnexus analyze",
     "gitnexus:serve": "gitnexus serve --port 4747",
     "enrich:descriptions": "tsx scripts/enrich-descriptions.ts",
-    "enrich:descriptions:dry": "tsx scripts/enrich-descriptions.ts --dry-run"
+    "enrich:descriptions:dry": "tsx scripts/enrich-descriptions.ts --dry-run",
+    "enrich:descriptions:deep": "tsx scripts/enrich-descriptions.ts --min-length=300 --limit=100"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",

@@ -2,74 +2,109 @@
 /**
  * enrich-descriptions.ts
  *
- * Finds all active grants missing a description, searches GrantedAI for each
- * one by name, and back-fills the description from the best-match result.
+ * პოულობს ყველა grant-ს რომელსაც:
+ *   - description სრულიად აკლია (NULL ან ცარიელი), ან
+ *   - description 200 სიმბოლოზე მოკლეა (ძალიან მოკლე / არასაკმარისი)
  *
- * Usage:
- *   pnpm tsx scripts/enrich-descriptions.ts
- *   pnpm tsx scripts/enrich-descriptions.ts --limit 20 --dry-run
+ * GrantedAI API-ში მოძებნის grant-ის სახელით, შეადარებს შედეგს და
+ * განაახლებს მხოლოდ მაშინ, თუ ახალი description ძველზე გრძელი და
+ * სულ მცირე 200 სიმბოლოა.
  *
- * Requires:
- *   DATABASE_URL=mysql://...  in .env (or environment)
- *   (GrantedAI API requires no key — public endpoint)
+ * გამოყენება:
+ *   pnpm enrich:descriptions
+ *   pnpm enrich:descriptions:dry
+ *   pnpm tsx scripts/enrich-descriptions.ts --limit=20 --dry-run --min-length=300
+ *
+ * საჭიროა:
+ *   DATABASE_URL=mysql://...  .env ფაილში ან გარემოში
  */
 
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/mysql2";
-import { and, eq, isNull, or } from "drizzle-orm";
+import { and, eq, isNull, or, lt, sql } from "drizzle-orm";
 import { grants } from "../drizzle/schema.js";
-import { searchExternalGrants } from "../server/externalGrants.js";
+import { searchExternalGrants, getExternalGrantDetail } from "../server/externalGrants.js";
 
 // ---------------------------------------------------------------------------
-// Config
+// CLI args
 // ---------------------------------------------------------------------------
 
-const LIMIT = parseInt(process.argv.find((a) => a.startsWith("--limit="))?.split("=")[1] ?? "50");
-const DRY_RUN = process.argv.includes("--dry-run");
-const DELAY_MS = 600; // pause between GrantedAI calls to avoid rate limiting
+const arg = (name: string) =>
+  process.argv.find((a) => a.startsWith(`--${name}=`))?.split("=")[1];
+
+const LIMIT      = parseInt(arg("limit")      ?? "50");
+const MIN_LENGTH = parseInt(arg("min-length") ?? "200"); // მინ. სიმბოლოების რაოდენობა
+const DELAY_MS   = parseInt(arg("delay")      ?? "700"); // ms API call-ებს შორის
+const DRY_RUN    = process.argv.includes("--dry-run");
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-function sleep(ms: number) {
-  return new Promise((r) => setTimeout(r, ms));
-}
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/** Normalise a description: collapse whitespace, trim. Returns null if empty. */
+/** whitespace-ის ნორმალიზაცია, trim */
 function clean(text: string | null | undefined): string | null {
   if (!text) return null;
   const t = text.replace(/\s+/g, " ").trim();
-  return t.length > 10 ? t : null;
+  return t.length >= 20 ? t : null;
+}
+
+/** ახალი description ღირს DB-ში ჩაწერა? */
+function isBetter(newDesc: string, oldDesc: string | null): boolean {
+  if (!oldDesc || oldDesc.trim().length === 0) return true;
+  // ახალი უნდა იყოს მინ. MIN_LENGTH სიმბოლო და ძველზე გრძელი
+  return newDesc.length >= MIN_LENGTH && newDesc.length > oldDesc.trim().length;
 }
 
 /**
- * Pick the best-matching result from GrantedAI results.
- * Prefer an exact name match; fall back to first result that has a summary.
+ * GrantedAI შედეგებიდან საუკეთესო description-ის პოვნა.
+ * ცდის: სრული detail → exact name match → partial match → first with summary.
  */
-function bestMatch(
+async function findBestDescription(
   grantName: string,
   results: Awaited<ReturnType<typeof searchExternalGrants>>,
-): string | null {
+): Promise<string | null> {
   if (!results.length) return null;
 
   const nameLower = grantName.toLowerCase().trim();
 
-  // 1. Exact name match
+  // 1. ზუსტი სახელის დამთხვევა
   const exact = results.find((r) => r.name.toLowerCase().trim() === nameLower);
-  if (exact && clean(exact.summary)) return clean(exact.summary)!;
 
-  // 2. Name starts-with match (handles truncated titles)
+  // 2. ნაწილობრივი სახელის დამთხვევა
   const partial = results.find(
     (r) =>
-      nameLower.startsWith(r.name.toLowerCase().trim().slice(0, 15)) ||
-      r.name.toLowerCase().includes(nameLower.slice(0, 15)),
+      r.name.toLowerCase().includes(nameLower.slice(0, 20)) ||
+      nameLower.includes(r.name.toLowerCase().slice(0, 20)),
   );
-  if (partial && clean(partial.summary)) return clean(partial.summary)!;
 
-  // 3. First result with a non-trivial summary
-  const first = results.find((r) => clean(r.summary));
-  return first ? clean(first.summary)! : null;
+  const candidate = exact ?? partial ?? results[0];
+  if (!candidate) return null;
+
+  // slug გვაქვს — სრული detail-ი ვცადოთ (გრძელი description შეიძლება იყოს)
+  if (candidate.slug) {
+    try {
+      const detail = await getExternalGrantDetail(candidate.slug);
+      if (detail) {
+        // detail.summary ჩვეულებრივ გრძელია
+        const detailDesc = clean(detail.summary);
+        if (detailDesc && detailDesc.length >= MIN_LENGTH) return detailDesc;
+
+        // eligibility + summary გავაერთიანოთ თუ summary მოკლეა
+        if (detailDesc && detail.eligibility) {
+          const combined = `${detailDesc} Eligibility: ${detail.eligibility}`.trim();
+          if (combined.length >= MIN_LENGTH) return combined;
+        }
+      }
+    } catch {
+      // detail call ვერ მოხდა — გავაგრძელოთ summary-ით
+    }
+  }
+
+  // fallback — search შედეგის summary
+  const summary = clean(candidate.summary);
+  return summary && summary.length >= MIN_LENGTH ? summary : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -79,92 +114,116 @@ function bestMatch(
 async function main() {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
-    console.error("❌  DATABASE_URL is not set. Copy .env.example → .env and fill in the value.");
+    console.error(
+      "\n❌  DATABASE_URL არ არის სეტილი.\n" +
+      "    გააკეთე: cp .env.example .env  და შეავსე DATABASE_URL\n",
+    );
     process.exit(1);
   }
 
   const db = drizzle(databaseUrl);
 
-  console.log(`\n🔍  Fetching up to ${LIMIT} active grants with missing description…`);
-  if (DRY_RUN) console.log("⚠️   DRY RUN — no database writes will occur\n");
+  console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  console.log(`  GrantKit — Description Enrichment`);
+  console.log(`  მინ. სიმბოლო : ${MIN_LENGTH}`);
+  console.log(`  ლიმიტი       : ${LIMIT}`);
+  console.log(`  Dry-run      : ${DRY_RUN ? "✅ დიახ (DB არ შეიცვლება)" : "❌ გამოთიშული"}`);
+  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
 
-  // Replicate the list_incomplete_grants MCP tool logic
-  const incomplete = await db
+  // ამოიღოს grant-ები სადაც description NULL, ცარიელია ან MIN_LENGTH-ზე მოკლე
+  const candidates = await db
     .select({
-      itemId: grants.itemId,
-      name:   grants.name,
+      itemId:      grants.itemId,
+      name:        grants.name,
+      description: grants.description,
     })
     .from(grants)
     .where(
       and(
         eq(grants.isActive, true),
-        or(isNull(grants.description), eq(grants.description, "")),
+        or(
+          isNull(grants.description),
+          eq(grants.description, ""),
+          lt(sql`CHAR_LENGTH(${grants.description})`, MIN_LENGTH),
+        ),
       ),
     )
+    .orderBy(sql`CHAR_LENGTH(${grants.description}) ASC`) // ყველაზე მოკლეებიდან
     .limit(LIMIT);
 
-  if (!incomplete.length) {
-    console.log("✅  No grants missing a description — nothing to do.");
+  if (!candidates.length) {
+    console.log(`✅  ყველა grant-ს აქვს მინ. ${MIN_LENGTH} სიმბოლოიანი description — სამუშაო არ არის.`);
     return;
   }
 
-  console.log(`📋  Found ${incomplete.length} grants without a description.\n`);
+  // მოკლე/ცარიელი სტატისტიკა
+  const empty   = candidates.filter((g) => !g.description || g.description.trim() === "").length;
+  const tooShort = candidates.length - empty;
+  console.log(`📋  ნაპოვნია ${candidates.length} grant:`);
+  console.log(`    • ${empty} — description სრულიად აკლია`);
+  console.log(`    • ${tooShort} — description ${MIN_LENGTH} სიმბოლოზე მოკლეა\n`);
 
   // Counters
-  let updated = 0;
-  let notFound = 0;
-  let skipped = 0;
-  const failures: string[] = [];
+  let improved  = 0; // description განახლდა
+  let skipped   = 0; // GrantedAI-ში ვერ მოიძებნა ან ახალი უარესია
+  let errors    = 0; // API/DB შეცდომა
+  const failed: string[] = [];
 
-  for (let i = 0; i < incomplete.length; i++) {
-    const { itemId, name } = incomplete[i];
-    const progress = `[${String(i + 1).padStart(2)}/${incomplete.length}]`;
+  for (let i = 0; i < candidates.length; i++) {
+    const { itemId, name, description: oldDesc } = candidates[i];
+    const idx  = `[${String(i + 1).padStart(2)}/${candidates.length}]`;
+    const oldLen = oldDesc?.trim().length ?? 0;
 
-    process.stdout.write(`${progress} "${name}" … `);
+    process.stdout.write(`${idx} "${name.slice(0, 55)}" (${oldLen} სიმბ.) … `);
 
     try {
       const results = await searchExternalGrants({ query: name, limit: 5 });
-      const description = bestMatch(name, results);
+      const newDesc = await findBestDescription(name, results);
 
-      if (!description) {
-        console.log("— no match");
-        notFound++;
+      if (!newDesc) {
+        console.log("— GrantedAI-ში ვერ მოიძებნა");
+        skipped++;
+      } else if (!isBetter(newDesc, oldDesc ?? null)) {
+        console.log(`— ახალი (${newDesc.length} სიმბ.) ძველს არ სჯობს, გამოტოვება`);
+        skipped++;
       } else if (DRY_RUN) {
-        console.log(`✔  (dry-run) would update: "${description.slice(0, 70)}…"`);
-        updated++;
+        console.log(`✔  dry-run | ${newDesc.length} სიმბ. | "${newDesc.slice(0, 60)}…"`);
+        improved++;
       } else {
         await db
           .update(grants)
-          .set({ description, updatedAt: new Date() })
+          .set({ description: newDesc, updatedAt: new Date() })
           .where(eq(grants.itemId, itemId));
-        console.log(`✔  updated: "${description.slice(0, 70)}…"`);
-        updated++;
+        console.log(`✔  განახლდა | ${oldLen} → ${newDesc.length} სიმბ. | "${newDesc.slice(0, 50)}…"`);
+        improved++;
       }
     } catch (err) {
-      console.log(`✖  error: ${(err as Error).message}`);
-      failures.push(name);
-      skipped++;
+      console.log(`✖  შეცდომა: ${(err as Error).message.slice(0, 80)}`);
+      failed.push(name);
+      errors++;
     }
 
-    // Throttle — don't hammer the GrantedAI API
-    if (i < incomplete.length - 1) await sleep(DELAY_MS);
+    if (i < candidates.length - 1) await sleep(DELAY_MS);
   }
 
   // ---------------------------------------------------------------------------
-  // Report
+  // Final report
   // ---------------------------------------------------------------------------
-
-  console.log("\n" + "─".repeat(50));
-  console.log("📊  Results:");
-  console.log(`   ✔  Updated   : ${updated}`);
-  console.log(`   –  No match  : ${notFound}`);
-  console.log(`   ✖  Errors    : ${skipped}`);
-  if (DRY_RUN) console.log("\n   (Dry run — run without --dry-run to apply changes)");
-  if (failures.length) {
-    console.log("\n   Failed grants:");
-    failures.forEach((n) => console.log(`     • ${n}`));
+  console.log(`\n${"━".repeat(50)}`);
+  console.log(`📊  შედეგი:`);
+  console.log(`   ✔  განახლდა    : ${improved}`);
+  console.log(`   –  გამოტოვდა  : ${skipped}`);
+  console.log(`   ✖  შეცდომა    : ${errors}`);
+  console.log(`   📝 სულ შემოწმდა: ${candidates.length}`);
+  if (DRY_RUN) {
+    console.log(`\n   ℹ️  Dry-run რეჟიმი — DB არ შეცვლილა.`);
+    console.log(`   გამოიყენე --dry-run-ის გარეშე ცვლილებების გამოსაყენებლად.`);
   }
-  console.log("─".repeat(50) + "\n");
+  if (failed.length) {
+    console.log(`\n   შეცდომიანი grant-ები:`);
+    failed.forEach((n) => console.log(`     • ${n}`));
+  }
+  console.log(`${"━".repeat(50)}\n`);
 }
 
 main().catch((err) => {
