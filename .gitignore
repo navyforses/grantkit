@@ -114,3 +114,6 @@ client/public/__manus__/version.json
 
 # mcp-toolbox binary (downloaded locally by scripts/start-toolbox.sh)
 /toolbox
+
+# GitNexus knowledge graph (local-only, regenerated via `pnpm gitnexus:analyze`)
+.gitnexus/
