@@ -54,8 +54,15 @@ export default function AiAssistant() {
   });
 
   const handleSend = (content: string) => {
+    // Capture history before updating state (previous turns only)
+    const history = messages
+      .filter((m): m is { role: "user" | "assistant"; content: string } =>
+        m.role === "user" || m.role === "assistant"
+      )
+      .map((m) => ({ role: m.role, content: m.content }));
+
     setMessages((prev) => [...prev, { role: "user", content }]);
-    grantChat.mutate({ message: content });
+    grantChat.mutate({ message: content, history });
   };
 
   return (
