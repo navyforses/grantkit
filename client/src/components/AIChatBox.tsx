@@ -47,6 +47,27 @@ function formatTime(date: Date): string {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
+/**
+ * Custom link component for Streamdown — opens external links in new tab
+ */
+function MarkdownLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const { href, children, ...rest } = props;
+  const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
+  return (
+    <a
+      href={href}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+      className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+      {...rest}
+    >
+      {children}
+    </a>
+  );
+}
+
+const streamdownComponents = { a: MarkdownLink };
+
 export function AIChatBox({
   messages,
   onSendMessage,
@@ -187,7 +208,7 @@ export function AIChatBox({
                     >
                       {message.role === "assistant" ? (
                         <div className="prose prose-base dark:prose-invert max-w-none text-[15px]">
-                          <Streamdown>{cleanNonGeorgianText(message.content)}</Streamdown>
+                          <Streamdown components={streamdownComponents}>{cleanNonGeorgianText(message.content)}</Streamdown>
                         </div>
                       ) : (
                         <p className="whitespace-pre-wrap text-base">
