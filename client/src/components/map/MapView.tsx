@@ -20,9 +20,11 @@ interface MapViewProps {
   className?: string;
   /** Called once the map has loaded and is ready */
   onMapReady?: (map: mapboxgl.Map) => void;
+  /** Accessible label for screen readers */
+  ariaLabel?: string;
 }
 
-export default function MapView({ className = "", onMapReady }: MapViewProps) {
+export default function MapView({ className = "", onMapReady, ariaLabel = "Interactive grant map" }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
 
@@ -136,5 +138,5 @@ export default function MapView({ className = "", onMapReady }: MapViewProps) {
     );
   }
 
-  return <div ref={containerRef} className={className} />;
+  return <div ref={containerRef} className={className} role="region" aria-label={ariaLabel} />;
 }

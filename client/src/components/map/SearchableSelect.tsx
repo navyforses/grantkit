@@ -3,6 +3,12 @@
  * Designed for the map filter panel: opens as an absolute-positioned layer
  * directly below the trigger (no portals, no Radix dependency).
  *
+ * Keyboard support:
+ *   ArrowDown / ArrowUp  — move focus through options
+ *   Enter                — select focused option
+ *   Escape               — close dropdown (propagation stopped)
+ *   Home / End           — jump to first / last option
+ *
  * Usage:
  *   <SearchableSelect
  *     options={[{ value: "US", label: "United States", secondary: "🇺🇸" }]}
@@ -51,8 +57,19 @@ export default function SearchableSelect({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [activeIndex, setActiveIndex] = useState(-1);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const filtered = search
+    ? options.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()))
+    : options;
+
+  const visibleOptions = filtered.slice(0, maxVisible);
+  const selected = options.find((o) => o.value === value);
 
   // Close on outside click or Escape
   useEffect(() => {
@@ -74,21 +91,63 @@ export default function SearchableSelect({
     };
   }, [open]);
 
-  // Auto-focus search on open; clear on close
+  // Auto-focus search on open; clear state on close
   useEffect(() => {
     if (open) {
+      setActiveIndex(-1);
       requestAnimationFrame(() => searchInputRef.current?.focus());
     } else {
       setSearch("");
+      setActiveIndex(-1);
     }
   }, [open]);
 
-  const filtered = search
-    ? options.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()))
-    : options;
+  // Reset active index when search changes
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [search]);
 
-  const visibleOptions = filtered.slice(0, maxVisible);
-  const selected = options.find((o) => o.value === value);
+  // Scroll active option into view
+  useEffect(() => {
+    if (activeIndex >= 0) {
+      optionRefs.current[activeIndex]?.scrollIntoView({ block: "nearest" });
+    }
+  }, [activeIndex]);
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!open) return;
+    const total = visibleOptions.length;
+    if (total === 0) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setActiveIndex((i) => (i + 1) % total);
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setActiveIndex((i) => (i <= 0 ? total - 1 : i - 1));
+        break;
+      case "Home":
+        e.preventDefault();
+        setActiveIndex(0);
+        break;
+      case "End":
+        e.preventDefault();
+        setActiveIndex(total - 1);
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (activeIndex >= 0 && activeIndex < total) {
+          onChange(visibleOptions[activeIndex].value);
+          setOpen(false);
+        }
+        break;
+    }
+  };
+
+  const listboxId = useRef(`ss-listbox-${Math.random().toString(36).slice(2)}`).current;
+  const getOptionId = (i: number) => `${listboxId}-opt-${i}`;
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
@@ -99,6 +158,7 @@ export default function SearchableSelect({
         onClick={() => !disabled && setOpen((s) => !s)}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-controls={open ? listboxId : undefined}
         className={[
           "w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg border",
           "transition-colors duration-150",
@@ -125,7 +185,6 @@ export default function SearchableSelect({
       {/* ── Dropdown ── */}
       {open && (
         <div
-          role="listbox"
           className={[
             "absolute left-0 right-0 z-50 mt-1",
             "bg-popover border border-border rounded-lg shadow-xl",
@@ -142,7 +201,13 @@ export default function SearchableSelect({
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
                 placeholder={searchPlaceholder}
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded={open}
+                aria-controls={listboxId}
+                aria-activedescendant={activeIndex >= 0 ? getOptionId(activeIndex) : undefined}
                 className="flex-1 min-w-0 bg-transparent text-sm outline-none text-foreground placeholder:text-muted-foreground"
               />
               {search && (
@@ -150,6 +215,7 @@ export default function SearchableSelect({
                   type="button"
                   onClick={() => setSearch("")}
                   className="text-muted-foreground hover:text-foreground"
+                  aria-label="Clear search"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -158,16 +224,18 @@ export default function SearchableSelect({
           </div>
 
           {/* Options list */}
-          <div className="overflow-y-auto" style={{ maxHeight: "11rem" }}>
+          <div ref={listRef} id={listboxId} role="listbox" className="overflow-y-auto" style={{ maxHeight: "11rem" }}>
             {visibleOptions.length === 0 ? (
               <p className="px-3 py-3 text-sm text-muted-foreground text-center">
                 {noResultsLabel}
               </p>
             ) : (
               <>
-                {visibleOptions.map((opt) => (
+                {visibleOptions.map((opt, i) => (
                   <button
                     key={opt.value}
+                    ref={(el) => { optionRefs.current[i] = el; }}
+                    id={getOptionId(i)}
                     type="button"
                     role="option"
                     aria-selected={opt.value === value}
@@ -178,9 +246,11 @@ export default function SearchableSelect({
                     className={[
                       "w-full flex items-center gap-2 px-3 py-2 text-sm text-left",
                       "transition-colors duration-100",
-                      opt.value === value
-                        ? "bg-primary/10 text-primary font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
+                      activeIndex === i
+                        ? "bg-accent text-accent-foreground"
+                        : opt.value === value
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     ].join(" ")}
                   >
                     {opt.secondary && (

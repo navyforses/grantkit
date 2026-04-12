@@ -142,15 +142,44 @@ function LinkButton({
 
 // ── Tab bar ──────────────────────────────────────────────────────────────────
 
+const TABS: Tab[] = ["info", "ai"];
+
 function TabBar({ active, onChange }: { active: Tab; onChange: (tab: Tab) => void }) {
   const { t } = useLanguage();
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const idx = TABS.indexOf(active);
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      const next = (idx + 1) % TABS.length;
+      onChange(TABS[next]);
+      tabRefs.current[next]?.focus();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      const prev = (idx - 1 + TABS.length) % TABS.length;
+      onChange(TABS[prev]);
+      tabRefs.current[prev]?.focus();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      onChange(TABS[0]);
+      tabRefs.current[0]?.focus();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      onChange(TABS[TABS.length - 1]);
+      tabRefs.current[TABS.length - 1]?.focus();
+    }
+  };
+
   return (
-    <div className="flex-shrink-0 flex border-b border-border" role="tablist">
+    <div className="flex-shrink-0 flex border-b border-border" role="tablist" aria-label="Grant detail tabs" onKeyDown={handleKeyDown}>
       <button
+        ref={(el) => { tabRefs.current[0] = el; }}
         type="button"
         role="tab"
         aria-selected={active === "info"}
         aria-controls="panel-tab-info"
+        tabIndex={active === "info" ? 0 : -1}
         onClick={() => onChange("info")}
         className={[
           "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold transition-colors",
@@ -163,10 +192,12 @@ function TabBar({ active, onChange }: { active: Tab; onChange: (tab: Tab) => voi
         <span>{t.aiAssistant.fullInfo}</span>
       </button>
       <button
+        ref={(el) => { tabRefs.current[1] = el; }}
         type="button"
         role="tab"
         aria-selected={active === "ai"}
         aria-controls="panel-tab-ai"
+        tabIndex={active === "ai" ? 0 : -1}
         onClick={() => onChange("ai")}
         className={[
           "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold transition-colors",
@@ -478,14 +509,17 @@ function PanelContent({
 }: Props & { item: CatalogItem }) {
   const { t } = useLanguage();
   const [tab, setTab] = useState<Tab>("info");
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Reset to info tab when the grant changes
+  // Reset to info tab when the grant changes; focus close button for keyboard users
   const prevItemId = useRef(item.id);
   useEffect(() => {
     if (item.id !== prevItemId.current) {
       setTab("info");
       prevItemId.current = item.id;
     }
+    // Focus the close button so keyboard users can immediately navigate or dismiss
+    requestAnimationFrame(() => closeButtonRef.current?.focus());
   }, [item.id]);
 
   return (
@@ -512,6 +546,7 @@ function PanelContent({
           </button>
           {/* Close — min 44px touch target */}
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label={t.grantDetail.close ?? "Close"}

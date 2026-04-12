@@ -344,6 +344,7 @@ export default function Catalog() {
         <MapView
           className="absolute inset-0 w-full h-full"
           onMapReady={handleMapReady}
+          ariaLabel={t.catalog.title}
         />
 
         {/* Phase 2 — cascading filter panel overlay */}
