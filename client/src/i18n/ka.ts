@@ -28,6 +28,8 @@ export const ka: Translations = {
     statFinancialLabel: "საცხოვრებელი",
     statUpdated: "ყოველთვიურად",
     statUpdatedLabel: "განახლება",
+    statGrants: "640+",
+    statGrantsLabel: "გრანტი",
   },
   problem: {
     title: "გრანტების შესახებ ინფორმაცია გაფანტულია, მოძველებული და ძნელად მოსაძებნი",

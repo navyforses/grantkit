@@ -29,6 +29,8 @@ export interface Translations {
     statFinancialLabel: string;
     statUpdated: string;
     statUpdatedLabel: string;
+    statGrants: string;
+    statGrantsLabel: string;
   };
 
   // Problem section

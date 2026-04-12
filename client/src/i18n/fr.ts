@@ -28,6 +28,8 @@ export const fr: Translations = {
     statFinancialLabel: "Aide Financière",
     statUpdated: "Mensuel",
     statUpdatedLabel: "Mis à jour",
+    statGrants: "640+",
+    statGrantsLabel: "Subventions",
   },
   problem: {
     title: "L'information sur les subventions est dispersée, obsolète et difficile à trouver",
