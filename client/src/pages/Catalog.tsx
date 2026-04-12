@@ -12,7 +12,7 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { type SortValue } from "@/components/FilterBar";
-import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
+import { type CatalogItem, type CategoryValue, type TypeValue } from "@/lib/constants";
 import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -37,7 +37,6 @@ function readFiltersFromURL(search: string) {
   const params = new URLSearchParams(search);
   return {
     category: (params.get("category") || "all") as CategoryValue,
-    country: (params.get("country") || "all") as CountryValue,
     type: (params.get("type") || "all") as TypeValue,
     search: params.get("q") || "",
     sortBy: (params.get("sort") || "name_asc") as SortValue,
@@ -46,9 +45,6 @@ function readFiltersFromURL(search: string) {
     targetDiagnosis: params.get("diagnosis") || "all",
     b2VisaEligible: params.get("b2visa") || "all",
     hasDeadline: params.get("deadline") === "1",
-    state: params.get("state") || "all",
-    city: params.get("city") || "all",
-    // Map panel ISO location filters (mc = map country, ms = map state)
     mapCountryCode: params.get("mc") || "",
     mapStateCode: params.get("ms") || "",
     mapCityName: params.get("mcity") || "",
@@ -72,7 +68,6 @@ export default function Catalog() {
 
   // ── Filter state (used in Phase 2 filter panel & Phase 4 markers) ──
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(initial.category);
-  const [selectedCountry, setSelectedCountry] = useState<CountryValue>(initial.country);
   const [selectedType, setSelectedType] = useState<TypeValue>(initial.type);
   const [searchQuery, setSearchQuery] = useState(initial.search);
   const [sortBy, setSortBy] = useState<SortValue>(initial.sortBy);
@@ -81,8 +76,6 @@ export default function Catalog() {
   const [targetDiagnosis, setTargetDiagnosis] = useState(initial.targetDiagnosis);
   const [b2VisaEligible, setB2VisaEligible] = useState(initial.b2VisaEligible);
   const [hasDeadline, setHasDeadline] = useState(initial.hasDeadline);
-  const [selectedState, setSelectedState] = useState(initial.state);
-  const [selectedCity, setSelectedCity] = useState(initial.city);
 
   // ── Map location state (ISO codes — drives Phase 3 flyTo + filter panel) ──
   const [mapCountryCode, setMapCountryCode] = useState(initial.mapCountryCode);
@@ -96,7 +89,6 @@ export default function Catalog() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (selectedCategory !== "all") params.set("category", selectedCategory);
-    if (selectedCountry !== "all") params.set("country", selectedCountry);
     if (selectedType !== "all") params.set("type", selectedType);
     if (searchQuery) params.set("q", searchQuery);
     if (sortBy !== "name_asc") params.set("sort", sortBy);
@@ -105,17 +97,15 @@ export default function Catalog() {
     if (targetDiagnosis !== "all") params.set("diagnosis", targetDiagnosis);
     if (b2VisaEligible !== "all") params.set("b2visa", b2VisaEligible);
     if (hasDeadline) params.set("deadline", "1");
-    if (selectedState !== "all") params.set("state", selectedState);
-    if (selectedCity !== "all") params.set("city", selectedCity);
     if (mapCountryCode) params.set("mc", mapCountryCode);
     if (mapStateCode) params.set("ms", mapStateCode);
     if (mapCityName) params.set("mcity", mapCityName);
     const qs = params.toString();
     navigate(qs ? `/catalog?${qs}` : "/catalog", { replace: true });
   }, [
-    selectedCategory, selectedCountry, selectedType, searchQuery, sortBy, page,
+    selectedCategory, selectedType, searchQuery, sortBy, page,
     fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
-    selectedState, selectedCity, mapCountryCode, mapStateCode, mapCityName, navigate,
+    mapCountryCode, mapStateCode, mapCityName, navigate,
   ]);
 
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
@@ -131,10 +121,9 @@ export default function Catalog() {
       search: debouncedSearch || undefined,
       language: debouncedSearch ? language : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
-      // Map panel location takes priority; fall back to legacy URL-param filters
-      country: mapCountryCode || (selectedCountry !== "all" ? selectedCountry : undefined),
-      state:   mapStateCode   || (selectedState   !== "all" ? selectedState   : undefined),
-      city:    mapCityName    || (selectedCity     !== "all" ? selectedCity    : undefined),
+      country: mapCountryCode || undefined,
+      state:   mapStateCode   || undefined,
+      city:    mapCityName    || undefined,
       type: selectedType !== "all" ? selectedType : undefined,
       sortBy,
       fundingType: fundingType !== "all" ? fundingType : undefined,
@@ -145,9 +134,9 @@ export default function Catalog() {
       pageSize: (subStatus?.isActive || HAS_STATIC_DATA) ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
     [
-      debouncedSearch, language, selectedCategory, selectedCountry, selectedType,
+      debouncedSearch, language, selectedCategory, selectedType,
       sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
-      selectedState, selectedCity, page, subStatus?.isActive,
+      page, subStatus?.isActive,
       mapCountryCode, mapStateCode, mapCityName,
     ]
   );
@@ -219,24 +208,9 @@ export default function Catalog() {
       let filtered: any[] = STATIC_CATALOG;
       if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
       if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
-
-      // Map panel location filters (ISO code / city name) take priority over legacy URL params.
-      // DB stores country as "US"/"International", state as ISO codes ("CA", "NC"…).
-      if (mapCountryCode) {
-        filtered = filtered.filter((g: any) => g.country === mapCountryCode);
-      } else if (selectedCountry !== "all") {
-        filtered = filtered.filter((g: any) => g.country === selectedCountry);
-      }
-      if (mapStateCode) {
-        filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
-      } else if (selectedState !== "all") {
-        filtered = filtered.filter((g: any) => g.state === selectedState || g.state === "Nationwide");
-      }
-      if (mapCityName) {
-        filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
-      } else if (selectedCity !== "all") {
-        filtered = filtered.filter((g: any) => !g.city || g.city === selectedCity);
-      }
+      if (mapCountryCode) filtered = filtered.filter((g: any) => g.country === mapCountryCode);
+      if (mapStateCode) filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
+      if (mapCityName) filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
       if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
       if (fundingType !== "all") filtered = filtered.filter((g: any) => g.fundingType === fundingType);
       if (b2VisaEligible !== "all") filtered = filtered.filter((g: any) => g.b2VisaEligible === b2VisaEligible);
@@ -258,8 +232,8 @@ export default function Catalog() {
     }
     return [];
   }, [
-    catalogData, language, selectedCategory, selectedCountry, selectedType,
-    selectedState, selectedCity, targetDiagnosis, fundingType, b2VisaEligible,
+    catalogData, language, selectedCategory, selectedType,
+    targetDiagnosis, fundingType, b2VisaEligible,
     hasDeadline, debouncedSearch, page,
     mapCountryCode, mapStateCode, mapCityName,
   ]);
@@ -269,17 +243,13 @@ export default function Catalog() {
 
   const resetFilters = useCallback(() => {
     setSelectedCategory("all");
-    setSelectedCountry("all");
     setSelectedType("all");
     setSearchQuery("");
     setFundingType("all");
     setTargetDiagnosis("all");
     setB2VisaEligible("all");
     setHasDeadline(false);
-    setSelectedState("all");
-    setSelectedCity("all");
     setPage(1);
-    // Also reset map location selectors
     setMapCountryCode("");
     setMapStateCode("");
     setMapCityName("");
