@@ -37,8 +37,9 @@ export default function MapView({ className = "", onMapReady, ariaLabel = "Inter
     const map = new mapboxgl.Map({
       container,
       style: getStyle(),
-      center: [20, 0],
-      zoom: 1.8,
+      center: [-40, 30],
+      zoom: 1.5,
+      projection: "globe",
       minZoom: 1,
       maxZoom: 20,
       // Keep the map 2D — no tilt or rotation

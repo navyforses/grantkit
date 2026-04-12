@@ -255,16 +255,14 @@ export default function Catalog() {
     setMapCityName("");
   }, []);
 
-  // Map instance — ref for flyTo (no re-render needed), state for markers hook
-  const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
+  // Map instance state — shared by useMapFlyTo and useMapMarkers
   const [mapInstance, setMapInstance] = useState<mapboxgl.Map | null>(null);
   const handleMapReady = useCallback((map: mapboxgl.Map) => {
-    mapInstanceRef.current = map;
     setMapInstance(map);
   }, []);
 
   // Phase 3 — fly to selected location whenever country / state / city changes
-  useMapFlyTo(mapInstanceRef, mapCountryCode, mapStateCode, mapCityName);
+  useMapFlyTo(mapInstance, mapCountryCode, mapStateCode, mapCityName);
 
   // Phase 4 — clustered grant/resource markers; selectedItemId feeds Phase 5
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
