@@ -14,6 +14,10 @@ RUN pnpm install --frozen-lockfile
 # Copy source
 COPY . .
 
+# Accept VITE_* build-time env vars from Railway (baked into the JS bundle by Vite)
+ARG VITE_MAPBOX_TOKEN
+ENV VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN
+
 # Build client + server
 RUN pnpm run build
 
