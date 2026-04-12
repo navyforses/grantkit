@@ -135,8 +135,7 @@ export default function MapFilterPanel({
           className={[
             "flex items-center gap-2 pl-3 pr-4 py-2.5",
             "rounded-r-full shadow-lg",
-            "bg-gray-900/85 dark:bg-gray-900/90 backdrop-blur-xl",
-            "bg-white/90 dark:bg-gray-900/90",
+            "bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl",
             "border border-l-0 border-white/20 dark:border-white/10",
             "text-sm font-medium text-foreground",
             "transition-all duration-200 hover:pl-4",
@@ -175,7 +174,7 @@ export default function MapFilterPanel({
       ].join(" ")}
     >
       {/* Inner scroll container */}
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col h-full">
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-black/5 dark:border-white/10 flex-shrink-0">
@@ -310,10 +309,10 @@ function FilterSection({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+      <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
         <span>{emoji}</span>
         <span>{label}</span>
-      </label>
+      </p>
       {children}
     </div>
   );
