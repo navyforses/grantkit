@@ -17,24 +17,7 @@ import { Sparkles, Database, Globe, Search } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-/**
- * Builds the context prefix injected into the API message when focus mode is active.
- * The user sees their original message in the chat; the API receives this enriched version.
- * Uses the Georgian-language prompt template per spec.
- */
-function buildGrantFocusContext(userMessage: string, grant: ParsedGrant): string {
-  const details = [
-    `📋 გრანტი: ${grant.name}`,
-    grant.organization ? `🏢 ორგანიზაცია: ${grant.organization}` : null,
-    grant.country ? `📍 ლოკაცია: ${grant.country}` : null,
-    grant.amount ? `💰 თანხა: ${grant.amount}` : null,
-    grant.deadline ? `📅 ვადა: ${grant.deadline}` : null,
-    grant.website ? `🌐 ვებსაიტი: ${grant.website}` : null,
-  ].filter(Boolean).join("\n");
-
-  return `შენ ხარ GrantKit AI ასისტენტი. მომხმარებელი ამჟამად კითხულობს კონკრეტული გრანტის/ორგანიზაციის შესახებ:\n\n${details}\n\nუპასუხე მომხმარებლის შეკითხვას მხოლოდ ამ გრანტის/ორგანიზაციის კონტექსტში. თუ მომხმარებელი ისეთ რამეს ეკითხება, რაც ამ გრანტს არ ეხება, თავაზიანად შეახსენე რომ ფოკუსი ამ გრანტზეა და შესთავაზე ფოკუსის მოხსნა ზოგადი ძებნისთვის.\n\n${userMessage}`;
-}
+import { buildGrantFocusContext } from "@/lib/grantFocusContext";
 
 export default function AiAssistant() {
   const { t } = useLanguage();

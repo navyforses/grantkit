@@ -4,19 +4,28 @@
  * Desktop (md+): 400px panel slides in from the right edge of the map container.
  * Mobile (<md):  full-width sheet slides up from the bottom (max 78dvh).
  *
+ * Tabs:
+ *   • Info  — grant details (Phase 5)
+ *   • AI    — per-grant AI chat, pre-focused on the selected item (Phase 6)
+ *
  * Opened when the user clicks an individual marker on the map (Phase 4).
  * Closed by the X button, the Escape key, or clicking the backdrop (mobile).
  */
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Bookmark, BookmarkCheck, Globe, Mail, Phone,
   MapPin, Calendar, DollarSign, Tag, ExternalLink,
+  Sparkles, Info,
 } from "lucide-react";
 import { type CatalogItem, CATEGORIES, getCategoryStyle } from "@/lib/constants";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { AIChatBox, type Message } from "@/components/AIChatBox";
+import type { ParsedGrant } from "@/components/GrantCard";
+import { trpc } from "@/lib/trpc";
+import { buildGrantFocusContext } from "@/lib/grantFocusContext";
 
 // ── Props ────────────────────────────────────────────────────────────────────
 
@@ -26,6 +35,8 @@ interface Props {
   onToggleSave: () => void;
   onClose: () => void;
 }
+
+type Tab = "info" | "ai";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -46,6 +57,18 @@ function present(v?: string | null): string | null {
   const trimmed = v.trim();
   if (trimmed === "" || trimmed === "N/A" || trimmed === "n/a" || trimmed === "-") return null;
   return trimmed;
+}
+
+/** Convert CatalogItem to ParsedGrant for the AI focus chip. */
+function toFocusGrant(item: CatalogItem): ParsedGrant {
+  return {
+    name: item.name,
+    organization: present(item.organization) ?? undefined,
+    country: present(item.country) ?? undefined,
+    amount: present(item.amount) ?? undefined,
+    deadline: present(item.deadline) ?? undefined,
+    website: present(item.website) ?? undefined,
+  };
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -97,9 +120,45 @@ function LinkButton({
   );
 }
 
-// ── Panel content ─────────────────────────────────────────────────────────────
+// ── Tab bar ──────────────────────────────────────────────────────────────────
 
-function PanelContent({ item, isSaved, onToggleSave, onClose }: Props & { item: CatalogItem }) {
+function TabBar({ active, onChange }: { active: Tab; onChange: (tab: Tab) => void }) {
+  const { t } = useLanguage();
+  return (
+    <div className="flex-shrink-0 flex border-b border-border">
+      <button
+        type="button"
+        onClick={() => onChange("info")}
+        className={[
+          "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold transition-colors",
+          active === "info"
+            ? "text-foreground border-b-2 border-primary"
+            : "text-muted-foreground hover:text-foreground",
+        ].join(" ")}
+      >
+        <Info className="w-3.5 h-3.5" />
+        <span>{t.aiAssistant.fullInfo ?? "Info"}</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("ai")}
+        className={[
+          "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold transition-colors",
+          active === "ai"
+            ? "text-foreground border-b-2 border-primary"
+            : "text-muted-foreground hover:text-foreground",
+        ].join(" ")}
+      >
+        <Sparkles className="w-3.5 h-3.5" />
+        <span>AI Chat</span>
+      </button>
+    </div>
+  );
+}
+
+// ── Info tab content ─────────────────────────────────────────────────────────
+
+function InfoTabContent({ item }: { item: CatalogItem }) {
   const { tCategory } = useLanguage();
 
   const location = formatLocation(item.country, item.state, item.city);
@@ -107,33 +166,297 @@ function PanelContent({ item, isSaved, onToggleSave, onClose }: Props & { item: 
   const catIcon   = categoryIcon(item.category);
 
   return (
+    <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-5">
+
+      {/* Category + type badges */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span
+          className={[
+            "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border",
+            catStyle,
+          ].join(" ")}
+        >
+          <span>{catIcon}</span>
+          <span>{tCategory(item.category)}</span>
+        </span>
+        <span
+          className={[
+            "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border",
+            item.type === "grant"
+              ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800"
+              : "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/20 dark:text-violet-400 dark:border-violet-800",
+          ].join(" ")}
+        >
+          {item.type === "grant" ? "Grant" : "Resource"}
+        </span>
+      </div>
+
+      {/* Name + org */}
+      <div className="space-y-1">
+        <h2 className="text-base font-bold text-foreground leading-snug">{item.name}</h2>
+        {present(item.organization) && (
+          <p className="text-sm text-muted-foreground">{item.organization}</p>
+        )}
+      </div>
+
+      {/* Key metrics */}
+      {(present(item.amount) || present(item.deadline) || present(item.status)) && (
+        <div className="grid grid-cols-2 gap-2">
+          {present(item.amount) && (
+            <div className="flex flex-col gap-0.5 bg-secondary/50 rounded-lg px-3 py-2.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                <DollarSign className="w-3 h-3" /> Amount
+              </span>
+              <span className="text-sm font-semibold text-foreground">{item.amount}</span>
+            </div>
+          )}
+          {present(item.deadline) && (
+            <div className="flex flex-col gap-0.5 bg-secondary/50 rounded-lg px-3 py-2.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                <Calendar className="w-3 h-3" /> Deadline
+              </span>
+              <span className="text-sm font-semibold text-foreground">{item.deadline}</span>
+            </div>
+          )}
+          {present(item.status) && (
+            <div className="flex flex-col gap-0.5 bg-secondary/50 rounded-lg px-3 py-2.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                <Tag className="w-3 h-3" /> Status
+              </span>
+              <span className="text-sm font-semibold text-foreground">{item.status}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Location */}
+      {present(location) && (
+        <InfoRow icon={<MapPin className="w-4 h-4" />} text={location} />
+      )}
+
+      {/* Description */}
+      {present(item.description) && (
+        <Section title="Description">
+          <p className="text-sm text-foreground leading-relaxed">{item.description}</p>
+        </Section>
+      )}
+
+      {/* Eligibility */}
+      {present(item.eligibility) && (
+        <Section title="Eligibility">
+          <p className="text-sm text-foreground leading-relaxed">{item.eligibility}</p>
+        </Section>
+      )}
+
+      {/* Extra filters as inline chips */}
+      {(present(item.fundingType) || present(item.targetDiagnosis) ||
+        present(item.ageRange) || present(item.b2VisaEligible)) && (
+        <Section title="Details">
+          <div className="flex flex-wrap gap-1.5">
+            {present(item.fundingType) && (
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary border border-border text-foreground">
+                {item.fundingType}
+              </span>
+            )}
+            {present(item.targetDiagnosis) && (
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary border border-border text-foreground">
+                {item.targetDiagnosis}
+              </span>
+            )}
+            {present(item.ageRange) && (
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary border border-border text-foreground">
+                Ages: {item.ageRange}
+              </span>
+            )}
+            {present(item.b2VisaEligible) && item.b2VisaEligible.toLowerCase() === "yes" && (
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400">
+                B2 Visa Eligible
+              </span>
+            )}
+          </div>
+        </Section>
+      )}
+
+      {/* Application process */}
+      {present(item.applicationProcess) && (
+        <Section title="How to Apply">
+          <p className="text-sm text-foreground leading-relaxed">{item.applicationProcess}</p>
+        </Section>
+      )}
+
+      {/* Documents required */}
+      {present(item.documentsRequired) && (
+        <Section title="Documents Required">
+          <p className="text-sm text-foreground leading-relaxed">{item.documentsRequired}</p>
+        </Section>
+      )}
+
+      {/* Links */}
+      {(present(item.website) || present(item.email) || present(item.phone)) && (
+        <Section title="Contact">
+          <div className="space-y-2">
+            {present(item.website) && (
+              <LinkButton
+                href={item.website.startsWith("http") ? item.website : `https://${item.website}`}
+                icon={<Globe className="w-4 h-4" />}
+                label={item.website}
+              />
+            )}
+            {present(item.email) && (
+              <LinkButton
+                href={`mailto:${item.email}`}
+                icon={<Mail className="w-4 h-4" />}
+                label={item.email}
+              />
+            )}
+            {present(item.phone) && (
+              <LinkButton
+                href={`tel:${item.phone}`}
+                icon={<Phone className="w-4 h-4" />}
+                label={item.phone}
+              />
+            )}
+          </div>
+        </Section>
+      )}
+
+      {/* Bottom padding so last item clears the scroll shadow */}
+      <div className="h-2" />
+    </div>
+  );
+}
+
+// ── AI Chat tab content ──────────────────────────────────────────────────────
+
+function AiTabContent({ item }: { item: CatalogItem }) {
+  const { t } = useLanguage();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [lastInput, setLastInput] = useState<{
+    message: string;
+    history: { role: "user" | "assistant"; content: string }[];
+  } | null>(null);
+
+  const grantChat = trpc.ai.grantChat.useMutation();
+
+  const focusGrant = useMemo(() => toFocusGrant(item), [item]);
+
+  // Reset chat when the selected grant changes
+  const prevItemId = useRef(item.id);
+  useEffect(() => {
+    if (item.id !== prevItemId.current) {
+      setMessages([]);
+      setLastInput(null);
+      grantChat.reset();
+      prevItemId.current = item.id;
+    }
+  }, [item.id, grantChat]);
+
+  const handleSend = useCallback(
+    (content: string) => {
+      const history = messages
+        .filter(
+          (m): m is Message & { role: "user" | "assistant" } =>
+            m.role === "user" || m.role === "assistant",
+        )
+        .map((m) => ({ role: m.role, content: m.content }));
+
+      const apiMessage = buildGrantFocusContext(content, focusGrant);
+      const input = { message: apiMessage, history };
+      setLastInput(input);
+      setMessages((prev) => [...prev, { role: "user", content, timestamp: new Date() }]);
+
+      grantChat.mutate(input, {
+        onSuccess: (data) => {
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: data.reply, timestamp: new Date() },
+          ]);
+        },
+      });
+    },
+    [messages, grantChat, focusGrant],
+  );
+
+  const handleRetry = useCallback(() => {
+    if (!lastInput) return;
+    grantChat.mutate(lastInput, {
+      onSuccess: (data) => {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.reply, timestamp: new Date() },
+        ]);
+      },
+    });
+  }, [lastInput, grantChat]);
+
+  const handleClear = useCallback(() => {
+    setMessages([]);
+    setLastInput(null);
+    grantChat.reset();
+  }, [grantChat]);
+
+  const suggestedPrompts = [
+    t.aiAssistant.suggestedPrompts?.[0] ?? "How do I apply?",
+    "Am I eligible for this?",
+    "Tell me more about this grant",
+  ];
+
+  return (
+    <AIChatBox
+      className="flex-1 min-h-0 border-0 shadow-none rounded-none"
+      messages={messages}
+      onSendMessage={handleSend}
+      onClearMessages={handleClear}
+      isLoading={grantChat.isPending}
+      error={grantChat.isError}
+      onRetry={handleRetry}
+      headerTitle={t.aiAssistant.title ?? "AI Assistant"}
+      emptyStateMessage={t.aiAssistant.emptyState ?? "Ask me about this grant"}
+      suggestedPrompts={suggestedPrompts}
+      placeholder={
+        (t.aiAssistant.focusPlaceholder ?? "Ask about {grantName}...").replace(
+          "{grantName}",
+          item.name.length > 30 ? item.name.slice(0, 30) + "…" : item.name,
+        )
+      }
+      focusedGrant={focusGrant}
+      focusLabel={t.aiAssistant.focusLabel ?? "Focus:"}
+      removeFocusLabel={t.aiAssistant.removeFocus ?? "Remove focus"}
+      newChatLabel={t.aiAssistant.newChat ?? "New chat"}
+      copyLabel={t.aiAssistant.copy ?? "Copy"}
+      errorMessage={t.aiAssistant.error ?? "An error occurred. Please try again."}
+      retryLabel={t.aiAssistant.retry ?? "Retry"}
+    />
+  );
+}
+
+// ── Panel content (header + tabs + body) ─────────────────────────────────────
+
+function PanelContent({
+  item,
+  isSaved,
+  onToggleSave,
+  onClose,
+}: Props & { item: CatalogItem }) {
+  const [tab, setTab] = useState<Tab>("info");
+
+  // Reset to info tab when the grant changes
+  const prevItemId = useRef(item.id);
+  useEffect(() => {
+    if (item.id !== prevItemId.current) {
+      setTab("info");
+      prevItemId.current = item.id;
+    }
+  }, [item.id]);
+
+  return (
     <div className="flex flex-col h-full">
 
-      {/* ── Sticky header ── */}
-      <div className="flex-shrink-0 flex items-start justify-between gap-3 px-4 pt-4 pb-3 border-b border-border">
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Type badge */}
-          <span
-            className={[
-              "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border",
-              catStyle,
-            ].join(" ")}
-          >
-            <span>{catIcon}</span>
-            <span>{tCategory(item.category)}</span>
-          </span>
-          {/* Grant / Resource */}
-          <span
-            className={[
-              "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border",
-              item.type === "grant"
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800"
-                : "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/20 dark:text-violet-400 dark:border-violet-800",
-            ].join(" ")}
-          >
-            {item.type === "grant" ? "Grant" : "Resource"}
-          </span>
-        </div>
+      {/* ── Sticky header: name + actions ── */}
+      <div className="flex-shrink-0 flex items-start justify-between gap-3 px-4 pt-4 pb-3">
+        <h2 className="text-sm font-bold text-foreground leading-snug line-clamp-2 flex-1">
+          {item.name}
+        </h2>
 
         <div className="flex items-center gap-1 flex-shrink-0">
           {/* Save button */}
@@ -160,141 +483,15 @@ function PanelContent({ item, isSaved, onToggleSave, onClose }: Props & { item: 
         </div>
       </div>
 
-      {/* ── Scrollable body ── */}
-      <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-5">
+      {/* ── Tab bar ── */}
+      <TabBar active={tab} onChange={setTab} />
 
-        {/* Name + org */}
-        <div className="space-y-1">
-          <h2 className="text-base font-bold text-foreground leading-snug">{item.name}</h2>
-          {present(item.organization) && (
-            <p className="text-sm text-muted-foreground">{item.organization}</p>
-          )}
-        </div>
-
-        {/* Key metrics */}
-        {(present(item.amount) || present(item.deadline) || present(item.status)) && (
-          <div className="grid grid-cols-2 gap-2">
-            {present(item.amount) && (
-              <div className="flex flex-col gap-0.5 bg-secondary/50 rounded-lg px-3 py-2.5">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                  <DollarSign className="w-3 h-3" /> Amount
-                </span>
-                <span className="text-sm font-semibold text-foreground">{item.amount}</span>
-              </div>
-            )}
-            {present(item.deadline) && (
-              <div className="flex flex-col gap-0.5 bg-secondary/50 rounded-lg px-3 py-2.5">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                  <Calendar className="w-3 h-3" /> Deadline
-                </span>
-                <span className="text-sm font-semibold text-foreground">{item.deadline}</span>
-              </div>
-            )}
-            {present(item.status) && (
-              <div className="flex flex-col gap-0.5 bg-secondary/50 rounded-lg px-3 py-2.5">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                  <Tag className="w-3 h-3" /> Status
-                </span>
-                <span className="text-sm font-semibold text-foreground">{item.status}</span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Location */}
-        {present(location) && (
-          <InfoRow icon={<MapPin className="w-4 h-4" />} text={location} />
-        )}
-
-        {/* Description */}
-        {present(item.description) && (
-          <Section title="Description">
-            <p className="text-sm text-foreground leading-relaxed">{item.description}</p>
-          </Section>
-        )}
-
-        {/* Eligibility */}
-        {present(item.eligibility) && (
-          <Section title="Eligibility">
-            <p className="text-sm text-foreground leading-relaxed">{item.eligibility}</p>
-          </Section>
-        )}
-
-        {/* Extra filters as inline chips */}
-        {(present(item.fundingType) || present(item.targetDiagnosis) ||
-          present(item.ageRange) || present(item.b2VisaEligible)) && (
-          <Section title="Details">
-            <div className="flex flex-wrap gap-1.5">
-              {present(item.fundingType) && (
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary border border-border text-foreground">
-                  {item.fundingType}
-                </span>
-              )}
-              {present(item.targetDiagnosis) && (
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary border border-border text-foreground">
-                  {item.targetDiagnosis}
-                </span>
-              )}
-              {present(item.ageRange) && (
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary border border-border text-foreground">
-                  Ages: {item.ageRange}
-                </span>
-              )}
-              {present(item.b2VisaEligible) && item.b2VisaEligible.toLowerCase() === "yes" && (
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400">
-                  B2 Visa Eligible
-                </span>
-              )}
-            </div>
-          </Section>
-        )}
-
-        {/* Application process */}
-        {present(item.applicationProcess) && (
-          <Section title="How to Apply">
-            <p className="text-sm text-foreground leading-relaxed">{item.applicationProcess}</p>
-          </Section>
-        )}
-
-        {/* Documents required */}
-        {present(item.documentsRequired) && (
-          <Section title="Documents Required">
-            <p className="text-sm text-foreground leading-relaxed">{item.documentsRequired}</p>
-          </Section>
-        )}
-
-        {/* Links */}
-        {(present(item.website) || present(item.email) || present(item.phone)) && (
-          <Section title="Contact">
-            <div className="space-y-2">
-              {present(item.website) && (
-                <LinkButton
-                  href={item.website.startsWith("http") ? item.website : `https://${item.website}`}
-                  icon={<Globe className="w-4 h-4" />}
-                  label={item.website}
-                />
-              )}
-              {present(item.email) && (
-                <LinkButton
-                  href={`mailto:${item.email}`}
-                  icon={<Mail className="w-4 h-4" />}
-                  label={item.email}
-                />
-              )}
-              {present(item.phone) && (
-                <LinkButton
-                  href={`tel:${item.phone}`}
-                  icon={<Phone className="w-4 h-4" />}
-                  label={item.phone}
-                />
-              )}
-            </div>
-          </Section>
-        )}
-
-        {/* Bottom padding so last item clears the scroll shadow */}
-        <div className="h-2" />
-      </div>
+      {/* ── Tab content ── */}
+      {tab === "info" ? (
+        <InfoTabContent item={item} />
+      ) : (
+        <AiTabContent item={item} />
+      )}
     </div>
   );
 }
