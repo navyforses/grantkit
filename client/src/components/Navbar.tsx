@@ -46,8 +46,10 @@ export default function Navbar() {
           <Link
             href="/"
             aria-current={location === "/" ? "page" : undefined}
-            className={`text-sm font-medium transition-colors ${
-              location === "/" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+            className={`relative text-sm transition-colors pb-0.5 ${
+              location === "/"
+                ? "font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.nav.home}
@@ -55,8 +57,10 @@ export default function Navbar() {
           <Link
             href="/catalog"
             aria-current={location === "/catalog" ? "page" : undefined}
-            className={`text-sm font-medium transition-colors ${
-              location === "/catalog" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+            className={`relative text-sm transition-colors pb-0.5 ${
+              location === "/catalog"
+                ? "font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.nav.catalog}
@@ -64,10 +68,10 @@ export default function Navbar() {
           <Link
             href="/ai-assistant"
             aria-current={location === "/ai-assistant" ? "page" : undefined}
-            className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${
+            className={`relative inline-flex items-center gap-1.5 text-sm transition-colors pb-0.5 ${
               location === "/ai-assistant"
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground"
+                ? "font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />

@@ -38,7 +38,22 @@ export function ThemeProvider({
   }, [theme]);
 
   const toggleTheme = () => {
+    // Temporarily suppress all CSS transitions to prevent browser freeze
+    // when hundreds of elements simultaneously re-paint on theme change.
+    const style = document.createElement("style");
+    style.id = "__gk-no-transition__";
+    style.textContent =
+      "*, *::before, *::after { transition: none !important; animation-duration: 0.01ms !important; }";
+    document.head.appendChild(style);
+
     setTheme(prev => (prev === "light" ? "dark" : "light"));
+
+    // Re-enable after the browser has painted the new theme (two rAFs = next frame)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.getElementById("__gk-no-transition__")?.remove();
+      });
+    });
   };
 
   return (

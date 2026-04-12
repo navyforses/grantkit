@@ -51,12 +51,13 @@
   --color-cat-startup: oklch(0.55 0.17 165);
 
   /* GrantKit brand — shared across themes */
-  --color-brand-green: oklch(0.65 0.2 145);
-  --color-brand-green-hover: oklch(0.6 0.22 145);
+  /* emerald-500 (#10B981) range — less aggressive than green-500 */
+  --color-brand-green: oklch(0.696 0.17 162);
+  --color-brand-green-hover: oklch(0.636 0.18 162);
   --color-navy: oklch(0.28 0.05 255);
   --color-navy-light: oklch(0.35 0.06 255);
-  --color-cta-green: oklch(0.65 0.2 145);
-  --color-cta-green-hover: oklch(0.6 0.22 145);
+  --color-cta-green: oklch(0.696 0.17 162);
+  --color-cta-green-hover: oklch(0.636 0.18 162);
 
   /* Hero section semantic tokens */
   --color-hero-bg: var(--hero-bg);
@@ -65,41 +66,41 @@
   --color-hero-overlay: var(--hero-overlay);
 }
 
-/* ☀️ SUN THEME (Light / Warm Cream) */
+/* ☀️ SUN THEME (Light / Clean White) */
 :root {
   --radius: 0.625rem;
 
-  /* Core surfaces */
-  --background: oklch(0.985 0.003 90);
-  --foreground: oklch(0.15 0.02 255);
+  /* Core surfaces — clean white, no warm beige tint */
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.148 0.026 257);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.02 255);
+  --card-foreground: oklch(0.148 0.026 257);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 255);
+  --popover-foreground: oklch(0.148 0.026 257);
 
   /* Primary: deep navy */
   --primary: oklch(0.28 0.05 255);
   --primary-foreground: oklch(0.98 0 0);
 
-  /* Secondary: warm light */
-  --secondary: oklch(0.965 0.005 90);
+  /* Secondary: very light gray */
+  --secondary: oklch(0.975 0 0);
   --secondary-foreground: oklch(0.35 0.04 255);
 
-  /* Muted: soft warm gray */
-  --muted: oklch(0.955 0.005 90);
-  --muted-foreground: oklch(0.48 0.02 255);
+  /* Muted: soft neutral gray */
+  --muted: oklch(0.975 0 0);
+  --muted-foreground: oklch(0.522 0.014 255);
 
-  /* Accent: subtle warm tint */
-  --accent: oklch(0.955 0.008 90);
-  --accent-foreground: oklch(0.15 0.02 255);
+  /* Accent: subtle tint */
+  --accent: oklch(0.97 0.004 255);
+  --accent-foreground: oklch(0.148 0.026 257);
 
   /* Destructive */
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
 
-  /* Borders & inputs */
-  --border: oklch(0.915 0.008 90);
-  --input: oklch(0.915 0.008 90);
+  /* Borders & inputs — gray-200 cool tone (#E5E7EB) */
+  --border: oklch(0.922 0.003 255);
+  --input: oklch(0.922 0.003 255);
   --ring: oklch(0.55 0.15 255);
 
   /* Charts */
@@ -193,7 +194,7 @@
     @apply bg-background text-foreground;
     font-family: "DM Sans", "Noto Sans Georgian", system-ui, -apple-system, sans-serif;
     -webkit-tap-highlight-color: transparent;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    /* No always-on transition — theme toggle uses JS to suppress mass repaints */
   }
   /* Safe area for devices with notch/home indicator */
   .safe-area-bottom {
@@ -262,8 +263,70 @@
     animation: slide-up 0.3s ease-out;
   }
 
-  /* Theme transition for smooth switching */
+  /* Interactive element transitions — NOT used for theme switching */
   .theme-transition {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  /* ===== Hero animated gradient blobs (CSS-only, no JS) ===== */
+  .hero-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(64px);
+    pointer-events: none;
+  }
+  .hero-blob-1 {
+    width: 400px;
+    height: 400px;
+    top: -100px;
+    left: -80px;
+    background: color-mix(in oklch, oklch(0.696 0.17 162) 15%, transparent);
+    animation: blob-float-1 15s ease-in-out infinite;
+  }
+  .hero-blob-2 {
+    width: 350px;
+    height: 350px;
+    top: 30%;
+    right: -80px;
+    background: color-mix(in oklch, oklch(0.28 0.05 255) 12%, transparent);
+    animation: blob-float-2 18s ease-in-out infinite;
+  }
+  .hero-blob-3 {
+    width: 300px;
+    height: 300px;
+    bottom: -80px;
+    left: 35%;
+    background: color-mix(in oklch, oklch(0.696 0.17 162) 10%, transparent);
+    animation: blob-float-3 20s ease-in-out infinite;
+  }
+
+  @keyframes blob-float-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%       { transform: translate(20px, -20px) scale(1.06); }
+    66%       { transform: translate(-15px, 15px) scale(0.96); }
+  }
+  @keyframes blob-float-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%       { transform: translate(-30px, 20px) scale(1.08); }
+  }
+  @keyframes blob-float-3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    40%       { transform: translate(25px, -15px) scale(1.04); }
+    80%       { transform: translate(-10px, 10px) scale(0.95); }
+  }
+
+  /* ===== Respect reduced motion preference ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-blob {
+      animation: none !important;
+    }
+    /* Framer Motion respects this via its built-in hook,
+       but also suppress any remaining CSS animations */
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
