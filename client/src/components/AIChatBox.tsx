@@ -34,6 +34,8 @@ export type AIChatBoxProps = {
   copyLabel?: string;
   errorMessage?: string;
   retryLabel?: string;
+  /** Hide the card header (used when embedded inside GrantDetailPanel). */
+  hideHeader?: boolean;
   // Grant focus mode
   focusedGrant?: ParsedGrant | null;
   onClearFocus?: () => void;
@@ -93,6 +95,7 @@ export function AIChatBox({
   copyLabel = "Copy",
   errorMessage = "An error occurred. Please try again.",
   retryLabel = "Retry",
+  hideHeader = false,
   focusedGrant,
   onClearFocus,
   focusLabel = "Focus:",
@@ -160,25 +163,27 @@ export function AIChatBox({
         className
       )}
     >
-      {/* Card header with "New chat" button */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
-        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Sparkles className="size-4 text-primary" />
-          <span>{headerTitle}</span>
+      {/* Card header with "New chat" button — hidden when embedded */}
+      {!hideHeader && (
+        <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <Sparkles className="size-4 text-primary" />
+            <span>{headerTitle}</span>
+          </div>
+          {onClearMessages && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onClearMessages}
+              className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw className="size-3.5 mr-1" />
+              {newChatLabel}
+            </Button>
+          )}
         </div>
-        {onClearMessages && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={onClearMessages}
-            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <RotateCcw className="size-3.5 mr-1" />
-            {newChatLabel}
-          </Button>
-        )}
-      </div>
+      )}
 
       {/* Grant Focus Chip — shown between header and messages */}
       <AnimatePresence>
@@ -362,7 +367,7 @@ export function AIChatBox({
           placeholder={activePlaceholder}
           className="flex-1 max-h-32 resize-none min-h-9 text-base"
           rows={1}
-          aria-label="შეკითხვა გრანტების შესახებ"
+          aria-label={headerTitle}
         />
         <Button
           type="submit"

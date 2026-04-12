@@ -17,27 +17,10 @@ import { Sparkles, Database, Globe, Search } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-/**
- * Builds the context prefix injected into the API message when focus mode is active.
- * The user sees their original message in the chat; the API receives this enriched version.
- * Uses the Georgian-language prompt template per spec.
- */
-function buildGrantFocusContext(userMessage: string, grant: ParsedGrant): string {
-  const details = [
-    `📋 გრანტი: ${grant.name}`,
-    grant.organization ? `🏢 ორგანიზაცია: ${grant.organization}` : null,
-    grant.country ? `📍 ლოკაცია: ${grant.country}` : null,
-    grant.amount ? `💰 თანხა: ${grant.amount}` : null,
-    grant.deadline ? `📅 ვადა: ${grant.deadline}` : null,
-    grant.website ? `🌐 ვებსაიტი: ${grant.website}` : null,
-  ].filter(Boolean).join("\n");
-
-  return `შენ ხარ GrantKit AI ასისტენტი. მომხმარებელი ამჟამად კითხულობს კონკრეტული გრანტის/ორგანიზაციის შესახებ:\n\n${details}\n\nუპასუხე მომხმარებლის შეკითხვას მხოლოდ ამ გრანტის/ორგანიზაციის კონტექსტში. თუ მომხმარებელი ისეთ რამეს ეკითხება, რაც ამ გრანტს არ ეხება, თავაზიანად შეახსენე რომ ფოკუსი ამ გრანტზეა და შესთავაზე ფოკუსის მოხსნა ზოგადი ძებნისთვის.\n\n${userMessage}`;
-}
+import { buildGrantFocusContext } from "@/lib/grantFocusContext";
 
 export default function AiAssistant() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [lastInput, setLastInput] = useState<{
     message: string;
@@ -61,18 +44,26 @@ export default function AiAssistant() {
 
   const grantChat = trpc.ai.grantChat.useMutation();
 
+  // Refs so callbacks stay stable regardless of mutation object identity
+  const mutateRef = useRef(grantChat.mutate);
+  mutateRef.current = grantChat.mutate;
+  const resetRef = useRef(grantChat.reset);
+  resetRef.current = grantChat.reset;
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+
   const handleClearMessages = useCallback(() => {
     setMessages([]);
     setLastInput(null);
     setExtractedGrants([]);
     setFocusedGrant(null);
     setSelectedGrantName(null);
-    grantChat.reset();
-  }, [grantChat]);
+    resetRef.current();
+  }, []);
 
   const handleSend = useCallback(
     (content: string) => {
-      const history = messages
+      const history = messagesRef.current
         .filter(
           (m): m is { role: "user" | "assistant"; content: string; timestamp?: Date } =>
             m.role === "user" || m.role === "assistant"
@@ -82,13 +73,13 @@ export default function AiAssistant() {
       // Show original message in chat; enrich for API if in focus mode
       const currentFocus = focusedGrantRef.current;
       const apiMessage = currentFocus
-        ? buildGrantFocusContext(content, currentFocus)
+        ? buildGrantFocusContext(content, currentFocus, language)
         : content;
 
       const input = { message: apiMessage, history };
       setLastInput(input);
       setMessages((prev) => [...prev, { role: "user", content, timestamp: new Date() }]);
-      grantChat.mutate(input, {
+      mutateRef.current(input, {
         onSuccess: (data) => {
           setMessages((prev) => [
             ...prev,
@@ -101,12 +92,12 @@ export default function AiAssistant() {
         },
       });
     },
-    [messages, grantChat]
+    [language]
   );
 
   const handleRetry = useCallback(() => {
     if (!lastInput) return;
-    grantChat.mutate(lastInput, {
+    mutateRef.current(lastInput, {
       onSuccess: (data) => {
         setMessages((prev) => [
           ...prev,
@@ -117,7 +108,7 @@ export default function AiAssistant() {
         }
       },
     });
-  }, [lastInput, grantChat]);
+  }, [lastInput]);
 
   /** Called when a grant card is clicked in the sidebar */
   const handleGrantSelect = useCallback((grant: ParsedGrant) => {
