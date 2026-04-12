@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Send, User, Sparkles, RotateCcw, Copy, AlertCircle } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { Send, User, Sparkles, RotateCcw, Copy, AlertCircle, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Streamdown } from "streamdown";
 
 /**
@@ -176,10 +176,10 @@ export function AIChatBox({
                     </div>
                   )}
 
-                  <div className={cn("flex flex-col", message.role === "user" ? "items-end" : "items-start")}>
+                  <div className={cn("flex flex-col max-w-[80%]", message.role === "user" ? "items-end" : "items-start")}>
                     <div
                       className={cn(
-                        "max-w-[80%] rounded-lg px-4 py-2.5",
+                        "rounded-lg px-4 py-2.5",
                         message.role === "user"
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted text-foreground"
@@ -210,7 +210,9 @@ export function AIChatBox({
                         <button
                           type="button"
                           className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
-                          onClick={() => navigator.clipboard.writeText(message.content)}
+                          onClick={() => {
+                            navigator.clipboard.writeText(message.content).catch(() => {});
+                          }}
                           aria-label={copyLabel}
                           title={copyLabel}
                         >
@@ -292,7 +294,11 @@ export function AIChatBox({
           disabled={!input.trim() || isLoading}
           className="shrink-0 h-[38px] w-[38px]"
         >
-          <Send className="size-4" />
+          {isLoading ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Send className="size-4" />
+          )}
         </Button>
       </form>
     </div>

@@ -79,6 +79,7 @@ export default function OnboardingModal() {
           >
             {/* Close button */}
             <button
+              type="button"
               onClick={handleClose}
               className="absolute top-4 right-4 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
             >
@@ -118,6 +119,7 @@ export default function OnboardingModal() {
             </div>
 
             <button
+              type="button"
               onClick={handleGetStarted}
               className="w-full py-3 bg-brand-green text-white rounded-xl font-semibold text-sm hover:bg-brand-green-hover transition-colors"
             >

@@ -48,6 +48,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
       {/* Bookmark button */}
       {isAuthenticated && onToggleSave && (
         <button
+          type="button"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
