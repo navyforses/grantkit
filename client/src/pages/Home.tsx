@@ -155,36 +155,30 @@ export default function Home() {
         </div>
 
         <div className="relative container py-20 md:py-32 lg:py-40">
+          {/* SEO */}
+          <h1 className="sr-only">{t.hero.title}{t.hero.titleAccent}</h1>
+
           {/* ── GRANTKIT branding ── */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className="text-center mb-8 md:mb-12 select-none"
+            className="text-center mb-10 md:mb-14 select-none"
             aria-hidden="true"
           >
-            <span className="hero-brand-text text-[clamp(3rem,10vw,7rem)] font-bold leading-none tracking-tighter">
+            <span className="hero-brand-text text-[clamp(4rem,14vw,11rem)] font-bold leading-none tracking-tighter">
               <span className="text-brand-green">GRANT</span>
               <span className="hero-sage">KIT</span>
             </span>
           </motion.div>
 
-          {/* ── Tagline + CTA only ── */}
+          {/* ── CTA only ── */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="max-w-lg mx-auto text-center"
+            className="text-center"
           >
-            {/* SEO: visually hidden but accessible h1 */}
-            <h1 className="sr-only">
-              {t.hero.title}{t.hero.titleAccent}
-            </h1>
-
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
-              {t.hero.subtitle}
-            </p>
-
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
               <PricingCTA text={t.hero.cta} size="large" className="w-full sm:w-auto justify-center" />
               <a
@@ -197,7 +191,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* Stats — compact row */}
+          {/* Stats row */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -216,6 +210,14 @@ export default function Home() {
               </div>
             ))}
           </motion.div>
+        </div>
+
+        {/* ── Horizontal scrolling ticker ── */}
+        <div className="overflow-hidden border-t border-border/50 py-4 md:py-5">
+          <div className="hero-ticker text-sm md:text-base text-muted-foreground/60 whitespace-nowrap">
+            <span>{t.hero.subtitle}</span>
+            <span>{t.hero.subtitle}</span>
+          </div>
         </div>
       </section>
 
