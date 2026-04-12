@@ -255,11 +255,9 @@ export default function Catalog() {
     setMapCityName("");
   }, []);
 
-  // Map instance — ref for flyTo (no re-render needed), state for markers hook
-  const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
+  // Map instance state — shared by useMapFlyTo and useMapMarkers
   const [mapInstance, setMapInstance] = useState<mapboxgl.Map | null>(null);
   const handleMapReady = useCallback((map: mapboxgl.Map) => {
-    mapInstanceRef.current = map;
     setMapInstance(map);
   }, []);
 

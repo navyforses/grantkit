@@ -48,7 +48,12 @@ function toGeoJSON(items: CatalogItem[]): GeoJSON.FeatureCollection<GeoJSON.Poin
   const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
   for (const item of items) {
     const c = resolveItemCoords(item.country, item.state, item.city);
-    if (!c) continue;
+    if (!c) {
+      if (import.meta.env.DEV) {
+        console.warn("[map] no coords:", item.id, { country: item.country, state: item.state, city: item.city });
+      }
+      continue;
+    }
     features.push({
       type: "Feature",
       geometry: { type: "Point", coordinates: c },
@@ -205,7 +210,9 @@ export function useMapMarkers(
             zoom: zoom as number,
             duration: 500,
           });
-        } catch { /* ignore */ }
+        } catch (err) {
+          if (import.meta.env.DEV) console.warn("[map] cluster expansion failed", err);
+        }
       };
 
       // ── Point click → select item ──────────────────────────────────────

@@ -1,10 +1,14 @@
 /*
  * useMapFlyTo — Flies the Mapbox map to the selected location
- * whenever countryCode / stateCode / cityName changes.
+ * whenever the map instance becomes ready OR countryCode / stateCode / cityName changes.
  *
  * Coordinate source: country-state-city (same package used in MapFilterPanel).
  * Priority: city > state > country > world reset.
- * Only fires when values actually change — skips the initial render.
+ *
+ * Accepts the map as state (not a ref) so the effect re-runs when the map becomes
+ * available — handles initial page-load from URL params (e.g. /catalog?mc=US).
+ * Tracks the previous map instance separately to distinguish "map just became ready"
+ * from "nothing changed".
  */
 
 import { useEffect, useRef } from "react";

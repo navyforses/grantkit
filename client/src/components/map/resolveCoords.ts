@@ -11,7 +11,13 @@
  * Input formats accepted for `state`:
  *   • ISO state/province code ("CA", "NY")
  *   • Full state name ("California", "New York")
- *   • "Nationwide" / "National" → ignored (stays at country center)
+ *   • "Nationwide" / "National" → triggers cross-state city search when city present,
+ *     otherwise stays at country center.
+ *
+ * Nationwide + city handling:
+ *   484 of 643 catalog items have state="Nationwide" plus a non-empty city.
+ *   Without cross-state search, all 484 are pinned to the US country center.
+ *   With it, each unique city is searched once across all states and cached.
  */
 
 import { Country, State, City } from "country-state-city";
@@ -86,20 +92,22 @@ function _resolveItemCoords(
   let coords = parsePair(countryData.latitude, countryData.longitude);
   if (!coords) return null;
 
-  // Refine to state — skip placeholder values
-  if (state && !/^(nationwide|national|all\s)/i.test(state.trim())) {
+  const isNationwide = !state || /^(nationwide|national|all\s)/i.test(state.trim());
+
+  if (!isNationwide) {
+    // ── Refine to state ───────────────────────────────────────────────────
     const states = State.getStatesOfCountry(iso);
     const stateMatch = states.find(
       (s) =>
-        s.isoCode === state.toUpperCase() ||
-        s.name.toLowerCase() === state.toLowerCase()
+        s.isoCode === state!.toUpperCase() ||
+        s.name.toLowerCase() === state!.toLowerCase()
     );
     const stateCoords = parsePair(stateMatch?.latitude, stateMatch?.longitude);
 
     if (stateCoords) {
       coords = stateCoords;
 
-      // Refine to city
+      // ── Refine to city ──────────────────────────────────────────────────
       if (city && stateMatch) {
         const cities = City.getCitiesOfState(iso, stateMatch.isoCode);
         const cityMatch = cities.find(
@@ -107,6 +115,23 @@ function _resolveItemCoords(
         );
         const cityCoords = parsePair(cityMatch?.latitude, cityMatch?.longitude);
         if (cityCoords) coords = cityCoords;
+      }
+    }
+  } else if (city) {
+    // ── Nationwide + city: search across all states ───────────────────────
+    // Many items have state="Nationwide" but include a city (e.g. "Omaha", "Austin").
+    // Search every state in the country and take the first coordinate match.
+    // COORD_CACHE ensures each unique (country, "Nationwide", city) triplet is
+    // computed only once, regardless of how many items share the same city.
+    const allStates = State.getStatesOfCountry(iso);
+    for (const st of allStates) {
+      const cities = City.getCitiesOfState(iso, st.isoCode);
+      const cityMatch = cities.find(
+        (c) => c.name.toLowerCase() === city.toLowerCase()
+      );
+      if (cityMatch) {
+        const cityCoords = parsePair(cityMatch.latitude, cityMatch.longitude);
+        if (cityCoords) { coords = cityCoords; break; }
       }
     }
   }
