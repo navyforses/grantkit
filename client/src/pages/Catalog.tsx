@@ -241,6 +241,39 @@ export default function Catalog() {
   const usingStatic = !catalogData?.grants && HAS_STATIC_DATA;
   const totalItems = catalogData?.total || (usingStatic ? staticFilteredRef.current : 0);
 
+  // Map items — ALL filtered items for markers (no pagination).
+  // displayItems is capped at 30/page; mapItems uses the full static catalog so every
+  // matching grant appears on the map regardless of which page the user is on.
+  const mapItems: CatalogItem[] = useMemo(() => {
+    if (HAS_STATIC_DATA) {
+      let filtered: any[] = STATIC_CATALOG;
+      if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
+      if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
+      if (mapCountryCode) filtered = filtered.filter((g: any) => g.country === mapCountryCode);
+      if (mapStateCode) filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
+      if (mapCityName) filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
+      if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
+      if (fundingType !== "all") filtered = filtered.filter((g: any) => g.fundingType === fundingType);
+      if (b2VisaEligible !== "all") filtered = filtered.filter((g: any) => g.b2VisaEligible === b2VisaEligible);
+      if (hasDeadline) filtered = filtered.filter((g: any) => g.deadline && g.deadline !== "");
+      if (debouncedSearch) {
+        const q = debouncedSearch.toLowerCase();
+        filtered = filtered.filter((g: any) =>
+          (g.name || "").toLowerCase().includes(q) ||
+          (g.organization || "").toLowerCase().includes(q) ||
+          (g.description || "").toLowerCase().includes(q)
+        );
+      }
+      return filtered.map((g: any) => ({ ...g, type: g.type as "grant" | "resource" }));
+    }
+    // No static data — fall back to current-page items
+    return displayItems;
+  }, [
+    selectedCategory, selectedType, mapCountryCode, mapStateCode, mapCityName,
+    targetDiagnosis, fundingType, b2VisaEligible, hasDeadline, debouncedSearch,
+    displayItems,
+  ]);
+
   const resetFilters = useCallback(() => {
     setSelectedCategory("all");
     setSelectedType("all");
@@ -264,14 +297,20 @@ export default function Catalog() {
   // Phase 3 — fly to selected location whenever country / state / city changes
   useMapFlyTo(mapInstance, mapCountryCode, mapStateCode, mapCityName);
 
-  // Phase 4 — clustered grant/resource markers; selectedItemId feeds Phase 5
+  // Phase 4 — clustered grant/resource markers; selectedItemId feeds Phase 5.
+  // mapItems (all filtered items, not paginated) is used so every visible marker
+  // can be clicked even when it is not on the current display page.
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  useMapMarkers(mapInstance, displayItems, setSelectedItemId);
+  useMapMarkers(mapInstance, mapItems, setSelectedItemId);
 
-  // Phase 5 — detail panel for the selected marker
+  // Phase 5 — detail panel for the selected marker.
+  // Prefer displayItems (may carry translations) then fall back to mapItems (full catalog).
   const selectedItem = useMemo(
-    () => displayItems.find((g) => g.id === selectedItemId) ?? null,
-    [displayItems, selectedItemId]
+    () =>
+      displayItems.find((g) => g.id === selectedItemId) ??
+      mapItems.find((g) => g.id === selectedItemId) ??
+      null,
+    [displayItems, mapItems, selectedItemId]
   );
   const toggleSaveMutateRef = useRef(toggleSave.mutate);
   toggleSaveMutateRef.current = toggleSave.mutate;
