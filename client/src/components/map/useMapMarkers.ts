@@ -30,6 +30,17 @@ const C_SM = "#818cf8"; // < 10 items in cluster
 const C_MD = "#6366f1"; // 10 – 49
 const C_LG = "#4f46e5"; // 50+
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Escape HTML special characters to prevent XSS in setHTML() calls. */
+function esc(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 // ── GeoJSON builder ───────────────────────────────────────────────────────────
 
 function toGeoJSON(items: CatalogItem[]): GeoJSON.FeatureCollection<GeoJSON.Point> {
@@ -114,6 +125,19 @@ function addSourceAndLayers(
   });
 }
 
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+type LayerHandler = (e: mapboxgl.MapLayerMouseEvent) => void;
+
+interface HandlerSet {
+  clusterClick: LayerHandler;
+  pointClick:   LayerHandler;
+  pointEnter:   LayerHandler;
+  pointLeave:   LayerHandler;
+  clusterEnter: LayerHandler;
+  clusterLeave: LayerHandler;
+}
+
 // ── Hook ──────────────────────────────────────────────────────────────────────
 
 export function useMapMarkers(
@@ -125,6 +149,10 @@ export function useMapMarkers(
   const itemsRef    = useRef<CatalogItem[]>(items);
   const onSelectRef = useRef(onSelectItem);
   const popupRef    = useRef<mapboxgl.Popup | null>(null);
+  // Stored handler references so we can remove them before re-registering
+  // after a style.load (dark ↔ light toggle), preventing duplicate firings.
+  const handlersRef = useRef<HandlerSet | null>(null);
+
   itemsRef.current    = items;
   onSelectRef.current = onSelectItem;
 
@@ -133,14 +161,29 @@ export function useMapMarkers(
     if (!map) return;
 
     const setup = () => {
-      // Remove any lingering popup from before the style reload
+      // 1. Remove any lingering popup from before the style reload
       popupRef.current?.remove();
       popupRef.current = null;
 
+      // 2. Remove old event handlers (if any) before re-adding them.
+      //    Without this, each style.load call would pile up a new set of
+      //    handlers on the same layers, causing N-fold event firing.
+      if (handlersRef.current) {
+        const h = handlersRef.current;
+        map.off("click",      LYR_CLUSTER, h.clusterClick);
+        map.off("click",      LYR_POINTS,  h.pointClick);
+        map.off("mouseenter", LYR_POINTS,  h.pointEnter);
+        map.off("mouseleave", LYR_POINTS,  h.pointLeave);
+        map.off("mouseenter", LYR_CLUSTER, h.clusterEnter);
+        map.off("mouseleave", LYR_CLUSTER, h.clusterLeave);
+        handlersRef.current = null;
+      }
+
+      // 3. Re-add source + layers (source was cleared by setStyle)
       addSourceAndLayers(map, toGeoJSON(itemsRef.current));
 
-      // ── Cluster click → zoom in ──────────────────────────────────────────
-      const onClusterClick = async (e: mapboxgl.MapLayerMouseEvent) => {
+      // ── Cluster click → zoom in ────────────────────────────────────────
+      const clusterClick: LayerHandler = async (e) => {
         const feat = e.features?.[0];
         if (!feat) return;
         const clusterId: number = feat.properties?.cluster_id;
@@ -155,20 +198,21 @@ export function useMapMarkers(
         } catch { /* ignore */ }
       };
 
-      // ── Point click → select item ────────────────────────────────────────
-      const onPointClick = (e: mapboxgl.MapLayerMouseEvent) => {
+      // ── Point click → select item ──────────────────────────────────────
+      const pointClick: LayerHandler = (e) => {
         const id = String(e.features?.[0]?.properties?.id ?? "");
         if (id) onSelectRef.current(id);
       };
 
-      // ── Hover popup (individual points) ──────────────────────────────────
-      const onPointEnter = (e: mapboxgl.MapLayerMouseEvent) => {
+      // ── Hover popup (individual points) ───────────────────────────────
+      const pointEnter: LayerHandler = (e) => {
         map.getCanvas().style.cursor = "pointer";
         const feat = e.features?.[0];
         if (!feat) return;
         const coords = (feat.geometry as GeoJSON.Point).coordinates.slice() as [number, number];
-        const name: string = feat.properties?.name ?? "";
-        const org:  string = feat.properties?.organization ?? "";
+        // Escape to prevent XSS — names/orgs come from DB via GeoJSON properties
+        const name = esc(feat.properties?.name ?? "");
+        const org  = esc(feat.properties?.organization ?? "");
 
         popupRef.current?.remove();
         popupRef.current = new mapboxgl.Popup({
@@ -187,21 +231,27 @@ export function useMapMarkers(
           .addTo(map);
       };
 
-      const onPointLeave = () => {
+      const pointLeave: LayerHandler = () => {
         map.getCanvas().style.cursor = "";
         popupRef.current?.remove();
         popupRef.current = null;
       };
 
-      const onClusterEnter = () => { map.getCanvas().style.cursor = "pointer"; };
-      const onClusterLeave = () => { map.getCanvas().style.cursor = ""; };
+      const clusterEnter: LayerHandler = () => { map.getCanvas().style.cursor = "pointer"; };
+      const clusterLeave: LayerHandler = () => { map.getCanvas().style.cursor = ""; };
 
-      map.on("click",      LYR_CLUSTER, onClusterClick);
-      map.on("click",      LYR_POINTS,  onPointClick);
-      map.on("mouseenter", LYR_POINTS,  onPointEnter);
-      map.on("mouseleave", LYR_POINTS,  onPointLeave);
-      map.on("mouseenter", LYR_CLUSTER, onClusterEnter);
-      map.on("mouseleave", LYR_CLUSTER, onClusterLeave);
+      // 4. Store new handler references
+      handlersRef.current = {
+        clusterClick, pointClick, pointEnter, pointLeave, clusterEnter, clusterLeave,
+      };
+
+      // 5. Register
+      map.on("click",      LYR_CLUSTER, clusterClick);
+      map.on("click",      LYR_POINTS,  pointClick);
+      map.on("mouseenter", LYR_POINTS,  pointEnter);
+      map.on("mouseleave", LYR_POINTS,  pointLeave);
+      map.on("mouseenter", LYR_CLUSTER, clusterEnter);
+      map.on("mouseleave", LYR_CLUSTER, clusterLeave);
     };
 
     map.on("style.load", setup);

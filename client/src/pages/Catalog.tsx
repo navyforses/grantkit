@@ -19,7 +19,6 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
-import { useIsMobile } from "@/hooks/useMobile";
 import MapView from "@/components/map/MapView";
 import MapFilterPanel from "@/components/map/MapFilterPanel";
 import { useMapFlyTo } from "@/hooks/useMapFlyTo";
@@ -87,7 +86,6 @@ export default function Catalog() {
 
   const { t, language } = useLanguage();
   const { isAuthenticated } = useAuth();
-  const isMobile = useIsMobile();
 
   // Sync filter state to URL
   useEffect(() => {
@@ -125,15 +123,16 @@ export default function Catalog() {
       search: debouncedSearch || undefined,
       language: debouncedSearch ? language : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
-      country: selectedCountry !== "all" ? selectedCountry : undefined,
+      // Map panel location takes priority; fall back to legacy URL-param filters
+      country: mapCountryCode || (selectedCountry !== "all" ? selectedCountry : undefined),
+      state:   mapStateCode   || (selectedState   !== "all" ? selectedState   : undefined),
+      city:    mapCityName    || (selectedCity     !== "all" ? selectedCity    : undefined),
       type: selectedType !== "all" ? selectedType : undefined,
       sortBy,
       fundingType: fundingType !== "all" ? fundingType : undefined,
       targetDiagnosis: targetDiagnosis !== "all" ? targetDiagnosis : undefined,
       b2VisaEligible: b2VisaEligible !== "all" ? b2VisaEligible : undefined,
       hasDeadline: hasDeadline || undefined,
-      state: selectedState !== "all" ? selectedState : undefined,
-      city: selectedCity !== "all" ? selectedCity : undefined,
       page: (subStatus?.isActive || HAS_STATIC_DATA) ? page : 1,
       pageSize: (subStatus?.isActive || HAS_STATIC_DATA) ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
@@ -141,6 +140,7 @@ export default function Catalog() {
       debouncedSearch, language, selectedCategory, selectedCountry, selectedType,
       sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
       selectedState, selectedCity, page, subStatus?.isActive,
+      mapCountryCode, mapStateCode, mapCityName,
     ]
   );
 
@@ -149,10 +149,7 @@ export default function Catalog() {
     placeholderData: (prev: any) => prev,
   });
 
-  const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
-
   const isStaticMode = !catalogData && HAS_STATIC_DATA;
-  const isActive = isStaticMode || subStatus?.isActive || false;
 
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -215,10 +212,25 @@ export default function Catalog() {
     if (STATIC_CATALOG) {
       let filtered: any[] = STATIC_CATALOG;
       if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
-      if (selectedCountry !== "all") filtered = filtered.filter((g: any) => g.country === selectedCountry);
       if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
-      if (selectedState !== "all") filtered = filtered.filter((g: any) => g.state === selectedState || g.state === "Nationwide");
-      if (selectedCity !== "all") filtered = filtered.filter((g: any) => !g.city || g.city === selectedCity);
+
+      // Map panel location filters (ISO code / city name) take priority over legacy URL params.
+      // DB stores country as "US"/"International", state as ISO codes ("CA", "NC"…).
+      if (mapCountryCode) {
+        filtered = filtered.filter((g: any) => g.country === mapCountryCode);
+      } else if (selectedCountry !== "all") {
+        filtered = filtered.filter((g: any) => g.country === selectedCountry);
+      }
+      if (mapStateCode) {
+        filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
+      } else if (selectedState !== "all") {
+        filtered = filtered.filter((g: any) => g.state === selectedState || g.state === "Nationwide");
+      }
+      if (mapCityName) {
+        filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
+      } else if (selectedCity !== "all") {
+        filtered = filtered.filter((g: any) => !g.city || g.city === selectedCity);
+      }
       if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
       if (fundingType !== "all") filtered = filtered.filter((g: any) => g.fundingType === fundingType);
       if (b2VisaEligible !== "all") filtered = filtered.filter((g: any) => g.b2VisaEligible === b2VisaEligible);
@@ -243,6 +255,7 @@ export default function Catalog() {
     catalogData, language, selectedCategory, selectedCountry, selectedType,
     selectedState, selectedCity, targetDiagnosis, fundingType, b2VisaEligible,
     hasDeadline, debouncedSearch, page,
+    mapCountryCode, mapStateCode, mapCityName,
   ]);
 
   const usingStatic = !catalogData?.grants && HAS_STATIC_DATA;
