@@ -68,6 +68,7 @@ export default function MobileHeader() {
             <ThemeToggle size="sm" />
             <LanguageSwitcher />
             <button
+              type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               className="w-10 h-10 flex items-center justify-center rounded-xl text-muted-foreground active:bg-secondary transition-colors"
               aria-label="Toggle menu"

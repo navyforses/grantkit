@@ -45,6 +45,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3 sm:gap-5">
           <Link
             href="/"
+            aria-current={location === "/" ? "page" : undefined}
             className={`text-sm font-medium transition-colors ${
               location === "/" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
@@ -53,6 +54,7 @@ export default function Navbar() {
           </Link>
           <Link
             href="/catalog"
+            aria-current={location === "/catalog" ? "page" : undefined}
             className={`text-sm font-medium transition-colors ${
               location === "/catalog" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
@@ -61,6 +63,7 @@ export default function Navbar() {
           </Link>
           <Link
             href="/ai-assistant"
+            aria-current={location === "/ai-assistant" ? "page" : undefined}
             className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${
               location === "/ai-assistant"
                 ? "text-foreground"
@@ -79,6 +82,7 @@ export default function Navbar() {
                   {/* Dashboard link */}
                   <Link
                     href="/dashboard"
+                    aria-current={location === "/dashboard" ? "page" : undefined}
                     className={`inline-flex items-center gap-1 text-sm font-medium transition-colors ${
                       location === "/dashboard" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
@@ -112,6 +116,7 @@ export default function Navbar() {
                       </span>
                     </Link>
                     <button
+                      type="button"
                       onClick={handleLogout}
                       className="text-muted-foreground hover:text-destructive transition-colors p-1"
                       title={t.nav.logout}

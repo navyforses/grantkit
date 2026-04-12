@@ -76,6 +76,7 @@ export default function MobileBottomNav() {
               <a
                 key={tab.label}
                 href={tab.href}
+                aria-current={tab.active ? "page" : undefined}
                 className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
                   tab.active
                     ? "text-brand-green"
@@ -91,6 +92,7 @@ export default function MobileBottomNav() {
             <Link
               key={tab.label}
               href={tab.href}
+              aria-current={tab.active ? "page" : undefined}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
                 tab.active
                   ? "text-brand-green"

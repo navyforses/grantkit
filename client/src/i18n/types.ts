@@ -761,6 +761,23 @@ export interface Translations {
     reload: string;
   };
 
+  // AI Assistant page
+  aiAssistant: {
+    title: string;
+    subtitle: string;
+    description: string;
+    liveDatabase: string;
+    countries: string;
+    grants: string;
+    placeholder: string;
+    newChat: string;
+    emptyState: string;
+    copy: string;
+    error: string;
+    retry: string;
+    suggestedPrompts: string[];
+  };
+
   // SEO meta tags
   seo: {
     homeTitle: string;

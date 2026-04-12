@@ -5,8 +5,9 @@ import Login from "@/pages/Login";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { LanguageProvider } from "./contexts/LanguageContext";
+import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
 import { usePaddleInit } from "./hooks/usePaddle";
+import { useEffect } from "react";
 import MobileHeader from "./components/MobileHeader";
 import MobileBottomNav from "./components/MobileBottomNav";
 import Home from "./pages/Home";
@@ -51,6 +52,14 @@ function PaddleInitializer() {
   return null;
 }
 
+function HtmlLangSetter() {
+  const { language } = useLanguage();
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+  return null;
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -59,6 +68,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <PaddleInitializer />
+            <HtmlLangSetter />
             <OnboardingModal />
             {/* Mobile-only header (hidden on md+) */}
             <MobileHeader />

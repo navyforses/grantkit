@@ -68,6 +68,7 @@ export default function PricingCTA({
 
   return (
     <button
+      type="button"
       onClick={handleClick}
       className={`${baseStyles} ${sizeStyles} ${variantStyles} ${className}`}
     >

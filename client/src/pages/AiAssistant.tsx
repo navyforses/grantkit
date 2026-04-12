@@ -2,71 +2,72 @@
  * AI Grant Assistant — powered by MCP Toolbox for Databases
  *
  * Natural-language interface to the live GrantKit MySQL database.
- * The page wires the existing AIChatBox component to the server-side
- * ai.grantChat tRPC mutation which drives an agentic tool-use loop via
- * googleapis/mcp-toolbox and the Forge LLM.
+ * Viewport-constrained layout: chat fills available height with sticky input.
  */
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AIChatBox, type Message } from "@/components/AIChatBox";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { Sparkles, Database, Globe, Search } from "lucide-react";
-
-const SUGGESTED_PROMPTS = [
-  "Find cancer treatment grants in the USA",
-  "What housing assistance is available in Canada?",
-  "Show me education grants for low-income families",
-  "Find disability support grants in the UK",
-  "Are there grants available for rare disease patients?",
-  "What grants exist for medical expenses in Europe?",
-];
-
-const FEATURE_PILLS = [
-  { icon: Database, label: "Live database" },
-  { icon: Globe, label: "29 countries" },
-  { icon: Search, label: "640+ grants" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AiAssistant() {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [lastInput, setLastInput] = useState<{ message: string; history: { role: "user" | "assistant"; content: string }[] } | null>(null);
 
-  const grantChat = trpc.ai.grantChat.useMutation({
-    onSuccess: (data) => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.reply },
-      ]);
-    },
-    onError: () => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content:
-            "Sorry, I encountered an error searching the database. " +
-            "Please try again or browse the [grant catalog](/catalog) directly.",
-        },
-      ]);
-    },
-  });
+  // Lock body scroll for full-viewport chat layout
+  useEffect(() => {
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
 
-  const handleSend = (content: string) => {
-    // Capture history before updating state (previous turns only)
+  const grantChat = trpc.ai.grantChat.useMutation();
+
+  const handleSend = useCallback((content: string) => {
     const history = messages
-      .filter((m): m is { role: "user" | "assistant"; content: string } =>
+      .filter((m): m is { role: "user" | "assistant"; content: string; timestamp?: Date } =>
         m.role === "user" || m.role === "assistant"
       )
       .map((m) => ({ role: m.role, content: m.content }));
 
-    setMessages((prev) => [...prev, { role: "user", content }]);
-    grantChat.mutate({ message: content, history });
-  };
+    const input = { message: content, history };
+    setLastInput(input);
+    setMessages((prev) => [...prev, { role: "user", content, timestamp: new Date() }]);
+    grantChat.mutate(input, {
+      onSuccess: (data) => {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.reply, timestamp: new Date() },
+        ]);
+      },
+    });
+  }, [messages, grantChat]);
+
+  const handleRetry = useCallback(() => {
+    if (!lastInput) return;
+    grantChat.mutate(lastInput, {
+      onSuccess: (data) => {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.reply, timestamp: new Date() },
+        ]);
+      },
+    });
+  }, [lastInput, grantChat]);
+
+  const FEATURE_PILLS = [
+    { icon: Database, label: t.aiAssistant.liveDatabase },
+    { icon: Globe, label: t.aiAssistant.countries },
+    { icon: Search, label: t.aiAssistant.grants },
+  ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-secondary">
+    <div className="h-[100dvh] overflow-hidden flex flex-col bg-secondary">
       <SEO
         title="AI Grant Assistant — GrantKit"
         description="Find grants and support resources using natural language. Powered by AI and the live GrantKit database of 640+ grants across 29 countries."
@@ -74,27 +75,25 @@ export default function AiAssistant() {
       />
       <Navbar />
 
-      <main className="flex-1 container py-6 md:py-8 flex flex-col gap-5 max-w-4xl">
+      <main className="flex-1 min-h-0 container py-4 md:py-5 flex flex-col gap-3 max-w-4xl overflow-hidden">
         {/* ── Page header ───────────────────────────────────────────── */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground leading-tight">
-                AI Grant Assistant
+                {t.aiAssistant.title}
               </h1>
               <p className="text-xs text-muted-foreground">
-                Powered by MCP Toolbox · Live database search
+                {t.aiAssistant.subtitle}
               </p>
             </div>
           </div>
 
           <p className="text-sm text-muted-foreground max-w-2xl">
-            Describe what you're looking for — a condition, location, type of support —
-            and the assistant will search the live database to find matching grants
-            and resources.
+            {t.aiAssistant.description}
           </p>
 
           {/* Feature pills */}
@@ -115,16 +114,20 @@ export default function AiAssistant() {
         <AIChatBox
           messages={messages}
           onSendMessage={handleSend}
+          onClearMessages={() => setMessages([])}
           isLoading={grantChat.isPending}
-          placeholder='Ask about grants… e.g. "cancer treatment grants in USA"'
-          className="flex-1"
-          height="calc(100vh - 300px)"
-          emptyStateMessage="Ask me about grants, funding, or support resources"
-          suggestedPrompts={SUGGESTED_PROMPTS}
+          error={grantChat.isError}
+          onRetry={handleRetry}
+          placeholder={t.aiAssistant.placeholder}
+          className="flex-1 min-h-0"
+          emptyStateMessage={t.aiAssistant.emptyState}
+          newChatLabel={t.aiAssistant.newChat}
+          copyLabel={t.aiAssistant.copy}
+          errorMessage={t.aiAssistant.error}
+          retryLabel={t.aiAssistant.retry}
+          suggestedPrompts={t.aiAssistant.suggestedPrompts}
         />
       </main>
-
-      <Footer />
     </div>
   );
 }
