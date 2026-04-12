@@ -117,3 +117,11 @@ client/public/__manus__/version.json
 
 # GitNexus knowledge graph (local-only, regenerated via `pnpm gitnexus:analyze`)
 .gitnexus/
+
+# Python bytecode cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Go module cache (when fetched locally)
+/root/
