@@ -734,6 +734,7 @@ export const en: Translations = {
     copy: "Copy",
     error: "An error occurred. Please try again.",
     retry: "Retry",
+    panelTitle: "Found Grants",
     suggestedPrompts: [
       "Find cancer treatment grants in the USA",
       "What housing assistance is available in Canada?",

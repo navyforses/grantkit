@@ -775,6 +775,7 @@ export interface Translations {
     copy: string;
     error: string;
     retry: string;
+    panelTitle: string;
     suggestedPrompts: string[];
   };
 
