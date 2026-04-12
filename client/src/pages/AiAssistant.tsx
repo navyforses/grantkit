@@ -21,19 +21,19 @@ import { cn } from "@/lib/utils";
 /**
  * Builds the context prefix injected into the API message when focus mode is active.
  * The user sees their original message in the chat; the API receives this enriched version.
+ * Uses the Georgian-language prompt template per spec.
  */
 function buildGrantFocusContext(userMessage: string, grant: ParsedGrant): string {
-  const lines = [
-    `[GRANT FOCUS: User is asking about "${grant.name}"${grant.organization ? ` by "${grant.organization}"` : ""}.`,
-    "Grant details:",
-    grant.amount ? `Amount: ${grant.amount}` : null,
-    grant.country ? `Location: ${grant.country}` : null,
-    grant.deadline ? `Deadline: ${grant.deadline}` : null,
-    grant.website ? `Website: ${grant.website}` : null,
-    "Answer specifically about this grant/organization. If the question is unrelated, politely note the focus and offer to remove it for a general search.]",
-  ].filter(Boolean);
+  const details = [
+    `📋 გრანტი: ${grant.name}`,
+    grant.organization ? `🏢 ორგანიზაცია: ${grant.organization}` : null,
+    grant.country ? `📍 ლოკაცია: ${grant.country}` : null,
+    grant.amount ? `💰 თანხა: ${grant.amount}` : null,
+    grant.deadline ? `📅 ვადა: ${grant.deadline}` : null,
+    grant.website ? `🌐 ვებსაიტი: ${grant.website}` : null,
+  ].filter(Boolean).join("\n");
 
-  return `${lines.join(" ")}\n\n${userMessage}`;
+  return `შენ ხარ GrantKit AI ასისტენტი. მომხმარებელი ამჟამად კითხულობს კონკრეტული გრანტის/ორგანიზაციის შესახებ:\n\n${details}\n\nუპასუხე მომხმარებლის შეკითხვას მხოლოდ ამ გრანტის/ორგანიზაციის კონტექსტში. თუ მომხმარებელი ისეთ რამეს ეკითხება, რაც ამ გრანტს არ ეხება, თავაზიანად შეახსენე რომ ფოკუსი ამ გრანტზეა და შესთავაზე ფოკუსის მოხსნა ზოგადი ძებნისთვის.\n\n${userMessage}`;
 }
 
 export default function AiAssistant() {
@@ -122,12 +122,8 @@ export default function AiAssistant() {
   /** Called when a grant card is clicked in the sidebar */
   const handleGrantSelect = useCallback((grant: ParsedGrant) => {
     // Toggle: clicking the already-selected card deselects it
-    if (selectedGrantName === grant.name) {
-      setSelectedGrantName(null);
-    } else {
-      setSelectedGrantName(grant.name);
-    }
-  }, [selectedGrantName]);
+    setSelectedGrantName((prev) => (prev === grant.name ? null : grant.name));
+  }, []);
 
   /** Called when "Ask about this grant" button in the expanded card is clicked */
   const handleAskAbout = useCallback((grant: ParsedGrant) => {
@@ -135,10 +131,11 @@ export default function AiAssistant() {
     setSelectedGrantName(grant.name);
   }, []);
 
-  /** Clears focus mode and appends an info notification to the chat */
+  /** Clears focus mode, collapses the sidebar card, and appends an info notification */
   const handleClearFocus = useCallback(() => {
     const name = focusedGrantRef.current?.name;
     setFocusedGrant(null);
+    setSelectedGrantName(null);
     if (name) {
       setMessages((prev) => [
         ...prev,
