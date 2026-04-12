@@ -905,9 +905,9 @@ export const appRouter = router({
                 subject, grantItemIds: [result.itemId],
                 recipientCount: subscribers.length, sentBy: ctx.user.id,
               });
-              sendBatchNewGrantNotifications(subscribers, [grantEmailData], subject)
-                .then(async (r) => { await updateNotificationRecord(notifId, { status: "completed", successCount: r.successCount, failureCount: r.failureCount }); })
-                .catch(async () => { await updateNotificationRecord(notifId, { status: "failed" }); });
+              sendBatchNewGrantNotifications(subscribers, [grantEmailData])
+                .then(async (r) => { await updateNotificationRecord(notifId, { status: "completed", successCount: r.successCount, failCount: r.failCount }); })
+                .catch(async () => { await updateNotificationRecord(notifId, { status: "failed", successCount: 0, failCount: subscribers.length }); });
             }
           }
         }

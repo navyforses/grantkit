@@ -502,7 +502,7 @@ export default function GrantDetail() {
                   defaultOpen={false}
                 >
                   <div className="flex flex-wrap gap-2">
-                    {content.documentsRequired.split(",").map((doc, i) => (
+                    {content.documentsRequired.split(",").map((doc: string, i: number) => (
                       <span
                         key={i}
                         className="inline-flex items-center gap-1 text-xs md:text-sm bg-muted text-foreground/80 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full"
@@ -584,7 +584,7 @@ export default function GrantDetail() {
                     <div className="col-span-2">
                       <p className="text-[10px] text-muted-foreground/60 uppercase mb-1">{t.grantDetail.conditions}</p>
                       <div className="flex flex-wrap gap-1">
-                        {content.targetDiagnosis.split(",").slice(0, 4).map((d, i) => (
+                        {content.targetDiagnosis.split(",").slice(0, 4).map((d: string, i: number) => (
                           <span key={i} className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
                             {d.trim()}
                           </span>
@@ -751,7 +751,7 @@ export default function GrantDetail() {
                     <div>
                       <p className="text-xs text-muted-foreground">{t.grantDetail.targetConditions}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {content.targetDiagnosis.split(",").slice(0, 5).map((d, i) => (
+                        {content.targetDiagnosis.split(",").slice(0, 5).map((d: string, i: number) => (
                           <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
                             {d.trim()}
                           </span>
