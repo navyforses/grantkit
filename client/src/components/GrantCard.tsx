@@ -58,7 +58,7 @@ export function parseGrantsFromResponse(text: string): ParsedGrant[] {
     const amountMatch = segment.match(/[Aa]mount[:\s]+([^\n*•\-\]]{1,40})/);
     if (amountMatch) grant.amount = amountMatch[1].trim().replace(/\*+/g, "");
 
-    const countryMatch = segment.match(/[Cc]ountr[y\s]+[:\s]+([^\n*•\-\]]{1,40})/);
+    const countryMatch = segment.match(/[Cc]ountry[:\s]+([^\n*•\-\]]{1,40})/);
     if (countryMatch) grant.country = countryMatch[1].trim().replace(/\*+/g, "");
 
     const deadlineMatch = segment.match(/[Dd]eadline[:\s]+([^\n*•\-\]]{1,40})/);

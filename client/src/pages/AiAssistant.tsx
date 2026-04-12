@@ -176,18 +176,13 @@ export default function AiAssistant() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 30 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="hidden lg:flex flex-col w-[42%] shrink-0 min-h-0 gap-3"
+                className="hidden lg:flex flex-col w-[42%] shrink-0 min-h-0 gap-3 overflow-hidden"
               >
                 {/* Panel header */}
                 <div className="shrink-0 flex items-center gap-2 px-1">
-                  <div>
-                    <h2 className="text-sm font-semibold text-foreground">
-                      {t.aiAssistant.panelTitle}
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      {extractedGrants.length}
-                    </p>
-                  </div>
+                  <h2 className="text-sm font-semibold text-foreground">
+                    {t.aiAssistant.panelTitle} ({extractedGrants.length})
+                  </h2>
                 </div>
 
                 {/* Staggered grant cards */}
