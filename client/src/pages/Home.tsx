@@ -35,19 +35,18 @@ import { trpc } from "@/lib/trpc";
 import { catalogItems } from "@/data/catalogData";
 import { useMemo } from "react";
 
-// Scroll animation: threshold 0.1 (10% visibility), lenient rootMargin so
-// sections trigger before they're fully inside the viewport.
+// Scroll animation: trigger when 10% of the element is visible.
 const fadeInUp = {
   initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "0px 0px -50px 0px", amount: 0.1 },
+  viewport: { once: true, amount: 0.1 },
   transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as const },
 };
 
 const stagger = {
   initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "0px 0px -50px 0px", amount: 0.1 },
+  viewport: { once: true, amount: 0.1 },
 };
 
 export default function Home() {
