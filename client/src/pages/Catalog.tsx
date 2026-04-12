@@ -370,10 +370,10 @@ export default function Catalog() {
               {chips.map((f) => (
                 <span key={f.key} className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">
                   {f.label}
-                  <button onClick={f.clear} className="hover:text-primary/70"><XIcon className="w-3 h-3" /></button>
+                  <button type="button" onClick={f.clear} className="hover:text-primary/70"><XIcon className="w-3 h-3" /></button>
                 </span>
               ))}
-              <button onClick={resetFilters} className="text-xs text-destructive hover:underline ml-1">
+              <button type="button" onClick={resetFilters} className="text-xs text-destructive hover:underline ml-1">
                 {t.catalog.clearFilters}
               </button>
             </div>
@@ -415,6 +415,7 @@ export default function Catalog() {
                 {isActive && totalPages > 1 && (
                   <div className="mt-6 md:mt-8 flex items-center justify-center gap-1 md:gap-2">
                     <button
+                      type="button"
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page === 1}
                       className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg active:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
@@ -430,6 +431,7 @@ export default function Catalog() {
                         else pageNum = page - 2 + i;
                         return (
                           <button
+                            type="button"
                             key={pageNum}
                             onClick={() => setPage(pageNum)}
                             className={`w-10 h-10 md:w-9 md:h-9 text-sm rounded-lg transition-colors ${
@@ -444,6 +446,7 @@ export default function Catalog() {
                       })}
                     </div>
                     <button
+                      type="button"
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
                       className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg active:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
@@ -459,7 +462,7 @@ export default function Catalog() {
                 <h3 className="text-lg font-semibold text-foreground mb-2">{t.catalog.noResults}</h3>
                 <p className="text-sm text-muted-foreground mb-6">{t.catalog.noResultsHint}</p>
                 <div className="flex gap-3 justify-center">
-                  <button onClick={resetFilters} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-secondary transition-colors">
+                  <button type="button" onClick={resetFilters} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-secondary transition-colors">
                     {t.catalog.clearFilters}
                   </button>
                 </div>
