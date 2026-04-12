@@ -48,6 +48,10 @@ function readFiltersFromURL(search: string) {
     hasDeadline: params.get("deadline") === "1",
     state: params.get("state") || "all",
     city: params.get("city") || "all",
+    // Map panel ISO location filters (mc = map country, ms = map state)
+    mapCountryCode: params.get("mc") || "",
+    mapStateCode: params.get("ms") || "",
+    mapCityName: params.get("mcity") || "",
   };
 }
 
@@ -81,9 +85,9 @@ export default function Catalog() {
   const [selectedCity, setSelectedCity] = useState(initial.city);
 
   // ── Map location state (ISO codes — drives Phase 3 flyTo + filter panel) ──
-  const [mapCountryCode, setMapCountryCode] = useState("");
-  const [mapStateCode, setMapStateCode] = useState("");
-  const [mapCityName, setMapCityName] = useState("");
+  const [mapCountryCode, setMapCountryCode] = useState(initial.mapCountryCode);
+  const [mapStateCode, setMapStateCode] = useState(initial.mapStateCode);
+  const [mapCityName, setMapCityName] = useState(initial.mapCityName);
 
   const { t, language } = useLanguage();
   const { isAuthenticated } = useAuth();
@@ -103,12 +107,15 @@ export default function Catalog() {
     if (hasDeadline) params.set("deadline", "1");
     if (selectedState !== "all") params.set("state", selectedState);
     if (selectedCity !== "all") params.set("city", selectedCity);
+    if (mapCountryCode) params.set("mc", mapCountryCode);
+    if (mapStateCode) params.set("ms", mapStateCode);
+    if (mapCityName) params.set("mcity", mapCityName);
     const qs = params.toString();
     navigate(qs ? `/catalog?${qs}` : "/catalog", { replace: true });
   }, [
     selectedCategory, selectedCountry, selectedType, searchQuery, sortBy, page,
     fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
-    selectedState, selectedCity, navigate,
+    selectedState, selectedCity, mapCountryCode, mapStateCode, mapCityName, navigate,
   ]);
 
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);

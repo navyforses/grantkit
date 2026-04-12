@@ -23,6 +23,16 @@ const NAME_TO_ISO = new Map<string, string>(
   Country.getAllCountries().map((c) => [c.name.toLowerCase(), c.isoCode])
 );
 
+// ── Coordinate cache ──────────────────────────────────────────────────────────
+// Keyed by "country\0state\0city" — memoizes expensive country-state-city lookups
+// across repeated calls for the same location (e.g. on every filter change).
+
+const COORD_CACHE = new Map<string, [number, number] | null>();
+
+function cacheKey(country?: string | null, state?: string | null, city?: string | null): string {
+  return `${country ?? ""}\0${state ?? ""}\0${city ?? ""}`;
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function parsePair(lat?: string | null, lng?: string | null): [number, number] | null {
@@ -45,6 +55,21 @@ function toIso2(field: string): string | null {
  * available, or `null` when no coordinates can be derived.
  */
 export function resolveItemCoords(
+  country?: string | null,
+  state?: string | null,
+  city?: string | null,
+): [number, number] | null {
+  if (!country) return null;
+
+  const key = cacheKey(country, state, city);
+  if (COORD_CACHE.has(key)) return COORD_CACHE.get(key)!;
+
+  const result = _resolveItemCoords(country, state, city);
+  COORD_CACHE.set(key, result);
+  return result;
+}
+
+function _resolveItemCoords(
   country?: string | null,
   state?: string | null,
   city?: string | null,

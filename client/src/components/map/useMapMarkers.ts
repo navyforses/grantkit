@@ -153,6 +153,8 @@ export function useMapMarkers(
   // Stored handler references so we can remove them before re-registering
   // after a style.load (dark ↔ light toggle), preventing duplicate firings.
   const handlersRef = useRef<HandlerSet | null>(null);
+  // GeoJSON cache — avoids re-converting the same items array reference
+  const geoJsonCacheRef = useRef<{ items: CatalogItem[]; data: GeoJSON.FeatureCollection<GeoJSON.Point> } | null>(null);
 
   itemsRef.current    = items;
   onSelectRef.current = onSelectItem;
@@ -180,8 +182,13 @@ export function useMapMarkers(
         handlersRef.current = null;
       }
 
-      // 3. Re-add source + layers (source was cleared by setStyle)
-      addSourceAndLayers(map, toGeoJSON(itemsRef.current));
+      // 3. Re-add source + layers (source was cleared by setStyle).
+      //    Use cached GeoJSON if available for the current items.
+      const currentItems = itemsRef.current;
+      if (!geoJsonCacheRef.current || geoJsonCacheRef.current.items !== currentItems) {
+        geoJsonCacheRef.current = { items: currentItems, data: toGeoJSON(currentItems) };
+      }
+      addSourceAndLayers(map, geoJsonCacheRef.current.data);
 
       // ── Cluster click → zoom in ────────────────────────────────────────
       const clusterClick: LayerHandler = async (e) => {
@@ -279,6 +286,11 @@ export function useMapMarkers(
   useEffect(() => {
     if (!map || !map.isStyleLoaded()) return;
     const src = map.getSource(SRC) as mapboxgl.GeoJSONSource | undefined;
-    src?.setData(toGeoJSON(items));
+    if (!src) return;
+    // Memoize GeoJSON conversion — only recompute if items array reference changed
+    if (!geoJsonCacheRef.current || geoJsonCacheRef.current.items !== items) {
+      geoJsonCacheRef.current = { items, data: toGeoJSON(items) };
+    }
+    src.setData(geoJsonCacheRef.current.data);
   }, [map, items]);
 }
