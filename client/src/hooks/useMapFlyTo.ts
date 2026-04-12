@@ -8,14 +8,13 @@
  */
 
 import { useEffect, useRef } from "react";
-import type { MutableRefObject } from "react";
 import { Country, State, City } from "country-state-city";
 import type mapboxgl from "mapbox-gl";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-const WORLD_CENTER: [number, number] = [20, 0];
-const WORLD_ZOOM   = 1.8;
+const WORLD_CENTER: [number, number] = [-40, 30];
+const WORLD_ZOOM   = 1.5;
 const COUNTRY_ZOOM = 3.5;
 const STATE_ZOOM   = 5.5;
 const CITY_ZOOM    = 10;
@@ -36,29 +35,42 @@ function coords(lat?: string | null, lng?: string | null): [number, number] | nu
 // ── Hook ─────────────────────────────────────────────────────────────────────
 
 /**
- * Watches countryCode / stateCode / cityName and triggers a Mapbox flyTo
+ * Watches map / countryCode / stateCode / cityName and triggers a Mapbox flyTo
  * whenever any value changes.  Resets to world view when all are cleared.
+ * Accepts the map instance as state (not a ref) so the effect re-runs when the
+ * map becomes ready — this handles initial page-load with URL location params.
  *
- * @param mapRef  Ref that holds the mapboxgl.Map instance (may be null before load)
+ * @param map  The mapboxgl.Map instance (null while the map is still loading)
  */
 export function useMapFlyTo(
-  mapRef: MutableRefObject<mapboxgl.Map | null>,
+  map: mapboxgl.Map | null,
   countryCode: string,
   stateCode: string,
   cityName: string,
 ) {
-  // Track previous values so we skip the initial mount (map still loading then)
-  const prev = useRef({ countryCode: "", stateCode: "", cityName: "" });
+  // Track previous values AND the previous map instance so we can distinguish
+  // "map just became ready" from "nothing changed".
+  const prev = useRef({
+    countryCode: "",
+    stateCode: "",
+    cityName: "",
+    map: null as mapboxgl.Map | null,
+  });
 
   useEffect(() => {
     const p = prev.current;
-    if (p.countryCode === countryCode && p.stateCode === stateCode && p.cityName === cityName) {
-      return; // nothing changed
-    }
-    prev.current = { countryCode, stateCode, cityName };
+    const locationUnchanged =
+      p.countryCode === countryCode &&
+      p.stateCode === stateCode &&
+      p.cityName === cityName;
+    const mapUnchanged = p.map === map;
 
-    const map = mapRef.current;
-    if (!map) return;
+    // Nothing to do: same location, same map instance
+    if (locationUnchanged && mapUnchanged) return;
+
+    prev.current = { countryCode, stateCode, cityName, map };
+
+    if (!map) return; // map not ready yet
 
     const fly = (center: [number, number], zoom: number) =>
       map.flyTo({ center, zoom, duration: FLY_DURATION, essential: true });
@@ -89,7 +101,5 @@ export function useMapFlyTo(
     // ── World reset ───────────────────────────────────────────────────────
     fly(WORLD_CENTER, WORLD_ZOOM);
 
-  // mapRef is a stable ref — intentionally excluded from deps
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countryCode, stateCode, cityName]);
+  }, [map, countryCode, stateCode, cityName]);
 }
