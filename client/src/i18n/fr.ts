@@ -732,6 +732,7 @@ export const fr: Translations = {
     copy: "Copier",
     error: "Une erreur s'est produite. Veuillez réessayer.",
     retry: "Réessayer",
+    panelTitle: "Subventions trouvées",
     suggestedPrompts: [
       "Subventions pour le traitement du cancer aux États-Unis",
       "Quelle aide au logement est disponible au Canada ?",
