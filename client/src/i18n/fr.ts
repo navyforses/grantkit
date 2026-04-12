@@ -743,6 +743,12 @@ export const fr: Translations = {
       "Subventions pour patients atteints de maladies rares",
       "Subventions pour frais médicaux en Europe",
     ],
+    focusLabel: "Focus :",
+    focusRemoved: "Focus supprimé",
+    askAboutGrant: "Poser une question sur cette subvention",
+    fullInfo: "Infos complètes",
+    removeFocus: "Supprimer le focus",
+    focusPlaceholder: "Question sur {grantName}...",
   },
   seo: {
     homeTitle: "Trouvez des subventions médicales et startup dans le monde entier",

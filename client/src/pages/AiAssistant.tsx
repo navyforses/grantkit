@@ -7,7 +7,7 @@
  *  - Right: grant cards panel (desktop only, slides in when grants are extracted)
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { AIChatBox, type Message } from "@/components/AIChatBox";
 import { GrantCard, parseGrantsFromResponse, type ParsedGrant } from "@/components/GrantCard";
 import { trpc } from "@/lib/trpc";
@@ -18,6 +18,24 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+/**
+ * Builds the context prefix injected into the API message when focus mode is active.
+ * The user sees their original message in the chat; the API receives this enriched version.
+ * Uses the Georgian-language prompt template per spec.
+ */
+function buildGrantFocusContext(userMessage: string, grant: ParsedGrant): string {
+  const details = [
+    `📋 გრანტი: ${grant.name}`,
+    grant.organization ? `🏢 ორგანიზაცია: ${grant.organization}` : null,
+    grant.country ? `📍 ლოკაცია: ${grant.country}` : null,
+    grant.amount ? `💰 თანხა: ${grant.amount}` : null,
+    grant.deadline ? `📅 ვადა: ${grant.deadline}` : null,
+    grant.website ? `🌐 ვებსაიტი: ${grant.website}` : null,
+  ].filter(Boolean).join("\n");
+
+  return `შენ ხარ GrantKit AI ასისტენტი. მომხმარებელი ამჟამად კითხულობს კონკრეტული გრანტის/ორგანიზაციის შესახებ:\n\n${details}\n\nუპასუხე მომხმარებლის შეკითხვას მხოლოდ ამ გრანტის/ორგანიზაციის კონტექსტში. თუ მომხმარებელი ისეთ რამეს ეკითხება, რაც ამ გრანტს არ ეხება, თავაზიანად შეახსენე რომ ფოკუსი ამ გრანტზეა და შესთავაზე ფოკუსის მოხსნა ზოგადი ძებნისთვის.\n\n${userMessage}`;
+}
+
 export default function AiAssistant() {
   const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -26,6 +44,12 @@ export default function AiAssistant() {
     history: { role: "user" | "assistant"; content: string }[];
   } | null>(null);
   const [extractedGrants, setExtractedGrants] = useState<ParsedGrant[]>([]);
+  const [focusedGrant, setFocusedGrant] = useState<ParsedGrant | null>(null);
+  const [selectedGrantName, setSelectedGrantName] = useState<string | null>(null);
+
+  // Keep a ref so callbacks always see the current focusedGrant without stale closure
+  const focusedGrantRef = useRef<ParsedGrant | null>(null);
+  focusedGrantRef.current = focusedGrant;
 
   // Lock body scroll for full-viewport chat layout
   useEffect(() => {
@@ -41,6 +65,8 @@ export default function AiAssistant() {
     setMessages([]);
     setLastInput(null);
     setExtractedGrants([]);
+    setFocusedGrant(null);
+    setSelectedGrantName(null);
     grantChat.reset();
   }, [grantChat]);
 
@@ -53,7 +79,13 @@ export default function AiAssistant() {
         )
         .map((m) => ({ role: m.role, content: m.content }));
 
-      const input = { message: content, history };
+      // Show original message in chat; enrich for API if in focus mode
+      const currentFocus = focusedGrantRef.current;
+      const apiMessage = currentFocus
+        ? buildGrantFocusContext(content, currentFocus)
+        : content;
+
+      const input = { message: apiMessage, history };
       setLastInput(input);
       setMessages((prev) => [...prev, { role: "user", content, timestamp: new Date() }]);
       grantChat.mutate(input, {
@@ -62,7 +94,10 @@ export default function AiAssistant() {
             ...prev,
             { role: "assistant", content: data.reply, timestamp: new Date() },
           ]);
-          setExtractedGrants(parseGrantsFromResponse(data.reply));
+          // Only update extracted grants when not in focus mode
+          if (!focusedGrantRef.current) {
+            setExtractedGrants(parseGrantsFromResponse(data.reply));
+          }
         },
       });
     },
@@ -77,10 +112,41 @@ export default function AiAssistant() {
           ...prev,
           { role: "assistant", content: data.reply, timestamp: new Date() },
         ]);
-        setExtractedGrants(parseGrantsFromResponse(data.reply));
+        if (!focusedGrantRef.current) {
+          setExtractedGrants(parseGrantsFromResponse(data.reply));
+        }
       },
     });
   }, [lastInput, grantChat]);
+
+  /** Called when a grant card is clicked in the sidebar */
+  const handleGrantSelect = useCallback((grant: ParsedGrant) => {
+    // Toggle: clicking the already-selected card deselects it
+    setSelectedGrantName((prev) => (prev === grant.name ? null : grant.name));
+  }, []);
+
+  /** Called when "Ask about this grant" button in the expanded card is clicked */
+  const handleAskAbout = useCallback((grant: ParsedGrant) => {
+    setFocusedGrant(grant);
+    setSelectedGrantName(grant.name);
+  }, []);
+
+  /** Clears focus mode, collapses the sidebar card, and appends an info notification */
+  const handleClearFocus = useCallback(() => {
+    const name = focusedGrantRef.current?.name;
+    setFocusedGrant(null);
+    setSelectedGrantName(null);
+    if (name) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "info",
+          content: `${t.aiAssistant.focusRemoved}: ${name}`,
+          timestamp: new Date(),
+        },
+      ]);
+    }
+  }, [t.aiAssistant.focusRemoved]);
 
   const FEATURE_PILLS = [
     { icon: Database, label: t.aiAssistant.liveDatabase },
@@ -165,6 +231,11 @@ export default function AiAssistant() {
             errorMessage={t.aiAssistant.error}
             retryLabel={t.aiAssistant.retry}
             suggestedPrompts={t.aiAssistant.suggestedPrompts}
+            focusedGrant={focusedGrant}
+            onClearFocus={handleClearFocus}
+            focusLabel={t.aiAssistant.focusLabel}
+            removeFocusLabel={t.aiAssistant.removeFocus}
+            focusPlaceholder={t.aiAssistant.focusPlaceholder}
           />
 
           {/* ── Grants panel — desktop only, slides in when grants are extracted ── */}
@@ -194,7 +265,14 @@ export default function AiAssistant() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2, delay: i * 0.06 }}
                     >
-                      <GrantCard grant={grant} />
+                      <GrantCard
+                        grant={grant}
+                        isSelected={selectedGrantName === grant.name}
+                        onSelect={handleGrantSelect}
+                        onAskAbout={handleAskAbout}
+                        askAboutLabel={t.aiAssistant.askAboutGrant}
+                        fullInfoLabel={t.aiAssistant.fullInfo}
+                      />
                     </motion.div>
                   ))}
                 </div>

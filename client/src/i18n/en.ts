@@ -745,6 +745,12 @@ export const en: Translations = {
       "Are there grants available for rare disease patients?",
       "What grants exist for medical expenses in Europe?",
     ],
+    focusLabel: "Focus:",
+    focusRemoved: "Focus removed",
+    askAboutGrant: "Ask about this grant",
+    fullInfo: "Full info",
+    removeFocus: "Remove focus",
+    focusPlaceholder: "Ask about {grantName}...",
   },
   seo: {
     homeTitle: "Find Medical & Startup Grants Worldwide",

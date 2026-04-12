@@ -5,12 +5,15 @@ import { cn } from "@/lib/utils";
 import { Send, User, Sparkles, RotateCcw, Copy, AlertCircle, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Streamdown } from "streamdown";
+import { AnimatePresence } from "framer-motion";
+import { GrantFocusChip } from "./GrantFocusChip";
+import type { ParsedGrant } from "./GrantCard";
 
 /**
  * Message type matching server-side LLM Message interface
  */
 export type Message = {
-  role: "system" | "user" | "assistant";
+  role: "system" | "user" | "assistant" | "info";
   content: string;
   timestamp?: Date;
 };
@@ -31,6 +34,12 @@ export type AIChatBoxProps = {
   copyLabel?: string;
   errorMessage?: string;
   retryLabel?: string;
+  // Grant focus mode
+  focusedGrant?: ParsedGrant | null;
+  onClearFocus?: () => void;
+  focusLabel?: string;
+  removeFocusLabel?: string;
+  focusPlaceholder?: string;
 };
 
 /**
@@ -84,12 +93,17 @@ export function AIChatBox({
   copyLabel = "Copy",
   errorMessage = "An error occurred. Please try again.",
   retryLabel = "Retry",
+  focusedGrant,
+  onClearFocus,
+  focusLabel = "Focus:",
+  removeFocusLabel = "Remove focus",
+  focusPlaceholder,
 }: AIChatBoxProps) {
   const [input, setInput] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Filter out system messages for display
+  // Filter out hidden system messages for display
   const displayMessages = messages.filter((msg) => msg.role !== "system");
 
   // Scroll to bottom when messages change or loading starts
@@ -108,6 +122,16 @@ export function AIChatBox({
     scrollToBottom();
   }, [displayMessages.length, isLoading]);
 
+  // Escape key dismisses focus mode
+  useEffect(() => {
+    if (!focusedGrant || !onClearFocus) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClearFocus();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [focusedGrant, onClearFocus]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedInput = input.trim();
@@ -123,6 +147,11 @@ export function AIChatBox({
       handleSubmit(e);
     }
   };
+
+  // Dynamic placeholder when focus mode is active
+  const activePlaceholder = focusedGrant && focusPlaceholder
+    ? focusPlaceholder.replace("{grantName}", focusedGrant.name)
+    : placeholder;
 
   return (
     <div
@@ -150,6 +179,19 @@ export function AIChatBox({
           </Button>
         )}
       </div>
+
+      {/* Grant Focus Chip — shown between header and messages */}
+      <AnimatePresence>
+        {focusedGrant && (
+          <GrantFocusChip
+            key="focus-chip"
+            grant={focusedGrant}
+            onClose={onClearFocus ?? (() => {})}
+            focusLabel={focusLabel}
+            removeFocusLabel={removeFocusLabel}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Messages Area */}
       <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-hidden">
@@ -181,75 +223,88 @@ export function AIChatBox({
         ) : (
           <ScrollArea className="h-full">
             <div className="flex flex-col space-y-4 p-4">
-              {displayMessages.map((message, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    "flex gap-3 group",
-                    message.role === "user"
-                      ? "justify-end items-start"
-                      : "justify-start items-start"
-                  )}
-                >
-                  {message.role === "assistant" && (
-                    <div className="size-8 shrink-0 mt-1 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Sparkles className="size-4 text-primary" />
+              {displayMessages.map((message, index) => {
+                // Info notification messages (focus removed, etc.)
+                if (message.role === "info") {
+                  return (
+                    <div key={index} className="flex justify-center">
+                      <span className="text-[11px] text-muted-foreground bg-muted px-3 py-1 rounded-full border border-border/50">
+                        {message.content}
+                      </span>
                     </div>
-                  )}
+                  );
+                }
 
-                  <div className={cn("flex flex-col max-w-[80%]", message.role === "user" ? "items-end" : "items-start")}>
-                    <div
-                      className={cn(
-                        "rounded-lg px-4 py-2.5",
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-foreground"
-                      )}
-                    >
-                      {message.role === "assistant" ? (
-                        <div className="prose prose-base dark:prose-invert max-w-none text-[15px]">
-                          <Streamdown components={streamdownComponents}>{cleanNonGeorgianText(message.content)}</Streamdown>
-                        </div>
-                      ) : (
-                        <p className="whitespace-pre-wrap text-base">
-                          {message.content}
-                        </p>
-                      )}
+                return (
+                  <div
+                    key={index}
+                    className={cn(
+                      "flex gap-3 group",
+                      message.role === "user"
+                        ? "justify-end items-start"
+                        : "justify-start items-start"
+                    )}
+                  >
+                    {message.role === "assistant" && (
+                      <div className="size-8 shrink-0 mt-1 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Sparkles className="size-4 text-primary" />
+                      </div>
+                    )}
+
+                    <div className={cn("flex flex-col max-w-[80%]", message.role === "user" ? "items-end" : "items-start")}>
+                      <div
+                        className={cn(
+                          "rounded-lg px-4 py-2.5",
+                          message.role === "user"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-foreground"
+                        )}
+                      >
+                        {message.role === "assistant" ? (
+                          <div className="prose prose-base dark:prose-invert max-w-none text-[15px]">
+                            <Streamdown components={streamdownComponents}>{cleanNonGeorgianText(message.content)}</Streamdown>
+                          </div>
+                        ) : (
+                          <p className="whitespace-pre-wrap text-base">
+                            {message.content}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Timestamp + copy button */}
+                      <div className={cn(
+                        "flex items-center gap-1.5 mt-0.5 px-1",
+                        message.role === "user" ? "flex-row-reverse" : "flex-row"
+                      )}>
+                        {message.timestamp && (
+                          <span className="text-[10px] text-muted-foreground">
+                            {formatTime(message.timestamp)}
+                          </span>
+                        )}
+                        {message.role === "assistant" && (
+                          <button
+                            type="button"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
+                            onClick={() => {
+                              navigator.clipboard.writeText(message.content).catch(() => {});
+                            }}
+                            aria-label={copyLabel}
+                            title={copyLabel}
+                          >
+                            <Copy className="size-3 text-muted-foreground" />
+                          </button>
+                        )}
+                      </div>
                     </div>
 
-                    {/* Timestamp + copy button */}
-                    <div className={cn(
-                      "flex items-center gap-1.5 mt-0.5 px-1",
-                      message.role === "user" ? "flex-row-reverse" : "flex-row"
-                    )}>
-                      {message.timestamp && (
-                        <span className="text-[10px] text-muted-foreground">
-                          {formatTime(message.timestamp)}
-                        </span>
-                      )}
-                      {message.role === "assistant" && (
-                        <button
-                          type="button"
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
-                          onClick={() => {
-                            navigator.clipboard.writeText(message.content).catch(() => {});
-                          }}
-                          aria-label={copyLabel}
-                          title={copyLabel}
-                        >
-                          <Copy className="size-3 text-muted-foreground" />
-                        </button>
-                      )}
-                    </div>
+                    {message.role === "user" && (
+                      <div className="size-8 shrink-0 mt-1 rounded-full bg-secondary flex items-center justify-center">
+                        <User className="size-4 text-secondary-foreground" />
+                      </div>
+                    )}
                   </div>
-
-                  {message.role === "user" && (
-                    <div className="size-8 shrink-0 mt-1 rounded-full bg-secondary flex items-center justify-center">
-                      <User className="size-4 text-secondary-foreground" />
-                    </div>
-                  )}
-                </div>
-              ))}
+                );
+              })}
 
               {/* Typing indicator */}
               {isLoading && (
@@ -304,7 +359,7 @@ export function AIChatBox({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={activePlaceholder}
           className="flex-1 max-h-32 resize-none min-h-9 text-base"
           rows={1}
           aria-label="შეკითხვა გრანტების შესახებ"

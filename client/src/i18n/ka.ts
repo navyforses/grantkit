@@ -745,6 +745,12 @@ export const ka: Translations = {
       "იშვიათი დაავადებების პაციენტებისთვის გრანტები",
       "სამედიცინო ხარჯების გრანტები ევროპაში",
     ],
+    focusLabel: "ფოკუსი:",
+    focusRemoved: "ფოკუსი მოხსნილია",
+    askAboutGrant: "შეკითხვა ამ გრანტზე",
+    fullInfo: "სრული ინფო",
+    removeFocus: "ფოკუსის მოხსნა",
+    focusPlaceholder: "შეკითხვა {grantName}-ს შესახებ...",
   },
   seo: {
     homeTitle: "იპოვეთ სამედიცინო და სტარტაპ გრანტები მსოფლიოში",
