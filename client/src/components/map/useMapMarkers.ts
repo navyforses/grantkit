@@ -260,6 +260,17 @@ export function useMapMarkers(
     return () => {
       map.off("style.load", setup);
       popupRef.current?.remove();
+      // Remove layer event handlers on unmount to prevent leaks
+      if (handlersRef.current) {
+        const h = handlersRef.current;
+        map.off("click",      LYR_CLUSTER, h.clusterClick);
+        map.off("click",      LYR_POINTS,  h.pointClick);
+        map.off("mouseenter", LYR_POINTS,  h.pointEnter);
+        map.off("mouseleave", LYR_POINTS,  h.pointLeave);
+        map.off("mouseenter", LYR_CLUSTER, h.clusterEnter);
+        map.off("mouseleave", LYR_CLUSTER, h.clusterLeave);
+        handlersRef.current = null;
+      }
     };
   }, [map]); // re-run if the map instance itself changes
 

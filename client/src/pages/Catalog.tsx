@@ -150,8 +150,6 @@ export default function Catalog() {
     placeholderData: (prev: any) => prev,
   });
 
-  const isStaticMode = !catalogData && HAS_STATIC_DATA;
-
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,

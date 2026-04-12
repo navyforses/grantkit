@@ -35,14 +35,17 @@ function categoryIcon(cat: string): string {
 
 /** Format a location string from country / state / city fields. */
 function formatLocation(country: string, state: string, city: string): string {
-  const parts = [city, state, country].filter(Boolean);
+  const skip = /^(nationwide|national|international|n\/a|all\s)$/i;
+  const parts = [city, state, country].filter((p) => p && !skip.test(p.trim()));
   return parts.join(", ");
 }
 
 /** Return null if the field is empty / placeholder value. */
 function present(v?: string | null): string | null {
-  if (!v || v.trim() === "" || v === "N/A" || v === "n/a" || v === "-") return null;
-  return v.trim();
+  if (!v) return null;
+  const trimmed = v.trim();
+  if (trimmed === "" || trimmed === "N/A" || trimmed === "n/a" || trimmed === "-") return null;
+  return trimmed;
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
