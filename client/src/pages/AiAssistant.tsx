@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { buildGrantFocusContext } from "@/lib/grantFocusContext";
 
 export default function AiAssistant() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [lastInput, setLastInput] = useState<{
     message: string;
@@ -65,7 +65,7 @@ export default function AiAssistant() {
       // Show original message in chat; enrich for API if in focus mode
       const currentFocus = focusedGrantRef.current;
       const apiMessage = currentFocus
-        ? buildGrantFocusContext(content, currentFocus)
+        ? buildGrantFocusContext(content, currentFocus, language)
         : content;
 
       const input = { message: apiMessage, history };

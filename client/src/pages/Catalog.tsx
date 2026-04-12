@@ -298,10 +298,12 @@ export default function Catalog() {
     () => displayItems.find((g) => g.id === selectedItemId) ?? null,
     [displayItems, selectedItemId]
   );
+  const toggleSaveMutateRef = useRef(toggleSave.mutate);
+  toggleSaveMutateRef.current = toggleSave.mutate;
   const handleToggleSave = useCallback(() => {
     if (!selectedItemId || !isAuthenticated) return;
-    toggleSave.mutate({ grantId: selectedItemId });
-  }, [selectedItemId, isAuthenticated, toggleSave]);
+    toggleSaveMutateRef.current({ grantId: selectedItemId });
+  }, [selectedItemId, isAuthenticated]);
   const handleClosePanel = useCallback(() => setSelectedItemId(null), []);
 
   // ── Render ──────────────────────────────────────────────────────────────────

@@ -253,6 +253,20 @@ export interface Translations {
     b2Eligible: string;
     usResidentsOnly: string;
     contactToConfirm: string;
+    // Map filter panel
+    allCountries: string;
+    allRegions: string;
+    category: string;
+    searchCountries: string;
+    searchRegions: string;
+    searchCities: string;
+    searchCategories: string;
+    clearAllFilters: string;
+    openFilters: string;
+    closeFilters: string;
+    nFound: string;
+    noResults: string;
+    typeMore: string;
   };
 
   // Grant detail page
@@ -298,6 +312,10 @@ export interface Translations {
     open: string;
     b2VisaOK: string;
     more: string;
+    grant: string;
+    resource: string;
+    eligibility: string;
+    close: string;
   };
 
   // Profile page
@@ -785,6 +803,8 @@ export interface Translations {
     fullInfo: string;
     removeFocus: string;
     focusPlaceholder: string;
+    chatTab: string;
+    grantSuggestedPrompts: string[];
   };
 
   // SEO meta tags

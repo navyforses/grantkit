@@ -31,6 +31,10 @@ interface Props {
   /** Max items rendered in list (default 120). User must type to see more. */
   maxVisible?: number;
   className?: string;
+  /** Translated "No results" text */
+  noResultsLabel?: string;
+  /** Translated "Type to narrow results ({count} more…)" template. Use {count} placeholder. */
+  typeMoreLabel?: string;
 }
 
 export default function SearchableSelect({
@@ -42,6 +46,8 @@ export default function SearchableSelect({
   disabled = false,
   maxVisible = 120,
   className = "",
+  noResultsLabel = "No results",
+  typeMoreLabel,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -155,7 +161,7 @@ export default function SearchableSelect({
           <div className="overflow-y-auto" style={{ maxHeight: "11rem" }}>
             {visibleOptions.length === 0 ? (
               <p className="px-3 py-3 text-sm text-muted-foreground text-center">
-                No results
+                {noResultsLabel}
               </p>
             ) : (
               <>
@@ -187,7 +193,9 @@ export default function SearchableSelect({
                 ))}
                 {filtered.length > maxVisible && (
                   <p className="px-3 py-2 text-xs text-muted-foreground text-center border-t border-border">
-                    Type to narrow results ({filtered.length - maxVisible} more…)
+                    {typeMoreLabel
+                      ? typeMoreLabel.replace("{count}", String(filtered.length - maxVisible))
+                      : `Type to narrow results (${filtered.length - maxVisible} more\u2026)`}
                   </p>
                 )}
               </>
