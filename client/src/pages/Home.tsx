@@ -147,61 +147,69 @@ export default function Home() {
       <Navbar />
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(https://d2xsxph8kpxj0f.cloudfront.net/310519663102724389/ne96tB4yURpkfMNLLJuy9T/hero-bg-gHR255Ajhp8t6NjNb5USUg.webp)`,
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-hero-bg/90 via-hero-bg/85 to-hero-bg/90" />
+      <section className="relative overflow-hidden bg-background">
         {/* Animated gradient blobs — CSS-only, no JS */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="hero-blob hero-blob-1" />
           <div className="hero-blob hero-blob-2" />
           <div className="hero-blob hero-blob-3" />
         </div>
-        {/* Mobile: tighter padding. Desktop: generous */}
-        <div className="relative container py-12 md:py-28 lg:py-32">
-          {/* Centered hero layout */}
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-            >
-              <span className="inline-flex items-center gap-2 text-xs md:text-sm font-medium text-brand-green bg-brand-green/10 border border-brand-green/20 rounded-full px-3 py-1 md:px-4 md:py-1.5 mb-4 md:mb-6">
-                <Globe className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                {t.hero.badge}
-              </span>
-              {/* Mobile: 28-32px. Desktop: max 44px */}
-              <h1 className="text-[28px] sm:text-[32px] md:text-[40px] lg:text-[44px] font-semibold text-hero-text leading-[1.1] tracking-tight mb-3 md:mb-5">
-                {t.hero.title}
-                <span className="text-brand-green">{t.hero.titleAccent}</span>
-              </h1>
-              <p className="text-base md:text-lg text-hero-muted leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto">
-                {t.hero.subtitle}
-              </p>
-              {/* CTA buttons — centered */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                <PricingCTA text={t.hero.cta} size="large" className="w-full sm:w-auto justify-center" />
-                <a
-                  href="/catalog"
-                  className="inline-flex items-center justify-center gap-2 text-sm font-medium text-hero-muted hover:text-hero-text transition-colors py-3 sm:py-0"
-                >
-                  {t.hero.seeCatalog}
-                  <ArrowRight className="w-4 h-4" />
-                </a>
-              </div>
-            </motion.div>
-          </div>
+
+        <div className="relative container py-16 md:py-24 lg:py-32">
+          {/* ── Large GRANTKIT branding ── */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            className="text-center mb-10 md:mb-14 select-none"
+            aria-hidden="true"
+          >
+            <span className="hero-brand-text text-[clamp(3.5rem,12vw,9rem)] font-bold leading-none tracking-tighter">
+              <span className="text-brand-green">GRANT</span>
+              <span className="hero-sage">KIT</span>
+            </span>
+          </motion.div>
+
+          {/* ── Content below branding ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
+            className="max-w-2xl mx-auto text-center"
+          >
+            <span className="inline-flex items-center gap-2 text-xs md:text-sm font-medium text-brand-green bg-brand-green/10 border border-brand-green/20 rounded-full px-3 py-1 md:px-4 md:py-1.5 mb-5 md:mb-6">
+              <Globe className="w-3 h-3 md:w-3.5 md:h-3.5" />
+              {t.hero.badge}
+            </span>
+
+            <h1 className="text-[24px] sm:text-[28px] md:text-[32px] lg:text-[36px] font-semibold text-foreground leading-[1.2] tracking-tight mb-4 md:mb-5">
+              {t.hero.title}
+              <span className="text-brand-green">{t.hero.titleAccent}</span>
+            </h1>
+
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-8 md:mb-10 max-w-lg mx-auto">
+              {t.hero.subtitle}
+            </p>
+
+            {/* CTA buttons — centered */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <PricingCTA text={t.hero.cta} size="large" className="w-full sm:w-auto justify-center" />
+              <a
+                href="/catalog"
+                className="inline-flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-3 sm:py-0"
+              >
+                {t.hero.seeCatalog}
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </motion.div>
 
           {/* Stats — 2x2 grid on mobile, 4-col on desktop */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="mt-10 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
+            transition={{ duration: 0.5, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            className="mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto"
           >
             {[
               { icon: Globe, label: t.hero.statCountriesLabel, value: t.hero.statCountries },
@@ -211,11 +219,11 @@ export default function Home() {
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="bg-card/60 backdrop-blur-sm border border-border rounded-xl px-4 py-3 md:px-5 md:py-4"
+                className="bg-card/60 backdrop-blur-sm border border-border rounded-xl px-4 py-3 md:px-5 md:py-4 text-center"
               >
-                <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-brand-green mb-1.5 md:mb-2" />
-                <p className="text-xl md:text-2xl font-bold text-hero-text">{stat.value}</p>
-                <p className="text-xs md:text-sm text-hero-muted/60 leading-tight">{stat.label}</p>
+                <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-brand-green mb-1.5 md:mb-2 mx-auto" />
+                <p className="text-xl md:text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs md:text-sm text-muted-foreground/60 leading-tight">{stat.label}</p>
               </div>
             ))}
           </motion.div>
