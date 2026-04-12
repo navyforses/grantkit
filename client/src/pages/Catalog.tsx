@@ -1,5 +1,5 @@
 /*
- * Catalog Page — Interactive World Map View (Phase 4)
+ * Catalog Page — Interactive World Map View (Phase 5)
  * Replaces the card grid with a full-screen Mapbox GL world map.
  * Filter state & data fetching are preserved here for use in later phases
  * (filter panel overlays, map markers, side panel, AI chat).
@@ -23,6 +23,7 @@ import MapView from "@/components/map/MapView";
 import MapFilterPanel from "@/components/map/MapFilterPanel";
 import { useMapFlyTo } from "@/hooks/useMapFlyTo";
 import { useMapMarkers } from "@/components/map/useMapMarkers";
+import GrantDetailPanel from "@/components/map/GrantDetailPanel";
 import type mapboxgl from "mapbox-gl";
 
 const PAGE_SIZE = 30;
@@ -294,6 +295,17 @@ export default function Catalog() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   useMapMarkers(mapInstance, displayItems, setSelectedItemId);
 
+  // Phase 5 — detail panel for the selected marker
+  const selectedItem = useMemo(
+    () => displayItems.find((g) => g.id === selectedItemId) ?? null,
+    [displayItems, selectedItemId]
+  );
+  const handleToggleSave = useCallback(() => {
+    if (!selectedItemId || !isAuthenticated) return;
+    toggleSave.mutate({ grantId: selectedItemId });
+  }, [selectedItemId, isAuthenticated, toggleSave]);
+  const handleClosePanel = useCallback(() => setSelectedItemId(null), []);
+
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <div className="bg-background">
@@ -348,6 +360,14 @@ export default function Catalog() {
           onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
           totalItems={totalItems}
           onClearAll={resetFilters}
+        />
+
+        {/* Phase 5 — grant detail slide-in panel */}
+        <GrantDetailPanel
+          item={selectedItem}
+          isSaved={selectedItemId ? savedSet.has(selectedItemId) : false}
+          onToggleSave={handleToggleSave}
+          onClose={handleClosePanel}
         />
       </div>
     </div>
