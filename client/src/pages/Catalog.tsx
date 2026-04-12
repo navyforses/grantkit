@@ -21,6 +21,7 @@ import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
 import { useIsMobile } from "@/hooks/useMobile";
 import MapView from "@/components/map/MapView";
+import MapFilterPanel from "@/components/map/MapFilterPanel";
 import type mapboxgl from "mapbox-gl";
 
 const PAGE_SIZE = 30;
@@ -76,6 +77,11 @@ export default function Catalog() {
   const [hasDeadline, setHasDeadline] = useState(initial.hasDeadline);
   const [selectedState, setSelectedState] = useState(initial.state);
   const [selectedCity, setSelectedCity] = useState(initial.city);
+
+  // ── Map location state (ISO codes — drives Phase 3 flyTo + filter panel) ──
+  const [mapCountryCode, setMapCountryCode] = useState("");
+  const [mapStateCode, setMapStateCode] = useState("");
+  const [mapCityName, setMapCityName] = useState("");
 
   const { t, language } = useLanguage();
   const { isAuthenticated } = useAuth();
@@ -252,6 +258,10 @@ export default function Catalog() {
     setSelectedState("all");
     setSelectedCity("all");
     setPage(1);
+    // Also reset map location selectors
+    setMapCountryCode("");
+    setMapStateCode("");
+    setMapCityName("");
   }, []);
 
   // Map instance ref — shared with Phase 2+ overlays
@@ -288,10 +298,31 @@ export default function Catalog() {
        * Using dvh (dynamic viewport height) so the map fills the currently-visible
        * viewport even when mobile browser chrome (address bar) shows/hides.
        */}
-      <div className="relative overflow-hidden h-[calc(100dvh-7.5rem)] md:h-[calc(100dvh-4rem)]">
+      {/*
+       * overflow-hidden is intentionally omitted here so that
+       * SearchableSelect dropdowns inside MapFilterPanel can overflow
+       * the panel boundary without being clipped.
+       */}
+      <div className="relative h-[calc(100dvh-7.5rem)] md:h-[calc(100dvh-4rem)]">
         <MapView
           className="absolute inset-0 w-full h-full"
           onMapReady={handleMapReady}
+        />
+
+        {/* Phase 2 — cascading filter panel overlay */}
+        <MapFilterPanel
+          countryCode={mapCountryCode}
+          stateCode={mapStateCode}
+          cityName={mapCityName}
+          onCountryChange={setMapCountryCode}
+          onStateChange={setMapStateCode}
+          onCityChange={setMapCityName}
+          selectedCategory={selectedCategory}
+          onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
+          selectedType={selectedType}
+          onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
+          totalItems={totalItems}
+          onClearAll={resetFilters}
         />
       </div>
     </div>
