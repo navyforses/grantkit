@@ -22,6 +22,7 @@ export default function LanguageSwitcher() {
   return (
     <div ref={ref} className="relative">
       <button
+        type="button"
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium
           bg-muted hover:bg-muted text-foreground/80 transition-colors border border-border"
@@ -37,6 +38,7 @@ export default function LanguageSwitcher() {
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
+              type="button"
               onClick={() => {
                 setLanguage(lang.code);
                 setOpen(false);

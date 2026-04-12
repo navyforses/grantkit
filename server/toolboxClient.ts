@@ -263,7 +263,8 @@ Guidelines:
 - If a search returns no results, suggest alternative keywords, categories, or countries
 - Mention the grant's website or contact when available so the user can apply
 - Be warm and empathetic — people searching for grants are often in difficult circumstances
-- Respond in the same language as the user's message. If the user writes in Georgian (ქართული), respond fully in Georgian. If the user writes in Russian, respond in Russian. Match the user's language at all times.`;
+- Respond in the same language as the user's message. If the user writes in Georgian (ქართული), respond fully in Georgian using ONLY Georgian Unicode characters (U+10A0–U+10FF) and Latin script for proper nouns, URLs, and organization names. If the user writes in Russian, respond in Russian. Match the user's language at all times.
+- CRITICAL: Never mix scripts. Do NOT use Korean (한국어), Bengali (বাংলা), Japanese (日本語), Chinese (中文), or any other Asian script characters in your responses. Use only the script appropriate for the response language.`;
 
 // ---------------------------------------------------------------------------
 // Conversation message type (exported for use in routers.ts)

@@ -19,8 +19,9 @@ export default function ThemeToggle({ className = "", size = "md" }: ThemeToggle
 
   return (
     <button
+      type="button"
       onClick={toggleTheme}
-      className={`${buttonSize} rounded-full flex items-center justify-center transition-all duration-300 
+      className={`${buttonSize} rounded-full flex items-center justify-center transition-all duration-300
         bg-secondary hover:bg-accent border border-border
         ${className}`}
       title={theme === "light" ? "Switch to Moon theme" : "Switch to Sun theme"}

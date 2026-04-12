@@ -68,6 +68,7 @@ export default function MobileHeader() {
             <ThemeToggle size="sm" />
             <LanguageSwitcher />
             <button
+              type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               className="w-10 h-10 flex items-center justify-center rounded-xl text-muted-foreground active:bg-secondary transition-colors"
               aria-label="Toggle menu"
@@ -154,6 +155,7 @@ export default function MobileHeader() {
               <div className="mt-4 pt-4 border-t border-border px-2">
                 {isAuthenticated ? (
                   <button
+                    type="button"
                     onClick={handleLogout}
                     className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm text-destructive active:bg-destructive/10 transition-colors"
                   >
