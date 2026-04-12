@@ -743,6 +743,12 @@ export const es: Translations = {
       "Subvenciones para pacientes con enfermedades raras",
       "Subvenciones para gastos médicos en Europa",
     ],
+    focusLabel: "Enfoque:",
+    focusRemoved: "Enfoque eliminado",
+    askAboutGrant: "Preguntar sobre esta subvención",
+    fullInfo: "Información completa",
+    removeFocus: "Eliminar enfoque",
+    focusPlaceholder: "Pregunta sobre {grantName}...",
   },
   seo: {
     homeTitle: "Encuentra subvenciones médicas y de startups en todo el mundo",

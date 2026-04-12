@@ -779,6 +779,12 @@ export interface Translations {
     retry: string;
     panelTitle: string;
     suggestedPrompts: string[];
+    focusLabel: string;
+    focusRemoved: string;
+    askAboutGrant: string;
+    fullInfo: string;
+    removeFocus: string;
+    focusPlaceholder: string;
   };
 
   // SEO meta tags

@@ -743,6 +743,12 @@ export const ru: Translations = {
       "Гранты для пациентов с редкими заболеваниями",
       "Гранты на медицинские расходы в Европе",
     ],
+    focusLabel: "Фокус:",
+    focusRemoved: "Фокус снят",
+    askAboutGrant: "Спросить об этом гранте",
+    fullInfo: "Полная информация",
+    removeFocus: "Снять фокус",
+    focusPlaceholder: "Вопрос о {grantName}...",
   },
   seo: {
     homeTitle: "Найдите медицинские и стартап-гранты по всему миру",
