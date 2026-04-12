@@ -154,6 +154,11 @@ const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(
 
 export default defineConfig({
   plugins,
+  optimizeDeps: {
+    // mapbox-gl ships its own web workers and doesn't play well with
+    // Vite's pre-bundler — exclude it to load as-is from node_modules.
+    exclude: ["mapbox-gl"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
