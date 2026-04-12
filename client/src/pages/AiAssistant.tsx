@@ -28,6 +28,12 @@ export default function AiAssistant() {
 
   const grantChat = trpc.ai.grantChat.useMutation();
 
+  const handleClearMessages = useCallback(() => {
+    setMessages([]);
+    setLastInput(null);
+    grantChat.reset();
+  }, [grantChat]);
+
   const handleSend = useCallback((content: string) => {
     const history = messages
       .filter((m): m is { role: "user" | "assistant"; content: string; timestamp?: Date } =>
@@ -67,7 +73,7 @@ export default function AiAssistant() {
   ];
 
   return (
-    <div className="h-[100dvh] overflow-hidden flex flex-col bg-secondary">
+    <div className="h-[calc(100dvh-3.5rem)] md:h-[100dvh] overflow-hidden flex flex-col bg-secondary">
       <SEO
         title="AI Grant Assistant — GrantKit"
         description="Find grants and support resources using natural language. Powered by AI and the live GrantKit database of 640+ grants across 29 countries."
@@ -75,7 +81,7 @@ export default function AiAssistant() {
       />
       <Navbar />
 
-      <main className="flex-1 min-h-0 container py-4 md:py-5 flex flex-col gap-3 max-w-4xl overflow-hidden">
+      <main className="flex-1 min-h-0 container py-4 md:py-5 pb-20 md:pb-5 flex flex-col gap-3 max-w-4xl overflow-hidden">
         {/* ── Page header ───────────────────────────────────────────── */}
         <div className="flex flex-col gap-2 shrink-0">
           <div className="flex items-center gap-2.5">
@@ -114,12 +120,13 @@ export default function AiAssistant() {
         <AIChatBox
           messages={messages}
           onSendMessage={handleSend}
-          onClearMessages={() => setMessages([])}
+          onClearMessages={handleClearMessages}
           isLoading={grantChat.isPending}
           error={grantChat.isError}
           onRetry={handleRetry}
           placeholder={t.aiAssistant.placeholder}
           className="flex-1 min-h-0"
+          headerTitle={t.aiAssistant.title}
           emptyStateMessage={t.aiAssistant.emptyState}
           newChatLabel={t.aiAssistant.newChat}
           copyLabel={t.aiAssistant.copy}

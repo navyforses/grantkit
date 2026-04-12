@@ -26,6 +26,7 @@ export type AIChatBoxProps = {
   className?: string;
   emptyStateMessage?: string;
   suggestedPrompts?: string[];
+  headerTitle?: string;
   newChatLabel?: string;
   copyLabel?: string;
   errorMessage?: string;
@@ -57,6 +58,7 @@ export function AIChatBox({
   className,
   emptyStateMessage = "Start a conversation with AI",
   suggestedPrompts,
+  headerTitle = "AI Assistant",
   newChatLabel = "New chat",
   copyLabel = "Copy",
   errorMessage = "An error occurred. Please try again.",
@@ -112,7 +114,7 @@ export function AIChatBox({
       <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <Sparkles className="size-4 text-primary" />
-          <span>AI Assistant</span>
+          <span>{headerTitle}</span>
         </div>
         {onClearMessages && (
           <Button
