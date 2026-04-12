@@ -4,7 +4,7 @@
  * Requires VITE_MAPBOX_TOKEN environment variable.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -27,10 +27,15 @@ interface MapViewProps {
 export default function MapView({ className = "", onMapReady, ariaLabel = "Interactive grant map" }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const [mapError, setMapError] = useState<string | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container || !TOKEN) return;
+
+    // Clear any previous error on each attempt
+    setMapError(null);
 
     mapboxgl.accessToken = TOKEN;
 
@@ -73,6 +78,21 @@ export default function MapView({ className = "", onMapReady, ariaLabel = "Inter
     // Notify parent when map finishes loading
     map.once("load", () => onMapReady?.(map));
 
+    // Handle tile / style load errors (e.g. Mapbox 503, network offline)
+    map.on("error", (e) => {
+      const status = (e as unknown as { status?: number }).status;
+      if (status !== undefined && status >= 500) {
+        setMapError(`Map tiles unavailable (HTTP ${status})`);
+      } else if (
+        !status &&
+        (e as unknown as { error?: { message?: string } }).error?.message
+          ?.toLowerCase()
+          .includes("failed to fetch")
+      ) {
+        setMapError("Map failed to load — check your connection");
+      }
+    });
+
     // Switch Mapbox style when the user toggles light/dark
     let prevDark = getIsDark();
     const mutationObserver = new MutationObserver(() => {
@@ -93,9 +113,10 @@ export default function MapView({ className = "", onMapReady, ariaLabel = "Inter
       map.remove();
       mapRef.current = null;
     };
-    // onMapReady intentionally excluded — we only want to register it once
+    // onMapReady intentionally excluded — we only want to register it once.
+    // retryKey is the only real dep: incrementing it tears down and recreates the map.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [retryKey]);
 
   // No token — show a friendly setup message instead of crashing
   if (!TOKEN) {
@@ -139,5 +160,42 @@ export default function MapView({ className = "", onMapReady, ariaLabel = "Inter
     );
   }
 
-  return <div ref={containerRef} className={className} role="region" aria-label={ariaLabel} />;
+  return (
+    <div className={`relative ${className}`}>
+      <div ref={containerRef} className="w-full h-full" role="region" aria-label={ariaLabel} />
+
+      {/* Error overlay — shown on 503 / network failures */}
+      {mapError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-10">
+          <div className="text-center p-8 max-w-sm">
+            <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
+              <svg
+                className="w-7 h-7 text-destructive"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-foreground font-semibold mb-2">Map unavailable</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-5">{mapError}</p>
+            <button
+              type="button"
+              onClick={() => setRetryKey((k) => k + 1)}
+              className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

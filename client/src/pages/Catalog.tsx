@@ -20,10 +20,10 @@ import { trpc } from "@/lib/trpc";
 import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
 import MapView from "@/components/map/MapView";
-const MapFilterPanel = lazy(() => import("@/components/map/MapFilterPanel"));
+const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
+const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
 import { useMapFlyTo } from "@/hooks/useMapFlyTo";
 import { useMapMarkers } from "@/components/map/useMapMarkers";
-import GrantDetailPanel from "@/components/map/GrantDetailPanel";
 import type mapboxgl from "mapbox-gl";
 
 const PAGE_SIZE = 30;
@@ -379,13 +379,15 @@ export default function Catalog() {
           />
         </Suspense>
 
-        {/* Phase 5 — grant detail slide-in panel */}
-        <GrantDetailPanel
-          item={selectedItem}
-          isSaved={selectedItemId ? savedSet.has(selectedItemId) : false}
-          onToggleSave={handleToggleSave}
-          onClose={handleClosePanel}
-        />
+        {/* Phase 5 — grant detail slide-in panel (lazy: loads after map, not on homepage) */}
+        <Suspense fallback={null}>
+          <GrantDetailPanel
+            item={selectedItem}
+            isSaved={selectedItemId ? savedSet.has(selectedItemId) : false}
+            onToggleSave={handleToggleSave}
+            onClose={handleClosePanel}
+          />
+        </Suspense>
       </div>
     </div>
   );
