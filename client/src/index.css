@@ -289,28 +289,20 @@
     pointer-events: none;
   }
   .hero-blob-1 {
-    width: 400px;
-    height: 400px;
-    top: -100px;
-    left: -80px;
-    background: oklch(0.696 0.17 162 / 0.15);
-    animation: blob-float-1 15s ease-in-out infinite;
+    width: 420px;
+    height: 420px;
+    top: -120px;
+    left: -100px;
+    background: oklch(0.696 0.17 162 / 0.10);
+    animation: blob-float-1 18s ease-in-out infinite;
   }
   .hero-blob-2 {
-    width: 350px;
-    height: 350px;
-    top: 30%;
-    right: -80px;
-    background: oklch(0.28 0.05 255 / 0.12);
-    animation: blob-float-2 18s ease-in-out infinite;
-  }
-  .hero-blob-3 {
-    width: 300px;
-    height: 300px;
+    width: 360px;
+    height: 360px;
     bottom: -80px;
-    left: 35%;
-    background: oklch(0.696 0.17 162 / 0.10);
-    animation: blob-float-3 20s ease-in-out infinite;
+    right: -100px;
+    background: oklch(0.65 0.06 155 / 0.08);
+    animation: blob-float-2 22s ease-in-out infinite;
   }
 
   @keyframes blob-float-1 {

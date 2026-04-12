@@ -148,50 +148,43 @@ export default function Home() {
 
       {/* ===== HERO SECTION ===== */}
       <section className="relative overflow-hidden bg-background">
-        {/* Animated gradient blobs — CSS-only, no JS */}
+        {/* Animated gradient blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="hero-blob hero-blob-1" />
           <div className="hero-blob hero-blob-2" />
-          <div className="hero-blob hero-blob-3" />
         </div>
 
-        <div className="relative container py-16 md:py-24 lg:py-32">
-          {/* ── Large GRANTKIT branding ── */}
+        <div className="relative container py-20 md:py-32 lg:py-40">
+          {/* ── GRANTKIT branding ── */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-            className="text-center mb-10 md:mb-14 select-none"
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            className="text-center mb-8 md:mb-12 select-none"
             aria-hidden="true"
           >
-            <span className="hero-brand-text text-[clamp(3.5rem,12vw,9rem)] font-bold leading-none tracking-tighter">
+            <span className="hero-brand-text text-[clamp(3rem,10vw,7rem)] font-bold leading-none tracking-tighter">
               <span className="text-brand-green">GRANT</span>
               <span className="hero-sage">KIT</span>
             </span>
           </motion.div>
 
-          {/* ── Content below branding ── */}
+          {/* ── Tagline + CTA only ── */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
-            className="max-w-2xl mx-auto text-center"
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            className="max-w-lg mx-auto text-center"
           >
-            <span className="inline-flex items-center gap-2 text-xs md:text-sm font-medium text-brand-green bg-brand-green/10 border border-brand-green/20 rounded-full px-3 py-1 md:px-4 md:py-1.5 mb-5 md:mb-6">
-              <Globe className="w-3 h-3 md:w-3.5 md:h-3.5" />
-              {t.hero.badge}
-            </span>
-
-            <h1 className="text-[24px] sm:text-[28px] md:text-[32px] lg:text-[36px] font-semibold text-foreground leading-[1.2] tracking-tight mb-4 md:mb-5">
-              {t.hero.title}
-              <span className="text-brand-green">{t.hero.titleAccent}</span>
+            {/* SEO: visually hidden but accessible h1 */}
+            <h1 className="sr-only">
+              {t.hero.title}{t.hero.titleAccent}
             </h1>
 
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-8 md:mb-10 max-w-lg mx-auto">
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
               {t.hero.subtitle}
             </p>
 
-            {/* CTA buttons — centered */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
               <PricingCTA text={t.hero.cta} size="large" className="w-full sm:w-auto justify-center" />
               <a
@@ -204,26 +197,22 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* Stats — 2x2 grid on mobile, 4-col on desktop */}
+          {/* Stats — compact row */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="mt-16 md:mt-24 flex items-center justify-center gap-8 md:gap-14 text-center"
           >
             {[
-              { icon: Globe, label: t.hero.statCountriesLabel, value: t.hero.statCountries },
-              { icon: Shield, label: t.hero.statMedicalLabel, value: t.hero.statMedical },
-              { icon: Zap, label: t.hero.statFinancialLabel, value: t.hero.statFinancial },
-              { icon: Calendar, label: t.hero.statUpdatedLabel, value: t.hero.statUpdated },
+              { value: t.hero.statCountries, label: t.hero.statCountriesLabel },
+              { value: t.hero.statMedical, label: t.hero.statMedicalLabel },
+              { value: t.hero.statFinancial, label: t.hero.statFinancialLabel },
+              { value: t.hero.statUpdated, label: t.hero.statUpdatedLabel },
             ].map((stat) => (
-              <div
-                key={stat.label}
-                className="bg-card/60 backdrop-blur-sm border border-border rounded-xl px-4 py-3 md:px-5 md:py-4 text-center"
-              >
-                <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-brand-green mb-1.5 md:mb-2 mx-auto" />
-                <p className="text-xl md:text-2xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs md:text-sm text-muted-foreground/60 leading-tight">{stat.label}</p>
+              <div key={stat.label}>
+                <p className="text-lg md:text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-[11px] md:text-xs text-muted-foreground/50 mt-0.5">{stat.label}</p>
               </div>
             ))}
           </motion.div>
