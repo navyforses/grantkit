@@ -171,6 +171,21 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split heavy geo/map libs so they can be cached independently
+          "vendor-csc": ["country-state-city"],
+          "vendor-mapbox": ["mapbox-gl"],
+          // Split core React runtime separately for long-term cache hits
+          "vendor-react": ["react", "react-dom"],
+          // Animation lib
+          "vendor-framer": ["framer-motion"],
+          // tRPC + React Query
+          "vendor-trpc": ["@trpc/client", "@trpc/react-query", "@tanstack/react-query"],
+        },
+      },
+    },
   },
   server: {
     host: true,

@@ -13,7 +13,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   X, Bookmark, BookmarkCheck, Globe, Mail, Phone,
   MapPin, Calendar, DollarSign, Tag, ExternalLink,
@@ -574,6 +574,7 @@ function PanelContent({
 
 export default function GrantDetailPanel({ item, isSaved, onToggleSave, onClose }: Props) {
   const isMobile = useIsMobile();
+  const shouldReduceMotion = useReducedMotion();
 
   // Close on Escape — but not if user is typing in an input/textarea
   useEffect(() => {
@@ -597,10 +598,10 @@ export default function GrantDetailPanel({ item, isSaved, onToggleSave, onClose 
             <motion.div
               key="backdrop"
               role="presentation"
-              initial={{ opacity: 0 }}
+              initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
               onClick={onClose}
               className="absolute inset-0 bg-black/30 z-20 md:hidden"
             />
@@ -611,10 +612,10 @@ export default function GrantDetailPanel({ item, isSaved, onToggleSave, onClose 
             key="panel"
             role="dialog"
             aria-label={item.name}
-            initial={isMobile ? { y: "100%" } : { x: "100%" }}
-            animate={isMobile ? { y: 0 } : { x: 0 }}
-            exit={isMobile ? { y: "100%" } : { x: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            initial={shouldReduceMotion ? { opacity: 0 } : isMobile ? { y: "100%" } : { x: "100%" }}
+            animate={shouldReduceMotion ? { opacity: 1 } : isMobile ? { y: 0 } : { x: 0 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : isMobile ? { y: "100%" } : { x: "100%" }}
+            transition={shouldReduceMotion ? { duration: 0.15 } : { type: "spring", damping: 30, stiffness: 300 }}
             className={[
               "absolute z-30",
               isMobile
