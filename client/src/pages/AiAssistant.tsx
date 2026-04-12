@@ -44,18 +44,26 @@ export default function AiAssistant() {
 
   const grantChat = trpc.ai.grantChat.useMutation();
 
+  // Refs so callbacks stay stable regardless of mutation object identity
+  const mutateRef = useRef(grantChat.mutate);
+  mutateRef.current = grantChat.mutate;
+  const resetRef = useRef(grantChat.reset);
+  resetRef.current = grantChat.reset;
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+
   const handleClearMessages = useCallback(() => {
     setMessages([]);
     setLastInput(null);
     setExtractedGrants([]);
     setFocusedGrant(null);
     setSelectedGrantName(null);
-    grantChat.reset();
-  }, [grantChat]);
+    resetRef.current();
+  }, []);
 
   const handleSend = useCallback(
     (content: string) => {
-      const history = messages
+      const history = messagesRef.current
         .filter(
           (m): m is { role: "user" | "assistant"; content: string; timestamp?: Date } =>
             m.role === "user" || m.role === "assistant"
@@ -71,7 +79,7 @@ export default function AiAssistant() {
       const input = { message: apiMessage, history };
       setLastInput(input);
       setMessages((prev) => [...prev, { role: "user", content, timestamp: new Date() }]);
-      grantChat.mutate(input, {
+      mutateRef.current(input, {
         onSuccess: (data) => {
           setMessages((prev) => [
             ...prev,
@@ -84,12 +92,12 @@ export default function AiAssistant() {
         },
       });
     },
-    [messages, grantChat]
+    [language]
   );
 
   const handleRetry = useCallback(() => {
     if (!lastInput) return;
-    grantChat.mutate(lastInput, {
+    mutateRef.current(lastInput, {
       onSuccess: (data) => {
         setMessages((prev) => [
           ...prev,
@@ -100,7 +108,7 @@ export default function AiAssistant() {
         }
       },
     });
-  }, [lastInput, grantChat]);
+  }, [lastInput]);
 
   /** Called when a grant card is clicked in the sidebar */
   const handleGrantSelect = useCallback((grant: ParsedGrant) => {

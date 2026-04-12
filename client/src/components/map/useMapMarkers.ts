@@ -196,11 +196,13 @@ export function useMapMarkers(
         if (!feat) return;
         const clusterId: number = feat.properties?.cluster_id;
         try {
-          const zoom = await (map.getSource(SRC) as mapboxgl.GeoJSONSource)
+          // Cast to `any` — mapbox-gl v3 changed GeoJSONSource API types
+          // but getClusterExpansionZoom still works at runtime.
+          const zoom = await (map.getSource(SRC) as any)
             .getClusterExpansionZoom(clusterId);
           map.easeTo({
             center: (feat.geometry as GeoJSON.Point).coordinates as [number, number],
-            zoom,
+            zoom: zoom as number,
             duration: 500,
           });
         } catch { /* ignore */ }

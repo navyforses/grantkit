@@ -9,7 +9,7 @@
  *   Mobile:        MobileHeader from App.tsx (h-14) + map fills remaining viewport
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { type SortValue } from "@/components/FilterBar";
 import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
@@ -20,7 +20,7 @@ import { trpc } from "@/lib/trpc";
 import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
 import MapView from "@/components/map/MapView";
-import MapFilterPanel from "@/components/map/MapFilterPanel";
+const MapFilterPanel = lazy(() => import("@/components/map/MapFilterPanel"));
 import { useMapFlyTo } from "@/hooks/useMapFlyTo";
 import { useMapMarkers } from "@/components/map/useMapMarkers";
 import GrantDetailPanel from "@/components/map/GrantDetailPanel";
@@ -354,21 +354,23 @@ export default function Catalog() {
           ariaLabel={t.catalog.title}
         />
 
-        {/* Phase 2 — cascading filter panel overlay */}
-        <MapFilterPanel
-          countryCode={mapCountryCode}
-          stateCode={mapStateCode}
-          cityName={mapCityName}
-          onCountryChange={setMapCountryCode}
-          onStateChange={setMapStateCode}
-          onCityChange={setMapCityName}
-          selectedCategory={selectedCategory}
-          onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
-          selectedType={selectedType}
-          onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
-          totalItems={totalItems}
-          onClearAll={resetFilters}
-        />
+        {/* Phase 2 — cascading filter panel overlay (lazy-loaded to defer country-state-city chunk) */}
+        <Suspense fallback={null}>
+          <MapFilterPanel
+            countryCode={mapCountryCode}
+            stateCode={mapStateCode}
+            cityName={mapCityName}
+            onCountryChange={setMapCountryCode}
+            onStateChange={setMapStateCode}
+            onCityChange={setMapCityName}
+            selectedCategory={selectedCategory}
+            onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
+            selectedType={selectedType}
+            onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
+            totalItems={totalItems}
+            onClearAll={resetFilters}
+          />
+        </Suspense>
 
         {/* Phase 5 — grant detail slide-in panel */}
         <GrantDetailPanel
