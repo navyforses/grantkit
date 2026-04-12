@@ -28,6 +28,8 @@ export const ru: Translations = {
     statFinancialLabel: "Жильё",
     statUpdated: "Ежемесячно",
     statUpdatedLabel: "Обновление",
+    statGrants: "640+",
+    statGrantsLabel: "Грантов",
   },
   problem: {
     title: "Информация о грантах разрозненна, устарела и труднодоступна",

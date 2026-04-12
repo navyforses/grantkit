@@ -28,6 +28,8 @@ export const en: Translations = {
     statFinancialLabel: "Housing Aid",
     statUpdated: "Monthly",
     statUpdatedLabel: "Updated",
+    statGrants: "640+",
+    statGrantsLabel: "Grants",
   },
   problem: {
     title: "Grant information is scattered, outdated, and hard to find",

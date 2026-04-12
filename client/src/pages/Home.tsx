@@ -196,28 +196,21 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            className="mt-16 md:mt-24 flex items-center justify-center gap-8 md:gap-14 text-center"
+            className="mt-16 md:mt-24 flex items-center justify-center gap-10 md:gap-16 text-center"
           >
             {[
+              { value: t.hero.statGrants, label: t.hero.statGrantsLabel },
               { value: t.hero.statCountries, label: t.hero.statCountriesLabel },
               { value: t.hero.statMedical, label: t.hero.statMedicalLabel },
               { value: t.hero.statFinancial, label: t.hero.statFinancialLabel },
               { value: t.hero.statUpdated, label: t.hero.statUpdatedLabel },
             ].map((stat) => (
               <div key={stat.label}>
-                <p className="text-lg md:text-2xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-[11px] md:text-xs text-muted-foreground/50 mt-0.5">{stat.label}</p>
+                <p className="text-xl md:text-3xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs md:text-sm text-muted-foreground/50 mt-1">{stat.label}</p>
               </div>
             ))}
           </motion.div>
-        </div>
-
-        {/* ── Horizontal scrolling ticker ── */}
-        <div className="overflow-hidden border-t border-border/50 py-4 md:py-5">
-          <div className="hero-ticker text-sm md:text-base text-muted-foreground/60 whitespace-nowrap">
-            <span>{t.hero.subtitle}</span>
-            <span>{t.hero.subtitle}</span>
-          </div>
         </div>
       </section>
 
