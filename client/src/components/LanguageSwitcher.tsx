@@ -45,7 +45,7 @@ export default function LanguageSwitcher() {
               }}
               className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors
                 ${language === lang.code
-                  ? "bg-emerald-50 text-emerald-700 font-semibold"
+                  ? "bg-brand-green/10 text-brand-green font-semibold"
                   : "text-foreground/80 hover:bg-secondary"
                 }`}
             >

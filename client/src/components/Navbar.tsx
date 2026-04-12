@@ -29,7 +29,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="hidden md:block bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-30 theme-transition">
+    <nav className="hidden md:block bg-background/80 backdrop-blur-md shadow-sm sticky top-0 z-30">
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -48,7 +48,7 @@ export default function Navbar() {
             aria-current={location === "/" ? "page" : undefined}
             className={`relative text-sm transition-colors pb-0.5 ${
               location === "/"
-                ? "font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                ? "font-semibold text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
                 : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -59,7 +59,7 @@ export default function Navbar() {
             aria-current={location === "/catalog" ? "page" : undefined}
             className={`relative text-sm transition-colors pb-0.5 ${
               location === "/catalog"
-                ? "font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                ? "font-semibold text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
                 : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -70,7 +70,7 @@ export default function Navbar() {
             aria-current={location === "/ai-assistant" ? "page" : undefined}
             className={`relative inline-flex items-center gap-1.5 text-sm transition-colors pb-0.5 ${
               location === "/ai-assistant"
-                ? "font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                ? "font-semibold text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
                 : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
