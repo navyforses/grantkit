@@ -1,5 +1,5 @@
 /*
- * Catalog Page — Interactive World Map View (Phase 1)
+ * Catalog Page — Interactive World Map View (Phase 3)
  * Replaces the card grid with a full-screen Mapbox GL world map.
  * Filter state & data fetching are preserved here for use in later phases
  * (filter panel overlays, map markers, side panel, AI chat).
@@ -22,6 +22,7 @@ import SEO from "@/components/SEO";
 import { useIsMobile } from "@/hooks/useMobile";
 import MapView from "@/components/map/MapView";
 import MapFilterPanel from "@/components/map/MapFilterPanel";
+import { useMapFlyTo } from "@/hooks/useMapFlyTo";
 import type mapboxgl from "mapbox-gl";
 
 const PAGE_SIZE = 30;
@@ -264,10 +265,14 @@ export default function Catalog() {
     setMapCityName("");
   }, []);
 
-  // Map instance ref — shared with Phase 2+ overlays
-  const handleMapReady = useCallback((_map: mapboxgl.Map) => {
-    // Map is ready — Phase 3+ will use this for flyTo animations
+  // Map instance ref — populated by MapView once the map has loaded
+  const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
+  const handleMapReady = useCallback((map: mapboxgl.Map) => {
+    mapInstanceRef.current = map;
   }, []);
+
+  // Phase 3 — fly to selected location whenever country / state / city changes
+  useMapFlyTo(mapInstanceRef, mapCountryCode, mapStateCode, mapCityName);
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
