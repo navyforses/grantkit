@@ -9,9 +9,9 @@ import {
   ArrowRight,
   Calendar,
   Check,
+  ChevronDown,
   Clock,
   Globe,
-  HelpCircle,
   Lock,
   Mail,
   Search,
@@ -35,17 +35,19 @@ import { trpc } from "@/lib/trpc";
 import { catalogItems } from "@/data/catalogData";
 import { useMemo } from "react";
 
+// Scroll animation: threshold 0.1 (10% visibility), lenient rootMargin so
+// sections trigger before they're fully inside the viewport.
 const fadeInUp = {
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-100px", amount: 0.05 },
-  transition: { duration: 0.5, ease: "easeOut" as const },
+  viewport: { once: true, margin: "0px 0px -50px 0px", amount: 0.1 },
+  transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as const },
 };
 
 const stagger = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.05 },
+  viewport: { once: true, margin: "0px 0px -50px 0px", amount: 0.1 },
 };
 
 export default function Home() {
@@ -131,7 +133,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background theme-transition">
+    <div className="min-h-screen flex flex-col bg-background">
       <SEO
         title={t.seo.homeTitle}
         description={t.seo.homeDescription}
@@ -153,28 +155,35 @@ export default function Home() {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-br from-hero-bg/90 via-hero-bg/85 to-hero-bg/90" />
+        {/* Animated gradient blobs — CSS-only, no JS */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="hero-blob hero-blob-1" />
+          <div className="hero-blob hero-blob-2" />
+          <div className="hero-blob hero-blob-3" />
+        </div>
         {/* Mobile: tighter padding. Desktop: generous */}
         <div className="relative container py-12 md:py-28 lg:py-32">
-          <div className="max-w-3xl">
+          {/* Centered hero layout */}
+          <div className="max-w-3xl mx-auto text-center">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
             >
               <span className="inline-flex items-center gap-2 text-xs md:text-sm font-medium text-brand-green bg-brand-green/10 border border-brand-green/20 rounded-full px-3 py-1 md:px-4 md:py-1.5 mb-4 md:mb-6">
                 <Globe className="w-3 h-3 md:w-3.5 md:h-3.5" />
                 {t.hero.badge}
               </span>
-              {/* Mobile: smaller text. Desktop: large */}
-              <h1 className="text-3xl md:text-5xl lg:text-[56px] font-bold text-hero-text leading-[1.1] tracking-tight mb-3 md:mb-5">
+              {/* Mobile: 28-32px. Desktop: max 44px */}
+              <h1 className="text-[28px] sm:text-[32px] md:text-[40px] lg:text-[44px] font-semibold text-hero-text leading-[1.1] tracking-tight mb-3 md:mb-5">
                 {t.hero.title}
                 <span className="text-brand-green">{t.hero.titleAccent}</span>
               </h1>
-              <p className="text-base md:text-xl text-hero-muted leading-relaxed mb-6 md:mb-8 max-w-2xl">
+              <p className="text-base md:text-lg text-hero-muted leading-relaxed mb-6 md:mb-8 max-w-xl mx-auto">
                 {t.hero.subtitle}
               </p>
-              {/* Mobile: full-width CTA stack */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+              {/* CTA buttons — centered */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                 <PricingCTA text={t.hero.cta} size="large" className="w-full sm:w-auto justify-center" />
                 <a
                   href="/catalog"
@@ -189,9 +198,9 @@ export default function Home() {
 
           {/* Stats — 2x2 grid on mobile, 4-col on desktop */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
             className="mt-10 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
           >
             {[
@@ -254,7 +263,7 @@ export default function Home() {
                 <motion.div
                   key={i}
                   {...stagger}
-                  transition={{ duration: 0.4, delay: i * 0.15 }}
+                  transition={{ duration: 0.4, delay: i * 0.1 }}
                   className="relative text-center flex-shrink-0 w-[75vw] md:w-auto snap-center"
                 >
                   {/* Connector line — desktop only */}
@@ -298,7 +307,7 @@ export default function Home() {
                 key={i}
                 {...stagger}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="bg-card border border-border rounded-xl p-5 md:p-6 hover:shadow-sm transition-shadow"
+                className="bg-card border border-border rounded-xl p-5 md:p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
               >
                 <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center mb-3 md:mb-4">
                   <pain.icon className="w-5 h-5 text-red-500" />
@@ -337,7 +346,7 @@ export default function Home() {
                   key={i}
                   {...stagger}
                   transition={{ duration: 0.4, delay: i * 0.08 }}
-                  className="text-center p-5 md:p-6 rounded-xl border border-border hover:border-foreground/20 hover:shadow-sm transition-all flex-shrink-0 w-[60vw] sm:w-[45vw] lg:w-auto snap-center"
+                  className="text-center p-5 md:p-6 rounded-xl border border-border hover:border-foreground/20 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex-shrink-0 w-[60vw] sm:w-[45vw] lg:w-auto snap-center"
                 >
                   <span className="text-2xl md:text-3xl mb-2 md:mb-3 block">{item.icon}</span>
                   <h3 className="font-semibold text-foreground mb-1.5 md:mb-2 text-sm md:text-base">{item.title}</h3>
@@ -489,36 +498,38 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Plan toggle */}
-          <div className="flex items-center justify-center gap-2 md:gap-3 mb-8 md:mb-10">
-            <button
-              onClick={() => setPricingPlan("monthly")}
-              className={`px-4 md:px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                pricingPlan === "monthly"
-                  ? "bg-primary text-white shadow-sm"
-                  : "bg-card text-muted-foreground border border-border hover:border-foreground/20"
-              }`}
-            >
-              {t.pricing.monthly}
-            </button>
-            <button
-              onClick={() => setPricingPlan("annual")}
-              className={`px-4 md:px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                pricingPlan === "annual"
-                  ? "bg-primary text-white shadow-sm"
-                  : "bg-card text-muted-foreground border border-border hover:border-foreground/20"
-              }`}
-            >
-              {t.pricing.annual}
-              <span className="text-xs bg-brand-green text-white px-2 py-0.5 rounded-full font-semibold">
-                {t.pricing.annualSave}
-              </span>
-            </button>
+          {/* Plan toggle — animated pill selector */}
+          <div className="flex items-center justify-center mb-8 md:mb-10">
+            <div className="bg-card border border-border rounded-full p-1 flex items-center">
+              <button
+                onClick={() => setPricingPlan("monthly")}
+                className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  pricingPlan === "monthly"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t.pricing.monthly}
+              </button>
+              <button
+                onClick={() => setPricingPlan("annual")}
+                className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                  pricingPlan === "annual"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t.pricing.annual}
+                <span className="text-xs bg-brand-green text-white px-2 py-0.5 rounded-full font-semibold">
+                  {t.pricing.annualSave}
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Pricing card */}
           <motion.div {...fadeInUp} className="max-w-md mx-auto">
-            <div className="bg-card border-2 border-primary rounded-2xl p-6 md:p-8 shadow-lg">
+            <div className="relative bg-card rounded-2xl p-6 md:p-8 shadow-lg ring-2 ring-brand-green/40 shadow-brand-green/10">
               <div className="text-center mb-5 md:mb-6">
                 <div className="flex items-baseline justify-center gap-1">
                   <span className="text-4xl md:text-5xl font-bold text-foreground">
@@ -576,15 +587,15 @@ export default function Home() {
                   className="w-full flex items-center justify-between px-4 md:px-6 py-3.5 md:py-4 text-left active:bg-secondary md:hover:bg-secondary transition-colors"
                 >
                   <span className="font-medium text-foreground pr-4 text-sm md:text-base">{faq.q}</span>
-                  <HelpCircle
-                    className={`w-5 h-5 shrink-0 text-muted-foreground/60 transition-transform duration-200 ${
-                      openFaq === i ? "rotate-180 text-primary" : ""
+                  <ChevronDown
+                    className={`w-5 h-5 shrink-0 text-muted-foreground/60 transition-transform duration-300 ease-in-out ${
+                      openFaq === i ? "rotate-180 text-brand-green" : ""
                     }`}
                   />
                 </button>
                 <div
-                  className={`overflow-hidden transition-all duration-300 ${
-                    openFaq === i ? "max-h-40" : "max-h-0"
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    openFaq === i ? "max-h-64" : "max-h-0"
                   }`}
                 >
                   <p className="px-4 md:px-6 pb-4 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
