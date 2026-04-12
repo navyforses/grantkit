@@ -273,14 +273,22 @@ export default function Catalog() {
       <Navbar />
 
       {/*
-       * Map fills remaining viewport height below whichever header is visible:
-       *   Mobile  (<md): MobileHeader from App.tsx = 3.5rem (56px)  → h-[calc(100dvh-3.5rem)]
-       *   Desktop (md+): Navbar inside this page   = 4rem   (64px)  → h-[calc(100dvh-4rem)]
+       * Map fills remaining viewport height below whichever header is visible.
        *
-       * Using dvh (dynamic viewport height) so the map always fills the
-       * currently-visible viewport even when mobile browser chrome shows/hides.
+       * Mobile (<md):
+       *   MobileHeader (sticky h-14 = 3.5rem) — rendered by App.tsx above this page
+       *   MobileBottomNav (fixed h-16 = 4rem) — rendered by App.tsx
+       *   App.tsx wraps the Router in pb-16 (4rem) to keep content above the bottom nav.
+       *   Map height = 100dvh - 3.5rem(header) - 4rem(bottom-pad) = 100dvh - 7.5rem
+       *
+       * Desktop (md+):
+       *   Navbar (h-16 = 4rem) — inside this page, no bottom padding (pb-0)
+       *   Map height = 100dvh - 4rem
+       *
+       * Using dvh (dynamic viewport height) so the map fills the currently-visible
+       * viewport even when mobile browser chrome (address bar) shows/hides.
        */}
-      <div className="relative overflow-hidden h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-4rem)]">
+      <div className="relative overflow-hidden h-[calc(100dvh-7.5rem)] md:h-[calc(100dvh-4rem)]">
         <MapView
           className="absolute inset-0 w-full h-full"
           onMapReady={handleMapReady}
