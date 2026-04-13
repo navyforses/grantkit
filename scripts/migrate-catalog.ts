@@ -167,7 +167,6 @@ async function buildCategoryMap(
  */
 function buildLocationRow(item: CatalogItem): {
   country_code: string;
-  region_id: string | null;
   is_nationwide: boolean;
 } {
   // Normalize country code
@@ -216,9 +215,6 @@ function buildLocationRow(item: CatalogItem): {
 
   return {
     country_code: countryCode,
-    // region_id is a foreign key to regions.id — we don't have those IDs from catalog.json,
-    // so leave null. Only set it if you can look up the actual region row.
-    region_id: null,
     is_nationwide: isNationwide,
   };
 }
@@ -454,7 +450,7 @@ async function populateJunctionsPass(
     const chunkNum = Math.floor(i / CHUNK) + 1;
 
     const catRows: { resource_id: string; category_id: string; is_primary: boolean }[] = [];
-    const locRows: { resource_id: string; country_code: string; region_id: string | null; is_nationwide: boolean }[] = [];
+    const locRows: { resource_id: string; country_code: string; is_nationwide: boolean }[] = [];
     let chunkUnmatched = 0;
 
     for (const resource of chunk) {
