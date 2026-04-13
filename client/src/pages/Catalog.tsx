@@ -230,7 +230,8 @@ export default function Catalog() {
   const displayItems: CatalogItem[] = useMemo(() => {
     if (catalogData?.grants) {
       return catalogData.grants.map((g) => {
-        const trans = (g as any).translations?.[language];
+        type GrantTranslation = { name?: string; description?: string; eligibility?: string };
+        const trans = (g.translations as Record<string, GrantTranslation> | undefined)?.[language];
         return {
           id: g.id,
           name: trans?.name || g.name,

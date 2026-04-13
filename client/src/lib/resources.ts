@@ -124,8 +124,17 @@ async function fetchFromSupabase(filters: ResourceFilters): Promise<{ data: Reso
     throw error
   }
 
-  // Post-filter by categories / countries (join tables stored as JSON in the view)
+  // Post-filter by categories / countries / regions.
+  // The resources_full view aggregates junction tables as JSON arrays, so these
+  // filters cannot be pushed to the SQL WHERE clause without custom RPC.
+  // Consequence: post-filtering reduces the items returned per page, but the
+  // `count` from Supabase reflects the unfiltered total. When these filters are
+  // active, return result.length as the count so pagination stays accurate.
   let result: ResourceFull[] = (data ?? []) as unknown as ResourceFull[]
+  const hasPostFilters =
+    (filters.categories?.length ?? 0) > 0 ||
+    (filters.countries?.length ?? 0) > 0 ||
+    (filters.regions?.length ?? 0) > 0
 
   if (filters.categories?.length) {
     result = result.filter((r) =>
@@ -139,11 +148,12 @@ async function fetchFromSupabase(filters: ResourceFilters): Promise<{ data: Reso
   }
   if (filters.regions?.length) {
     result = result.filter((r) =>
-      r.locations?.some((l) => l.region_id && filters.regions!.includes(l.region_id))
+      r.locations?.some((l) => l.region_id != null && filters.regions!.includes(l.region_id))
     )
   }
 
-  return { data: result, count: count ?? 0 }
+  // Use filtered count when post-filters are active to keep pagination accurate
+  return { data: result, count: hasPostFilters ? result.length : (count ?? 0) }
 }
 
 // ─── Public API ───────────────────────────────────────────────────────────────
