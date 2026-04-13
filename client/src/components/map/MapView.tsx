@@ -170,7 +170,8 @@ export default function MapView({ className = "", onMapReady, ariaLabel = "Inter
       <div className="relative w-full h-full">
         <div
           ref={containerRef}
-          className="absolute inset-0"
+          className="inset-0"
+          style={{ position: "absolute", width: "100%", height: "100%" }}
           role="region"
           aria-label={ariaLabel}
         />
