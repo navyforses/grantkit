@@ -5,7 +5,6 @@
  * Desktop: two-column layout
  */
 
-import { useMemo } from "react";
 import { Link, useParams } from "wouter";
 import { motion } from "framer-motion";
 import {

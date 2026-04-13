@@ -801,6 +801,7 @@ export const fr: Translations = {
     eligibilityBoth: "Les deux",
     applyNow: "Postuler",
     sourceWebsite: "Site source",
+    viewDetails: "Voir tous les détails",
     relatedResources: "Ressources similaires",
     amountRange: "Montant",
     deadlineLabel: "Date limite",

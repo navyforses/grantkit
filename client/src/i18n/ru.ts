@@ -801,6 +801,7 @@ export const ru: Translations = {
     eligibilityBoth: "Оба",
     applyNow: "Подать заявку",
     sourceWebsite: "Сайт источника",
+    viewDetails: "Подробнее",
     relatedResources: "Похожие ресурсы",
     amountRange: "Сумма",
     deadlineLabel: "Срок",

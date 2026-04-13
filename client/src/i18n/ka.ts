@@ -803,6 +803,7 @@ export const ka: Translations = {
     eligibilityBoth: "ორივე",
     applyNow: "განაცხადი",
     sourceWebsite: "წყაროს საიტი",
+    viewDetails: "სრული დეტალები",
     relatedResources: "მსგავსი რესურსები",
     amountRange: "თანხა",
     deadlineLabel: "ვადა",

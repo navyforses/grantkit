@@ -30,6 +30,12 @@ const C_SM = "#818cf8"; // < 10 items in cluster
 const C_MD = "#6366f1"; // 10 – 49
 const C_LG = "#4f46e5"; // 50+
 
+// Resource-type specific marker colours
+const C_GRANT   = "#10b981"; // emerald-500
+const C_SOCIAL  = "#3b82f6"; // blue-500
+const C_MEDICAL = "#a855f7"; // purple-500
+const C_DEFAULT = "#818cf8"; // indigo-400 fallback
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 /** Escape HTML special characters to prevent XSS in setHTML() calls. */
@@ -47,7 +53,10 @@ function esc(s: string): string {
 function toGeoJSON(items: CatalogItem[]): GeoJSON.FeatureCollection<GeoJSON.Point> {
   const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
   for (const item of items) {
-    const c = resolveItemCoords(item.country, item.state, item.city);
+    // Prefer direct lat/lng (Supabase resources) over geocoded lookup
+    const c = (item.latitude != null && item.longitude != null)
+      ? [item.longitude, item.latitude] as [number, number]
+      : resolveItemCoords(item.country, item.state, item.city);
     if (!c) {
       if (import.meta.env.DEV) {
         console.warn("[map] no coords:", item.id, { country: item.country, state: item.state, city: item.city });
@@ -62,6 +71,7 @@ function toGeoJSON(items: CatalogItem[]): GeoJSON.FeatureCollection<GeoJSON.Poin
         name:         item.name,
         organization: item.organization ?? "",
         itemType:     item.type,
+        resourceType: item.resourceType ?? "",
       },
     });
   }
@@ -114,14 +124,20 @@ function addSourceAndLayers(
     paint: { "text-color": "#ffffff" },
   });
 
-  // ── Individual points ─────────────────────────────────────────────────────
+  // ── Individual points — colour-coded by resource type ──────────────────────
   map.addLayer({
     id: LYR_POINTS,
     type: "circle",
     source: SRC,
     filter: ["!", ["has", "point_count"]],
     paint: {
-      "circle-color": C_SM,
+      "circle-color": [
+        "match", ["get", "resourceType"],
+        "GRANT",   C_GRANT,
+        "SOCIAL",  C_SOCIAL,
+        "MEDICAL", C_MEDICAL,
+        C_DEFAULT,
+      ],
       "circle-radius": 7,
       "circle-stroke-width": 2,
       "circle-stroke-color": "#ffffff",

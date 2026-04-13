@@ -190,6 +190,57 @@ async function run() {
     } else {
       console.log(`  ✅ Batch ${Math.floor(i / BATCH) + 1}: inserted/updated ${data?.length ?? rows.length} rows`);
       successCount += data?.length ?? rows.length;
+
+      // Insert junction table rows for categories and locations
+      if (data) {
+        const categoryRows: { resource_id: string; category_id: string; is_primary: boolean }[] = [];
+        const locationRows: { resource_id: string; country_code: string; is_nationwide: boolean; region_name?: string; city?: string }[] = [];
+
+        for (let j = 0; j < data.length; j++) {
+          const resource = data[j];
+          const item = batch[j];
+
+          // Map category using CATEGORY_MAP
+          const categoryId = CATEGORY_MAP[item.category] ?? "GRANT.OTHER";
+          categoryRows.push({
+            resource_id: resource.id,
+            category_id: categoryId,
+            is_primary: true,
+          });
+
+          // Build location row
+          const locs = buildLocations(item);
+          for (const loc of locs) {
+            locationRows.push({
+              resource_id: resource.id,
+              country_code: loc.country_code,
+              is_nationwide: loc.is_nationwide,
+              region_name: loc.region_name,
+              city: loc.city,
+            });
+          }
+        }
+
+        // Upsert category junction rows
+        if (categoryRows.length > 0) {
+          const { error: catErr } = await supabase
+            .from("resource_categories")
+            .upsert(categoryRows, { onConflict: "resource_id,category_id" });
+          if (catErr) {
+            console.warn(`    ⚠️  resource_categories batch error:`, catErr.message);
+          }
+        }
+
+        // Upsert location junction rows
+        if (locationRows.length > 0) {
+          const { error: locErr } = await supabase
+            .from("resource_locations")
+            .upsert(locationRows, { onConflict: "resource_id,country_code" });
+          if (locErr) {
+            console.warn(`    ⚠️  resource_locations batch error:`, locErr.message);
+          }
+        }
+      }
     }
   }
 
