@@ -1,19 +1,21 @@
 /*
- * useMapHighlight — Country polygon highlight on the Mapbox map.
+ * useMapHighlight — Country polygon highlight + state/city circle glow.
  *
- * Uses Mapbox's built-in `mapbox.country-boundaries-v1` vector tileset to draw
- * a translucent fill + border over the selected country.
+ * Country level : mapbox.country-boundaries-v1 vector tileset (fill + border).
+ * State / city  : GeoJSON point + circle layer (pixel-radius "spotlight" glow),
+ *                 because Mapbox standard tilesets have no sub-national polygons.
  *
  * Behaviour:
- *   • Highlight appears when countryCode is non-empty.
- *   • Opacity dims when stateCode or cityName is also set (flyTo already zoomed in).
- *   • Layers are recreated after style.load (dark ↔ light toggle) because
- *     setStyle() wipes all user-added sources + layers.
- *   • Source + layers are removed on unmount.
+ *   • Country highlight (fill + border) appears when countryCode or regionCode="EU" is set.
+ *   • State glow (large soft circle at centroid) appears when stateCode is set.
+ *   • City glow (tighter circle) overrides state glow when cityName is set.
+ *   • Layers are recreated after style.load (dark ↔ light toggle wipes user layers).
+ *   • All sources + layers are removed on unmount.
  */
 
 import { useEffect } from "react";
 import type mapboxgl from "mapbox-gl";
+import { State, City } from "country-state-city";
 import { EU_MEMBER_CODES } from "@/lib/constants";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -22,16 +24,46 @@ const SRC    = "country-boundaries";
 const FILL   = "country-highlight-fill";
 const BORDER = "country-highlight-border";
 
+const FOCUS_SRC    = "location-focus";
+const FOCUS_CIRCLE = "location-focus-circle";
+
 // Primary accent colour (green — distinct from the indigo marker circles)
 const HIGHLIGHT_COLOR = "#10b981";
 
-// Mapbox standard styles have this layer; insert our layers just below it
-// so highlight renders beneath country name labels.
+// Mapbox standard styles have this layer; insert country layers just below it
+// so the highlight renders beneath country name labels.
 const BEFORE_LAYER = "admin-1-boundary-bg";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function emptyFC(): any {
+  return { type: "FeatureCollection", features: [] };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function makePoint(lngLat: [number, number]): any {
+  return {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: lngLat },
+        properties: {},
+      },
+    ],
+  };
+}
+
+function parseCoords(lat?: string | null, lng?: string | null): [number, number] | null {
+  const la = parseFloat(lat ?? "");
+  const lo = parseFloat(lng ?? "");
+  return isNaN(la) || isNaN(lo) ? null : [lo, la];
+}
+
 function addSourceAndLayers(map: mapboxgl.Map) {
+  // ── Country polygon source + layers ───────────────────────────────────────
+
   if (!map.getSource(SRC)) {
     map.addSource(SRC, {
       type: "vector",
@@ -48,7 +80,6 @@ function addSourceAndLayers(map: mapboxgl.Map) {
         type: "fill",
         source: SRC,
         "source-layer": "country_boundaries",
-        // Start with no country selected — filter set separately
         filter: ["==", ["get", "iso_3166_1"], ""],
         paint: {
           "fill-color": HIGHLIGHT_COLOR,
@@ -76,21 +107,52 @@ function addSourceAndLayers(map: mapboxgl.Map) {
       beforeId,
     );
   }
+
+  // ── State / city focus circle source + layer ──────────────────────────────
+
+  if (!map.getSource(FOCUS_SRC)) {
+    map.addSource(FOCUS_SRC, {
+      type: "geojson",
+      data: emptyFC(),
+    });
+  }
+
+  if (!map.getLayer(FOCUS_CIRCLE)) {
+    map.addLayer({
+      id: FOCUS_CIRCLE,
+      type: "circle",
+      source: FOCUS_SRC,
+      paint: {
+        "circle-radius": 80,
+        "circle-color": HIGHLIGHT_COLOR,
+        "circle-opacity": 0.10,
+        "circle-stroke-width": 2,
+        "circle-stroke-color": HIGHLIGHT_COLOR,
+        "circle-stroke-opacity": 0.35,
+        "circle-pitch-alignment": "map",
+        "circle-blur": 0.8,
+      },
+    });
+  }
 }
 
 function removeSourceAndLayers(map: mapboxgl.Map) {
-  if (map.getLayer(BORDER)) map.removeLayer(BORDER);
-  if (map.getLayer(FILL))   map.removeLayer(FILL);
-  if (map.getSource(SRC))   map.removeSource(SRC);
+  if (map.getLayer(FOCUS_CIRCLE)) map.removeLayer(FOCUS_CIRCLE);
+  if (map.getSource(FOCUS_SRC))   map.removeSource(FOCUS_SRC);
+  if (map.getLayer(BORDER))       map.removeLayer(BORDER);
+  if (map.getLayer(FILL))         map.removeLayer(FILL);
+  if (map.getSource(SRC))         map.removeSource(SRC);
 }
 
 // ── Hook ─────────────────────────────────────────────────────────────────────
 
 /**
- * Adds/maintains a country highlight (fill + border) on the map.
+ * Adds/maintains country, state, and city highlights on the map.
  *
- * When regionCode="EU" and countryCode is empty, highlights all 27 EU members.
- * When countryCode is set, highlights only that country.
+ * - regionCode="EU" + no countryCode → highlights all 27 EU members
+ * - countryCode set → highlights that country polygon
+ * - stateCode set  → adds soft glow circle at the state centroid
+ * - cityName set   → replaces state glow with tighter circle at city coords
  */
 export function useMapHighlight(
   map: mapboxgl.Map | null,
@@ -99,14 +161,13 @@ export function useMapHighlight(
   stateCode: string,
   cityName: string,
 ) {
-  // ── Layer setup: recreate source + layers on style.load ──────────────────
+  // ── Layer setup: recreate sources + layers on style.load ──────────────────
   useEffect(() => {
     if (!map) return;
 
     const setup = () => {
       addSourceAndLayers(map);
-      // After recreation apply the current filter immediately
-      applyFilter(map, regionCode, countryCode, stateCode, cityName);
+      applyHighlight(map, regionCode, countryCode, stateCode, cityName);
     };
 
     map.on("style.load", setup);
@@ -119,18 +180,31 @@ export function useMapHighlight(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
-  // ── Reactive filter update ────────────────────────────────────────────────
+  // ── Reactive update on location change ────────────────────────────────────
   useEffect(() => {
     if (!map || !map.isStyleLoaded()) return;
     if (!map.getLayer(FILL)) return;
 
-    applyFilter(map, regionCode, countryCode, stateCode, cityName);
+    applyHighlight(map, regionCode, countryCode, stateCode, cityName);
   }, [map, regionCode, countryCode, stateCode, cityName]);
 }
 
-// ── Pure filter/paint updater (called from both effects) ──────────────────
+// ── Combined highlight updater ────────────────────────────────────────────────
 
-function applyFilter(
+function applyHighlight(
+  map: mapboxgl.Map,
+  regionCode: string,
+  countryCode: string,
+  stateCode: string,
+  cityName: string,
+) {
+  applyCountryFilter(map, regionCode, countryCode, stateCode, cityName);
+  applyFocusCircle(map, regionCode, countryCode, stateCode, cityName);
+}
+
+// ── Country polygon filter / opacity ─────────────────────────────────────────
+
+function applyCountryFilter(
   map: mapboxgl.Map,
   regionCode: string,
   countryCode: string,
@@ -159,4 +233,53 @@ function applyFilter(
     map.setFilter(FILL,   noMatch);
     map.setFilter(BORDER, noMatch);
   }
+}
+
+// ── State / city focus circle ─────────────────────────────────────────────────
+
+function applyFocusCircle(
+  map: mapboxgl.Map,
+  regionCode: string,
+  countryCode: string,
+  stateCode: string,
+  cityName: string,
+) {
+  const src = map.getSource(FOCUS_SRC) as mapboxgl.GeoJSONSource | undefined;
+  if (!src) return;
+
+  // Determine ISO-2 country code for country-state-city lookups
+  const iso = regionCode === "US" ? "US"
+            : regionCode === "GB" ? "GB"
+            : countryCode;
+
+  // ── City level — tight circle (zoom ~10) ─────────────────────────────────
+  if (iso && stateCode && cityName) {
+    const city = City.getCitiesOfState(iso, stateCode).find((c) => c.name === cityName);
+    const pt = parseCoords(city?.latitude, city?.longitude);
+    if (pt) {
+      src.setData(makePoint(pt));
+      map.setPaintProperty(FOCUS_CIRCLE, "circle-radius",         55);
+      map.setPaintProperty(FOCUS_CIRCLE, "circle-opacity",        0.18);
+      map.setPaintProperty(FOCUS_CIRCLE, "circle-stroke-opacity", 0.55);
+      map.setPaintProperty(FOCUS_CIRCLE, "circle-blur",           0.6);
+      return;
+    }
+  }
+
+  // ── State level — large soft halo (zoom ~5.5) ────────────────────────────
+  if (iso && stateCode) {
+    const state = State.getStateByCodeAndCountry(stateCode, iso);
+    const pt = parseCoords(state?.latitude, state?.longitude);
+    if (pt) {
+      src.setData(makePoint(pt));
+      map.setPaintProperty(FOCUS_CIRCLE, "circle-radius",         110);
+      map.setPaintProperty(FOCUS_CIRCLE, "circle-opacity",        0.09);
+      map.setPaintProperty(FOCUS_CIRCLE, "circle-stroke-opacity", 0.30);
+      map.setPaintProperty(FOCUS_CIRCLE, "circle-blur",           0.8);
+      return;
+    }
+  }
+
+  // ── Nothing to show — clear the focus layer ───────────────────────────────
+  src.setData(emptyFC());
 }
