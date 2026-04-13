@@ -17,8 +17,9 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   X, Bookmark, BookmarkCheck, Globe, Mail, Phone,
   MapPin, Calendar, DollarSign, Tag, ExternalLink,
-  Sparkles, Info,
+  Sparkles, Info, ArrowRight,
 } from "lucide-react";
+import { Link } from "wouter";
 import { type CatalogItem, CATEGORIES, getCategoryStyle } from "@/lib/constants";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -374,6 +375,19 @@ function InfoTabContent({ item }: { item: CatalogItem }) {
             )}
           </div>
         </Section>
+      )}
+
+      {/* Resource detail link — shown for Supabase resources with a slug */}
+      {item.resourceSlug && (
+        <Link href={`/resources/${item.resourceSlug}`}>
+          <button
+            type="button"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+          >
+            {t.resources.viewDetails}
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </Link>
       )}
 
       {/* Bottom padding so last item clears the scroll shadow */}

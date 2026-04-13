@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { fetchResources, fetchResourceBySlug, fetchCategories, fetchCountries } from '../lib/resources'
 import { supabase, USE_SUPABASE } from '../lib/supabase'
 import type { ResourceFull, ResourceFilters, Category, Country, ResourceType, ResourceStatus, Eligibility } from '../types/resources'
@@ -77,6 +77,13 @@ export function useResources(initialType?: ResourceType) {
 
   const abortRef = useRef<AbortController | null>(null)
 
+  // Stable string keys for array filters — avoids JSON.stringify in useEffect deps
+  const categoriesKey = useMemo(() => (effectiveFilters.categories ?? []).slice().sort().join(','), [effectiveFilters.categories])
+  const countriesKey = useMemo(() => (effectiveFilters.countries ?? []).slice().sort().join(','), [effectiveFilters.countries])
+  const regionsKey = useMemo(() => (effectiveFilters.regions ?? []).slice().sort().join(','), [effectiveFilters.regions])
+  const targetGroupsKey = useMemo(() => (effectiveFilters.target_groups ?? []).slice().sort().join(','), [effectiveFilters.target_groups])
+  const diseaseAreasKey = useMemo(() => (effectiveFilters.disease_areas ?? []).slice().sort().join(','), [effectiveFilters.disease_areas])
+
   useEffect(() => {
     abortRef.current?.abort()
     abortRef.current = new AbortController()
@@ -103,11 +110,11 @@ export function useResources(initialType?: ResourceType) {
     effectiveFilters.status,
     effectiveFilters.eligibility,
     debouncedSearch,
-    JSON.stringify(effectiveFilters.categories),
-    JSON.stringify(effectiveFilters.countries),
-    JSON.stringify(effectiveFilters.regions),
-    JSON.stringify(effectiveFilters.target_groups),
-    JSON.stringify(effectiveFilters.disease_areas),
+    categoriesKey,
+    countriesKey,
+    regionsKey,
+    targetGroupsKey,
+    diseaseAreasKey,
     effectiveFilters.amount_min,
     effectiveFilters.amount_max,
     effectiveFilters.deadline_before,

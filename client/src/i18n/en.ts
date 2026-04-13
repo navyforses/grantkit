@@ -803,6 +803,7 @@ export const en: Translations = {
     eligibilityBoth: "Both",
     applyNow: "Apply Now",
     sourceWebsite: "Source Website",
+    viewDetails: "View Full Details",
     relatedResources: "Related Resources",
     amountRange: "Amount",
     deadlineLabel: "Deadline",

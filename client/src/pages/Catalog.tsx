@@ -131,36 +131,35 @@ export default function Catalog() {
   // Convert Supabase ResourceFull → CatalogItem-compatible shape for map markers
   const supabaseMapItems: CatalogItem[] = useMemo(() => {
     if (!isSupabaseView) return [];
-    return supabaseResources
-      .filter((r) => r.latitude != null && r.longitude != null)
-      .map((r) => ({
-        id: r.id,
-        name: r.title,
-        organization: r.source_name ?? "",
-        description: r.description,
-        category: r.categories?.[0]?.id ?? "other",
-        type: "resource" as const,
-        country: r.locations?.[0]?.country_code ?? "",
-        eligibility: r.eligibility_details ?? "",
-        website: r.source_url ?? "",
-        phone: "",
-        email: "",
-        amount: r.amount_min != null ? `${r.amount_min}` : "",
-        status: r.status === "OPEN" ? "Open" : r.status,
-        applicationProcess: "",
-        deadline: r.deadline ?? "",
-        fundingType: "",
-        targetDiagnosis: "",
-        ageRange: "",
-        geographicScope: "",
-        documentsRequired: "",
-        b2VisaEligible: "",
-        state: r.locations?.[0]?.region_name ?? "",
-        city: "",
-        // geo fields for map
-        latitude: r.latitude,
-        longitude: r.longitude,
-      } as any));
+    return supabaseResources.map((r): CatalogItem => ({
+      id: r.id,
+      name: r.title,
+      organization: r.source_name ?? "",
+      description: r.description,
+      category: r.categories?.[0]?.id ?? "other",
+      type: "resource" as const,
+      country: r.locations?.[0]?.country_code ?? "",
+      eligibility: r.eligibility_details ?? "",
+      website: r.source_url ?? "",
+      phone: "",
+      email: "",
+      amount: r.amount_min != null ? `${r.amount_min}` : "",
+      status: r.status === "OPEN" ? "Open" : r.status,
+      applicationProcess: "",
+      deadline: r.deadline ?? "",
+      fundingType: "",
+      targetDiagnosis: "",
+      ageRange: "",
+      geographicScope: "",
+      documentsRequired: "",
+      b2VisaEligible: "",
+      state: r.locations?.[0]?.region_name ?? "",
+      city: "",
+      latitude: r.latitude,
+      longitude: r.longitude,
+      resourceSlug: r.slug,
+      resourceType: r.resource_type,
+    }));
   }, [isSupabaseView, supabaseResources]);
 
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {

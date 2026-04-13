@@ -845,6 +845,7 @@ export interface Translations {
     // Detail page
     applyNow: string
     sourceWebsite: string
+    viewDetails: string
     relatedResources: string
     amountRange: string
     deadlineLabel: string

@@ -32,6 +32,13 @@ export interface CatalogItem {
   b2VisaEligible: string;
   state: string;
   city: string;
+  // Optional: direct coordinates for Supabase resources
+  latitude?: number;
+  longitude?: number;
+  // Optional: slug for linking to /resources/:slug detail page
+  resourceSlug?: string;
+  // Optional: Supabase resource type for map marker coloring
+  resourceType?: 'GRANT' | 'SOCIAL' | 'MEDICAL';
 }
 
 // ===== Categories =====
