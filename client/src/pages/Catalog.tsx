@@ -21,6 +21,9 @@ import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
 import MapView from "@/components/map/MapView";
 import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
+import ResourceTypeTabs from "@/components/ResourceTypeTabs";
+import { useResources } from "@/hooks/useResources";
+import type { ResourceType } from "@/types/resources";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
 const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
 import { useMapFlyTo } from "@/hooks/useMapFlyTo";
@@ -115,6 +118,50 @@ export default function Catalog() {
 
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
   const staticFilteredRef = useRef(STATIC_CATALOG.length);
+
+  // ── Supabase resource type switcher ─────────────────────────────────────────
+  // undefined means default grant view (existing data); SOCIAL/MEDICAL → Supabase
+  const [supabaseResourceType, setSupabaseResourceType] = useState<ResourceType | undefined>(undefined);
+  const isSupabaseView = supabaseResourceType === "SOCIAL" || supabaseResourceType === "MEDICAL";
+
+  const { data: supabaseResources, loading: supabaseLoading } = useResources(
+    isSupabaseView ? supabaseResourceType : undefined
+  );
+
+  // Convert Supabase ResourceFull → CatalogItem-compatible shape for map markers
+  const supabaseMapItems: CatalogItem[] = useMemo(() => {
+    if (!isSupabaseView) return [];
+    return supabaseResources
+      .filter((r) => r.latitude != null && r.longitude != null)
+      .map((r) => ({
+        id: r.id,
+        name: r.title,
+        organization: r.source_name ?? "",
+        description: r.description,
+        category: r.categories?.[0]?.id ?? "other",
+        type: "resource" as const,
+        country: r.locations?.[0]?.country_code ?? "",
+        eligibility: r.eligibility_details ?? "",
+        website: r.source_url ?? "",
+        phone: "",
+        email: "",
+        amount: r.amount_min != null ? `${r.amount_min}` : "",
+        status: r.status === "OPEN" ? "Open" : r.status,
+        applicationProcess: "",
+        deadline: r.deadline ?? "",
+        fundingType: "",
+        targetDiagnosis: "",
+        ageRange: "",
+        geographicScope: "",
+        documentsRequired: "",
+        b2VisaEligible: "",
+        state: r.locations?.[0]?.region_name ?? "",
+        city: "",
+        // geo fields for map
+        latitude: r.latitude,
+        longitude: r.longitude,
+      } as any));
+  }, [isSupabaseView, supabaseResources]);
 
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -352,7 +399,9 @@ export default function Catalog() {
   // mapItems (all filtered items, not paginated) is used so every visible marker
   // can be clicked even when it is not on the current display page.
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  useMapMarkers(mapInstance, mapItems, setSelectedItemId);
+  // When in Supabase view (SOCIAL/MEDICAL), show Supabase geo-tagged items on the map
+  const activeMapItems = isSupabaseView ? supabaseMapItems : mapItems;
+  useMapMarkers(mapInstance, activeMapItems, setSelectedItemId);
 
   // Phase 5 — detail panel for the selected marker.
   // Prefer displayItems (may carry translations) then fall back to mapItems (full catalog).
@@ -360,8 +409,9 @@ export default function Catalog() {
     () =>
       displayItems.find((g) => g.id === selectedItemId) ??
       mapItems.find((g) => g.id === selectedItemId) ??
+      supabaseMapItems.find((g) => g.id === selectedItemId) ??
       null,
-    [displayItems, mapItems, selectedItemId]
+    [displayItems, mapItems, supabaseMapItems, selectedItemId]
   );
   const toggleSaveMutateRef = useRef(toggleSave.mutate);
   toggleSaveMutateRef.current = toggleSave.mutate;
@@ -384,12 +434,29 @@ export default function Catalog() {
       {/* Desktop navbar — h-16 (4rem / 64px). Hidden on mobile; MobileHeader comes from App.tsx. */}
       <Navbar />
 
+      {/* Resource type switcher — slim bar above stats bar */}
+      <div className="bg-background/95 backdrop-blur-sm border-b border-border px-3 py-1.5 flex items-center gap-2">
+        <ResourceTypeTabs
+          value={supabaseResourceType}
+          onChange={setSupabaseResourceType}
+          counts={{ GRANT: mapItems.length }}
+        />
+        {isSupabaseView && supabaseLoading && (
+          <span className="text-xs text-muted-foreground ml-2">Loading…</span>
+        )}
+        {isSupabaseView && !supabaseLoading && (
+          <span className="text-xs text-muted-foreground ml-2">
+            {supabaseResources.length} resources
+          </span>
+        )}
+      </div>
+
       {/*
        * Stats bar — h-10 (2.5rem) — shows grant count, country count, active filter chips.
        * Rendered on both mobile and desktop.
        */}
       <MapStatsBar
-        totalCount={mapItems.length}
+        totalCount={isSupabaseView ? supabaseResources.length : mapItems.length}
         countryCount={countryCount}
         filters={{
           searchQuery,
@@ -430,7 +497,8 @@ export default function Catalog() {
        * SearchableSelect dropdowns inside MapFilterPanel can overflow
        * the panel boundary without being clipped.
        */}
-      <div className="relative h-[calc(100dvh-10rem)] md:h-[calc(100dvh-6.5rem)]">
+      {/* Map height adjusted to account for the additional ResourceTypeTabs bar (~2.25rem) */}
+      <div className="relative h-[calc(100dvh-12.25rem)] md:h-[calc(100dvh-8.75rem)]">
         <MapView
           className="absolute inset-0 w-full h-full"
           onMapReady={handleMapReady}
