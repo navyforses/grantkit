@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { fetchResources, fetchResourceBySlug, fetchCategories, fetchCountries } from '../lib/resources'
 import { supabase, USE_SUPABASE } from '../lib/supabase'
-import type { ResourceFull, ResourceFilters, Category, Country, ResourceType, ResourceStatus, Eligibility } from '../types/resources'
+import type { ResourceFull, ResourceFilters, Category, Country, ResourceType, ResourceStatus, Eligibility, ClinicalPhase } from '../types/resources'
 
 // ─── Filter reducer ───────────────────────────────────────────────────────────
 
@@ -17,6 +17,7 @@ type FilterAction =
   | { type: 'SET_AMOUNT_MAX'; payload: number | undefined }
   | { type: 'SET_TARGET_GROUPS'; payload: string[] }
   | { type: 'SET_DISEASE_AREAS'; payload: string[] }
+  | { type: 'SET_CLINICAL_PHASE'; payload: ClinicalPhase | undefined }
   | { type: 'SET_PAGE'; payload: number }
   | { type: 'SET_SORT'; payload: string }
   | { type: 'RESET' }
@@ -38,9 +39,10 @@ function filtersReducer(state: ResourceFilters, action: FilterAction): ResourceF
     case 'SET_REGIONS':     return { ...state, regions: action.payload, page: 1 }
     case 'SET_AMOUNT_MIN':  return { ...state, amount_min: action.payload, page: 1 }
     case 'SET_AMOUNT_MAX':  return { ...state, amount_max: action.payload, page: 1 }
-    case 'SET_TARGET_GROUPS': return { ...state, target_groups: action.payload, page: 1 }
-    case 'SET_DISEASE_AREAS': return { ...state, disease_areas: action.payload, page: 1 }
-    case 'SET_PAGE':        return { ...state, page: action.payload }
+    case 'SET_TARGET_GROUPS':  return { ...state, target_groups: action.payload, page: 1 }
+    case 'SET_DISEASE_AREAS':  return { ...state, disease_areas: action.payload, page: 1 }
+    case 'SET_CLINICAL_PHASE': return { ...state, clinical_phase: action.payload, page: 1 }
+    case 'SET_PAGE':           return { ...state, page: action.payload }
     case 'SET_SORT':        return { ...state, sort: action.payload }
     case 'RESET':           return { ...defaultFilters }
     default:                return state

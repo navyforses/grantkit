@@ -124,9 +124,12 @@ export default function Catalog() {
   const [supabaseResourceType, setSupabaseResourceType] = useState<ResourceType | undefined>(undefined);
   const isSupabaseView = supabaseResourceType === "SOCIAL" || supabaseResourceType === "MEDICAL";
 
-  const { data: supabaseResources, loading: supabaseLoading } = useResources(
-    isSupabaseView ? supabaseResourceType : undefined
-  );
+  const {
+    data: supabaseResources,
+    loading: supabaseLoading,
+    filters: supabaseFilters,
+    dispatch: supabaseDispatch,
+  } = useResources(isSupabaseView ? supabaseResourceType : undefined);
 
   // Convert Supabase ResourceFull → CatalogItem-compatible shape for map markers
   const supabaseMapItems: CatalogItem[] = useMemo(() => {
@@ -519,8 +522,17 @@ export default function Catalog() {
             onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
             selectedType={selectedType}
             onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
-            totalItems={totalItems}
+            totalItems={isSupabaseView ? supabaseResources.length : totalItems}
             onClearAll={resetFilters}
+            supabaseResourceType={supabaseResourceType}
+            amountMin={supabaseFilters.amount_min}
+            amountMax={supabaseFilters.amount_max}
+            onAmountMinChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MIN', payload: v })}
+            onAmountMaxChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MAX', payload: v })}
+            selectedTargetGroups={supabaseFilters.target_groups}
+            onTargetGroupsChange={(groups) => supabaseDispatch({ type: 'SET_TARGET_GROUPS', payload: groups })}
+            selectedClinicalPhase={supabaseFilters.clinical_phase}
+            onClinicalPhaseChange={(phase) => supabaseDispatch({ type: 'SET_CLINICAL_PHASE', payload: phase })}
           />
         </Suspense>
 
