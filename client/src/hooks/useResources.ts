@@ -72,6 +72,9 @@ export function useResources(initialType?: ResourceType) {
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Bump to force a re-fetch without changing filters (used by realtime callbacks)
+  const [refreshCounter, setRefreshCounter] = useState(0)
+  const refresh = useCallback(() => setRefreshCounter((c) => c + 1), [])
 
   // Debounce the search field only
   const debouncedSearch = useDebounced(filters.search, SEARCH_DEBOUNCE_MS)
@@ -123,11 +126,12 @@ export function useResources(initialType?: ResourceType) {
     effectiveFilters.clinical_phase,
     effectiveFilters.page,
     effectiveFilters.sort,
+    refreshCounter,
   ])
 
   const resetFilters = useCallback(() => dispatch({ type: 'RESET' }), [])
 
-  return { data, loading, error, totalCount, filters, dispatch, resetFilters }
+  return { data, loading, error, totalCount, filters, dispatch, resetFilters, refresh }
 }
 
 // ─── useResource (single) ─────────────────────────────────────────────────────
