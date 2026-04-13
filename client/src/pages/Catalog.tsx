@@ -266,7 +266,18 @@ export default function Catalog() {
           (g.description || "").toLowerCase().includes(q)
         );
       }
-      return filtered.map((g: any) => ({ ...g, type: g.type as "grant" | "resource" }));
+      // Snap "Nationwide" items to the selected state/city so their markers appear
+      // near the chosen location rather than at the country centre (which would be
+      // off-screen after flyTo zooms into the selected state/city).
+      return filtered.map((g: any) => {
+        const isNationwide = !g.state || /^(nationwide|national)/i.test(g.state.trim());
+        return {
+          ...g,
+          type: g.type as "grant" | "resource",
+          state: isNationwide && mapStateCode ? mapStateCode : g.state,
+          city:  isNationwide && mapCityName && mapStateCode ? mapCityName : g.city,
+        };
+      });
     }
     // No static data — fall back to current-page items
     return displayItems;
