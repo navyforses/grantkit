@@ -20,6 +20,7 @@ import { trpc } from "@/lib/trpc";
 import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
 import MapView from "@/components/map/MapView";
+import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
 const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
 import { useMapFlyTo } from "@/hooks/useMapFlyTo";
@@ -274,6 +275,12 @@ export default function Catalog() {
     displayItems,
   ]);
 
+  // Stats bar — number of unique countries in the current result set
+  const countryCount = useMemo(
+    () => new Set(mapItems.map((g) => g.country).filter(Boolean)).size,
+    [mapItems],
+  );
+
   const resetFilters = useCallback(() => {
     setSelectedCategory("all");
     setSelectedType("all");
@@ -286,6 +293,22 @@ export default function Catalog() {
     setMapCountryCode("");
     setMapStateCode("");
     setMapCityName("");
+  }, []);
+
+  // Stats bar — clear a single filter chip
+  const handleClearFilter = useCallback((key: FilterKey) => {
+    switch (key) {
+      case "searchQuery":      setSearchQuery(""); setPage(1); break;
+      case "category":         setSelectedCategory("all"); setPage(1); break;
+      case "type":             setSelectedType("all"); setPage(1); break;
+      case "countryCode":      setMapCountryCode(""); setMapStateCode(""); setMapCityName(""); break;
+      case "stateCode":        setMapStateCode(""); setMapCityName(""); break;
+      case "cityName":         setMapCityName(""); break;
+      case "fundingType":      setFundingType("all"); setPage(1); break;
+      case "targetDiagnosis":  setTargetDiagnosis("all"); setPage(1); break;
+      case "b2VisaEligible":   setB2VisaEligible("all"); setPage(1); break;
+      case "hasDeadline":      setHasDeadline(false); setPage(1); break;
+    }
   }, []);
 
   // Map instance state — shared by useMapFlyTo and useMapMarkers
@@ -334,17 +357,42 @@ export default function Catalog() {
       <Navbar />
 
       {/*
+       * Stats bar — h-10 (2.5rem) — shows grant count, country count, active filter chips.
+       * Rendered on both mobile and desktop.
+       */}
+      <MapStatsBar
+        totalCount={mapItems.length}
+        countryCount={countryCount}
+        filters={{
+          searchQuery,
+          category: selectedCategory,
+          type: selectedType,
+          countryCode: mapCountryCode,
+          stateCode: mapStateCode,
+          cityName: mapCityName,
+          fundingType,
+          targetDiagnosis,
+          b2VisaEligible,
+          hasDeadline,
+        }}
+        onClearFilter={handleClearFilter}
+        onClearAll={resetFilters}
+      />
+
+      {/*
        * Map fills remaining viewport height below whichever header is visible.
        *
        * Mobile (<md):
        *   MobileHeader (sticky h-14 = 3.5rem) — rendered by App.tsx above this page
+       *   StatsBar     (h-10 = 2.5rem)
        *   MobileBottomNav (fixed h-16 = 4rem) — rendered by App.tsx
        *   App.tsx wraps the Router in pb-16 (4rem) to keep content above the bottom nav.
-       *   Map height = 100dvh - 3.5rem(header) - 4rem(bottom-pad) = 100dvh - 7.5rem
+       *   Map height = 100dvh - 3.5rem(header) - 2.5rem(stats) - 4rem(bottom-pad) = 100dvh - 10rem
        *
        * Desktop (md+):
-       *   Navbar (h-16 = 4rem) — inside this page, no bottom padding (pb-0)
-       *   Map height = 100dvh - 4rem
+       *   Navbar   (h-16 = 4rem) — inside this page
+       *   StatsBar (h-10 = 2.5rem)
+       *   Map height = 100dvh - 4rem - 2.5rem = 100dvh - 6.5rem
        *
        * Using dvh (dynamic viewport height) so the map fills the currently-visible
        * viewport even when mobile browser chrome (address bar) shows/hides.
@@ -354,7 +402,7 @@ export default function Catalog() {
        * SearchableSelect dropdowns inside MapFilterPanel can overflow
        * the panel boundary without being clipped.
        */}
-      <div className="relative h-[calc(100dvh-7.5rem)] md:h-[calc(100dvh-4rem)]">
+      <div className="relative h-[calc(100dvh-10rem)] md:h-[calc(100dvh-6.5rem)]">
         <MapView
           className="absolute inset-0 w-full h-full"
           onMapReady={handleMapReady}
