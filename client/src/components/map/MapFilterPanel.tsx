@@ -20,6 +20,7 @@ import { SlidersHorizontal, X, ChevronRight } from "lucide-react";
 import { CATEGORIES, type CategoryValue, type TypeValue, REGIONS, EU_MEMBER_CODES, type RegionCode } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import SearchableSelect, { type SelectOption } from "./SearchableSelect";
+import type { ResourceType, ClinicalPhase } from "@/types/resources";
 
 // ── EU member country list (built once) ──────────────────────────────────────
 
@@ -50,9 +51,24 @@ export interface MapFilterPanelProps {
 
   totalItems: number;
   onClearAll: () => void;
+
+  // ── Supabase resource filters (optional — only shown when a Supabase type is active) ──
+  supabaseResourceType?: ResourceType;
+  amountMin?: number;
+  amountMax?: number;
+  onAmountMinChange?: (v: number | undefined) => void;
+  onAmountMaxChange?: (v: number | undefined) => void;
+  selectedTargetGroups?: string[];
+  onTargetGroupsChange?: (groups: string[]) => void;
+  selectedClinicalPhase?: ClinicalPhase;
+  onClinicalPhaseChange?: (phase: ClinicalPhase | undefined) => void;
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
+
+// ── Target group chip values ─────────────────────────────────────────────────
+const TARGET_GROUPS = ["Children", "Disabled", "Veterans", "Immigrants", "Students", "Elderly"];
+const CLINICAL_PHASES: ClinicalPhase[] = ["PHASE_1", "PHASE_2", "PHASE_3", "PHASE_4"];
 
 export default function MapFilterPanel({
   regionCode,
@@ -69,9 +85,19 @@ export default function MapFilterPanel({
   onTypeChange,
   totalItems,
   onClearAll,
+  supabaseResourceType,
+  amountMin,
+  amountMax,
+  onAmountMinChange,
+  onAmountMaxChange,
+  selectedTargetGroups = [],
+  onTargetGroupsChange,
+  selectedClinicalPhase,
+  onClinicalPhaseChange,
 }: MapFilterPanelProps) {
   const [collapsed, setCollapsed] = useState(false);
   const { t, tCategory } = useLanguage();
+  const isSupabaseMode = supabaseResourceType === "SOCIAL" || supabaseResourceType === "MEDICAL";
 
   // ── Sub-region options depend on which region is selected ──────────────────
 
@@ -117,6 +143,10 @@ export default function MapFilterPanel({
     cityName,
     selectedCategory !== "all" ? selectedCategory : "",
     selectedType !== "all" ? selectedType : "",
+    amountMin != null ? "amountMin" : "",
+    amountMax != null ? "amountMax" : "",
+    ...(selectedTargetGroups ?? []),
+    selectedClinicalPhase ?? "",
   ].filter(Boolean).length;
 
   // ── Handlers ───────────────────────────────────────────────────────────────
@@ -293,26 +323,110 @@ export default function MapFilterPanel({
             />
           </FilterSection>
 
-          {/* 📋 Type */}
-          <FilterSection label={t.filters.type} emoji="📋">
-            <div className="flex gap-2">
-              {(["all", "grant", "resource"] as TypeValue[]).map((tv) => (
-                <button
-                  key={tv}
-                  type="button"
-                  onClick={() => onTypeChange(tv)}
-                  className={[
-                    "flex-1 py-1.5 text-xs font-medium rounded-lg border transition-colors",
-                    selectedType === tv
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-background/60 border-border text-foreground hover:bg-secondary",
-                  ].join(" ")}
-                >
-                  {tv === "all" ? t.catalog.typeAll : tv === "grant" ? t.catalog.typeGrant : t.catalog.typeResource}
-                </button>
-              ))}
-            </div>
-          </FilterSection>
+          {/* 📋 Type — only in legacy mode */}
+          {!isSupabaseMode && (
+            <FilterSection label={t.filters.type} emoji="📋">
+              <div className="flex gap-2">
+                {(["all", "grant", "resource"] as TypeValue[]).map((tv) => (
+                  <button
+                    key={tv}
+                    type="button"
+                    onClick={() => onTypeChange(tv)}
+                    className={[
+                      "flex-1 py-1.5 text-xs font-medium rounded-lg border transition-colors",
+                      selectedType === tv
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background/60 border-border text-foreground hover:bg-secondary",
+                    ].join(" ")}
+                  >
+                    {tv === "all" ? t.catalog.typeAll : tv === "grant" ? t.catalog.typeGrant : t.catalog.typeResource}
+                  </button>
+                ))}
+              </div>
+            </FilterSection>
+          )}
+
+          {/* ── Supabase-specific filters ────────────────────────────── */}
+          {isSupabaseMode && (
+            <>
+              {/* 💰 Amount range */}
+              <FilterSection label={t.resources.filterAmount} emoji="💰">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={0}
+                    step={100}
+                    placeholder="Min"
+                    value={amountMin ?? ""}
+                    onChange={(e) => onAmountMinChange?.(e.target.value ? Number(e.target.value) : undefined)}
+                    className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-border bg-background/60 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                  <span className="text-muted-foreground text-xs shrink-0">–</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={100}
+                    placeholder="Max"
+                    value={amountMax ?? ""}
+                    onChange={(e) => onAmountMaxChange?.(e.target.value ? Number(e.target.value) : undefined)}
+                    className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-border bg-background/60 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </div>
+              </FilterSection>
+
+              {/* 👥 Target groups */}
+              <FilterSection label={t.resources.filterTargetGroup} emoji="👥">
+                <div className="flex flex-wrap gap-1.5">
+                  {TARGET_GROUPS.map((g) => {
+                    const active = selectedTargetGroups.includes(g);
+                    return (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => {
+                          const next = active
+                            ? selectedTargetGroups.filter((x) => x !== g)
+                            : [...selectedTargetGroups, g];
+                          onTargetGroupsChange?.(next);
+                        }}
+                        className={[
+                          "px-2.5 py-1 text-[11px] font-medium rounded-full border transition-all",
+                          active
+                            ? "bg-primary/10 border-primary/50 text-primary"
+                            : "bg-background/60 border-border text-foreground hover:bg-secondary",
+                        ].join(" ")}
+                      >
+                        {g}
+                      </button>
+                    );
+                  })}
+                </div>
+              </FilterSection>
+
+              {/* 🔬 Clinical phase (MEDICAL only) */}
+              {supabaseResourceType === "MEDICAL" && (
+                <FilterSection label={t.resources.filterClinicalPhase} emoji="🔬">
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {CLINICAL_PHASES.map((phase) => (
+                      <button
+                        key={phase}
+                        type="button"
+                        onClick={() => onClinicalPhaseChange?.(selectedClinicalPhase === phase ? undefined : phase)}
+                        className={[
+                          "py-1.5 text-[11px] font-medium rounded-lg border transition-colors",
+                          selectedClinicalPhase === phase
+                            ? "bg-purple-100 border-purple-400 text-purple-700"
+                            : "bg-background/60 border-border text-foreground hover:bg-secondary",
+                        ].join(" ")}
+                      >
+                        {phase.replace("_", " ")}
+                      </button>
+                    ))}
+                  </div>
+                </FilterSection>
+              )}
+            </>
+          )}
         </div>
 
         {/* ── Footer ── */}

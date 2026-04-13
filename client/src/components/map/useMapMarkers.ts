@@ -160,6 +160,42 @@ interface HandlerSet {
   clusterLeave: LayerHandler;
 }
 
+// ── Auto-fit bounds ───────────────────────────────────────────────────────────
+
+/**
+ * Fits the map viewport to contain all provided GeoJSON point features.
+ * Called once on initial data load so the user immediately sees all markers
+ * without manually zooming (pattern used by GlobalGiving, GrantStation, etc.)
+ */
+function fitToFeatures(
+  map: mapboxgl.Map,
+  features: GeoJSON.Feature<GeoJSON.Point>[],
+) {
+  if (features.length === 0) return;
+
+  let minLng = Infinity, maxLng = -Infinity;
+  let minLat = Infinity, maxLat = -Infinity;
+
+  for (const f of features) {
+    const [lng, lat] = f.geometry.coordinates;
+    if (lng < minLng) minLng = lng;
+    if (lng > maxLng) maxLng = lng;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+  }
+
+  // All points at exactly the same location — just centre there
+  if (minLng === maxLng && minLat === maxLat) {
+    map.flyTo({ center: [minLng, minLat], zoom: 5, duration: 800 });
+    return;
+  }
+
+  map.fitBounds(
+    [[minLng, minLat], [maxLng, maxLat]],
+    { padding: 80, duration: 1000, maxZoom: 9 },
+  );
+}
+
 // ── Hook ──────────────────────────────────────────────────────────────────────
 
 export function useMapMarkers(
@@ -176,6 +212,8 @@ export function useMapMarkers(
   const handlersRef = useRef<HandlerSet | null>(null);
   // GeoJSON cache — avoids re-converting the same items array reference
   const geoJsonCacheRef = useRef<{ items: CatalogItem[]; data: GeoJSON.FeatureCollection<GeoJSON.Point> } | null>(null);
+  // Track whether we've done the initial auto-fit so we only fly once
+  const fittedRef = useRef(false);
 
   itemsRef.current    = items;
   onSelectRef.current = onSelectItem;
@@ -315,7 +353,21 @@ export function useMapMarkers(
     // Memoize GeoJSON conversion — only recompute if items array reference changed
     if (!geoJsonCacheRef.current || geoJsonCacheRef.current.items !== items) {
       geoJsonCacheRef.current = { items, data: toGeoJSON(items) };
+      // Reset fit flag when the dataset itself changes (filter applied)
+      fittedRef.current = false;
     }
     src.setData(geoJsonCacheRef.current.data);
+
+    // Auto-fit: once per dataset — brings all markers into view on initial load
+    // (same pattern as GlobalGiving, GrantStation, Foundation Center maps)
+    if (!fittedRef.current && geoJsonCacheRef.current.data.features.length > 0) {
+      fittedRef.current = true;
+      // Small delay lets Mapbox finish rendering before fitBounds
+      setTimeout(() => {
+        if (map.isStyleLoaded()) {
+          fitToFeatures(map, geoJsonCacheRef.current!.data.features);
+        }
+      }, 150);
+    }
   }, [map, items]);
 }
