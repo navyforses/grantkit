@@ -14,6 +14,7 @@
 
 import { useEffect } from "react";
 import type mapboxgl from "mapbox-gl";
+import { EU_MEMBER_CODES } from "@/lib/constants";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -87,11 +88,13 @@ function removeSourceAndLayers(map: mapboxgl.Map) {
 
 /**
  * Adds/maintains a country highlight (fill + border) on the map.
- * Accepts the map as state (not a ref) so the effect re-runs when the map
- * becomes ready — handles initial page-load with URL location params.
+ *
+ * When regionCode="EU" and countryCode is empty, highlights all 27 EU members.
+ * When countryCode is set, highlights only that country.
  */
 export function useMapHighlight(
   map: mapboxgl.Map | null,
+  regionCode: string,
   countryCode: string,
   stateCode: string,
   cityName: string,
@@ -103,7 +106,7 @@ export function useMapHighlight(
     const setup = () => {
       addSourceAndLayers(map);
       // After recreation apply the current filter immediately
-      applyFilter(map, countryCode, stateCode, cityName);
+      applyFilter(map, regionCode, countryCode, stateCode, cityName);
     };
 
     map.on("style.load", setup);
@@ -113,38 +116,45 @@ export function useMapHighlight(
       map.off("style.load", setup);
       removeSourceAndLayers(map);
     };
-    // Intentionally excludes countryCode/stateCode/cityName — setup only cares
-    // about the map instance; filter updates are handled by the second effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
-  // ── Reactive filter update: fires when location filter changes ───────────
+  // ── Reactive filter update ────────────────────────────────────────────────
   useEffect(() => {
     if (!map || !map.isStyleLoaded()) return;
-    if (!map.getLayer(FILL)) return; // Layers not added yet — setup handles this
+    if (!map.getLayer(FILL)) return;
 
-    applyFilter(map, countryCode, stateCode, cityName);
-  }, [map, countryCode, stateCode, cityName]);
+    applyFilter(map, regionCode, countryCode, stateCode, cityName);
+  }, [map, regionCode, countryCode, stateCode, cityName]);
 }
 
 // ── Pure filter/paint updater (called from both effects) ──────────────────
 
 function applyFilter(
   map: mapboxgl.Map,
+  regionCode: string,
   countryCode: string,
   stateCode: string,
   cityName: string,
 ) {
-  if (countryCode) {
+  const dimmed = !!(stateCode || cityName);
+
+  if (regionCode === "EU" && !countryCode) {
+    // Highlight all 27 EU member countries simultaneously
+    const filter: mapboxgl.FilterSpecification = ["in", ["get", "iso_3166_1"], ["literal", EU_MEMBER_CODES]];
+    map.setFilter(FILL,   filter);
+    map.setFilter(BORDER, filter);
+    map.setPaintProperty(FILL,   "fill-opacity",  0.10);
+    map.setPaintProperty(BORDER, "line-opacity",   0.35);
+  } else if (countryCode) {
+    // Single country
     const filter: mapboxgl.FilterSpecification = ["==", ["get", "iso_3166_1"], countryCode];
     map.setFilter(FILL,   filter);
     map.setFilter(BORDER, filter);
-    // Dim the fill when zoomed into a state/city — flyTo zoom provides visual focus
-    const dimmed = !!(stateCode || cityName);
     map.setPaintProperty(FILL,   "fill-opacity",  dimmed ? 0.05 : 0.12);
     map.setPaintProperty(BORDER, "line-opacity",   dimmed ? 0.18 : 0.40);
   } else {
-    // No country selected — hide highlight
+    // Nothing selected — hide
     const noMatch: mapboxgl.FilterSpecification = ["==", ["get", "iso_3166_1"], ""];
     map.setFilter(FILL,   noMatch);
     map.setFilter(BORDER, noMatch);
