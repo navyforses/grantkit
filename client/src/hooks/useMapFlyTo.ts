@@ -14,6 +14,7 @@
 import { useEffect, useRef } from "react";
 import { Country, State, City } from "country-state-city";
 import type mapboxgl from "mapbox-gl";
+import { EU_CENTER } from "@/lib/constants";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -39,15 +40,16 @@ function coords(lat?: string | null, lng?: string | null): [number, number] | nu
 // ── Hook ─────────────────────────────────────────────────────────────────────
 
 /**
- * Watches map / countryCode / stateCode / cityName and triggers a Mapbox flyTo
- * whenever any value changes.  Resets to world view when all are cleared.
- * Accepts the map instance as state (not a ref) so the effect re-runs when the
- * map becomes ready — this handles initial page-load with URL location params.
+ * Watches map / regionCode / countryCode / stateCode / cityName and triggers a
+ * Mapbox flyTo whenever any value changes.  Resets to world view when all are cleared.
  *
- * @param map  The mapboxgl.Map instance (null while the map is still loading)
+ * @param map        The mapboxgl.Map instance (null while the map is still loading)
+ * @param regionCode Top-level region: "US" | "EU" | "GB" | ""
+ * @param countryCode ISO-2 country (specific EU member, "US", "GB", or "")
  */
 export function useMapFlyTo(
   map: mapboxgl.Map | null,
+  regionCode: string,
   countryCode: string,
   stateCode: string,
   cityName: string,
@@ -55,6 +57,7 @@ export function useMapFlyTo(
   // Track previous values AND the previous map instance so we can distinguish
   // "map just became ready" from "nothing changed".
   const prev = useRef({
+    regionCode: "",
     countryCode: "",
     stateCode: "",
     cityName: "",
@@ -64,22 +67,22 @@ export function useMapFlyTo(
   useEffect(() => {
     const p = prev.current;
     const locationUnchanged =
+      p.regionCode === regionCode &&
       p.countryCode === countryCode &&
       p.stateCode === stateCode &&
       p.cityName === cityName;
     const mapUnchanged = p.map === map;
 
-    // Nothing to do: same location, same map instance
     if (locationUnchanged && mapUnchanged) return;
 
-    prev.current = { countryCode, stateCode, cityName, map };
+    prev.current = { regionCode, countryCode, stateCode, cityName, map };
 
-    if (!map) return; // map not ready yet
+    if (!map) return;
 
     const fly = (center: [number, number], zoom: number) =>
       map.flyTo({ center, zoom, duration: FLY_DURATION, essential: true });
 
-    // ── City (deepest scope wins) ─────────────────────────────────────────
+    // ── City ─────────────────────────────────────────────────────────────
     if (countryCode && stateCode && cityName) {
       const city = City.getCitiesOfState(countryCode, stateCode).find(
         (c) => c.name === cityName,
@@ -95,15 +98,20 @@ export function useMapFlyTo(
       if (c) return void fly(c, STATE_ZOOM);
     }
 
-    // ── Country ───────────────────────────────────────────────────────────
+    // ── Specific country ──────────────────────────────────────────────────
     if (countryCode) {
       const country = Country.getCountryByCode(countryCode);
       const c = coords(country?.latitude, country?.longitude);
       if (c) return void fly(c, COUNTRY_ZOOM);
     }
 
+    // ── EU region (no specific country selected yet) ───────────────────────
+    if (regionCode === "EU") {
+      return void fly([EU_CENTER.lng, EU_CENTER.lat], EU_CENTER.zoom);
+    }
+
     // ── World reset ───────────────────────────────────────────────────────
     fly(WORLD_CENTER, WORLD_ZOOM);
 
-  }, [map, countryCode, stateCode, cityName]);
+  }, [map, regionCode, countryCode, stateCode, cityName]);
 }

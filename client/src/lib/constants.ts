@@ -81,6 +81,36 @@ export const COUNTRIES: { value: CountryValue; flag: string }[] = [
   { value: "International", flag: "🌍" },
 ];
 
+// ===== Geographic regions (filter panel top-level) =====
+
+export type RegionCode = "US" | "EU" | "GB" | "";
+
+export interface RegionDef {
+  code: RegionCode;
+  label: string;
+  flag: string;
+  /** countryCode to use in the data model (same as code for US/GB; "" for EU until a member is chosen) */
+  isoCode: string;
+}
+
+export const REGIONS: RegionDef[] = [
+  { code: "US", label: "United States", flag: "🇺🇸", isoCode: "US" },
+  { code: "EU", label: "European Union", flag: "🇪🇺", isoCode: "" },
+  { code: "GB", label: "United Kingdom", flag: "🇬🇧", isoCode: "GB" },
+];
+
+/** ISO-2 codes of the 27 EU member states (as of 2024) */
+export const EU_MEMBER_CODES: string[] = [
+  "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
+  "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL",
+  "PL", "PT", "RO", "SK", "SI", "ES", "SE",
+];
+
+/** Center of the European Union for flyTo */
+export const EU_CENTER: { lat: number; lng: number; zoom: number } = {
+  lat: 51.5, lng: 10.0, zoom: 3.5,
+};
+
 // ===== Type Filter =====
 export type TypeValue = "all" | "grant" | "resource";
 

@@ -12,7 +12,7 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { type SortValue } from "@/components/FilterBar";
-import { type CatalogItem, type CategoryValue, type TypeValue } from "@/lib/constants";
+import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, EU_MEMBER_CODES } from "@/lib/constants";
 import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -47,6 +47,7 @@ function readFiltersFromURL(search: string) {
     targetDiagnosis: params.get("diagnosis") || "all",
     b2VisaEligible: params.get("b2visa") || "all",
     hasDeadline: params.get("deadline") === "1",
+    mapRegionCode: (params.get("region") || "") as RegionCode,
     mapCountryCode: params.get("mc") || "",
     mapStateCode: params.get("ms") || "",
     mapCityName: params.get("mcity") || "",
@@ -79,7 +80,8 @@ export default function Catalog() {
   const [b2VisaEligible, setB2VisaEligible] = useState(initial.b2VisaEligible);
   const [hasDeadline, setHasDeadline] = useState(initial.hasDeadline);
 
-  // ── Map location state (ISO codes — drives Phase 3 flyTo + filter panel) ──
+  // ── Map location state ───────────────────────────────────────────────────
+  const [mapRegionCode, setMapRegionCode] = useState<RegionCode>(initial.mapRegionCode);
   const [mapCountryCode, setMapCountryCode] = useState(initial.mapCountryCode);
   const [mapStateCode, setMapStateCode] = useState(initial.mapStateCode);
   const [mapCityName, setMapCityName] = useState(initial.mapCityName);
@@ -99,6 +101,7 @@ export default function Catalog() {
     if (targetDiagnosis !== "all") params.set("diagnosis", targetDiagnosis);
     if (b2VisaEligible !== "all") params.set("b2visa", b2VisaEligible);
     if (hasDeadline) params.set("deadline", "1");
+    if (mapRegionCode) params.set("region", mapRegionCode);
     if (mapCountryCode) params.set("mc", mapCountryCode);
     if (mapStateCode) params.set("ms", mapStateCode);
     if (mapCityName) params.set("mcity", mapCityName);
@@ -107,7 +110,7 @@ export default function Catalog() {
   }, [
     selectedCategory, selectedType, searchQuery, sortBy, page,
     fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
-    mapCountryCode, mapStateCode, mapCityName, navigate,
+    mapRegionCode, mapCountryCode, mapStateCode, mapCityName, navigate,
   ]);
 
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
@@ -251,7 +254,16 @@ export default function Catalog() {
       let filtered: any[] = STATIC_CATALOG;
       if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
       if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
-      if (mapCountryCode) filtered = filtered.filter((g: any) => g.country === mapCountryCode);
+      // Region filter: EU = any of 27 member countries; US/GB = exact match; empty = all
+      if (mapRegionCode === "EU" && !mapCountryCode) {
+        filtered = filtered.filter((g: any) => EU_MEMBER_CODES.includes(g.country));
+      } else if (mapCountryCode) {
+        filtered = filtered.filter((g: any) => g.country === mapCountryCode);
+      } else if (mapRegionCode === "US") {
+        filtered = filtered.filter((g: any) => g.country === "US");
+      } else if (mapRegionCode === "GB") {
+        filtered = filtered.filter((g: any) => g.country === "GB");
+      }
       if (mapStateCode) filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
       if (mapCityName) filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
       if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
@@ -282,7 +294,7 @@ export default function Catalog() {
     // No static data — fall back to current-page items
     return displayItems;
   }, [
-    selectedCategory, selectedType, mapCountryCode, mapStateCode, mapCityName,
+    selectedCategory, selectedType, mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
     targetDiagnosis, fundingType, b2VisaEligible, hasDeadline, debouncedSearch,
     displayItems,
   ]);
@@ -302,6 +314,7 @@ export default function Catalog() {
     setB2VisaEligible("all");
     setHasDeadline(false);
     setPage(1);
+    setMapRegionCode("");
     setMapCountryCode("");
     setMapStateCode("");
     setMapCityName("");
@@ -313,7 +326,8 @@ export default function Catalog() {
       case "searchQuery":      setSearchQuery(""); setPage(1); break;
       case "category":         setSelectedCategory("all"); setPage(1); break;
       case "type":             setSelectedType("all"); setPage(1); break;
-      case "countryCode":      setMapCountryCode(""); setMapStateCode(""); setMapCityName(""); break;
+      case "countryCode":
+        setMapRegionCode(""); setMapCountryCode(""); setMapStateCode(""); setMapCityName(""); break;
       case "stateCode":        setMapStateCode(""); setMapCityName(""); break;
       case "cityName":         setMapCityName(""); break;
       case "fundingType":      setFundingType("all"); setPage(1); break;
@@ -329,10 +343,10 @@ export default function Catalog() {
     setMapInstance(map);
   }, []);
 
-  // Phase 3 — fly to selected location whenever country / state / city changes
-  useMapFlyTo(mapInstance, mapCountryCode, mapStateCode, mapCityName);
-  // Phase 3b — country polygon highlight via mapbox.country-boundaries-v1
-  useMapHighlight(mapInstance, mapCountryCode, mapStateCode, mapCityName);
+  // Phase 3 — fly to selected location whenever region / country / state / city changes
+  useMapFlyTo(mapInstance, mapRegionCode, mapCountryCode, mapStateCode, mapCityName);
+  // Phase 3b — country/region polygon highlight
+  useMapHighlight(mapInstance, mapRegionCode, mapCountryCode, mapStateCode, mapCityName);
 
   // Phase 4 — clustered grant/resource markers; selectedItemId feeds Phase 5.
   // mapItems (all filtered items, not paginated) is used so every visible marker
@@ -426,9 +440,11 @@ export default function Catalog() {
         {/* Phase 2 — cascading filter panel overlay (lazy-loaded to defer country-state-city chunk) */}
         <Suspense fallback={null}>
           <MapFilterPanel
+            regionCode={mapRegionCode}
             countryCode={mapCountryCode}
             stateCode={mapStateCode}
             cityName={mapCityName}
+            onRegionChange={setMapRegionCode}
             onCountryChange={setMapCountryCode}
             onStateChange={setMapStateCode}
             onCityChange={setMapCityName}
