@@ -807,6 +807,66 @@ export interface Translations {
     grantSuggestedPrompts: string[];
   };
 
+  // Resource system (Supabase multi-category resources)
+  resources: {
+    // Type tabs
+    typeGrant: string
+    typeSocial: string
+    typeMedical: string
+    // Filter labels
+    filterCountry: string
+    filterStatus: string
+    filterAmount: string
+    filterDeadline: string
+    filterCategory: string
+    filterEligibility: string
+    filterTargetGroup: string
+    filterClearAll: string
+    filterClinicalPhase: string
+    filterDiseaseArea: string
+    resultsCount: string
+    // Status labels
+    statusOpen: string
+    statusClosed: string
+    statusUpcoming: string
+    statusOngoing: string
+    statusArchived: string
+    // Target groups
+    targetChildren: string
+    targetDisabled: string
+    targetVeterans: string
+    targetImmigrants: string
+    targetStudents: string
+    targetElderly: string
+    // Eligibility
+    eligibilityIndividual: string
+    eligibilityOrganization: string
+    eligibilityBoth: string
+    // Detail page
+    applyNow: string
+    sourceWebsite: string
+    relatedResources: string
+    amountRange: string
+    deadlineLabel: string
+    eligibilityLabel: string
+    locationLabel: string
+    categoriesLabel: string
+    clinicalPhaseLabel: string
+    nctIdLabel: string
+    diseaseAreasLabel: string
+    featuredBadge: string
+    verifiedBadge: string
+    rollingDeadline: string
+    noDeadline: string
+    daysLeft: string
+    dayLeft: string
+    closingSoon: string
+    // Empty / error
+    noResults: string
+    noResultsHint: string
+    errorLoading: string
+  }
+
   // SEO meta tags
   seo: {
     homeTitle: string;
