@@ -24,6 +24,7 @@ import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
 const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
 import { useMapFlyTo } from "@/hooks/useMapFlyTo";
+import { useMapHighlight } from "@/hooks/useMapHighlight";
 import { useMapMarkers } from "@/components/map/useMapMarkers";
 import type mapboxgl from "mapbox-gl";
 
@@ -319,6 +320,8 @@ export default function Catalog() {
 
   // Phase 3 — fly to selected location whenever country / state / city changes
   useMapFlyTo(mapInstance, mapCountryCode, mapStateCode, mapCityName);
+  // Phase 3b — country polygon highlight via mapbox.country-boundaries-v1
+  useMapHighlight(mapInstance, mapCountryCode, mapStateCode, mapCityName);
 
   // Phase 4 — clustered grant/resource markers; selectedItemId feeds Phase 5.
   // mapItems (all filtered items, not paginated) is used so every visible marker
