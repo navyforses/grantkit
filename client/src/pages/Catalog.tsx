@@ -22,7 +22,7 @@ import SEO from "@/components/SEO";
 import MapView from "@/components/map/MapView";
 import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
 import ResourceTypeTabs from "@/components/ResourceTypeTabs";
-import { useResources } from "@/hooks/useResources";
+import { useResources, useResourcesRealtime } from "@/hooks/useResources";
 import type { ResourceType } from "@/types/resources";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
 const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
@@ -129,7 +129,16 @@ export default function Catalog() {
     loading: supabaseLoading,
     filters: supabaseFilters,
     dispatch: supabaseDispatch,
+    refresh: supabaseRefresh,
   } = useResources(isSupabaseView ? supabaseResourceType : undefined);
+
+  // Phase 9 — live updates: when a resource is inserted/updated/deleted in
+  // Supabase while the Catalog page is open, silently re-fetch the current page.
+  useResourcesRealtime({
+    onInsert: supabaseRefresh,
+    onUpdate: supabaseRefresh,
+    onDelete: supabaseRefresh,
+  });
 
   // Convert Supabase ResourceFull → CatalogItem-compatible shape for map markers
   const supabaseMapItems: CatalogItem[] = useMemo(() => {
