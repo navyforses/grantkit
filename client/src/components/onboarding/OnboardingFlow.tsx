@@ -44,6 +44,7 @@ export default function OnboardingFlow() {
 
   const persistState = (value: OnboardingState) => {
     sessionStorage.setItem(ONBOARDING_STATE_STORAGE_KEY, JSON.stringify(value));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(value));
   };
 
   const submitState = async (payload: OnboardingState) => {
@@ -58,6 +59,7 @@ export default function OnboardingFlow() {
         needDetails: payload.needDetails,
       });
       sessionStorage.removeItem(ONBOARDING_STATE_STORAGE_KEY);
+      sessionStorage.removeItem(STORAGE_KEY);
       navigate("/dashboard");
     } catch (err) {
       if (err instanceof TRPCClientError) {
@@ -69,6 +71,7 @@ export default function OnboardingFlow() {
         }
       }
       setError(t.profile.saveProfileError);
+      setError(t.profile.noNeedsResults);
     }
   };
 
@@ -78,6 +81,7 @@ export default function OnboardingFlow() {
 
   useEffect(() => {
     const raw = sessionStorage.getItem(ONBOARDING_STATE_STORAGE_KEY);
+    const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return;
 
     try {
@@ -88,6 +92,7 @@ export default function OnboardingFlow() {
       }
     } catch {
       sessionStorage.removeItem(ONBOARDING_STATE_STORAGE_KEY);
+      sessionStorage.removeItem(STORAGE_KEY);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
