@@ -47,9 +47,9 @@ COPY --from=builder /app/drizzle ./drizzle
 
 # Set production env
 ENV NODE_ENV=production
-ENV PORT=10000
+ENV PORT=8080
 
-EXPOSE 10000
+EXPOSE 8080
 
 # Auto-run migrations before starting the server.
 # dist/migrate.js is compiled from server/migrate.ts using drizzle-orm/mysql2/migrator.
