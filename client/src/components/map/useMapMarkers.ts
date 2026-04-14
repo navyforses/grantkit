@@ -341,8 +341,12 @@ export function useMapMarkers(
       map.on("mouseleave", LYR_CLUSTER, clusterLeave);
     };
 
-    map.on("style.load", setup);
-    if (map.isStyleLoaded()) setup();
+    // MapView fires onMapReady from inside the style.load handler, so by the
+    // time this effect runs the style is guaranteed to be loaded. Call setup()
+    // unconditionally here — do NOT gate on isStyleLoaded() which is known to
+    // return stale values (mapbox-gl GitHub #8691, #6708, #9779).
+    map.on("style.load", setup); // re-runs on every theme switch (dark ↔ light)
+    setup();                     // initial load — style already loaded
 
     return () => {
       map.off("style.load", setup);
