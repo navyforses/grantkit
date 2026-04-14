@@ -342,16 +342,10 @@ export function useMapMarkers(
     };
 
     map.on("style.load", setup);
-    // Fallback: 'idle' fires after sprites/tiles finish loading.
-    // Catches the race where style.load already fired but isStyleLoaded()
-    // still returns false when this effect runs (production timing issue).
-    const idleFallback = () => { if (!handlersRef.current) setup(); };
-    map.once("idle", idleFallback);
     if (map.isStyleLoaded()) setup();
 
     return () => {
       map.off("style.load", setup);
-      map.off("idle", idleFallback);
       popupRef.current?.remove();
       // Remove layer event handlers on unmount to prevent leaks
       if (handlersRef.current) {
