@@ -44,7 +44,6 @@ export default function OnboardingFlow() {
 
   const persistState = (value: OnboardingState) => {
     sessionStorage.setItem(ONBOARDING_STATE_STORAGE_KEY, JSON.stringify(value));
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(value));
   };
 
   const submitState = async (payload: OnboardingState) => {
@@ -59,7 +58,6 @@ export default function OnboardingFlow() {
         needDetails: payload.needDetails,
       });
       sessionStorage.removeItem(ONBOARDING_STATE_STORAGE_KEY);
-      sessionStorage.removeItem(STORAGE_KEY);
       navigate("/dashboard");
     } catch (err) {
       if (err instanceof TRPCClientError) {

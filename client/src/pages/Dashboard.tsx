@@ -96,6 +96,11 @@ export default function Dashboard() {
   const [selectedPurposeTab, setSelectedPurposeTab] = useState<string>("all");
   const [selectedNeedTab, setSelectedNeedTab] = useState<string>("all");
   const filteredFunding = useMemo(
+    () => (selectedPurposeTab === "all" ? funding : funding.filter((item) => item.purpose_tags?.includes(selectedPurposeTab))),
+    [funding, selectedPurposeTab]
+  );
+  const filteredNeeds = useMemo(
+    () => (selectedNeedTab === "all" ? needs : needs.filter((item) => item.need_tags?.includes(selectedNeedTab))),
     () => (selectedPurposeTab === "all" ? funding : funding.filter((item) => (item as any).purpose_tags?.includes(selectedPurposeTab))),
     [funding, selectedPurposeTab]
   );
