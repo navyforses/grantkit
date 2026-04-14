@@ -391,6 +391,36 @@ export async function completeOnboarding(userId: number): Promise<void> {
   await db.update(users).set({ onboardingCompleted: true }).where(eq(users.id, userId));
 }
 
+export async function updateUserProfile(userId: number, profile: {
+  targetCountry?: string;
+  purposes?: string;
+  purposeDetails?: string;
+  needs?: string;
+  needDetails?: string;
+}) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users)
+    .set({ ...profile, profileCompletedAt: new Date() })
+    .where(eq(users.id, userId));
+}
+
+export async function getUserProfile(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const [user] = await db.select({
+    targetCountry: users.targetCountry,
+    purposes: users.purposes,
+    purposeDetails: users.purposeDetails,
+    needs: users.needs,
+    needDetails: users.needDetails,
+    profileCompletedAt: users.profileCompletedAt,
+  })
+  .from(users)
+  .where(eq(users.id, userId));
+  return user ?? null;
+}
+
 export async function getSubscriptionStats() {
   const db = await getDb();
   if (!db) return { total: 0, active: 0, cancelled: 0, none: 0, pastDue: 0, paused: 0 };

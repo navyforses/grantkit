@@ -21,6 +21,12 @@ export const users = mysqlTable("users", {
 
   // Onboarding
   onboardingCompleted: boolean("onboardingCompleted").default(false).notNull(),
+  targetCountry: varchar("targetCountry", { length: 8 }),
+  purposes: text("purposes"),
+  purposeDetails: text("purposeDetails"),
+  needs: text("needs"),
+  needDetails: text("needDetails"),
+  profileCompletedAt: timestamp("profileCompletedAt"),
 
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
