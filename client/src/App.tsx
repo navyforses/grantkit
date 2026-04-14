@@ -21,6 +21,7 @@ const GrantDetail    = lazy(() => import("./pages/GrantDetail"));
 const ResourceDetail = lazy(() => import("./pages/ResourceDetail"));
 const Profile     = lazy(() => import("./pages/Profile"));
 const Dashboard   = lazy(() => import("./pages/Dashboard"));
+const Onboarding  = lazy(() => import("./pages/Onboarding"));
 const Contact     = lazy(() => import("./pages/Contact"));
 const Privacy     = lazy(() => import("./pages/Privacy"));
 const Terms       = lazy(() => import("./pages/Terms"));
@@ -48,6 +49,7 @@ function Router() {
         <Route path="/resources/:slug" component={ResourceDetail} />
         <Route path="/profile" component={Profile} />
         <Route path="/dashboard" component={Dashboard} />
+        <Route path="/onboarding" component={Onboarding} />
         <Route path="/contact" component={Contact} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
