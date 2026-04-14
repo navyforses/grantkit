@@ -131,3 +131,6 @@ _archive/
 
 # Pending grant imports (local data)
 pending-imports/
+
+# Manus development logs
+.manus/
