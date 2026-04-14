@@ -42,10 +42,15 @@ RUN pnpm install --frozen-lockfile --prod
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/client/src/data ./client/src/data
 
+# Copy Drizzle migration files for auto-migration on startup
+COPY --from=builder /app/drizzle ./drizzle
+
 # Set production env
 ENV NODE_ENV=production
 ENV PORT=10000
 
 EXPOSE 10000
 
-CMD ["node", "dist/index.js"]
+# Auto-run migrations before starting the server.
+# dist/migrate.js is compiled from server/migrate.ts using drizzle-orm/mysql2/migrator.
+CMD ["sh", "-c", "node dist/migrate.js && node dist/index.js"]
