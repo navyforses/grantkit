@@ -92,27 +92,27 @@ export default function Dashboard() {
     };
   }, [profile]);
 
-  const { funding, needs, loading: personalizedLoading } = usePersonalizedResources(normalizedProfile);
+  const { funding, needs: personalizedNeeds, loading: personalizedLoading } = usePersonalizedResources(normalizedProfile);
   const [selectedPurposeTab, setSelectedPurposeTab] = useState<string>("all");
   const [selectedNeedTab, setSelectedNeedTab] = useState<string>("all");
-  const filteredFunding = useMemo(
+  const filteredFundingItems = useMemo(
     () => (selectedPurposeTab === "all" ? funding : funding.filter((item) => item.purpose_tags?.includes(selectedPurposeTab))),
     [funding, selectedPurposeTab]
   );
-  const filteredNeeds = useMemo(
-    () => (selectedNeedTab === "all" ? needs : needs.filter((item) => item.need_tags?.includes(selectedNeedTab))),
-    [needs, selectedNeedTab]
+  const filteredNeedItems = useMemo(
+    () => (selectedNeedTab === "all" ? personalizedNeeds : personalizedNeeds.filter((item) => item.need_tags?.includes(selectedNeedTab))),
+    [personalizedNeeds, selectedNeedTab]
   );
   const fundingContent = useMemo(() => {
     if (personalizedLoading) {
       return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
     }
-    if (filteredFunding.length === 0) {
+    if (filteredFundingItems.length === 0) {
       return <p className="text-sm text-muted-foreground">{t.profile.noFundingResults}</p>;
     }
     return (
       <div className="space-y-2">
-        {filteredFunding.map((item) => (
+        {filteredFundingItems.map((item) => (
           <Link key={item.id} href={`/resources/${item.slug}`}>
             <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
               <p className="text-sm font-medium">{item.title}</p>
@@ -122,17 +122,17 @@ export default function Dashboard() {
         ))}
       </div>
     );
-  }, [filteredFunding, personalizedLoading, t.profile.noFundingResults]);
+  }, [filteredFundingItems, personalizedLoading, t.profile.noFundingResults]);
   const needsContent = useMemo(() => {
     if (personalizedLoading) {
       return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
     }
-    if (filteredNeeds.length === 0) {
+    if (filteredNeedItems.length === 0) {
       return <p className="text-sm text-muted-foreground">{t.profile.noNeedsResults}</p>;
     }
     return (
       <div className="space-y-2">
-        {filteredNeeds.map((item) => (
+        {filteredNeedItems.map((item) => (
           <Link key={item.id} href={`/resources/${item.slug}`}>
             <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
               <p className="text-sm font-medium">{item.title}</p>
@@ -142,7 +142,7 @@ export default function Dashboard() {
         ))}
       </div>
     );
-  }, [filteredNeeds, personalizedLoading, t.profile.noNeedsResults]);
+  }, [filteredNeedItems, personalizedLoading, t.profile.noNeedsResults]);
 
   const savedItems = useMemo(() => {
     if (!catalogData?.grants || savedGrantIds.length === 0) return [];
