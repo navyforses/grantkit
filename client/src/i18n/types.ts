@@ -866,6 +866,39 @@ export interface Translations {
     noResults: string
     noResultsHint: string
     errorLoading: string
+    // Sort/filter UI (new Supabase system)
+    filterByCategory: string
+    filterByCountry: string
+    filterByStatus: string
+    sortBy: string
+    sortNewest: string
+    sortDeadline: string
+    sortAmountHigh: string
+    sortAmountLow: string
+    sortName: string
+    sortRelevance: string
+    // Short-form labels (aliases for existing labels, used in sort/filter chips)
+    deadline: string
+    eligibility: string
+    individual: string
+    organization: string
+    both: string
+    targetGroups: string
+    children: string
+    disabled: string
+    veterans: string
+    immigrants: string
+    students: string
+    elderly: string
+    clinicalPhase: string
+    diseaseArea: string
+    clearFilters: string
+    // Admin resource management
+    addResource: string
+    editResource: string
+    importCSV: string
+    importSuccess: string
+    importErrors: string
   }
 
   // SEO meta tags

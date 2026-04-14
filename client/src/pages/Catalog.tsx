@@ -22,7 +22,7 @@ import SEO from "@/components/SEO";
 import MapView from "@/components/map/MapView";
 import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
 import ResourceTypeTabs from "@/components/ResourceTypeTabs";
-import { useResources, useResourcesRealtime } from "@/hooks/useResources";
+import { useResources, useResourcesRealtime, useCategories, useCountries } from "@/hooks/useResources";
 import type { ResourceType } from "@/types/resources";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
 const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
@@ -131,6 +131,10 @@ export default function Catalog() {
     dispatch: supabaseDispatch,
     refresh: supabaseRefresh,
   } = useResources(isSupabaseView ? supabaseResourceType : undefined);
+
+  // Supabase categories/countries for the filter panel
+  const { data: supabaseCategories } = useCategories(isSupabaseView ? supabaseResourceType : undefined);
+  const { data: supabaseCountries } = useCountries();
 
   // Phase 9 — live updates: when a resource is inserted/updated/deleted in
   // Supabase while the Catalog page is open, silently re-fetch the current page.
@@ -535,14 +539,27 @@ export default function Catalog() {
             totalItems={isSupabaseView ? supabaseResources.length : totalItems}
             onClearAll={resetFilters}
             supabaseResourceType={supabaseResourceType}
+            supabaseCategories={supabaseCategories}
+            supabaseCountries={supabaseCountries}
+            selectedSupabaseCategories={supabaseFilters.categories}
+            onSupabaseCategoriesChange={(ids) => supabaseDispatch({ type: 'SET_CATEGORIES', payload: ids })}
+            selectedSupabaseCountries={supabaseFilters.countries}
+            onSupabaseCountriesChange={(codes) => supabaseDispatch({ type: 'SET_COUNTRIES', payload: codes })}
+            currentSort={supabaseFilters.sort}
+            onSortChange={(sort) => supabaseDispatch({ type: 'SET_SORT', payload: sort })}
+            searchQuery={searchQuery}
             amountMin={supabaseFilters.amount_min}
             amountMax={supabaseFilters.amount_max}
             onAmountMinChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MIN', payload: v })}
             onAmountMaxChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MAX', payload: v })}
+            selectedEligibility={supabaseFilters.eligibility}
+            onEligibilityChange={(v) => supabaseDispatch({ type: 'SET_ELIGIBILITY', payload: v as import("@/types/resources").Eligibility | undefined })}
             selectedTargetGroups={supabaseFilters.target_groups}
             onTargetGroupsChange={(groups) => supabaseDispatch({ type: 'SET_TARGET_GROUPS', payload: groups })}
             selectedClinicalPhase={supabaseFilters.clinical_phase}
             onClinicalPhaseChange={(phase) => supabaseDispatch({ type: 'SET_CLINICAL_PHASE', payload: phase })}
+            selectedDiseaseAreas={supabaseFilters.disease_areas}
+            onDiseaseAreasChange={(areas) => supabaseDispatch({ type: 'SET_DISEASE_AREAS', payload: areas })}
           />
         </Suspense>
 
