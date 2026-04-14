@@ -101,13 +101,48 @@ export default function Dashboard() {
   );
   const filteredNeeds = useMemo(
     () => (selectedNeedTab === "all" ? needs : needs.filter((item) => item.need_tags?.includes(selectedNeedTab))),
-    () => (selectedPurposeTab === "all" ? funding : funding.filter((item) => (item as any).purpose_tags?.includes(selectedPurposeTab))),
-    [funding, selectedPurposeTab]
-  );
-  const filteredNeeds = useMemo(
-    () => (selectedNeedTab === "all" ? needs : needs.filter((item) => (item as any).need_tags?.includes(selectedNeedTab))),
     [needs, selectedNeedTab]
   );
+  const fundingContent = useMemo(() => {
+    if (personalizedLoading) {
+      return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
+    }
+    if (filteredFunding.length === 0) {
+      return <p className="text-sm text-muted-foreground">{t.profile.noFundingResults}</p>;
+    }
+    return (
+      <div className="space-y-2">
+        {filteredFunding.map((item) => (
+          <Link key={item.id} href={`/resources/${item.slug}`}>
+            <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
+              <p className="text-sm font-medium">{item.title}</p>
+              <p className="line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
+  }, [filteredFunding, personalizedLoading, t.profile.noFundingResults]);
+  const needsContent = useMemo(() => {
+    if (personalizedLoading) {
+      return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
+    }
+    if (filteredNeeds.length === 0) {
+      return <p className="text-sm text-muted-foreground">{t.profile.noNeedsResults}</p>;
+    }
+    return (
+      <div className="space-y-2">
+        {filteredNeeds.map((item) => (
+          <Link key={item.id} href={`/resources/${item.slug}`}>
+            <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
+              <p className="text-sm font-medium">{item.title}</p>
+              <p className="line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
+  }, [filteredNeeds, personalizedLoading, t.profile.noNeedsResults]);
 
   const savedItems = useMemo(() => {
     if (!catalogData?.grants || savedGrantIds.length === 0) return [];
@@ -295,29 +330,7 @@ export default function Dashboard() {
                         <TabsTrigger key={purpose} value={purpose}>{t.profile[PURPOSE_LABEL_KEY[purpose]]}</TabsTrigger>
                       ))}
                     </TabsList>
-                    <TabsContent value={selectedPurposeTab} className="mt-3">
-                      {personalizedLoading ? (
-                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                      ) : filteredFunding.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">{t.profile.noFundingResults}</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {filteredFunding.map((item) => (
-                      ) : funding.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">{t.profile.noFundingResults}</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {funding.map((item) => (
-                            <Link key={item.id} href={`/resources/${item.slug}`}>
-                              <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
-                                <p className="text-sm font-medium">{item.title}</p>
-                                <p className="line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </TabsContent>
+                    <TabsContent value={selectedPurposeTab} className="mt-3">{fundingContent}</TabsContent>
                   </Tabs>
                 </div>
 
@@ -330,29 +343,7 @@ export default function Dashboard() {
                         <TabsTrigger key={need} value={need}>{t.profile[NEED_LABEL_KEY[need]]}</TabsTrigger>
                       ))}
                     </TabsList>
-                    <TabsContent value={selectedNeedTab} className="mt-3">
-                      {personalizedLoading ? (
-                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                      ) : filteredNeeds.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">{t.profile.noNeedsResults}</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {filteredNeeds.map((item) => (
-                      ) : needs.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">{t.profile.noNeedsResults}</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {needs.map((item) => (
-                            <Link key={item.id} href={`/resources/${item.slug}`}>
-                              <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
-                                <p className="text-sm font-medium">{item.title}</p>
-                                <p className="line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </TabsContent>
+                    <TabsContent value={selectedNeedTab} className="mt-3">{needsContent}</TabsContent>
                   </Tabs>
                 </div>
               </motion.div>
