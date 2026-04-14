@@ -92,7 +92,7 @@ export default function Dashboard() {
     };
   }, [profile]);
 
-  const { funding, needs, loading: personalizedLoading } = usePersonalizedResources(normalizedProfile);
+  const { funding, needs: personalizedNeeds, loading: personalizedLoading } = usePersonalizedResources(normalizedProfile);
   const [selectedPurposeTab, setSelectedPurposeTab] = useState<string>("all");
   const [selectedNeedTab, setSelectedNeedTab] = useState<string>("all");
   const filteredFundingItems = useMemo(
@@ -100,8 +100,8 @@ export default function Dashboard() {
     [funding, selectedPurposeTab]
   );
   const filteredNeedItems = useMemo(
-    () => (selectedNeedTab === "all" ? needs : needs.filter((item) => item.need_tags?.includes(selectedNeedTab))),
-    [needs, selectedNeedTab]
+    () => (selectedNeedTab === "all" ? personalizedNeeds : personalizedNeeds.filter((item) => item.need_tags?.includes(selectedNeedTab))),
+    [personalizedNeeds, selectedNeedTab]
   );
   const fundingContent = useMemo(() => {
     if (personalizedLoading) {
