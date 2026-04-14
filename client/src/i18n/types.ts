@@ -1006,4 +1006,20 @@ export interface Translations {
     refundTitle: string;
     refundDescription: string;
   };
+
+  smartSearch: {
+    tab: string;
+    tabFilters: string;
+    placeholder: string;
+    hint: string;
+    searching: string;
+    resultsCount: string;
+    noResults: string;
+    poweredBy: string;
+    relevance: string;
+    tryExample: string;
+    example1: string;
+    example2: string;
+    example3: string;
+  };
 }

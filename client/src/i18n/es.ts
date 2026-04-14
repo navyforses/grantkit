@@ -957,4 +957,20 @@ export const es: Translations = {
     refundTitle: "Política de reembolso",
     refundDescription: "Política de reembolso de GrantKit. Conoce la elegibilidad, el proceso y los plazos de reembolso.",
   },
+
+  smartSearch: {
+    tab: "Búsqueda inteligente",
+    tabFilters: "Filtros",
+    placeholder: "Describe lo que buscas...",
+    hint: "Busca en cualquier idioma — encuentra subvenciones en todos los idiomas",
+    searching: "Buscando...",
+    resultsCount: "{count} resultados encontrados",
+    noResults: "No se encontraron subvenciones. Prueba con otra formulación.",
+    poweredBy: "Búsqueda multilingüe con IA",
+    relevance: "Relevancia",
+    tryExample: "Prueba: ",
+    example1: "tratamiento infantil en Europa",
+    example2: "beca para inmigrantes",
+    example3: "asistencia de vivienda",
+  },
 };

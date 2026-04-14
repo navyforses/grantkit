@@ -957,4 +957,20 @@ export const fr: Translations = {
     refundTitle: "Politique de remboursement",
     refundDescription: "Politique de remboursement de GrantKit. Découvrez l'éligibilité, le processus et les délais de remboursement.",
   },
+
+  smartSearch: {
+    tab: "Recherche intelligente",
+    tabFilters: "Filtres",
+    placeholder: "Décrivez ce que vous recherchez...",
+    hint: "Recherchez dans n'importe quelle langue — trouve des subventions dans toutes les langues",
+    searching: "Recherche en cours...",
+    resultsCount: "{count} résultats trouvés",
+    noResults: "Aucune subvention correspondante trouvée. Essayez une autre formulation.",
+    poweredBy: "Recherche multilingue assistée par IA",
+    relevance: "Pertinence",
+    tryExample: "Essayez : ",
+    example1: "traitement enfant en Europe",
+    example2: "bourse pour immigrants",
+    example3: "aide au logement",
+  },
 };
