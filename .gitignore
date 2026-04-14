@@ -134,3 +134,6 @@ pending-imports/
 
 # Manus development logs
 .manus/
+
+# Generated audit reports (scripts/)
+scripts/*.json
