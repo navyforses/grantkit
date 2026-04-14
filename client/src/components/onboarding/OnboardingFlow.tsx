@@ -23,7 +23,7 @@ interface OnboardingState {
   needDetails: NeedDetail[];
 }
 
-const STORAGE_KEY = "grantkit_onboarding_state";
+export const ONBOARDING_STATE_STORAGE_KEY = "grantkit_onboarding_state";
 
 export default function OnboardingFlow() {
   const { t } = useLanguage();
@@ -43,6 +43,7 @@ export default function OnboardingFlow() {
   const saveProfile = trpc.onboarding.saveProfile.useMutation();
 
   const persistState = (value: OnboardingState) => {
+    sessionStorage.setItem(ONBOARDING_STATE_STORAGE_KEY, JSON.stringify(value));
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(value));
   };
 
@@ -57,6 +58,7 @@ export default function OnboardingFlow() {
         needs: payload.needs,
         needDetails: payload.needDetails,
       });
+      sessionStorage.removeItem(ONBOARDING_STATE_STORAGE_KEY);
       sessionStorage.removeItem(STORAGE_KEY);
       navigate("/dashboard");
     } catch (err) {
@@ -68,6 +70,7 @@ export default function OnboardingFlow() {
           return;
         }
       }
+      setError(t.profile.saveProfileError);
       setError(t.profile.noNeedsResults);
     }
   };
@@ -77,6 +80,7 @@ export default function OnboardingFlow() {
   };
 
   useEffect(() => {
+    const raw = sessionStorage.getItem(ONBOARDING_STATE_STORAGE_KEY);
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return;
 
@@ -87,6 +91,7 @@ export default function OnboardingFlow() {
         void submitState(restored);
       }
     } catch {
+      sessionStorage.removeItem(ONBOARDING_STATE_STORAGE_KEY);
       sessionStorage.removeItem(STORAGE_KEY);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

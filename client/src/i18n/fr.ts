@@ -398,6 +398,7 @@ export const fr: Translations = {
     editProfile: "Modifier le profil",
     noFundingResults: "Aucun financement trouvé pour votre profil pour le moment. Nous ajoutons régulièrement de nouvelles ressources.",
     noNeedsResults: "Aucune ressource correspondante pour le moment. Revenez bientôt.",
+    saveProfileError: "Impossible d'enregistrer votre profil. Veuillez réessayer.",
     next: "Suivant",
     back: "Retour",
     skip: "Passer",

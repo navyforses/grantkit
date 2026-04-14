@@ -409,6 +409,7 @@ export interface Translations {
     editProfile: string;
     noFundingResults: string;
     noNeedsResults: string;
+    saveProfileError: string;
     next: string;
     back: string;
     skip: string;

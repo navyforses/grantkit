@@ -398,6 +398,7 @@ export const en: Translations = {
     editProfile: "Edit profile",
     noFundingResults: "No funding found for your profile yet. We add new resources regularly.",
     noNeedsResults: "No matching resources yet. Check back soon.",
+    saveProfileError: "Could not save your profile. Please try again.",
     next: "Next",
     back: "Back",
     skip: "Skip",

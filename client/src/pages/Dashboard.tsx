@@ -95,6 +95,14 @@ export default function Dashboard() {
   const { funding, needs, loading: personalizedLoading } = usePersonalizedResources(normalizedProfile);
   const [selectedPurposeTab, setSelectedPurposeTab] = useState<string>("all");
   const [selectedNeedTab, setSelectedNeedTab] = useState<string>("all");
+  const filteredFunding = useMemo(
+    () => (selectedPurposeTab === "all" ? funding : funding.filter((item) => (item as any).purpose_tags?.includes(selectedPurposeTab))),
+    [funding, selectedPurposeTab]
+  );
+  const filteredNeeds = useMemo(
+    () => (selectedNeedTab === "all" ? needs : needs.filter((item) => (item as any).need_tags?.includes(selectedNeedTab))),
+    [needs, selectedNeedTab]
+  );
 
   const savedItems = useMemo(() => {
     if (!catalogData?.grants || savedGrantIds.length === 0) return [];
@@ -285,6 +293,11 @@ export default function Dashboard() {
                     <TabsContent value={selectedPurposeTab} className="mt-3">
                       {personalizedLoading ? (
                         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                      ) : filteredFunding.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">{t.profile.noFundingResults}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {filteredFunding.map((item) => (
                       ) : funding.length === 0 ? (
                         <p className="text-sm text-muted-foreground">{t.profile.noFundingResults}</p>
                       ) : (
@@ -315,6 +328,11 @@ export default function Dashboard() {
                     <TabsContent value={selectedNeedTab} className="mt-3">
                       {personalizedLoading ? (
                         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                      ) : filteredNeeds.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">{t.profile.noNeedsResults}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {filteredNeeds.map((item) => (
                       ) : needs.length === 0 ? (
                         <p className="text-sm text-muted-foreground">{t.profile.noNeedsResults}</p>
                       ) : (
