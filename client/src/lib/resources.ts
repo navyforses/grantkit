@@ -75,6 +75,8 @@ async function fetchFromCatalogJson(filters: ResourceFilters): Promise<{ data: R
 // ─── Supabase query helpers ───────────────────────────────────────────────────
 
 async function fetchFromSupabase(filters: ResourceFilters): Promise<{ data: ResourceFull[]; count: number }> {
+  if (!supabase) return { data: [], count: 0 }
+
   let query = supabase
     .from('resources_full')
     .select('*', { count: 'exact' })
@@ -179,6 +181,8 @@ export async function fetchResourceBySlug(slug: string): Promise<ResourceFull | 
     return item ? mapCatalogItemToResource(item) : null
   }
 
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('resources_full')
     .select('*')
@@ -195,6 +199,8 @@ export async function fetchResourceBySlug(slug: string): Promise<ResourceFull | 
 
 export async function fetchCategories(resourceType?: ResourceType): Promise<Category[]> {
   if (!USE_SUPABASE) return []
+
+  if (!supabase) return []
 
   let query = supabase
     .from('categories')
@@ -231,6 +237,8 @@ export async function fetchCategories(resourceType?: ResourceType): Promise<Cate
 export async function fetchCountries(): Promise<Country[]> {
   if (!USE_SUPABASE) return []
 
+  if (!supabase) return []
+
   const [{ data: countries, error: ce }, { data: regions, error: re }] = await Promise.all([
     supabase.from('countries').select('*').order('name'),
     supabase.from('regions').select('*').order('name'),
@@ -258,6 +266,10 @@ export async function fetchResourceStats(): Promise<ResourceStats> {
       by_type: { GRANT: catalogItems.length, SOCIAL: 0, MEDICAL: 0 },
       by_status: { OPEN: catalogItems.length, CLOSED: 0, UPCOMING: 0, ONGOING: 0, ARCHIVED: 0 },
     }
+  }
+
+  if (!supabase) {
+    return { total: 0, by_type: { GRANT: 0, SOCIAL: 0, MEDICAL: 0 }, by_status: { OPEN: 0, CLOSED: 0, UPCOMING: 0, ONGOING: 0, ARCHIVED: 0 } }
   }
 
   const { data, error } = await supabase.from('resource_stats').select('*')
