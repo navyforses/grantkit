@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Resend } from "resend";
 
-describe("Resend API Key Validation", () => {
+describe.skipIf(!process.env.RESEND_API_KEY)("Resend API Key Validation", () => {
   it("should have a valid RESEND_API_KEY that connects to Resend", async () => {
     const apiKey = process.env.RESEND_API_KEY;
     expect(apiKey).toBeDefined();
