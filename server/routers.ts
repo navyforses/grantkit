@@ -324,45 +324,43 @@ export const appRouter = router({
         limit: z.number().min(1).max(50).default(20),
       }))
       .query(async ({ input }) => {
-        const expanded = await expandQuery(input.query);
+        try {
+          const expanded = await expandQuery(input.query);
 
-        // Use MySQL multi-term search with expanded terms
-        const results = await searchGrantsMultiTerm(expanded.terms, {
-          country: input.country,
-          category: input.category,
-          limit: input.limit,
-        });
+          const results = await searchGrantsMultiTerm(expanded.terms, {
+            country: input.country,
+            category: input.category,
+            limit: input.limit,
+          });
 
-        // Get translations for results
-        const itemIds = results.map(r => r.itemId);
-        const translations = itemIds.length > 0 ? await getBulkGrantTranslations(itemIds) : {};
-
-        return {
-          results: results.map(r => ({
-            id: r.itemId,
-            name: r.name,
-            organization: r.organization || "",
-            description: r.description || "",
-            category: r.category,
-            country: r.country,
-            amount: r.amount || "",
-            deadline: r.deadline || "",
-            website: r.website || "",
-            eligibility: r.eligibility || "",
-            fundingType: r.fundingType || "",
-            state: r.state || "",
-            city: r.city || "",
-            matchCount: r.matchCount,
-            translations: translations[r.itemId] || {},
-          })),
-          meta: {
-            originalQuery: expanded.original,
-            detectedLanguage: expanded.detectedLanguage,
-            englishQuery: expanded.englishQuery,
-            resultCount: results.length,
-            termsUsed: expanded.terms.length,
-          },
-        };
+          return {
+            results: results.map(r => ({
+              id: r.itemId,
+              name: r.name,
+              organization: r.organization || "",
+              description: r.description || "",
+              category: r.category,
+              country: r.country,
+              amount: r.amount || "",
+              deadline: r.deadline || "",
+              website: r.website || "",
+              eligibility: r.eligibility || "",
+              fundingType: r.fundingType || "",
+              state: r.state || "",
+              city: r.city || "",
+            })),
+            meta: {
+              originalQuery: expanded.original,
+              detectedLanguage: expanded.detectedLanguage,
+              englishQuery: expanded.englishQuery,
+              resultCount: results.length,
+              termsUsed: expanded.terms.length,
+            },
+          };
+        } catch (err) {
+          console.error("[smartSearch] Error:", err);
+          return { results: [], meta: { originalQuery: input.query, detectedLanguage: "en", englishQuery: input.query, resultCount: 0, termsUsed: 0 } };
+        }
       }),
   }),
 

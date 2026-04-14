@@ -134,7 +134,6 @@ export async function searchGrantsMultiTerm(
   }
 
   // For translation-only matches, fetch the grant data
-  const translationItemIdSet = new Set(translationItemIds);
   const missingItemIds = translationItemIds.filter((id) => !resultMap.has(id));
   if (missingItemIds.length > 0) {
     const missingGrants = await db

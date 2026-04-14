@@ -56,7 +56,6 @@ export default function SmartSearchPanel() {
         b2VisaEligible: "",
         state: r.state,
         city: r.city,
-        translations: r.translations,
       })),
     [results]
   );
