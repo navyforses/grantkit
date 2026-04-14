@@ -48,7 +48,7 @@ export default function OnboardingModal() {
   const handleGetStarted = () => {
     setIsOpen(false);
     completeMutation.mutate();
-    window.location.href = "/catalog";
+    window.location.href = "/onboarding";
   };
 
   const steps = [
