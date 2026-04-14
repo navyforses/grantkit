@@ -10,7 +10,9 @@
  */
 
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Filter, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import SmartSearchPanel from "@/components/SmartSearchPanel";
 import { type SortValue } from "@/components/FilterBar";
 import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, EU_MEMBER_CODES } from "@/lib/constants";
 import { catalogItems } from "@/data/catalogData";
@@ -91,6 +93,9 @@ export default function Catalog() {
 
   const { t, language } = useLanguage();
   const { isAuthenticated } = useAuth();
+
+  // View mode: map (default) or smart search
+  const [viewMode, setViewMode] = useState<"map" | "search">("map");
 
   // Sync filter state to URL
   useEffect(() => {
@@ -450,23 +455,62 @@ export default function Catalog() {
       {/* Desktop navbar — h-16 (4rem / 64px). Hidden on mobile; MobileHeader comes from App.tsx. */}
       <Navbar />
 
-      {/* Resource type switcher — slim bar above stats bar */}
+      {/* Resource type switcher + view mode tabs */}
       <div className="bg-background/95 backdrop-blur-sm border-b border-border px-3 py-1.5 flex items-center gap-2">
-        <ResourceTypeTabs
-          value={supabaseResourceType}
-          onChange={setSupabaseResourceType}
-          counts={{ GRANT: mapItems.length }}
-        />
-        {isSupabaseView && supabaseLoading && (
-          <span className="text-xs text-muted-foreground ml-2">Loading…</span>
+        {viewMode === "map" && (
+          <>
+            <ResourceTypeTabs
+              value={supabaseResourceType}
+              onChange={setSupabaseResourceType}
+              counts={{ GRANT: mapItems.length }}
+            />
+            {isSupabaseView && supabaseLoading && (
+              <span className="text-xs text-muted-foreground ml-2">Loading…</span>
+            )}
+            {isSupabaseView && !supabaseLoading && (
+              <span className="text-xs text-muted-foreground ml-2">
+                {supabaseResources.length} resources
+              </span>
+            )}
+          </>
         )}
-        {isSupabaseView && !supabaseLoading && (
-          <span className="text-xs text-muted-foreground ml-2">
-            {supabaseResources.length} resources
-          </span>
-        )}
+        <div className="ml-auto flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setViewMode("map")}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              viewMode === "map"
+                ? "bg-brand-green/10 text-brand-green"
+                : "text-muted-foreground hover:bg-secondary"
+            }`}
+          >
+            <Filter className="w-3.5 h-3.5" />
+            {t.smartSearch.tabFilters}
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("search")}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              viewMode === "search"
+                ? "bg-brand-green/10 text-brand-green"
+                : "text-muted-foreground hover:bg-secondary"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            {t.smartSearch.tab}
+          </button>
+        </div>
       </div>
 
+      {/* Smart Search view — replaces map when "Smart Search" tab is active */}
+      {viewMode === "search" && (
+        <div className="min-h-[calc(100dvh-12.25rem)] md:min-h-[calc(100dvh-8.75rem)] bg-background p-4 md:p-6 pb-24 md:pb-8 overflow-auto">
+          <SmartSearchPanel />
+        </div>
+      )}
+
+      {/* Map view — default */}
+      {viewMode === "map" && (<>
       {/*
        * Stats bar — h-10 (2.5rem) — shows grant count, country count, active filter chips.
        * Rendered on both mobile and desktop.
@@ -573,6 +617,7 @@ export default function Catalog() {
           />
         </Suspense>
       </div>
+      </>)}
     </div>
   );
 }
