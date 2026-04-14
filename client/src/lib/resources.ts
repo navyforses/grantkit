@@ -104,14 +104,22 @@ async function fetchFromSupabase(filters: ResourceFilters): Promise<{ data: Reso
 
   // Sorting
   const sortMap: Record<string, { column: string; ascending: boolean }> = {
-    newest: { column: 'created_at', ascending: false },
-    oldest: { column: 'created_at', ascending: true },
-    name_asc: { column: 'title', ascending: true },
-    name_desc: { column: 'title', ascending: false },
-    deadline: { column: 'deadline', ascending: true },
+    newest:      { column: 'created_at',  ascending: false },
+    oldest:      { column: 'created_at',  ascending: true },
+    name_asc:    { column: 'title',       ascending: true },
+    name_desc:   { column: 'title',       ascending: false },
+    deadline:    { column: 'deadline',    ascending: true },
+    amount_desc: { column: 'amount_max',  ascending: false },
+    amount_asc:  { column: 'amount_min',  ascending: true },
+    featured:    { column: 'is_featured', ascending: false },
   }
-  const sort = sortMap[filters.sort] ?? { column: 'created_at', ascending: false }
-  query = query.order(sort.column, { ascending: sort.ascending })
+  // relevance: only meaningful when search query is active — use search_vector ranking
+  if (filters.sort === 'relevance' && filters.search) {
+    // search_vector full-text search already ranked by ts_rank; no explicit order needed
+  } else {
+    const sort = sortMap[filters.sort] ?? { column: 'created_at', ascending: false }
+    query = query.order(sort.column, { ascending: sort.ascending })
+  }
 
   // Pagination
   const start = (filters.page - 1) * filters.limit
