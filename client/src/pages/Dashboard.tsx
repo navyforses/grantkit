@@ -101,6 +101,11 @@ export default function Dashboard() {
   );
   const filteredNeeds = useMemo(
     () => (selectedNeedTab === "all" ? needs : needs.filter((item) => item.need_tags?.includes(selectedNeedTab))),
+    () => (selectedPurposeTab === "all" ? funding : funding.filter((item) => (item as any).purpose_tags?.includes(selectedPurposeTab))),
+    [funding, selectedPurposeTab]
+  );
+  const filteredNeeds = useMemo(
+    () => (selectedNeedTab === "all" ? needs : needs.filter((item) => (item as any).need_tags?.includes(selectedNeedTab))),
     [needs, selectedNeedTab]
   );
 
@@ -298,6 +303,11 @@ export default function Dashboard() {
                       ) : (
                         <div className="space-y-2">
                           {filteredFunding.map((item) => (
+                      ) : funding.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">{t.profile.noFundingResults}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {funding.map((item) => (
                             <Link key={item.id} href={`/resources/${item.slug}`}>
                               <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
                                 <p className="text-sm font-medium">{item.title}</p>
@@ -328,6 +338,11 @@ export default function Dashboard() {
                       ) : (
                         <div className="space-y-2">
                           {filteredNeeds.map((item) => (
+                      ) : needs.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">{t.profile.noNeedsResults}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {needs.map((item) => (
                             <Link key={item.id} href={`/resources/${item.slug}`}>
                               <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
                                 <p className="text-sm font-medium">{item.title}</p>
