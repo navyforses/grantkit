@@ -70,6 +70,28 @@ const NAME_TO_ISO = new Map<string, string>(
 
 const COORD_CACHE = new Map<string, [number, number] | null>();
 
+// ── Country-wide city index ───────────────────────────────────────────────────
+// Built once per country: cityName.toLowerCase() → [lng, lat].
+// Replaces the O(states × cities) loop for "Nationwide + city" items with O(1).
+
+const CITY_INDEX: Map<string, Map<string, [number, number]>> = new Map();
+
+function getCityCoordsByCountry(iso: string, city: string): [number, number] | null {
+  if (!CITY_INDEX.has(iso)) {
+    const index = new Map<string, [number, number]>();
+    for (const st of State.getStatesOfCountry(iso)) {
+      for (const c of City.getCitiesOfState(iso, st.isoCode)) {
+        const coords = parsePair(c.latitude, c.longitude);
+        if (coords && !index.has(c.name.toLowerCase())) {
+          index.set(c.name.toLowerCase(), coords);
+        }
+      }
+    }
+    CITY_INDEX.set(iso, index);
+  }
+  return CITY_INDEX.get(iso)!.get(city.toLowerCase()) ?? null;
+}
+
 function cacheKey(country?: string | null, state?: string | null, city?: string | null): string {
   return `${country ?? ""}\0${state ?? ""}\0${city ?? ""}`;
 }
@@ -164,22 +186,11 @@ function _resolveItemCoords(
       }
     }
   } else if (city) {
-    // ── Nationwide + city: search across all states ───────────────────────
-    // Many items have state="Nationwide" but include a city (e.g. "Omaha", "Austin").
-    // Search every state in the country and take the first coordinate match.
-    // COORD_CACHE ensures each unique (country, "Nationwide", city) triplet is
-    // computed only once, regardless of how many items share the same city.
-    const allStates = State.getStatesOfCountry(iso);
-    for (const st of allStates) {
-      const cities = City.getCitiesOfState(iso, st.isoCode);
-      const cityMatch = cities.find(
-        (c) => c.name.toLowerCase() === city.toLowerCase()
-      );
-      if (cityMatch) {
-        const cityCoords = parsePair(cityMatch.latitude, cityMatch.longitude);
-        if (cityCoords) { coords = cityCoords; break; }
-      }
-    }
+    // ── Nationwide + city: use pre-built country-wide city index ─────────
+    // Many items have state="Nationwide" but include a city (e.g. "Omaha").
+    // Build the index once per country (all states × all cities) so every
+    // subsequent city lookup is O(1) instead of O(states × cities).
+    coords = getCityCoordsByCountry(iso, city) ?? coords;
   }
 
   return coords;

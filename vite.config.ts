@@ -171,6 +171,8 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    // Disable gzip size reporting — it can OOM on large bundles in constrained envs
+    reportCompressedSize: false,
     rollupOptions: {
       output: {
         manualChunks: {

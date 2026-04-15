@@ -170,8 +170,11 @@ export function useMapHighlight(
       applyHighlight(map, regionCode, countryCode, stateCode, cityName);
     };
 
-    map.on("style.load", setup);
-    if (map.isStyleLoaded()) setup();
+    // Same guarantee as useMapMarkers: onMapReady fires from style.load,
+    // so by the time this effect runs the style is already loaded.
+    // Never use isStyleLoaded() — known to be unreliable (#8691, #6708).
+    map.on("style.load", setup); // re-runs on dark ↔ light switch
+    setup();                     // initial load — style already loaded
 
     return () => {
       map.off("style.load", setup);
@@ -182,8 +185,8 @@ export function useMapHighlight(
 
   // ── Reactive update on location change ────────────────────────────────────
   useEffect(() => {
-    if (!map || !map.isStyleLoaded()) return;
-    if (!map.getLayer(FILL)) return;
+    if (!map) return;
+    if (!map.getLayer(FILL)) return; // layers not ready yet — setup() will call applyHighlight
 
     applyHighlight(map, regionCode, countryCode, stateCode, cityName);
   }, [map, regionCode, countryCode, stateCode, cityName]);

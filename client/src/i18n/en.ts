@@ -959,4 +959,20 @@ export const en: Translations = {
     refundTitle: "Refund Policy",
     refundDescription: "GrantKit Refund Policy. Learn about our refund eligibility, process, and timeline.",
   },
+
+  smartSearch: {
+    tab: "Smart Search",
+    tabFilters: "Filters",
+    placeholder: "Describe what you're looking for...",
+    hint: "Search in any language — finds grants across all languages",
+    searching: "Searching...",
+    resultsCount: "{count} results found",
+    noResults: "No matching grants found. Try different wording.",
+    poweredBy: "AI-powered multilingual search",
+    relevance: "Relevance",
+    tryExample: "Try: ",
+    example1: "child treatment in Europe",
+    example2: "scholarship for immigrants",
+    example3: "housing assistance",
+  },
 };
