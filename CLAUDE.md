@@ -212,17 +212,19 @@ RESEND_API_KEY
 
 > ბოლო განახლება: 2026-04-15
 
-### ფაზა 0: გაწმენდა + Deploy Fix
+### ფაზა 0: გაწმენდა + Deploy Fix ✅
 - ✅ `package.json` merge conflict გამოსწორდა (commit `5137dab`)
-- ✅ Vercel deploy გამოსწორდა (PR #69 merged)
-- ❌ Root-ის development artifacts ჯერ არ გაწმენდილა (Python/Go/Ruby scripts, JSON dumps)
-- ❌ Railway deploy ჯერ არ გამოსწორებულა
+- ✅ Vercel deploy გამოსწორდა (PR #69)
+- ✅ Root artifacts გაწმენდილია → `_archive/`
+- ✅ Railway deploy fix (PR #70): `railway.toml`, `/healthz`, resilient CMD, `static.ts` diagnostics
 
-### ფაზა 1: Onboarding + Dashboard + Smart Search
-- ❌ **არ დაწყებულა**
-- Onboarding 3-step flow
-- პერსონალიზებული Dashboard
-- Smart Search (semantic, 5 ენა)
+### ფაზა 1: Onboarding + Dashboard + Smart Search ✅
+- ✅ Onboarding 3-step flow (StepCountry, StepPurpose, StepNeeds)
+- ✅ პერსონალიზებული Dashboard (funding + needs sections)
+- ✅ Smart Search (Claude Haiku + MySQL fallback, 5 ენა)
+- ✅ i18n — profile + country + smartSearch keys ყველა ენაში
+- ✅ DB migration `drizzle/0009_user_profile.sql`
+- ✅ Supabase SQL `supabase/smart-search-and-tags.sql`
 
 ### ფაზა 2: თარგმანების დასრულება
 - ✅ `scripts/audit-translations.ts` შექმნილია
@@ -241,5 +243,5 @@ RESEND_API_KEY
 - ყოველდღიური ავტომატური გრანტების მოძიება
 
 ### შემდეგი ნაბიჯი
-**ფაზა 0 დასასრულებლად:** root artifacts-ის გაწმენდა + Railway deploy fix
 **ფაზა 2 დასასრულებლად:** კოლეგამ უნდა გაუშვას `railway run pnpm translate:missing`
+**ფაზა 3 დასაწყებად:** მონაცემთა გამდიდრება (descriptions, categories, deadlines)
