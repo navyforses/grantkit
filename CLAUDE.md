@@ -212,11 +212,11 @@ RESEND_API_KEY
 
 > ბოლო განახლება: 2026-04-15
 
-### ფაზა 0: გაწმენდა + Deploy Fix
+### ფაზა 0: გაწმენდა + Deploy Fix ✅
 - ✅ `package.json` merge conflict გამოსწორდა (commit `5137dab`)
-- ✅ Vercel deploy გამოსწორდა (PR #69 merged)
-- ❌ Root-ის development artifacts ჯერ არ გაწმენდილა (Python/Go/Ruby scripts, JSON dumps)
-- ❌ Railway deploy ჯერ არ გამოსწორებულა
+- ✅ Vercel deploy გამოსწორდა (PR #69)
+- ✅ Root artifacts გაწმენდილია → `_archive/`
+- ✅ Railway deploy fix (PR #70): `railway.toml`, `/healthz`, resilient CMD, `static.ts` diagnostics
 
 ### ფაზა 1: Onboarding + Dashboard + Smart Search
 - ❌ **არ დაწყებულა**
@@ -241,5 +241,5 @@ RESEND_API_KEY
 - ყოველდღიური ავტომატური გრანტების მოძიება
 
 ### შემდეგი ნაბიჯი
-**ფაზა 0 დასასრულებლად:** root artifacts-ის გაწმენდა + Railway deploy fix
+**ფაზა 1 დასაწყებად:** Onboarding 3-step flow + Smart Search + Dashboard
 **ფაზა 2 დასასრულებლად:** კოლეგამ უნდა გაუშვას `railway run pnpm translate:missing`
