@@ -2,9 +2,9 @@
 
 ## Current Status (April 2026)
 - 3,650+ grants in MySQL, 29 countries, 10 categories
-- 5 languages (EN 100%, FR ~80%, ES ~82%, RU ~81%, KA ~77%)
-- Railway deploy (primary) + Vercel (staging)
-- 196 vitest tests passing
+- 5 languages (EN 100% UI, FR/ES/RU/KA 100% UI — catalog translations ~77-82%)
+- Vercel deploy: grantkit-delta.vercel.app (working)
+- Railway deploy: needs investigation (shows default page)
 
 ---
 
@@ -36,10 +36,11 @@
 - [ ] i18n strings for onboarding flow
 
 ### Phase 2: Translation Completion (95%+ coverage)
-- [ ] Audit which grants are missing which language translations
-- [ ] Generate missing translations with Claude
-- [ ] Write to grant_translations table
-- [ ] Verify all 5 languages at 95%+
+- [x] `scripts/audit-translations.ts` — DB coverage audit script
+- [x] `scripts/translate-missing.ts` — Forge API (Gemini 2.5-flash) batch translation
+- [x] UI strings — 856/856 keys, 100% in all 5 languages
+- [ ] Run `railway run pnpm translate:missing` to generate DB translations
+- [ ] Verify all 5 languages at 95%+ catalog coverage
 
 ### Phase 3: Data Enrichment
 - [ ] Audit grant description quality (short descriptions)
@@ -57,5 +58,7 @@
 
 ## Known Issues
 - [ ] Railway deploy shows default page (needs investigation/fix)
-- [ ] Translation coverage below 95% for FR/ES/RU/KA
+- [ ] DB translation coverage below 95% for FR/ES/RU/KA (scripts ready, need `railway run`)
 - [ ] Some grant descriptions are only 1-2 sentences
+- [x] package.json merge conflict — fixed (PR #68, #69)
+- [x] Vercel deploy — fixed

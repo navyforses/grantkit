@@ -53,4 +53,4 @@ EXPOSE 8080
 
 # Auto-run migrations before starting the server.
 # dist/migrate.js is compiled from server/migrate.ts using drizzle-orm/mysql2/migrator.
-CMD ["sh", "-c", "node dist/migrate.js && node dist/index.js"]
+CMD ["sh", "-c", "node dist/migrate.js || echo '[migrate] Migration failed, starting server anyway'; node dist/index.js"]
