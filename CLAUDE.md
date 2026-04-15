@@ -205,3 +205,41 @@ RESEND_API_KEY
 6. **Soft delete:** grants-ს არასდროს hard delete — `isActive = 0` (გარდა `admin.hardDeleteGrant`)
 7. **i18n:** ახალი UI ტექსტი ყველა 5 ენაში უნდა დაემატოს (`client/src/i18n/`)
 8. **Scripts:** `scripts/` საქაღალდეში `stage*.cjs` ფაილებს **ნუ შეეხები** — ისტორიული მონაცემთა enrichment სკრიპტებია
+
+---
+
+## 5-ფაზიანი განვითარების გეგმა — პროგრესი
+
+> ბოლო განახლება: 2026-04-15
+
+### ფაზა 0: გაწმენდა + Deploy Fix
+- ✅ `package.json` merge conflict გამოსწორდა (commit `5137dab`)
+- ✅ Vercel deploy გამოსწორდა (PR #69 merged)
+- ❌ Root-ის development artifacts ჯერ არ გაწმენდილა (Python/Go/Ruby scripts, JSON dumps)
+- ❌ Railway deploy ჯერ არ გამოსწორებულა
+
+### ფაზა 1: Onboarding + Dashboard + Smart Search
+- ❌ **არ დაწყებულა**
+- Onboarding 3-step flow
+- პერსონალიზებული Dashboard
+- Smart Search (semantic, 5 ენა)
+
+### ფაზა 2: თარგმანების დასრულება
+- ✅ `scripts/audit-translations.ts` შექმნილია
+- ✅ `scripts/translate-missing.ts` შექმნილია (Forge API / Gemini 2.5-flash)
+- ✅ UI strings — 100% coverage ყველა 5 ენაში
+- ❌ DB translations ჯერ გასაშვებია: `railway run pnpm translate:audit` → `railway run pnpm translate:missing`
+- მიზანი: FR/ES/RU/KA 95%+
+
+### ფაზა 3: მონაცემთა გამდიდრება
+- ❌ **არ დაწყებულა**
+- description-ების ხარისხის გაუმჯობესება
+- category/country/eligibility ცარიელი ველების შევსება
+
+### ფაზა 4: Daily Discovery Routine
+- ❌ **არ დაწყებულა**
+- ყოველდღიური ავტომატური გრანტების მოძიება
+
+### შემდეგი ნაბიჯი
+**ფაზა 0 დასასრულებლად:** root artifacts-ის გაწმენდა + Railway deploy fix
+**ფაზა 2 დასასრულებლად:** კოლეგამ უნდა გაუშვას `railway run pnpm translate:missing`
