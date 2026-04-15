@@ -210,7 +210,7 @@ RESEND_API_KEY
 
 ## 5-ფაზიანი განვითარების გეგმა — პროგრესი
 
-> ბოლო განახლება: 2026-04-15
+> ბოლო განახლება: 2026-04-15 | ფაზა 2 ✅ დასრულდა
 
 ### ფაზა 0: გაწმენდა + Deploy Fix ✅
 - ✅ `package.json` merge conflict გამოსწორდა (commit `5137dab`)
@@ -226,12 +226,11 @@ RESEND_API_KEY
 - ✅ DB migration `drizzle/0009_user_profile.sql`
 - ✅ Supabase SQL `supabase/smart-search-and-tags.sql`
 
-### ფაზა 2: თარგმანების დასრულება
+### ფაზა 2: თარგმანების დასრულება ✅
 - ✅ `scripts/audit-translations.ts` შექმნილია
 - ✅ `scripts/translate-missing.ts` შექმნილია (Forge API / Gemini 2.5-flash)
 - ✅ UI strings — 100% coverage ყველა 5 ენაში
-- ❌ DB translations ჯერ გასაშვებია: `railway run pnpm translate:audit` → `railway run pnpm translate:missing`
-- მიზანი: FR/ES/RU/KA 95%+
+- ✅ DB translations — FR/ES/RU/KA **100%** (629/629) — 2026-04-15
 
 ### ფაზა 3: მონაცემთა გამდიდრება
 - ❌ **არ დაწყებულა**
@@ -243,5 +242,4 @@ RESEND_API_KEY
 - ყოველდღიური ავტომატური გრანტების მოძიება
 
 ### შემდეგი ნაბიჯი
-**ფაზა 2 დასასრულებლად:** კოლეგამ უნდა გაუშვას `railway run pnpm translate:missing`
 **ფაზა 3 დასაწყებად:** მონაცემთა გამდიდრება (descriptions, categories, deadlines)
