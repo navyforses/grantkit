@@ -125,3 +125,15 @@ __pycache__/
 
 # Go module cache (when fetched locally)
 /root/
+
+# Archived development artifacts
+_archive/
+
+# Pending grant imports (local data)
+pending-imports/
+
+# Manus development logs
+.manus/
+
+# Generated audit reports (scripts/)
+scripts/*.json

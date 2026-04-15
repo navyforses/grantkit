@@ -1,141 +1,90 @@
+#!/usr/bin/env tsx
 /**
- * Audit translation coverage for all active grants.
- * Shows per-language stats: how many grants have translations vs how many are missing.
+ * audit-translations.ts — Grant translation coverage per language.
  *
- * Usage: pnpm tsx scripts/audit-translations.ts
+ * Checks every active grant for FR/ES/RU/KA translations in grant_translations.
+ * Outputs coverage % and list of missing itemIds per language.
+ * Saves report to scripts/translation-audit.json for translate-missing.ts.
+ *
+ * Usage: pnpm translate:audit
+ * Requires: DATABASE_URL in .env or environment
  */
 
 import "dotenv/config";
+import * as fs from "fs";
 import mysql from "mysql2/promise";
 
-const DATABASE_URL = process.env.DATABASE_URL;
-if (!DATABASE_URL) {
-  console.error("DATABASE_URL not set");
-  process.exit(1);
-}
-
-const LANGUAGES = ["fr", "es", "ru", "ka"];
-const CORE_FIELDS = ["name", "description", "eligibility"];
-const ENRICHED_FIELDS = [
-  "applicationProcess",
-  "deadline",
-  "targetDiagnosis",
-  "ageRange",
-  "geographicScope",
-  "documentsRequired",
-];
+const LANGUAGES = ["fr", "es", "ru", "ka"] as const;
+type Lang = (typeof LANGUAGES)[number];
 
 async function main() {
-  const connection = await mysql.createConnection(DATABASE_URL!);
-
-  // Total active grants
-  const [totalRows] = await connection.execute<mysql.RowDataPacket[]>(
-    `SELECT COUNT(*) as cnt FROM grants WHERE isActive = 1`
-  );
-  const totalActive = totalRows[0].cnt as number;
-
-  // Total active grants that have at least one enriched field
-  const enrichedCondition = ENRICHED_FIELDS.map(
-    (f) => `(${f} IS NOT NULL AND ${f} != '')`
-  ).join(" OR ");
-  const [enrichedRows] = await connection.execute<mysql.RowDataPacket[]>(
-    `SELECT COUNT(*) as cnt FROM grants WHERE isActive = 1 AND (${enrichedCondition})`
-  );
-  const totalWithEnriched = enrichedRows[0].cnt as number;
-
-  console.log(`\n========== GrantKit Translation Audit ==========`);
-  console.log(`Active grants: ${totalActive}`);
-  console.log(`Grants with enriched fields: ${totalWithEnriched}\n`);
-
-  // Per-language core field coverage
-  console.log(`--- Core Fields (name, description, eligibility) ---`);
-  for (const lang of LANGUAGES) {
-    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-      `SELECT
-        COUNT(DISTINCT t.grantItemId) as has_translation,
-        SUM(CASE WHEN t.name IS NOT NULL AND t.name != '' THEN 1 ELSE 0 END) as has_name,
-        SUM(CASE WHEN t.description IS NOT NULL AND t.description != '' THEN 1 ELSE 0 END) as has_desc,
-        SUM(CASE WHEN t.eligibility IS NOT NULL AND t.eligibility != '' THEN 1 ELSE 0 END) as has_elig
-      FROM grant_translations t
-      INNER JOIN grants g ON g.itemId = t.grantItemId AND g.isActive = 1
-      WHERE t.language = ?`,
-      [lang]
-    );
-
-    const r = rows[0];
-    const translated = r.has_translation as number;
-    const missing = totalActive - translated;
-    const pct = totalActive > 0 ? ((translated / totalActive) * 100).toFixed(1) : "0";
-
-    console.log(
-      `  ${lang.toUpperCase()}: ${translated}/${totalActive} (${pct}%) | missing: ${missing} | name: ${r.has_name}, desc: ${r.has_desc}, elig: ${r.has_elig}`
-    );
+  if (!process.env.DATABASE_URL) {
+    console.error("❌ DATABASE_URL is required");
+    process.exit(1);
   }
 
-  // Per-language enriched field coverage
-  console.log(`\n--- Enriched Fields (applicationProcess, deadline, etc.) ---`);
-  for (const lang of LANGUAGES) {
-    const fieldChecks = ENRICHED_FIELDS.map(
-      (f) =>
-        `SUM(CASE WHEN t.${f} IS NOT NULL AND t.${f} != '' THEN 1 ELSE 0 END) as ${f}_cnt`
-    ).join(", ");
+  const db = await mysql.createConnection(process.env.DATABASE_URL);
+  console.log("Connected to database.\n");
 
-    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-      `SELECT ${fieldChecks}
-      FROM grant_translations t
-      INNER JOIN grants g ON g.itemId = t.grantItemId AND g.isActive = 1
-      WHERE t.language = ?`,
-      [lang]
-    );
+  // 1. Get all active grants
+  const [grantRows] = await db.execute<mysql.RowDataPacket[]>(
+    "SELECT itemId, name FROM grants WHERE isActive = 1 ORDER BY id"
+  );
+  const allGrants = grantRows as { itemId: string; name: string }[];
+  const total = allGrants.length;
+  console.log(`Total active grants: ${total}\n`);
 
-    const r = rows[0];
-    const parts = ENRICHED_FIELDS.map((f) => `${f}: ${r[`${f}_cnt`]}`).join(", ");
-    console.log(`  ${lang.toUpperCase()}: ${parts}`);
-  }
-
-  // List grants missing ALL translations (no row in grant_translations for any language)
-  const [missingAll] = await connection.execute<mysql.RowDataPacket[]>(
-    `SELECT g.itemId, g.name, g.category, g.country
-     FROM grants g
-     LEFT JOIN grant_translations t ON g.itemId = t.grantItemId
-     WHERE g.isActive = 1 AND t.id IS NULL
-     ORDER BY g.id DESC
-     LIMIT 20`
+  // 2. Get all existing translations (only non-empty names)
+  const [transRows] = await db.execute<mysql.RowDataPacket[]>(
+    "SELECT grantItemId, language FROM grant_translations WHERE name IS NOT NULL AND name != ''"
   );
 
-  if ((missingAll as any[]).length > 0) {
-    console.log(`\n--- Grants with NO translations at all (up to 20) ---`);
-    for (const g of missingAll as any[]) {
-      console.log(`  ${g.itemId} | ${g.name?.substring(0, 60)} | ${g.category} | ${g.country}`);
-    }
+  // Build set: "itemId:lang"
+  const translatedSet = new Set<string>();
+  for (const row of transRows as { grantItemId: string; language: string }[]) {
+    translatedSet.add(`${row.grantItemId}:${row.language}`);
   }
 
-  // List grants missing specific languages
-  for (const lang of LANGUAGES) {
-    const [missingLang] = await connection.execute<mysql.RowDataPacket[]>(
-      `SELECT g.itemId, g.name
-       FROM grants g
-       LEFT JOIN grant_translations t ON g.itemId = t.grantItemId AND t.language = ?
-       WHERE g.isActive = 1 AND t.id IS NULL
-       ORDER BY g.id DESC
-       LIMIT 10`,
-      [lang]
-    );
+  // 3. Audit per language
+  console.log("=== Translation Coverage ===\n");
+  const byLanguage: Record<string, { complete: number; missing: number; percentage: number; missingIds: string[] }> = {};
 
-    if ((missingLang as any[]).length > 0) {
-      console.log(`\n--- Missing ${lang.toUpperCase()} (up to 10) ---`);
-      for (const g of missingLang as any[]) {
-        console.log(`  ${g.itemId} | ${g.name?.substring(0, 60)}`);
+  for (const lang of LANGUAGES) {
+    const missingIds: string[] = [];
+    let complete = 0;
+
+    for (const g of allGrants) {
+      if (translatedSet.has(`${g.itemId}:${lang}`)) {
+        complete++;
+      } else {
+        missingIds.push(g.itemId);
       }
     }
+
+    const pct = total > 0 ? Number(((complete / total) * 100).toFixed(1)) : 0;
+    byLanguage[lang] = { complete, missing: missingIds.length, percentage: pct, missingIds };
+
+    const bar = "█".repeat(Math.floor(pct / 5)) + "░".repeat(20 - Math.floor(pct / 5));
+    console.log(`${lang.toUpperCase()}  ${bar}  ${pct}%  (${complete}/${total}, ${missingIds.length} missing)`);
   }
 
-  console.log(`\n=================================================\n`);
+  // 4. Save report
+  const report = { total, generatedAt: new Date().toISOString(), byLanguage };
+  fs.writeFileSync("scripts/translation-audit.json", JSON.stringify(report, null, 2));
+  console.log("\n✅ Report saved to scripts/translation-audit.json");
 
-  await connection.end();
+  const needsWork = LANGUAGES.some((l) => byLanguage[l].percentage < 95);
+  if (needsWork) {
+    console.log("⚠️  Some languages are below 95%. Run: pnpm translate:missing");
+  } else {
+    console.log("✅ All languages are at 95%+.");
+  }
+
+  await db.end();
+  process.exit(0);
 }
 
-main().catch((e) => {
-  console.error("Fatal error:", e);
+main().catch((err) => {
+  console.error("Audit failed:", err.message);
   process.exit(1);
 });

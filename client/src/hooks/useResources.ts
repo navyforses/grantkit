@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { fetchResources, fetchResourceBySlug, fetchCategories, fetchCountries } from '../lib/resources'
 import { supabase, USE_SUPABASE } from '../lib/supabase'
-import type { ResourceFull, ResourceFilters, Category, Country, ResourceType, ResourceStatus, Eligibility } from '../types/resources'
+import type { ResourceFull, ResourceFilters, Category, Country, ResourceType, ResourceStatus, Eligibility, ClinicalPhase } from '../types/resources'
 
 // ─── Filter reducer ───────────────────────────────────────────────────────────
 
@@ -17,6 +17,7 @@ type FilterAction =
   | { type: 'SET_AMOUNT_MAX'; payload: number | undefined }
   | { type: 'SET_TARGET_GROUPS'; payload: string[] }
   | { type: 'SET_DISEASE_AREAS'; payload: string[] }
+  | { type: 'SET_CLINICAL_PHASE'; payload: ClinicalPhase | undefined }
   | { type: 'SET_PAGE'; payload: number }
   | { type: 'SET_SORT'; payload: string }
   | { type: 'RESET' }
@@ -38,9 +39,10 @@ function filtersReducer(state: ResourceFilters, action: FilterAction): ResourceF
     case 'SET_REGIONS':     return { ...state, regions: action.payload, page: 1 }
     case 'SET_AMOUNT_MIN':  return { ...state, amount_min: action.payload, page: 1 }
     case 'SET_AMOUNT_MAX':  return { ...state, amount_max: action.payload, page: 1 }
-    case 'SET_TARGET_GROUPS': return { ...state, target_groups: action.payload, page: 1 }
-    case 'SET_DISEASE_AREAS': return { ...state, disease_areas: action.payload, page: 1 }
-    case 'SET_PAGE':        return { ...state, page: action.payload }
+    case 'SET_TARGET_GROUPS':  return { ...state, target_groups: action.payload, page: 1 }
+    case 'SET_DISEASE_AREAS':  return { ...state, disease_areas: action.payload, page: 1 }
+    case 'SET_CLINICAL_PHASE': return { ...state, clinical_phase: action.payload, page: 1 }
+    case 'SET_PAGE':           return { ...state, page: action.payload }
     case 'SET_SORT':        return { ...state, sort: action.payload }
     case 'RESET':           return { ...defaultFilters }
     default:                return state
@@ -70,6 +72,9 @@ export function useResources(initialType?: ResourceType) {
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Bump to force a re-fetch without changing filters (used by realtime callbacks)
+  const [refreshCounter, setRefreshCounter] = useState(0)
+  const refresh = useCallback(() => setRefreshCounter((c) => c + 1), [])
 
   // Debounce the search field only
   const debouncedSearch = useDebounced(filters.search, SEARCH_DEBOUNCE_MS)
@@ -121,11 +126,12 @@ export function useResources(initialType?: ResourceType) {
     effectiveFilters.clinical_phase,
     effectiveFilters.page,
     effectiveFilters.sort,
+    refreshCounter,
   ])
 
   const resetFilters = useCallback(() => dispatch({ type: 'RESET' }), [])
 
-  return { data, loading, error, totalCount, filters, dispatch, resetFilters }
+  return { data, loading, error, totalCount, filters, dispatch, resetFilters, refresh }
 }
 
 // ─── useResource (single) ─────────────────────────────────────────────────────
@@ -199,7 +205,7 @@ interface RealtimeCallbacks {
 
 export function useResourcesRealtime({ onInsert, onUpdate, onDelete }: RealtimeCallbacks) {
   useEffect(() => {
-    if (!USE_SUPABASE) return
+    if (!USE_SUPABASE || !supabase) return
 
     const channel = supabase
       .channel('resources-live')
@@ -221,7 +227,7 @@ export function useResourcesRealtime({ onInsert, onUpdate, onDelete }: RealtimeC
       .subscribe()
 
     return () => {
-      supabase.removeChannel(channel)
+      if (supabase) supabase.removeChannel(channel)
     }
   }, [onInsert, onUpdate, onDelete])
 }

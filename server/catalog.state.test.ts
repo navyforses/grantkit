@@ -1,13 +1,117 @@
-import { describe, expect, it } from "vitest";
-import { appRouter } from "./routers";
+import { describe, expect, it, vi } from "vitest";
 import type { TrpcContext } from "./_core/context";
 
-/**
- * Tests for the state/city feature:
- * 1. catalog.states — returns distinct states with counts
- * 2. catalog.cities — returns distinct cities for a given state
- * 3. catalog.list — filters by state and city when provided
- */
+// Mock data with state and city fields
+const grants = [
+  {
+    id: 1, itemId: "item_0001", name: "California Grant A", organization: "Org A",
+    description: "Desc A", category: "Medical & Treatment", type: "grant",
+    country: "US", state: "California", city: "Los Angeles",
+    eligibility: null, website: null, phone: null, email: null,
+    amount: "$5,000", status: "Open", isActive: true,
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 2, itemId: "item_0002", name: "California Grant B", organization: "Org B",
+    description: "Desc B", category: "Financial Assistance", type: "grant",
+    country: "US", state: "California", city: "San Francisco",
+    eligibility: null, website: null, phone: null, email: null,
+    amount: "$10,000", status: "Open", isActive: true,
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 3, itemId: "item_0003", name: "California Grant C", organization: "Org C",
+    description: "Desc C", category: "Medical & Treatment", type: "grant",
+    country: "US", state: "California", city: "Los Angeles",
+    eligibility: null, website: null, phone: null, email: null,
+    amount: "$3,000", status: "Open", isActive: true,
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 4, itemId: "item_0004", name: "Nationwide Grant", organization: "Org D",
+    description: "Desc D", category: "Education", type: "grant",
+    country: "US", state: "Nationwide", city: null,
+    eligibility: null, website: null, phone: null, email: null,
+    amount: "$1,000", status: "Open", isActive: true,
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 5, itemId: "item_0005", name: "Texas Grant", organization: "Org E",
+    description: "Desc E", category: "Financial Assistance", type: "grant",
+    country: "US", state: "Texas", city: "Houston",
+    eligibility: null, website: null, phone: null, email: null,
+    amount: "$2,000", status: "Open", isActive: true,
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 6, itemId: "item_0006", name: "Inactive Grant", organization: "Org F",
+    description: "Inactive", category: "Other", type: "grant",
+    country: "US", state: "California", city: "San Diego",
+    eligibility: null, website: null, phone: null, email: null,
+    amount: null, status: null, isActive: false,
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+];
+
+vi.mock("./db", async () => {
+  const actual = await vi.importActual("./db");
+  return {
+    ...actual,
+    listGrants: vi.fn(async (opts: any) => {
+      let filtered = [...grants];
+      if (opts.activeOnly) filtered = filtered.filter(g => g.isActive);
+      if (opts.search) {
+        const s = opts.search.toLowerCase();
+        filtered = filtered.filter(g => g.name.toLowerCase().includes(s) || (g.organization || "").toLowerCase().includes(s));
+      }
+      if (opts.category) filtered = filtered.filter(g => g.category === opts.category);
+      if (opts.country) filtered = filtered.filter(g => g.country === opts.country);
+      if (opts.type) filtered = filtered.filter(g => g.type === opts.type);
+      if (opts.state) filtered = filtered.filter(g => g.state === opts.state);
+      if (opts.city) filtered = filtered.filter(g => g.city === opts.city);
+      if (opts.sortBy === "state") filtered.sort((a, b) => (a.state || "").localeCompare(b.state || ""));
+      if (opts.sortBy === "name_asc") filtered.sort((a, b) => a.name.localeCompare(b.name));
+      const total = filtered.length;
+      const offset = opts.offset || 0;
+      const limit = opts.limit || 20;
+      return { grants: filtered.slice(offset, offset + limit), total };
+    }),
+    getDistinctStates: vi.fn(async () => {
+      const active = grants.filter(g => g.isActive && g.state);
+      const counts: Record<string, number> = {};
+      for (const g of active) {
+        counts[g.state!] = (counts[g.state!] || 0) + 1;
+      }
+      return Object.entries(counts)
+        .map(([state, count]) => ({ state, count }))
+        .sort((a, b) => b.count - a.count);
+    }),
+    getDistinctCities: vi.fn(async (stateName: string) => {
+      const active = grants.filter(g => g.isActive && g.state === stateName && g.city);
+      const counts: Record<string, number> = {};
+      for (const g of active) {
+        counts[g.city!] = (counts[g.city!] || 0) + 1;
+      }
+      return Object.entries(counts)
+        .map(([city, count]) => ({ city, count }))
+        .sort((a, b) => a.city.localeCompare(b.city));
+    }),
+    getGrantByItemId: vi.fn(async (itemId: string) => {
+      return grants.find(g => g.itemId === itemId) || null;
+    }),
+    getGrantTranslations: vi.fn(async () => ({})),
+    getBulkGrantTranslations: vi.fn(async () => ({})),
+    getRelatedGrants: vi.fn(async () => []),
+    getGrantStats: vi.fn(async () => ({ total: 6, active: 5, grants: 5, resources: 0 })),
+    countActiveGrants: vi.fn(async () => 5),
+    getDistinctCategories: vi.fn(async () => []),
+    getDistinctCountries: vi.fn(async () => []),
+    getDistinctTypes: vi.fn(async () => []),
+  };
+});
+
+// Must import AFTER vi.mock
+const { appRouter } = await import("./routers");
 
 function createPublicContext(): TrpcContext {
   return {
@@ -30,10 +134,8 @@ describe("catalog.states", () => {
     const states = await caller.catalog.states();
 
     expect(Array.isArray(states)).toBe(true);
-    // We know the DB has enriched data — should have at least some states
     expect(states.length).toBeGreaterThan(0);
 
-    // Each entry should have state (string) and count (number)
     for (const entry of states) {
       expect(typeof entry.state).toBe("string");
       expect(entry.state.length).toBeGreaterThan(0);
@@ -60,7 +162,6 @@ describe("catalog.states", () => {
     const states = await caller.catalog.states();
     const stateNames = states.map(s => s.state);
 
-    // These should exist based on our enrichment data
     expect(stateNames).toContain("California");
     expect(stateNames).toContain("Nationwide");
   });
@@ -79,7 +180,6 @@ describe("catalog.list sort by state", () => {
 
     expect(result.grants.length).toBeGreaterThan(0);
 
-    // Verify alphabetical order (nulls may sort first or last depending on DB)
     const states = result.grants.map(g => g.state || "");
     const nonEmptyStates = states.filter(s => s.length > 0);
     for (let i = 1; i < nonEmptyStates.length; i++) {
@@ -101,7 +201,6 @@ describe("catalog.list with state filter", () => {
 
     expect(result.grants.length).toBeGreaterThan(0);
 
-    // Every returned grant should have state = "California"
     for (const grant of result.grants) {
       expect(grant.state).toBe("California");
     }
@@ -139,7 +238,6 @@ describe("catalog.list with state filter", () => {
       pageSize: 20,
     });
 
-    // Without state filter should return more or equal results
     expect(withoutState.total).toBeGreaterThanOrEqual(withState.total);
   });
 
@@ -154,7 +252,6 @@ describe("catalog.list with state filter", () => {
 
     expect(result.grants.length).toBeGreaterThan(0);
 
-    // Each grant should have state and city properties
     for (const grant of result.grants) {
       expect(grant).toHaveProperty("state");
       expect(grant).toHaveProperty("city");
@@ -207,7 +304,6 @@ describe("catalog.list with city filter", () => {
     const ctx = createPublicContext();
     const caller = appRouter.createCaller(ctx);
 
-    // First get a city from California
     const cities = await caller.catalog.cities({ state: "California" });
     expect(cities.length).toBeGreaterThan(0);
     const testCity = cities[0].city;

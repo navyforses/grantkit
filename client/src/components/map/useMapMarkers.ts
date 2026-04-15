@@ -53,8 +53,12 @@ function esc(s: string): string {
 function toGeoJSON(items: CatalogItem[]): GeoJSON.FeatureCollection<GeoJSON.Point> {
   const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
   for (const item of items) {
-    // Prefer direct lat/lng (Supabase resources) over geocoded lookup
-    const c = (item.latitude != null && item.longitude != null)
+    // Prefer direct lat/lng (Supabase resources) over geocoded lookup.
+    // Guard against NaN: `NaN != null` is true, so we must also check isFinite.
+    const hasDirectCoords =
+      item.latitude != null && item.longitude != null &&
+      isFinite(item.latitude as number) && isFinite(item.longitude as number);
+    const c = hasDirectCoords
       ? [item.longitude, item.latitude] as [number, number]
       : resolveItemCoords(item.country, item.state, item.city);
     if (!c) {
@@ -160,6 +164,51 @@ interface HandlerSet {
   clusterLeave: LayerHandler;
 }
 
+// ── Auto-fit bounds ───────────────────────────────────────────────────────────
+
+/**
+ * Fits the map viewport to contain all provided GeoJSON point features.
+ * Called once on initial data load so the user immediately sees all markers
+ * without manually zooming (pattern used by GlobalGiving, GrantStation, etc.)
+ */
+function fitToFeatures(
+  map: mapboxgl.Map,
+  features: GeoJSON.Feature<GeoJSON.Point>[],
+) {
+  if (features.length === 0) return;
+
+  let minLng = Infinity, maxLng = -Infinity;
+  let minLat = Infinity, maxLat = -Infinity;
+
+  for (const f of features) {
+    const [lng, lat] = f.geometry.coordinates;
+    // Skip any coordinates that are NaN or ±Infinity (defensive guard)
+    if (!isFinite(lng) || !isFinite(lat)) continue;
+    if (lng < minLng) minLng = lng;
+    if (lng > maxLng) maxLng = lng;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+  }
+
+  // Nothing finite found — bail out to avoid passing NaN/Infinity to Mapbox
+  if (!isFinite(minLng) || !isFinite(minLat)) return;
+
+  // All points at exactly the same location — just centre there
+  if (minLng === maxLng && minLat === maxLat) {
+    if (import.meta.env.DEV) console.log(`[map] fitToFeatures: single point [${minLng}, ${minLat}]`);
+    map.flyTo({ center: [minLng, minLat], zoom: 5, duration: 800 });
+    return;
+  }
+
+  if (import.meta.env.DEV) {
+    console.log(`[map] fitToFeatures: bounds [${minLng.toFixed(2)},${minLat.toFixed(2)}] → [${maxLng.toFixed(2)},${maxLat.toFixed(2)}], ${features.length} features`);
+  }
+  map.fitBounds(
+    [[minLng, minLat], [maxLng, maxLat]],
+    { padding: 80, duration: 1000, maxZoom: 9 },
+  );
+}
+
 // ── Hook ──────────────────────────────────────────────────────────────────────
 
 export function useMapMarkers(
@@ -176,6 +225,8 @@ export function useMapMarkers(
   const handlersRef = useRef<HandlerSet | null>(null);
   // GeoJSON cache — avoids re-converting the same items array reference
   const geoJsonCacheRef = useRef<{ items: CatalogItem[]; data: GeoJSON.FeatureCollection<GeoJSON.Point> } | null>(null);
+  // Track whether we've done the initial auto-fit so we only fly once
+  const fittedRef = useRef(false);
 
   itemsRef.current    = items;
   onSelectRef.current = onSelectItem;
@@ -210,6 +261,18 @@ export function useMapMarkers(
         geoJsonCacheRef.current = { items: currentItems, data: toGeoJSON(currentItems) };
       }
       addSourceAndLayers(map, geoJsonCacheRef.current.data);
+
+      // Auto-fit on initial load / style reload — ensures markers are visible.
+      // The reactive effect below also schedules this, but if isStyleLoaded()
+      // returns false there (e.g. race on first render), this is the fallback.
+      if (!fittedRef.current && geoJsonCacheRef.current.data.features.length > 0) {
+        fittedRef.current = true;
+        setTimeout(() => fitToFeatures(map, geoJsonCacheRef.current!.data.features), 120);
+      }
+
+      if (import.meta.env.DEV) {
+        console.log(`[map] setup: ${geoJsonCacheRef.current.data.features.length} features, fitted=${fittedRef.current}`);
+      }
 
       // ── Cluster click → zoom in ────────────────────────────────────────
       const clusterClick: LayerHandler = async (e) => {
@@ -287,8 +350,12 @@ export function useMapMarkers(
       map.on("mouseleave", LYR_CLUSTER, clusterLeave);
     };
 
-    map.on("style.load", setup);
-    if (map.isStyleLoaded()) setup();
+    // MapView fires onMapReady from inside the style.load handler, so by the
+    // time this effect runs the style is guaranteed to be loaded. Call setup()
+    // unconditionally here — do NOT gate on isStyleLoaded() which is known to
+    // return stale values (mapbox-gl GitHub #8691, #6708, #9779).
+    map.on("style.load", setup); // re-runs on every theme switch (dark ↔ light)
+    setup();                     // initial load — style already loaded
 
     return () => {
       map.off("style.load", setup);
@@ -309,13 +376,31 @@ export function useMapMarkers(
 
   // ── Reactive data update — fires when filtered items change ────────────────
   useEffect(() => {
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map) return;
+    // Source won't exist until setup() has run (style loaded). If it's missing,
+    // bail out — setup's own fitToFeatures will handle the initial viewport.
     const src = map.getSource(SRC) as mapboxgl.GeoJSONSource | undefined;
     if (!src) return;
     // Memoize GeoJSON conversion — only recompute if items array reference changed
     if (!geoJsonCacheRef.current || geoJsonCacheRef.current.items !== items) {
       geoJsonCacheRef.current = { items, data: toGeoJSON(items) };
+      // Reset fit flag when the dataset itself changes (filter applied)
+      fittedRef.current = false;
     }
     src.setData(geoJsonCacheRef.current.data);
+
+    if (import.meta.env.DEV) {
+      console.log(`[map] setData: ${geoJsonCacheRef.current.data.features.length} features, fitted=${fittedRef.current}`);
+    }
+
+    // Auto-fit: once per dataset — brings all markers into view on filter change
+    // (same pattern as GlobalGiving, GrantStation, Foundation Center maps)
+    if (!fittedRef.current && geoJsonCacheRef.current.data.features.length > 0) {
+      fittedRef.current = true;
+      // Small delay lets Mapbox finish rendering before fitBounds
+      setTimeout(() => {
+        fitToFeatures(map, geoJsonCacheRef.current!.data.features);
+      }, 150);
+    }
   }, [map, items]);
 }

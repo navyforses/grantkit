@@ -64,6 +64,20 @@
       "when": 1774971598743,
       "tag": "0008_crazy_zzzax",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1775030400000,
+      "tag": "0009_user_profile",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1776195536756,
+      "tag": "0010_slow_sleeper",
+      "breakpoints": true
     }
   ]
 }

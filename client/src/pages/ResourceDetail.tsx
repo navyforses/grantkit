@@ -5,10 +5,12 @@
  * Desktop: two-column layout
  */
 
+import { useMemo } from "react";
 import { Link, useParams } from "wouter";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
+  ArrowRight,
   ArrowUpRight,
   Calendar,
   Clock,
@@ -29,7 +31,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import SEO from "@/components/SEO";
 import StatusBadge from "@/components/StatusBadge";
 import AmountRange from "@/components/AmountRange";
-import { useResource } from "@/hooks/useResources";
+import { useResource, useResources } from "@/hooks/useResources";
 import { localized, localizedDescription } from "@/lib/localize";
 import { toast } from "sonner";
 import type { ResourceStatus } from "@/types/resources";
@@ -81,9 +83,14 @@ export default function ResourceDetail() {
   const description = resource ? localizedDescription(resource, language) : "";
   const borderClass = resource ? (TYPE_COLORS[resource.resource_type] ?? "border-l-gray-300") : "";
 
-  // Related resources — loaded separately via useResources hook
-  // (simple placeholder: links back to catalog)
   const primaryLink = resource?.application_url || resource?.source_url || "";
+
+  // Related resources — same type, excluding current resource, max 3
+  const { data: relatedAll } = useResources(resource?.resource_type);
+  const relatedResources = useMemo(
+    () => relatedAll.filter((r) => r.slug !== slug).slice(0, 3),
+    [relatedAll, slug]
+  );
 
   const handleShare = () => {
     const url = window.location.href;
@@ -422,6 +429,58 @@ export default function ResourceDetail() {
             </Link>
           </motion.div>
         </div>
+
+        {/* Related resources — full width row below the two-column layout */}
+        {relatedResources.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            className="mt-10"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-foreground">{t.resources.relatedResources}</h2>
+              <Link href="/catalog" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {t.grantDetail.backToCatalog}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {relatedResources.map((related) => {
+                const relTitle = localized(related, language, "title");
+                const relDesc = localizedDescription(related, language);
+                const TYPE_BORDER: Record<string, string> = {
+                  GRANT: "border-l-emerald-500", SOCIAL: "border-l-blue-500", MEDICAL: "border-l-purple-500",
+                };
+                return (
+                  <Link key={related.slug} href={`/resources/${related.slug}`}>
+                    <div className={`group bg-card border border-border rounded-xl p-4 border-l-4 ${TYPE_BORDER[related.resource_type] ?? "border-l-gray-300"} hover:shadow-md hover:border-foreground/20 transition-all cursor-pointer`}>
+                      <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-1.5">{relTitle}</h3>
+                      {relDesc && <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{relDesc}</p>}
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        {related.amount_min != null && (
+                          <span className="flex items-center gap-0.5 text-emerald-600 font-medium">
+                            <DollarSign className="w-3 h-3" />
+                            {related.amount_min.toLocaleString()}
+                            {related.amount_max && related.amount_max !== related.amount_min
+                              ? `–${related.amount_max.toLocaleString()}`
+                              : ""}
+                          </span>
+                        )}
+                        {related.deadline && (
+                          <span className="flex items-center gap-0.5">
+                            <Clock className="w-3 h-3" />
+                            {new Date(related.deadline).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

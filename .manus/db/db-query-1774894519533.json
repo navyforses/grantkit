@@ -1,9 +1,0 @@
-{
-  "query": "DELETE FROM saved_grants \nWHERE grantId IN ('item_0276', 'item_0277', 'item_0279', 'item_0282', 'item_0285', 'item_0286', 'item_0407', 'item_0444', 'item_0637', 'item_0638', 'item_0639', 'item_0640', 'item_0641');",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cK99zxEtGoTfC1g.7228e2c6a840 --database ne96tB4yURpkfMNLLJuy9T --execute DELETE FROM saved_grants \nWHERE grantId IN ('item_0276', 'item_0277', 'item_0279', 'item_0282', 'item_0285', 'item_0286', 'item_0407', 'item_0444', 'item_0637', 'item_0638', 'item_0639', 'item_0640', 'item_0641');",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 56
-}
