@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-16T00:00:00Z
-**Current phase:** Phase 0 — pending start
+**Last updated:** 2026-04-16T23:45:00Z
+**Current phase:** Phase 0 — complete (Mira). Ready for Phase 1 (Dmitri).
 **Project start:** 2026-04-16
 
 ---
@@ -79,7 +79,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 
 | # | Phase | Status | Owner | Completed |
 |---|-------|--------|-------|-----------|
-| 0 | Email/password authentication | ⚪ Not started | — | — |
+| 0 | Email/password authentication | 🟢 Complete | Mira | 2026-04-16 |
 | 1 | Database schema migration | ⚪ Not started | — | — |
 | 2 | Geocoding pipeline (Mapbox) | ⚪ Not started | — | — |
 | 3 | Mapbox setup + LocationMap component | ⚪ Not started | — | — |
@@ -110,17 +110,74 @@ Legend: ⚪ Not started · 🟡 In progress · 🟢 Complete · 🔴 Blocked
 ## 📦 Phase Logs
 
 ### Phase 0 — Email/Password Authentication
-**Status:** Not started
-**Team:** (to be assigned at phase start)
-**Files planned:**
-- drizzle/schema.ts (users table fields)
-- server/routers.ts (auth router additions)
-- server/emailService.ts (verification + reset templates)
-- client/src/pages/Login.tsx, Register.tsx, VerifyEmail.tsx,
-  ForgotPassword.tsx, ResetPassword.tsx
-- client/src/i18n/*.ts (auth strings x 5 languages)
+**Status:** 🟢 Complete (2026-04-16)
+**Team:** Mira (Senior Security & Auth Engineer)
 
-**Log:** (agent fills this in as work progresses)
+**Files changed:**
+- `drizzle/schema.ts` — added 8 password-auth fields on `users` +
+  3 indexes (email, verificationToken, resetPasswordToken)
+- `drizzle/0011_volatile_demogoblin.sql` — auto-generated migration
+  (8 ADD COLUMN, 3 CREATE INDEX)
+- `package.json` — `bcryptjs@^3.0.3` added
+- `server/_core/env.ts` — `appUrl` env (for magic-link URLs)
+- `server/db.ts` — 10 new helpers: `getUserByEmail`,
+  `createEmailPasswordUser`, `getUserByVerificationToken`,
+  `getUserByResetToken`, `markEmailVerified`, `setVerificationToken`,
+  `setResetPasswordToken`, `updatePasswordAndClearReset`,
+  `incrementFailedLoginAttempts`, `resetFailedLoginAttempts`
+- `server/emailService.ts` — `sendVerificationEmail` +
+  `sendPasswordResetEmail` with full 5-language copy
+  (en/fr/es/ru/ka), reusing brand `baseTemplate`
+- `server/routers.ts` — `auth` router extended with 5 procedures:
+  `register`, `login`, `verifyEmail`, `forgotPassword`, `resetPassword`
+- `client/src/pages/Login.tsx` — rewritten with tabbed UI
+  (email/password + OAuth fallback), wires `trpc.auth.login`
+- `client/src/pages/Register.tsx` — new (validation +
+  passes browser language to backend for localized email)
+- `client/src/pages/VerifyEmail.tsx` — new (reads `?token=` query,
+  calls `trpc.auth.verifyEmail`, shows pending/success/error states)
+- `client/src/pages/ForgotPassword.tsx` — new (always shows generic
+  success message to prevent account enumeration)
+- `client/src/pages/ResetPassword.tsx` — new (reads `?token=`, enforces
+  password rules, confirms match)
+- `client/src/App.tsx` — 4 new routes lazy-loaded
+  (`/register`, `/verify-email`, `/forgot-password`, `/reset-password`)
+- `client/src/i18n/types.ts` — new `auth` section (~55 keys)
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — translated auth strings in
+  all 5 supported languages
+
+**Key security decisions (Mira):**
+- **bcrypt cost 12** for password hashes (strong but responsive).
+- **Generic error messages** on `login` + `forgotPassword` +
+  `register` to prevent account enumeration; unverified duplicate
+  registration silently re-triggers the verification email.
+- **Timing-attack resistant**: dummy bcrypt compare when the user
+  lookup misses; `crypto.timingSafeEqual` for token comparisons
+  after length equalization.
+- **Lockout policy**: 5 consecutive failed attempts ⇒ 15-minute
+  cooldown via `lockedUntil`. Counter resets on successful login.
+- **Token hygiene**: 32-byte hex tokens (`crypto.randomBytes`);
+  verification token expires in 24h, reset token in 1h;
+  both cleared on use. Reset flow also clears the lockout.
+- **Session compatibility**: email/password users get a synthetic
+  `openId` of form `email_<uuid>`, so the existing Manus OAuth
+  cookie infrastructure (`sdk.signSession` + `COOKIE_NAME`) works
+  unchanged. OAuth + email/password coexist; OAuth was NOT removed.
+- **httpOnly cookie, SameSite=None, Secure** (via existing
+  `getSessionCookieOptions`), JWT via `jose` (HS256).
+- **Email verification gate**: unverified accounts cannot log in;
+  surfaced as a clear FORBIDDEN error the frontend translates.
+
+**Verification gates:**
+- `pnpm check` → clean (0 TS errors)
+- `pnpm build` → clean (vite + esbuild server bundle both succeed)
+- `drizzle-kit generate` → migration 0011 produced identical to
+  hand-expected SQL; `pnpm db:push` will need to run in Railway
+  against the live DB (requires `DATABASE_URL`).
+
+**Hand-off to Dmitri (Phase 1):** schema is ready to be extended
+with grant geocoding fields (`address`, `lat`, `lng`, `serviceArea`).
+No blockers from Phase 0.
 
 ---
 
@@ -235,6 +292,7 @@ encountered, with owner and resolution path.)
 | Date | Phase | Change | Agent |
 |------|-------|--------|-------|
 | 2026-04-16 | Init | Project state initialized | Setup agent |
+| 2026-04-16 | Phase 0 | Email/password auth shipped: schema +8 fields, 5 tRPC procedures, 5-language emails, 5 frontend pages. pnpm check + build clean. | Mira |
 
 ---
 

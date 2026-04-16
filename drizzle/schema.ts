@@ -12,6 +12,16 @@ export const users = mysqlTable("users", {
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
 
+  // Email/password auth (Phase 0)
+  passwordHash: varchar("passwordHash", { length: 255 }),
+  emailVerified: boolean("emailVerified").default(false).notNull(),
+  verificationToken: varchar("verificationToken", { length: 100 }),
+  verificationTokenExpires: timestamp("verificationTokenExpires"),
+  resetPasswordToken: varchar("resetPasswordToken", { length: 100 }),
+  resetPasswordTokenExpires: timestamp("resetPasswordTokenExpires"),
+  failedLoginAttempts: int("failedLoginAttempts").default(0).notNull(),
+  lockedUntil: timestamp("lockedUntil"),
+
   // Paddle subscription fields
   paddleCustomerId: varchar("paddleCustomerId", { length: 128 }),
   paddleSubscriptionId: varchar("paddleSubscriptionId", { length: 128 }),
@@ -31,7 +41,11 @@ export const users = mysqlTable("users", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
-});
+}, (table) => [
+  index("users_email_idx").on(table.email),
+  index("users_verification_token_idx").on(table.verificationToken),
+  index("users_reset_token_idx").on(table.resetPasswordToken),
+]);
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;

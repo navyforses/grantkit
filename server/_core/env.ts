@@ -11,4 +11,5 @@ export const ENV = {
   paddleWebhookSecret: process.env.PADDLE_WEBHOOK_SECRET ?? "",
   paddleApiKey: process.env.PADDLE_API_KEY ?? "",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
+  appUrl: process.env.APP_URL ?? "https://grantkit-production-06f7up.railway.app",
 };

@@ -31,6 +31,10 @@ const Refund      = lazy(() => import("./pages/Refund"));
 const Admin       = lazy(() => import("./pages/Admin"));
 const Analytics   = lazy(() => import("./pages/Analytics"));
 const AiAssistant = lazy(() => import("./pages/AiAssistant"));
+const Register        = lazy(() => import("./pages/Register"));
+const VerifyEmail     = lazy(() => import("./pages/VerifyEmail"));
+const ForgotPassword  = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword   = lazy(() => import("./pages/ResetPassword"));
 
 // Blank screen (matches app background) shown while a lazy chunk downloads.
 // Avoids white flash on theme-aware pages.
@@ -45,6 +49,10 @@ function Router() {
         {/* Home and Login stay eager — they are the most common entry points */}
         <Route path="/" component={Home} />
         <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route path="/verify-email" component={VerifyEmail} />
+        <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/reset-password" component={ResetPassword} />
         {/* Everything else is lazy */}
         <Route path="/catalog" component={Catalog} />
         <Route path="/grant/:id" component={GrantDetail} />
