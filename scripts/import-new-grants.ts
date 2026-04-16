@@ -312,7 +312,7 @@ async function notifySubscribers(db: mysql.Connection, importedGrants: GrantEmai
     const batch = subscribers.slice(i, i + 5);
     const results = await Promise.allSettled(
       batch.map((sub) => {
-        const unsubUrl = `${SITE_URL}/api/newsletter/unsubscribe?token=${sub.unsubscribeToken}`;
+        const unsubUrl = `${SITE_URL}/catalog`;
         const html = buildEmailHtml(importedGrants, unsubUrl);
         return sendResendEmail(sub.email, subject, html);
       })
