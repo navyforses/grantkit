@@ -10,8 +10,10 @@
  * გამოყენება:
  *   pnpm tsx scripts/import-new-grants.ts --file=pending-imports/discovery-2026-04-16.json
  *   pnpm tsx scripts/import-new-grants.ts --file=pending-imports/discovery-2026-04-16.json --dry-run
+ *   pnpm tsx scripts/import-new-grants.ts --file=pending-imports/discovery-2026-04-16.json --notify
  *
  * საჭიროა: DATABASE_URL, ENRICHMENT_API_URL, ENRICHMENT_API_KEY
+ * --notify ფლაგისთვის: RESEND_API_KEY
  */
 
 import "dotenv/config";
@@ -38,6 +40,8 @@ const arg = (name: string) =>
 
 const FILE_PATH = arg("file");
 const DRY_RUN = process.argv.includes("--dry-run");
+const NOTIFY = process.argv.includes("--notify");
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -202,6 +206,146 @@ Return a JSON object:
   }
 }
 
+// ── Newsletter notification ─────────────────────────────────────────────────
+
+const SITE_URL = "https://grantkit-production-06f7up.railway.app";
+const BRAND_COLOR = "#6C3AED";
+const FROM_EMAIL = "onboarding@resend.dev";
+
+interface GrantEmailData {
+  itemId: string;
+  name: string;
+  category: string;
+  country: string;
+  description: string;
+}
+
+function buildEmailHtml(grants: GrantEmailData[], unsubscribeUrl: string): string {
+  const cards = grants
+    .map(
+      (g) => `
+    <div style="border:1px solid #e4e4e7;border-radius:8px;padding:16px;margin-bottom:12px;">
+      <h3 style="margin:0 0 4px;color:#18181b;font-size:16px;">${g.name}</h3>
+      <p style="margin:0 0 8px;color:#71717a;font-size:13px;">${g.category} · ${g.country}</p>
+      <p style="margin:0;color:#3f3f46;font-size:14px;line-height:1.5;">${g.description.slice(0, 200)}${g.description.length > 200 ? "..." : ""}</p>
+    </div>`
+    )
+    .join("");
+
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:40px 20px;">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;">
+  <tr><td style="background:${BRAND_COLOR};padding:24px 32px;text-align:center;">
+    <h1 style="margin:0;color:#fff;font-size:22px;">GrantKit</h1>
+  </td></tr>
+  <tr><td style="padding:32px;">
+    <h2 style="margin:0 0 8px;color:#18181b;font-size:20px;">New Grants Added!</h2>
+    <p style="margin:0 0 20px;color:#52525b;font-size:15px;">We've added <strong>${grants.length} new grant${grants.length > 1 ? "s" : ""}</strong> to the database:</p>
+    ${cards}
+    <div style="text-align:center;margin:24px 0 8px;">
+      <a href="${SITE_URL}/catalog" style="display:inline-block;background:${BRAND_COLOR};color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;">Browse All Grants</a>
+    </div>
+  </td></tr>
+  <tr><td style="padding:16px 32px;background:#fafafa;border-top:1px solid #e4e4e7;">
+    <p style="margin:0;color:#a1a1aa;font-size:12px;text-align:center;">
+      <a href="${unsubscribeUrl}" style="color:#a1a1aa;">Unsubscribe</a>
+    </p>
+  </td></tr>
+</table>
+</td></tr></table>
+</body></html>`;
+}
+
+async function sendResendEmail(to: string, subject: string, html: string): Promise<boolean> {
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: `GrantKit <${FROM_EMAIL}>`,
+        to: [to],
+        subject,
+        html,
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function notifySubscribers(db: mysql.Connection, importedGrants: GrantEmailData[]): Promise<void> {
+  if (!RESEND_API_KEY) {
+    console.log("\n⚠️  RESEND_API_KEY არ არის — notification გამოტოვებულია");
+    return;
+  }
+  if (importedGrants.length === 0) return;
+
+  // Get active subscribers
+  const [rows] = await db.execute(
+    "SELECT email, unsubscribeToken FROM newsletter_subscribers WHERE isActive = 1"
+  );
+  const subscribers = rows as { email: string; unsubscribeToken: string }[];
+
+  if (subscribers.length === 0) {
+    console.log("\n📭 აქტიური newsletter subscribers არ არის");
+    return;
+  }
+
+  console.log(`\n📧 Newsletter notification — ${subscribers.length} subscriber(s)...`);
+
+  const subject =
+    importedGrants.length === 1
+      ? "A new grant has been added to GrantKit!"
+      : `${importedGrants.length} new grants just added to GrantKit!`;
+
+  let success = 0;
+  let fail = 0;
+
+  for (let i = 0; i < subscribers.length; i += 5) {
+    const batch = subscribers.slice(i, i + 5);
+    const results = await Promise.allSettled(
+      batch.map((sub) => {
+        const unsubUrl = `${SITE_URL}/api/newsletter/unsubscribe?token=${sub.unsubscribeToken}`;
+        const html = buildEmailHtml(importedGrants, unsubUrl);
+        return sendResendEmail(sub.email, subject, html);
+      })
+    );
+
+    for (const r of results) {
+      if (r.status === "fulfilled" && r.value) success++;
+      else fail++;
+    }
+
+    if (i + 5 < subscribers.length) await sleep(500);
+  }
+
+  console.log(`  ✅ გაგზავნილი: ${success}, ❌ ვერ გაიგზავნა: ${fail}`);
+
+  // Record in notification_history
+  try {
+    await db.execute(
+      `INSERT INTO notification_history (subject, grantItemIds, recipientCount, successCount, failCount, status, sentAt, completedAt)
+       VALUES (?, ?, ?, ?, ?, 'completed', NOW(), NOW())`,
+      [
+        subject,
+        JSON.stringify(importedGrants.map((g) => g.itemId)),
+        subscribers.length,
+        success,
+        fail,
+      ]
+    );
+  } catch {
+    // notification_history insert failure is non-critical
+  }
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -239,6 +383,7 @@ async function main() {
   let imported = 0;
   let skipped = 0;
   let errors = 0;
+  const importedGrantData: GrantEmailData[] = [];
 
   for (let i = 0; i < grants.length; i++) {
     const grant = grants[i];
@@ -307,6 +452,13 @@ async function main() {
 
       console.log("");
       imported++;
+      importedGrantData.push({
+        itemId,
+        name: grant.name,
+        category: grant.category,
+        country: grant.country,
+        description: grant.description,
+      });
     } catch (err) {
       console.log(`❌ ${(err as Error).message.slice(0, 60)}`);
       errors++;
@@ -318,6 +470,11 @@ async function main() {
   console.log(`  ⏭  Skipped    : ${skipped}`);
   console.log(`  ❌ Errors     : ${errors}`);
   console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+
+  // Newsletter notification
+  if (NOTIFY && !DRY_RUN && importedGrantData.length > 0) {
+    await notifySubscribers(db, importedGrantData);
+  }
 
   await db.end();
 }
