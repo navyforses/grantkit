@@ -1030,4 +1030,16 @@ export const fr: Translations = {
     errEmailUnverified: "Veuillez vérifier votre e-mail avant de vous connecter.",
     errLocked: "Compte temporairement verrouillé. Réessayez dans quelques minutes.",
   },
+
+  map: {
+    openInGoogle: "Ouvrir dans Google Maps",
+    getDirections: "Itinéraire",
+    zoomIn: "Zoom avant",
+    zoomOut: "Zoom arrière",
+    locateMe: "Ma position",
+    serviceArea: "zone desservie : {area}",
+    loading: "Chargement de la carte…",
+    error: "Carte indisponible",
+    noLocation: "Adresse non communiquée publiquement",
+  },
 };

@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-17T01:00:00Z
-**Current phase:** Phase 2 — complete (Yuki). Ready for Phase 3 (Luca).
+**Last updated:** 2026-04-17T02:00:00Z
+**Current phase:** Phase 3 — in progress (Luca).
 **Project start:** 2026-04-16
 
 ---
@@ -82,7 +82,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 0 | Email/password authentication | 🟢 Complete | Mira | 2026-04-16 |
 | 1 | Database schema migration | 🟢 Complete | Dmitri | 2026-04-17 |
 | 2 | Geocoding pipeline (Mapbox) | 🟢 Complete | Yuki | 2026-04-17 |
-| 3 | Mapbox setup + LocationMap component | ⚪ Not started | — | — |
+| 3 | Mapbox setup + LocationMap component | 🟢 Complete | Luca | 2026-04-17 |
 | 4A | CatalogToolbar + QuickChips | ⚪ Not started | — | — |
 | 4B | Split-view Catalog layout | ⚪ Not started | — | — |
 | 5 | GrantDetail page rewrite | ⚪ Not started | — | — |
@@ -270,13 +270,83 @@ for `mapbox-gl` marker pins.
 ---
 
 ### Phase 3 — Mapbox Setup + LocationMap
-**Status:** Not started
-**Files planned:**
-- package.json (mapbox-gl) — NOTE: mapbox-gl 3.21.0 already installed
-- client/src/components/LocationMap.tsx (new) — check existing Map.tsx and map/ subdir first
-- client/src/components/MapPanel.tsx (new)
-- client/src/lib/googleMaps.ts (new)
-- client/vite-env.d.ts (VITE_MAPBOX_ACCESS_TOKEN type)
+**Status:** 🟢 Complete (2026-04-17)
+**Team:** Luca (Principal Frontend / Maps Specialist)
+
+**Files created:**
+- `client/src/lib/googleMaps.ts` — `openInGoogleMaps`, `openInGoogleMapsDirections`,
+  `hasMapLocation`. Builds a `?query=` from address+org or `lat,lng`, attempts
+  iOS `maps://` / Android `geo:` first, falls back to web URL after 1.5s.
+- `client/src/components/LocationMap.tsx` — single-pin Mapbox map for
+  `GrantDetail`. Dark style, custom teal pulsing marker, dark teal-bordered
+  popup, bottom-left zoom +/− and locate-me controls, bottom-right
+  service-area label. Map instance persisted in `useRef`; lat/lng prop
+  changes call `setLngLat`/`setCenter` (no reinit).
+- `client/src/components/MapPanel.tsx` — multi-grant clustered map for the
+  Phase 4B split-view catalog. Single GeoJSON source with `cluster:true`
+  + 4 layers (clusters, cluster-count, point, highlight). Cluster sizes
+  20/30/40 px per spec. Highlight layer uses a feature filter so toggling
+  the highlighted id is one `setFilter` call — no DOM markers. Dark/light
+  style swap mirrors existing `MapView`.
+- `client/src/pages/DevMapTest.tsx` — dev-only verification page, mounted
+  at `/dev/map-test` only when `import.meta.env.DEV`. Renders LocationMap
+  + MapPanel with 60 synthetic grants. Safe to delete in Phase 8.
+- `client/src/vite-env.d.ts` — typed `import.meta.env` for
+  `VITE_MAPBOX_TOKEN` + the other VITE_ vars already in use.
+
+**Files modified:**
+- `client/src/i18n/types.ts` — added `map` section (9 keys).
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — translated map UI strings in
+  all 5 supported languages.
+- `client/src/App.tsx` — added dev-only route `/dev/map-test`.
+- `.env.example` — clarified that `VITE_MAPBOX_TOKEN` is for client-side
+  maps (Catalog + LocationMap + MapPanel) vs `MAPBOX_ACCESS_TOKEN` for the
+  server-side geocoder.
+
+**Decisions (Luca):**
+- **Env var name:** spec said `VITE_MAPBOX_ACCESS_TOKEN`; the existing
+  Catalog `MapView.tsx` already uses `VITE_MAPBOX_TOKEN`. Reused the
+  existing name to avoid a parallel env var that would break the Catalog
+  on stale `.env` files.
+- **mapbox-gl install:** already on `3.21.0` + `@types/mapbox-gl 3.5.0` —
+  the `pnpm add` step in the spec was a no-op.
+- **No DOM markers in MapPanel:** 500+ React-managed `<Marker>` nodes
+  thrash layout on pan/zoom. Native circle layers (handled by Mapbox on
+  the worker thread) keep things fluid on mid-tier mobile.
+- **Highlight as a layer, not a marker:** toggling `highlightedId` is a
+  single `setFilter` + `setLayoutProperty(visibility)` call; no node
+  create/destroy. 1.5× the regular point radius matches the spec.
+- **Theme switch:** mirrored Catalog's `MutationObserver` on
+  `<html>.dark` so the panel re-applies layers after `setStyle`.
+- **Dev test page:** mounted only when `import.meta.env.DEV` is true.
+  In production builds the `<Route>` is unreachable. Removed in Phase 8.
+
+**Verification gates:**
+- `pnpm check` → **0 TypeScript errors**
+- `pnpm build` → **clean** (vite + esbuild server bundle; the eval +
+  chunk-size warnings are pre-existing and not introduced by this phase)
+- `/dev/map-test` route — renders both components with synthetic data;
+  visual sign-off requires `pnpm dev` + browser (operator side, since
+  this sandbox cannot exercise the UI).
+
+**Performance characteristics (expected, not yet field-measured):**
+- LocationMap: single marker, no re-render on prop changes — ~60 FPS.
+- MapPanel with 500 pins: native clustering keeps render < 16 ms after
+  initial style.load. To be confirmed against live geocoded data.
+
+**Mapbox quirks of note for next phases:**
+- `style.load` fires before all tiles are ready — `addLayers()` is safe
+  there because layers attach to the source, not the loaded tiles.
+- After `setStyle()` the map drops all custom sources/layers — must
+  re-add inside the `style.load` callback (handled in MapPanel).
+
+**Hand-off to Priya (Phase 4A):**
+- LocationMap is ready to drop into `GrantDetail.tsx` (Phase 5) — pass
+  `latitude`, `longitude`, `address`, `organization`, `serviceArea`.
+- MapPanel is ready to drop into the new split-view Catalog (Phase 4B) —
+  pass the filtered grant list, `highlightedId`, and click/hover handlers.
+- Operator must set `VITE_MAPBOX_TOKEN` on Railway before Phase 4B ships
+  (same value as `MAPBOX_ACCESS_TOKEN` is fine — both are `pk.` tokens).
 
 **Log:** —
 
@@ -360,6 +430,7 @@ encountered, with owner and resolution path.)
 | 2026-04-16 | Phase 0 | Email/password auth shipped: schema +8 fields, 5 tRPC procedures, 5-language emails, 5 frontend pages. pnpm check + build clean. | Mira |
 | 2026-04-17 | Phase 1 | Grants schema extended: +6 geocoding columns, +2 indexes, migration 0012 generated. catalog.list/detail/preview updated. pnpm check + build clean. | Dmitri |
 | 2026-04-17 | Phase 2 | Geocoding pipeline: geocode-grants.ts (idempotent, resumable, 110ms rate limit). Dry-run verified. pnpm check clean. | Yuki |
+| 2026-04-17 | Phase 3 | Mapbox setup + map components: googleMaps.ts, LocationMap.tsx, MapPanel.tsx (clustered), DevMapTest, vite-env.d.ts, map i18n in 5 langs. pnpm check + build clean. | Luca |
 
 ---
 

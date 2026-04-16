@@ -1023,6 +1023,19 @@ export interface Translations {
     example3: string;
   };
 
+  // Map (LocationMap + MapPanel + Google Maps deep-link)
+  map: {
+    openInGoogle: string;
+    getDirections: string;
+    zoomIn: string;
+    zoomOut: string;
+    locateMe: string;
+    serviceArea: string;  // template: "service area: {area}"
+    loading: string;
+    error: string;
+    noLocation: string;
+  };
+
   // Auth (Phase 0 — email/password)
   auth: {
     tabEmail: string;

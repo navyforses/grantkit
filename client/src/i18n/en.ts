@@ -1032,4 +1032,16 @@ export const en: Translations = {
     errEmailUnverified: "Please verify your email before signing in.",
     errLocked: "Account temporarily locked. Try again in a few minutes.",
   },
+
+  map: {
+    openInGoogle: "Open in Google Maps",
+    getDirections: "Get directions",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    locateMe: "My location",
+    serviceArea: "service area: {area}",
+    loading: "Loading map…",
+    error: "Map unavailable",
+    noLocation: "Location not publicly listed",
+  },
 };

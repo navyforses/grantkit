@@ -1032,4 +1032,16 @@ export const ka: Translations = {
     errEmailUnverified: "გთხოვთ, დაადასტუროთ ელფოსტა შესვლამდე.",
     errLocked: "ანგარიში დროებით დაბლოკილია. სცადეთ რამდენიმე წუთში.",
   },
+
+  map: {
+    openInGoogle: "გახსნა Google Maps-ში",
+    getDirections: "მიმართულება",
+    zoomIn: "მიახლოება",
+    zoomOut: "დაშორება",
+    locateMe: "ჩემი ადგილმდებარეობა",
+    serviceArea: "ფარავს: {area}",
+    loading: "რუკის ჩატვირთვა…",
+    error: "რუკა მიუწვდომელია",
+    noLocation: "ადგილმდებარეობა არ არის მითითებული",
+  },
 };

@@ -1030,4 +1030,16 @@ export const ru: Translations = {
     errEmailUnverified: "Перед входом подтвердите email.",
     errLocked: "Аккаунт временно заблокирован. Повторите попытку через несколько минут.",
   },
+
+  map: {
+    openInGoogle: "Открыть в Google Картах",
+    getDirections: "Маршрут",
+    zoomIn: "Увеличить",
+    zoomOut: "Уменьшить",
+    locateMe: "Моё местоположение",
+    serviceArea: "зона обслуживания: {area}",
+    loading: "Загрузка карты…",
+    error: "Карта недоступна",
+    noLocation: "Адрес не указан публично",
+  },
 };
