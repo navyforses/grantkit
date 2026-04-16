@@ -20,13 +20,8 @@
     "translate:audit": "tsx scripts/audit-translations.ts",
     "translate:missing": "tsx scripts/translate-missing.ts",
     "translate:missing:dry": "tsx scripts/translate-missing.ts --dry-run",
-    "audit:descriptions": "tsx scripts/audit-descriptions.ts",
-    "audit:metadata": "tsx scripts/audit-metadata.ts",
-    "audit:metadata:fix": "tsx scripts/audit-metadata.ts --fix",
-    "enrich:metadata": "tsx scripts/enrich-metadata.ts --apply",
-    "enrich:metadata:dry": "tsx scripts/enrich-metadata.ts",
-    "cleanup:deadlines": "tsx scripts/cleanup-deadlines.ts",
-    "cleanup:deadlines:apply": "tsx scripts/cleanup-deadlines.ts --apply"
+    "enrich:metadata": "tsx scripts/enrich-metadata.ts",
+    "enrich:metadata:dry": "tsx scripts/enrich-metadata.ts --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",

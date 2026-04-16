@@ -24,15 +24,20 @@ import mysql from "mysql2/promise";
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const DATABASE_URL = process.env.DATABASE_URL;
-const FORGE_API_URL = (process.env.BUILT_IN_FORGE_API_URL || "https://forge.manus.im").replace(/\/$/, "");
-const FORGE_API_KEY = process.env.BUILT_IN_FORGE_API_KEY;
+// ENRICHMENT_API_* vars take priority (for Google AI Studio / OpenRouter)
+// Falls back to BUILT_IN_FORGE_API_* (Manus Forge) if not set
+const FORGE_API_URL = (process.env.ENRICHMENT_API_URL || process.env.BUILT_IN_FORGE_API_URL || "https://forge.manus.im").replace(/\/$/, "");
+const FORGE_API_KEY = process.env.ENRICHMENT_API_KEY || process.env.BUILT_IN_FORGE_API_KEY;
+
+// Auto-detect Google AI Studio
+const IS_GOOGLE_AI = FORGE_API_URL.includes("googleapis.com") || FORGE_API_URL.includes("generativelanguage");
 
 const CORE_FIELDS = ["name", "description", "eligibility"] as const;
 const ENRICHED_FIELDS = ["applicationProcess", "deadline", "targetDiagnosis", "ageRange", "geographicScope", "documentsRequired"] as const;
 const LANGUAGES = ["fr", "es", "ru", "ka"] as const;
 const LANG_NAMES: Record<string, string> = { fr: "French", es: "Spanish", ru: "Russian", ka: "Georgian" };
 const BATCH_SIZE = 5;
-const BATCH_DELAY_MS = 600;
+const BATCH_DELAY_MS = IS_GOOGLE_AI ? 4500 : 600;
 const RETRY_DELAY_MS = 3000;
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
@@ -45,23 +50,29 @@ const LIMIT = parseInt(args.find((a) => a.startsWith("--limit="))?.split("=")[1]
 // ── Forge API ─────────────────────────────────────────────────────────────────
 
 async function callForge(messages: { role: string; content: string }[], retries = 3): Promise<string> {
-  const url = `${FORGE_API_URL}/v1/chat/completions`;
+  const url = IS_GOOGLE_AI
+    ? `${FORGE_API_URL}/chat/completions`
+    : `${FORGE_API_URL}/v1/chat/completions`;
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
+      const body: Record<string, unknown> = {
+        model: IS_GOOGLE_AI ? "gemini-2.0-flash" : "gemini-2.5-flash",
+        messages,
+        max_tokens: 8192,
+        response_format: { type: "json_object" },
+      };
+      if (!IS_GOOGLE_AI) {
+        body.thinking = { budget_tokens: 128 };
+      }
+
       const res = await fetch(url, {
         method: "POST",
         headers: {
           "content-type": "application/json",
           authorization: `Bearer ${FORGE_API_KEY}`,
         },
-        body: JSON.stringify({
-          model: "gemini-2.5-flash",
-          messages,
-          max_tokens: 8192,
-          thinking: { budget_tokens: 128 },
-          response_format: { type: "json_object" },
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
