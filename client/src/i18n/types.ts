@@ -1022,4 +1022,70 @@ export interface Translations {
     example2: string;
     example3: string;
   };
+
+  // Auth (Phase 0 — email/password)
+  auth: {
+    tabEmail: string;
+    tabOAuth: string;
+    oauthHint: string;
+    oauthCta: string;
+
+    // Shared
+    emailLabel: string;
+    emailPlaceholder: string;
+    passwordLabel: string;
+    passwordPlaceholder: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    confirmPasswordLabel: string;
+    submit: string;
+    back: string;
+    or: string;
+
+    // Login page
+    loginTitle: string;
+    loginSubtitle: string;
+    loginCta: string;
+    loginForgot: string;
+    loginNoAccount: string;
+    loginSignupLink: string;
+
+    // Register
+    registerTitle: string;
+    registerSubtitle: string;
+    registerCta: string;
+    registerHaveAccount: string;
+    registerLoginLink: string;
+    registerSuccess: string;
+
+    // Verify email
+    verifyTitle: string;
+    verifyPending: string;
+    verifySuccess: string;
+    verifyError: string;
+    verifyGoToLogin: string;
+
+    // Forgot password
+    forgotTitle: string;
+    forgotSubtitle: string;
+    forgotCta: string;
+    forgotSent: string;
+    forgotBackToLogin: string;
+
+    // Reset password
+    resetTitle: string;
+    resetSubtitle: string;
+    resetCta: string;
+    resetSuccess: string;
+    resetInvalidToken: string;
+
+    // Validation
+    errPasswordMin: string;
+    errPasswordMismatch: string;
+    errEmailInvalid: string;
+    errGeneric: string;
+    errInvalidCredentials: string;
+    errEmailUnverified: string;
+    errLocked: string;
+  };
 }
