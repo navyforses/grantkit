@@ -236,7 +236,7 @@ RESEND_API_KEY
 - ✅ UI strings — 100% coverage ყველა 5 ენაში
 - ✅ DB translations — 629/629 გრანტი, 4 ენა (FR/ES/RU/KA) — **100%**
 
-### ფაზა 3: მონაცემთა გამდიდრება ✅ (metadata) / ⚠️ (descriptions)
+### ფაზა 3: მონაცემთა გამდიდრება ✅
 > ბოლო განახლება: 2026-04-16
 
 **Core fields — სტატუსი:**
@@ -244,7 +244,7 @@ RESEND_API_KEY
 - ✅ country — 629/629 (100%)
 - ✅ eligibility — 629/629 (100%)
 - ✅ description (არსებობა) — 629/629 (100%)
-- ⚠️ description (< 50 სიმბოლო) — **349/629 მოკლეა (55%)** → `pnpm enrich:descriptions` (ბლოკირებულია: api.grantedai.com მიუწვდომელია ლოკალურად)
+- ✅ description (< 50 სიმბოლო) — **349/349 გამდიდრდა** (OpenRouter LLM, 2026-04-16)
 
 **Enriched fields — შევსებულია:**
 - ✅ deadline — 629/629 (100%)
@@ -255,13 +255,12 @@ RESEND_API_KEY
 - ✅ documentsRequired — 629/629 (100%)
 - გაშვებული: `pnpm enrich:metadata` (OpenRouter API, google/gemini-2.0-flash-001)
 
-**დარჩენილი:**
-- ⚠️ `enrich:descriptions` — მოკლე description-ების გამდიდრება ბლოკირებულია (api.grantedai.com მიუწვდომელია ლოკალურიდან და Railway-დან). საჭიროა ალტერნატიული მიდგომა (LLM-ით description generation)
+**დარჩენილი:** არაფერი — ფაზა 3 სრულად დასრულებულია.
 
 ### ფაზა 4: Daily Discovery Routine
 - ❌ **არ დაწყებულა**
 - ყოველდღიური ავტომატური გრანტების მოძიება
 
 ### შემდეგი ნაბიჯი
-**ფაზა 3 დასასრულებლად:** `enrich:descriptions` — საჭიროა GrantedAI API-ს ალტერნატივა (LLM-ით description generation)
+**ფაზა 3:** ✅ დასრულებულია
 **ფაზა 4 დასაწყებად:** ყოველდღიური გრანტების მოძიების ავტომატიზაცია
