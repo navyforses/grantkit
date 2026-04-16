@@ -21,7 +21,10 @@
     "translate:missing": "tsx scripts/translate-missing.ts",
     "translate:missing:dry": "tsx scripts/translate-missing.ts --dry-run",
     "enrich:metadata": "tsx scripts/enrich-metadata.ts",
-    "enrich:metadata:dry": "tsx scripts/enrich-metadata.ts --dry-run"
+    "enrich:metadata:dry": "tsx scripts/enrich-metadata.ts --dry-run",
+    "discovery": "tsx scripts/daily-discovery.ts",
+    "discovery:dry": "tsx scripts/daily-discovery.ts --dry-run",
+    "import:grants": "tsx scripts/import-new-grants.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",

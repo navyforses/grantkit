@@ -257,10 +257,31 @@ RESEND_API_KEY
 
 **დარჩენილი:** არაფერი — ფაზა 3 სრულად დასრულებულია.
 
-### ფაზა 4: Daily Discovery Routine
-- ❌ **არ დაწყებულა**
-- ყოველდღიური ავტომატური გრანტების მოძიება
+### ფაზა 4: Daily Discovery Routine 🔄 მიმდინარე
+> ბოლო განახლება: 2026-04-16
+
+**შექმნილი სკრიპტები:**
+- ✅ `scripts/daily-discovery.ts` — LLM-ით ახალი გრანტების მოძიება (10 კატეგორია, 5+ ქვეყანა)
+- ✅ `scripts/import-new-grants.ts` — სრული pipeline: DB insert → metadata enrichment → translations (4 ენა)
+- ✅ `pending-imports/import-2026-04-16.mjs` — 8 social/immigration გრანტი იმპორტირებულია
+
+**Pipeline flow:**
+```
+daily-discovery.ts → pending-imports/discovery-{date}.json → import-new-grants.ts → DB
+```
+
+**გამოყენება:**
+```bash
+pnpm discovery                    # ყოველდღიური discovery (2 კატეგორია ავტომატურად)
+pnpm discovery:category           # კონკრეტული კატეგორია: --category=medical_treatment --country=US
+pnpm import:grants                # JSON-დან იმპორტი: --file=pending-imports/discovery-2026-04-16.json
+```
+
+**DB სტატუსი:** 637 აქტიური გრანტი (629 + 8 ახალი)
+
+**დარჩენილი:**
+- ❌ Scheduling (cron / GitHub Actions / Railway cron)
+- ❌ Newsletter notification ახალი გრანტების შესახებ
 
 ### შემდეგი ნაბიჯი
-**ფაზა 3:** ✅ დასრულებულია
-**ფაზა 4 დასაწყებად:** ყოველდღიური გრანტების მოძიების ავტომატიზაცია
+**ფაზა 4:** Scheduling + Newsletter integration
