@@ -19,7 +19,9 @@
     "enrich:descriptions:deep": "tsx scripts/enrich-descriptions.ts --min-length=300 --limit=100",
     "translate:audit": "tsx scripts/audit-translations.ts",
     "translate:missing": "tsx scripts/translate-missing.ts",
-    "translate:missing:dry": "tsx scripts/translate-missing.ts --dry-run"
+    "translate:missing:dry": "tsx scripts/translate-missing.ts --dry-run",
+    "enrich:metadata": "tsx scripts/enrich-metadata.ts",
+    "enrich:metadata:dry": "tsx scripts/enrich-metadata.ts --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",

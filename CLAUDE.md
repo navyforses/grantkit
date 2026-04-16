@@ -171,6 +171,10 @@ pnpm gitnexus:analyze          # კოდბაზის ანალიზი
 pnpm gitnexus:serve            # gitnexus MCP სერვერი
 pnpm enrich:descriptions       # GrantedAI-ით description-ების შევსება
 pnpm enrich:descriptions:dry   # dry-run (DB-ს არ ცვლის)
+pnpm enrich:metadata           # enriched ველების შევსება (deadline, appProcess...)
+pnpm enrich:metadata:dry       # dry-run (DB-ს არ ცვლის)
+pnpm translate:audit           # თარგმანების coverage აუდიტი
+pnpm translate:missing         # აკლია თარგმანების შევსება
 ```
 
 ---
@@ -210,7 +214,7 @@ RESEND_API_KEY
 
 ## 5-ფაზიანი განვითარების გეგმა — პროგრესი
 
-> ბოლო განახლება: 2026-04-15
+> ბოლო განახლება: 2026-04-15 (Phase 3 აუდიტი დასრულდა)
 
 ### ფაზა 0: გაწმენდა + Deploy Fix ✅
 - ✅ `package.json` merge conflict გამოსწორდა (commit `5137dab`)
@@ -226,22 +230,41 @@ RESEND_API_KEY
 - ✅ DB migration `drizzle/0009_user_profile.sql`
 - ✅ Supabase SQL `supabase/smart-search-and-tags.sql`
 
-### ფაზა 2: თარგმანების დასრულება
+### ფაზა 2: თარგმანების დასრულება ✅
 - ✅ `scripts/audit-translations.ts` შექმნილია
 - ✅ `scripts/translate-missing.ts` შექმნილია (Forge API / Gemini 2.5-flash)
 - ✅ UI strings — 100% coverage ყველა 5 ენაში
-- ❌ DB translations ჯერ გასაშვებია: `railway run pnpm translate:audit` → `railway run pnpm translate:missing`
-- მიზანი: FR/ES/RU/KA 95%+
+- ✅ DB translations — 629/629 გრანტი, 4 ენა (FR/ES/RU/KA) — **100%**
 
-### ფაზა 3: მონაცემთა გამდიდრება
-- ❌ **არ დაწყებულა**
-- description-ების ხარისხის გაუმჯობესება
-- category/country/eligibility ცარიელი ველების შევსება
+### ფაზა 3: მონაცემთა გამდიდრება — მიმდინარე
+> აუდიტი: 2026-04-15 (Railway DB console-იდან)
+
+**Core fields — სტატუსი:**
+- ✅ category — 629/629 (100%)
+- ✅ country — 629/629 (100%)
+- ✅ eligibility — 629/629 (100%)
+- ✅ description (არსებობა) — 629/629 (100%)
+- ⚠️ description (< 50 სიმბოლო) — **349/629 მოკლეა (55%)** → `pnpm enrich:descriptions`
+
+**Enriched fields — ცარიელია:**
+- ❌ deadline — 0/629
+- ❌ applicationProcess — 0/629
+- ❌ targetDiagnosis — 0/629
+- ❌ ageRange — 0/629
+- ❌ geographicScope — 0/629
+- ❌ documentsRequired — 0/629
+- → `pnpm enrich:metadata` (სკრიპტი: `scripts/enrich-metadata.ts`)
+
+**გასაკეთებელი:**
+1. Railway Variables-ში დაამატე: `BUILT_IN_FORGE_API_URL`, `BUILT_IN_FORGE_API_KEY`
+2. `railway run pnpm enrich:descriptions` — მოკლე description-ების გამდიდრება
+3. `railway run pnpm enrich:metadata` — enriched ველების შევსება
+4. საბოლოო აუდიტი Railway DB console-იდან
 
 ### ფაზა 4: Daily Discovery Routine
 - ❌ **არ დაწყებულა**
 - ყოველდღიური ავტომატური გრანტების მოძიება
 
 ### შემდეგი ნაბიჯი
-**ფაზა 2 დასასრულებლად:** კოლეგამ უნდა გაუშვას `railway run pnpm translate:missing`
-**ფაზა 3 დასაწყებად:** მონაცემთა გამდიდრება (descriptions, categories, deadlines)
+**ფაზა 3 დასასრულებლად:** `railway run pnpm enrich:descriptions` + `railway run pnpm enrich:metadata`
+**ფაზა 4 დასაწყებად:** ყოველდღიური გრანტების მოძიების ავტომატიზაცია
