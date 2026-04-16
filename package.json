@@ -24,7 +24,10 @@
     "enrich:metadata:dry": "tsx scripts/enrich-metadata.ts --dry-run",
     "discovery": "tsx scripts/daily-discovery.ts",
     "discovery:dry": "tsx scripts/daily-discovery.ts --dry-run",
-    "import:grants": "tsx scripts/import-new-grants.ts"
+    "import:grants": "tsx scripts/import-new-grants.ts",
+    "geocode:grants": "tsx scripts/geocode-grants.ts",
+    "geocode:grants:dry": "tsx scripts/geocode-grants.ts --dry-run",
+    "geocode:grants:limit10": "tsx scripts/geocode-grants.ts --limit=10"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",

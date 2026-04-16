@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-17T00:15:00Z
-**Current phase:** Phase 1 — complete (Dmitri). Ready for Phase 2 (Yuki).
+**Last updated:** 2026-04-17T01:00:00Z
+**Current phase:** Phase 2 — complete (Yuki). Ready for Phase 3 (Luca).
 **Project start:** 2026-04-16
 
 ---
@@ -81,7 +81,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 |---|-------|--------|-------|-----------|
 | 0 | Email/password authentication | 🟢 Complete | Mira | 2026-04-16 |
 | 1 | Database schema migration | 🟢 Complete | Dmitri | 2026-04-17 |
-| 2 | Geocoding pipeline (Mapbox) | ⚪ Not started | — | — |
+| 2 | Geocoding pipeline (Mapbox) | 🟢 Complete | Yuki | 2026-04-17 |
 | 3 | Mapbox setup + LocationMap component | ⚪ Not started | — | — |
 | 4A | CatalogToolbar + QuickChips | ⚪ Not started | — | — |
 | 4B | Split-view Catalog layout | ⚪ Not started | — | — |
@@ -230,14 +230,42 @@ Yuki's script should write `latitude`, `longitude`, `address`
 ---
 
 ### Phase 2 — Geocoding Pipeline
-**Status:** Not started
-**Files planned:**
-- scripts/geocode-grants.ts
-- server/_core/env.ts (MAPBOX_ACCESS_TOKEN)
-- .env.example
-- package.json (geocode:grants, geocode:grants:dry scripts)
+**Status:** 🟢 Complete (2026-04-17)
+**Team:** Yuki (Geospatial Data Engineer)
 
-**Log:** —
+**Files created/modified:**
+- `scripts/geocode-grants.ts` — main geocoding script (new)
+- `scripts/GEOCODING.md` — operator documentation (new)
+- `server/_core/env.ts` — added `mapboxAccessToken`
+- `.env.example` — added `MAPBOX_ACCESS_TOKEN` entry
+- `package.json` — 3 new scripts: `geocode:grants`, `geocode:grants:dry`,
+  `geocode:grants:limit10`
+
+**Script capabilities:**
+- Idempotent: `WHERE latitude IS NULL AND geocodedAt IS NULL`
+- Resumable: checkpoint to `.grantkit-redesign/geocode-checkpoint.json`
+  every 50 grants
+- Rate-limited: 110ms between calls (~545 req/min, Mapbox free = 600/min)
+- `--dry-run` / `--limit=N` / `--force` flags
+- Query strategy: address → org+city+country → org+country → city+country → country
+- Output: `geocode-report.json` + `geocode-failed.json`
+- Halts if success rate < 80%
+
+**Geocoding stats:** Not yet run against live DB — requires Railway
+`DATABASE_URL`. Run `pnpm geocode:grants:limit10` after `pnpm db:push`
+to validate.
+
+**Mapbox token:** `pk.` public token provided by user — covers
+Geocoding API by default on free tier.
+
+**Verification gates passed:**
+- `pnpm check` → 0 TypeScript errors
+- `pnpm geocode:grants:dry` → prints expected output, no API/DB calls
+
+**Hand-off to Luca (Phase 3):** `VITE_MAPBOX_TOKEN` already in
+`.env.example`. Luca needs it set in Railway env vars too.
+The `latitude`, `longitude` columns (decimal(10,7)) are ready
+for `mapbox-gl` marker pins.
 
 ---
 
@@ -331,6 +359,7 @@ encountered, with owner and resolution path.)
 | 2026-04-16 | Init | Project state initialized | Setup agent |
 | 2026-04-16 | Phase 0 | Email/password auth shipped: schema +8 fields, 5 tRPC procedures, 5-language emails, 5 frontend pages. pnpm check + build clean. | Mira |
 | 2026-04-17 | Phase 1 | Grants schema extended: +6 geocoding columns, +2 indexes, migration 0012 generated. catalog.list/detail/preview updated. pnpm check + build clean. | Dmitri |
+| 2026-04-17 | Phase 2 | Geocoding pipeline: geocode-grants.ts (idempotent, resumable, 110ms rate limit). Dry-run verified. pnpm check clean. | Yuki |
 
 ---
 

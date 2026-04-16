@@ -12,4 +12,5 @@ export const ENV = {
   paddleApiKey: process.env.PADDLE_API_KEY ?? "",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
   appUrl: process.env.APP_URL ?? "https://grantkit-production-06f7up.railway.app",
+  mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN ?? "",
 };
