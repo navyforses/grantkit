@@ -1,21 +1,23 @@
 # GrantKit
 
-> Curated database of **643+ grants**, foundations, and support resources for individuals, families, and caregivers across **29 countries**. Organized by category, country, and eligibility. Updated monthly.
+> Curated database of **3,650+ grants**, foundations, and support resources for individuals, families, and caregivers across **29 countries**. Organized by category, country, and eligibility. Subscription-based SaaS.
 
 ---
 
 ## Features
 
-- **Grants & Resources Catalog** — Browse, search, and filter 643+ entries by category, country, condition, funding type, and more
+- **Grants & Resources Catalog** — Browse, search, and filter 3,650+ entries by category, country, condition, funding type, state, city, and more
 - **5-Language Support** — Full UI and catalog content in English, French, Spanish, Russian, and Georgian
 - **Advanced Filters** — Filter by diagnosis, B-2 visa eligibility, funding type, deadline, state, and city
+- **AI Grant Assistant** — Chat-powered grant discovery using Anthropic Claude
 - **User Dashboard** — Save grants, track favorites, manage subscription
-- **Admin Panel** — Full CRUD for grants, user management, newsletter notifications, CSV/Excel import
+- **Admin Panel** — Full CRUD for grants, user management, newsletter notifications, CSV/Excel import/export
 - **External Grant Search** — Search 84,000+ grants and 133,000+ US foundations via GrantedAI API directly from the admin panel
 - **Subscription & Payments** — Paddle integration for monthly/annual plans
-- **Email Notifications** — Resend-powered email alerts for new grants
-- **SEO Optimized** — Server-side meta tags, JSON-LD structured data
-- **Mobile-First Design** — Responsive UI with bottom navigation, pull-to-refresh
+- **Email Notifications** — Resend-powered email alerts for new grants and subscription events
+- **SEO Optimized** — Server-side sitemap, robots.txt, meta tags, JSON-LD structured data
+- **Mobile-First Design** — Responsive UI with bottom navigation, pull-to-refresh, skeleton loading, PWA manifest
+- **Dual Theme** — Sun & Moon theme system (light/dark)
 
 ## Tech Stack
 
@@ -23,12 +25,13 @@
 |-------|-----------|
 | **Frontend** | React 19, TypeScript, Vite, TailwindCSS 4 |
 | **UI Components** | Radix UI, Framer Motion, Recharts |
-| **Backend** | Node.js, Express, tRPC 11 |
+| **Backend** | Node.js 22, Express, tRPC 11 |
 | **Database** | MySQL, Drizzle ORM |
-| **Auth** | OpenID / JWT (jose) |
+| **Auth** | OpenID / JWT (jose) — Manus OAuth |
 | **Payments** | Paddle |
 | **Email** | Resend |
-| **Deployment** | Docker, Render |
+| **AI** | Anthropic Claude SDK |
+| **Deployment** | Railway (primary), Vercel (staging), Docker |
 
 ## Project Structure
 
@@ -36,20 +39,23 @@
 grantkit/
 ├── client/src/
 │   ├── pages/          # Home, Catalog, Dashboard, Admin, Profile, etc.
-│   ├── components/     # Navbar, FilterBar, CatalogCard, etc.
-│   ├── contexts/       # LanguageContext (i18n)
+│   ├── components/     # Navbar, FilterBar, CatalogCard, AIChatBox, etc.
+│   ├── contexts/       # LanguageContext (i18n), ThemeContext
 │   ├── i18n/           # Translation files (en, fr, es, ru, ka)
-│   └── data/           # Static catalog fallback + translations JSON
+│   └── main.tsx        # tRPC client setup
 ├── server/
+│   ├── _core/          # Express entry, tRPC setup, env, OAuth
 │   ├── routers.ts      # All tRPC API endpoints
 │   ├── db.ts           # Database queries (Drizzle ORM)
 │   ├── externalGrants.ts # GrantedAI API integration
 │   ├── emailService.ts # Resend email notifications
+│   ├── toolboxClient.ts # AI assistant
 │   └── importGrants.ts # CSV/Excel bulk import
 ├── drizzle/
 │   └── schema.ts       # MySQL table definitions
+├── scripts/            # Enrichment and utility scripts
 ├── Dockerfile          # Multi-stage production build
-└── render.yaml         # Render deployment config
+└── vercel.json         # Vercel frontend config
 ```
 
 ## Getting Started
@@ -72,7 +78,7 @@ pnpm install
 
 # Set up environment variables
 cp .env.example .env
-# Edit .env with your database URL, Paddle keys, Resend API key, etc.
+# Edit .env with your database URL, API keys, etc.
 
 # Push database schema
 pnpm db:push
@@ -86,25 +92,11 @@ pnpm dev
 | Command | Description |
 |---------|-------------|
 | `pnpm dev` | Start development server with hot reload |
-| `pnpm build` | Build for production |
+| `pnpm build` | Build for production (Vite + esbuild) |
 | `pnpm start` | Run production server |
 | `pnpm test` | Run tests with Vitest |
 | `pnpm check` | TypeScript type checking |
 | `pnpm db:push` | Push Drizzle schema to database |
-
-## Screenshots
-
-### Home Page
-The landing page features a hero section, problem statement, feature categories, preview entries, testimonials, pricing, and FAQ — all fully translated in 5 languages.
-
-### Grants Catalog
-Browse and filter 643+ grants with advanced search, category/country filters, condition filters, and pagination.
-
-### Admin Panel
-Manage users, grants, newsletter subscribers, and search external grant databases with the integrated GrantedAI API.
-
-### External Grant Search
-Search 84,000+ grants from federal, foundation, state, and international sources. Preview details and import into your catalog with one click.
 
 ## Internationalization (i18n)
 
@@ -120,24 +112,26 @@ GrantKit supports 5 languages with full UI and catalog content translations:
 
 ## API Endpoints
 
-All API endpoints use tRPC and are available at `/api/trpc`.
+All API endpoints use tRPC at `/api/trpc`.
 
 ### Public
 - `catalog.list` — Browse grants with filters and pagination
 - `catalog.detail` — Get grant details by item ID
-- `catalog.preview` — Get preview entries for non-subscribers
+- `catalog.preview` — Diverse category preview for homepage
 
 ### Protected (Auth required)
 - `grants.savedList` — Get user's saved grant IDs
 - `grants.toggleSave` — Save/unsave a grant
 - `subscription.status` — Get subscription status
+- `ai.grantChat` — AI-powered grant discovery chat
 
 ### Admin
 - `admin.grants` — List all grants with search/filter
-- `admin.createGrant` — Add new grant
+- `admin.createGrant` / `admin.updateGrant` / `admin.deleteGrant` — Grant CRUD
 - `admin.searchExternal` — Search 84,000+ external grants
 - `admin.importExternal` — Import external grant to catalog
 - `admin.searchFunders` — Search 133,000+ US foundations
+- `admin.parseImport` / `admin.executeImport` — CSV/Excel bulk import
 
 ## License
 
@@ -145,4 +139,4 @@ MIT
 
 ---
 
-Built with React, tRPC, and Drizzle ORM.
+Built with React, tRPC, Drizzle ORM, and Claude AI.

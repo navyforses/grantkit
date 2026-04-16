@@ -1,46 +1,49 @@
 /*
- * Catalog Page — Unified Grants & Resources Directory
- * Design: Structured Clarity — dense card grid with sticky filters
- * Mobile: app-like single-column layout with bottom sheet filters
- * Content locked behind authentication + active subscription
- * Data sourced from database via tRPC with full-text multilingual search
+ * Catalog Page — Interactive World Map View (Phase 5)
+ * Replaces the card grid with a full-screen Mapbox GL world map.
+ * Filter state & data fetching are preserved here for use in later phases
+ * (filter panel overlays, map markers, side panel, AI chat).
+ *
+ * Layout:
+ *   Desktop (md+): Navbar (h-16) + map fills remaining viewport
+ *   Mobile:        MobileHeader from App.tsx (h-14) + map fills remaining viewport
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import CatalogCard from "@/components/CatalogCard";
-import CatalogCardSkeleton from "@/components/CatalogCardSkeleton";
-import FilterBar, { type SortValue } from "@/components/FilterBar";
-import Footer from "@/components/Footer";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Filter, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import PricingCTA from "@/components/PricingCTA";
-import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
-import { type CatalogItem, type CategoryValue, type CountryValue, type TypeValue } from "@/lib/constants";
+import SmartSearchPanel from "@/components/SmartSearchPanel";
+import { type SortValue } from "@/components/FilterBar";
+import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, EU_MEMBER_CODES } from "@/lib/constants";
 import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, LogIn, Loader2, X as XIcon, Search as SearchIcon } from "lucide-react";
-import { getLoginUrl } from "@/const";
-import { toast } from "sonner";
-import SEO from "@/components/SEO";
-import { usePullToRefresh } from "@/hooks/usePullToRefresh";
-import { useIsMobile } from "@/hooks/useMobile";
 import { useLocation, useSearch } from "wouter";
+import SEO from "@/components/SEO";
+import MapView from "@/components/map/MapView";
+import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
+import ResourceTypeTabs from "@/components/ResourceTypeTabs";
+import { useResources, useResourcesRealtime, useCategories, useCountries } from "@/hooks/useResources";
+import type { ResourceType } from "@/types/resources";
+const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
+const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
+import { useMapFlyTo } from "@/hooks/useMapFlyTo";
+import { useMapHighlight } from "@/hooks/useMapHighlight";
+import { useMapMarkers } from "@/components/map/useMapMarkers";
+import type mapboxgl from "mapbox-gl";
 
 const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
 const SEARCH_DEBOUNCE_MS = 300;
 
-// Module-level constants — immune to Vite's minifier variable reordering
 const STATIC_CATALOG = catalogItems;
 const HAS_STATIC_DATA = STATIC_CATALOG.length > 0;
 
-/** Read filter state from URL search params */
 function readFiltersFromURL(search: string) {
   const params = new URLSearchParams(search);
   return {
     category: (params.get("category") || "all") as CategoryValue,
-    country: (params.get("country") || "all") as CountryValue,
     type: (params.get("type") || "all") as TypeValue,
     search: params.get("q") || "",
     sortBy: (params.get("sort") || "name_asc") as SortValue,
@@ -49,12 +52,13 @@ function readFiltersFromURL(search: string) {
     targetDiagnosis: params.get("diagnosis") || "all",
     b2VisaEligible: params.get("b2visa") || "all",
     hasDeadline: params.get("deadline") === "1",
-    state: params.get("state") || "all",
-    city: params.get("city") || "all",
+    mapRegionCode: (params.get("region") || "") as RegionCode,
+    mapCountryCode: params.get("mc") || "",
+    mapStateCode: params.get("ms") || "",
+    mapCityName: params.get("mcity") || "",
   };
 }
 
-/** Custom hook for debounced value */
 function useDebouncedValue<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -67,32 +71,36 @@ function useDebouncedValue<T>(value: T, delay: number): T {
 export default function Catalog() {
   const search = useSearch();
   const [, navigate] = useLocation();
-  // Read initial filter state from URL only on mount (empty deps intentional to avoid
-  // feedback loop with the URL-sync effect below)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initial = useMemo(() => readFiltersFromURL(search), []);
 
+  // ── Filter state (used in Phase 2 filter panel & Phase 4 markers) ──
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(initial.category);
-  const [selectedCountry, setSelectedCountry] = useState<CountryValue>(initial.country);
   const [selectedType, setSelectedType] = useState<TypeValue>(initial.type);
   const [searchQuery, setSearchQuery] = useState(initial.search);
   const [sortBy, setSortBy] = useState<SortValue>(initial.sortBy);
   const [page, setPage] = useState(initial.page);
-  // Enrichment filters
   const [fundingType, setFundingType] = useState(initial.fundingType);
   const [targetDiagnosis, setTargetDiagnosis] = useState(initial.targetDiagnosis);
   const [b2VisaEligible, setB2VisaEligible] = useState(initial.b2VisaEligible);
   const [hasDeadline, setHasDeadline] = useState(initial.hasDeadline);
-  const [selectedState, setSelectedState] = useState(initial.state);
-  const [selectedCity, setSelectedCity] = useState(initial.city);
-  const { t, tCategory, tCountry, language } = useLanguage();
-  const { isAuthenticated, loading: authLoading } = useAuth();
 
-  // Sync filter state to URL query params
+  // ── Map location state ───────────────────────────────────────────────────
+  const [mapRegionCode, setMapRegionCode] = useState<RegionCode>(initial.mapRegionCode);
+  const [mapCountryCode, setMapCountryCode] = useState(initial.mapCountryCode);
+  const [mapStateCode, setMapStateCode] = useState(initial.mapStateCode);
+  const [mapCityName, setMapCityName] = useState(initial.mapCityName);
+
+  const { t, language } = useLanguage();
+  const { isAuthenticated } = useAuth();
+
+  // View mode: map (default) or smart search
+  const [viewMode, setViewMode] = useState<"map" | "search">("map");
+
+  // Sync filter state to URL
   useEffect(() => {
     const params = new URLSearchParams();
     if (selectedCategory !== "all") params.set("category", selectedCategory);
-    if (selectedCountry !== "all") params.set("country", selectedCountry);
     if (selectedType !== "all") params.set("type", selectedType);
     if (searchQuery) params.set("q", searchQuery);
     if (sortBy !== "name_asc") params.set("sort", sortBy);
@@ -101,83 +109,122 @@ export default function Catalog() {
     if (targetDiagnosis !== "all") params.set("diagnosis", targetDiagnosis);
     if (b2VisaEligible !== "all") params.set("b2visa", b2VisaEligible);
     if (hasDeadline) params.set("deadline", "1");
-    if (selectedState !== "all") params.set("state", selectedState);
-    if (selectedCity !== "all") params.set("city", selectedCity);
+    if (mapRegionCode) params.set("region", mapRegionCode);
+    if (mapCountryCode) params.set("mc", mapCountryCode);
+    if (mapStateCode) params.set("ms", mapStateCode);
+    if (mapCityName) params.set("mcity", mapCityName);
     const qs = params.toString();
-    const newPath = qs ? `/catalog?${qs}` : "/catalog";
-    navigate(newPath, { replace: true });
-  }, [selectedCategory, selectedCountry, selectedType, searchQuery, sortBy, page, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, navigate]);
+    navigate(qs ? `/catalog?${qs}` : "/catalog", { replace: true });
+  }, [
+    selectedCategory, selectedType, searchQuery, sortBy, page,
+    fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
+    mapRegionCode, mapCountryCode, mapStateCode, mapCityName, navigate,
+  ]);
 
-  // Debounce search query to avoid excessive API calls
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
   const staticFilteredRef = useRef(STATIC_CATALOG.length);
 
-  // Use module-level constants for static data (avoids Vite minifier TDZ issues)
+  // ── Supabase resource type switcher ─────────────────────────────────────────
+  // undefined means default grant view (existing data); SOCIAL/MEDICAL → Supabase
+  const [supabaseResourceType, setSupabaseResourceType] = useState<ResourceType | undefined>(undefined);
+  const isSupabaseView = supabaseResourceType === "SOCIAL" || supabaseResourceType === "MEDICAL";
 
-  const { data: subStatus, isLoading: subLoading } = trpc.subscription.status.useQuery(undefined, {
+  const {
+    data: supabaseResources,
+    loading: supabaseLoading,
+    filters: supabaseFilters,
+    dispatch: supabaseDispatch,
+    refresh: supabaseRefresh,
+  } = useResources(isSupabaseView ? supabaseResourceType : undefined);
+
+  // Supabase categories/countries for the filter panel
+  const { data: supabaseCategories } = useCategories(isSupabaseView ? supabaseResourceType : undefined);
+  const { data: supabaseCountries } = useCountries();
+
+  // Phase 9 — live updates: when a resource is inserted/updated/deleted in
+  // Supabase while the Catalog page is open, silently re-fetch the current page.
+  useResourcesRealtime({
+    onInsert: supabaseRefresh,
+    onUpdate: supabaseRefresh,
+    onDelete: supabaseRefresh,
+  });
+
+  // Convert Supabase ResourceFull → CatalogItem-compatible shape for map markers
+  const supabaseMapItems: CatalogItem[] = useMemo(() => {
+    if (!isSupabaseView) return [];
+    return supabaseResources.map((r): CatalogItem => ({
+      id: r.id,
+      name: r.title,
+      organization: r.source_name ?? "",
+      description: r.description,
+      category: r.categories?.[0]?.id ?? "other",
+      type: "resource" as const,
+      country: r.locations?.[0]?.country_code ?? "",
+      eligibility: r.eligibility_details ?? "",
+      website: r.source_url ?? "",
+      phone: "",
+      email: "",
+      amount: r.amount_min != null ? `${r.amount_min}` : "",
+      status: r.status === "OPEN" ? "Open" : r.status,
+      applicationProcess: "",
+      deadline: r.deadline ?? "",
+      fundingType: "",
+      targetDiagnosis: "",
+      ageRange: "",
+      geographicScope: "",
+      documentsRequired: "",
+      b2VisaEligible: "",
+      state: r.locations?.[0]?.region_name ?? "",
+      city: "",
+      latitude: r.latitude,
+      longitude: r.longitude,
+      resourceSlug: r.slug,
+      resourceType: r.resource_type,
+    }));
+  }, [isSupabaseView, supabaseResources]);
+
+  const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
   });
 
-  const isMobile = useIsMobile();
-
-  // Pull-to-refresh: invalidate catalog data on pull
-  const utils = trpc.useUtils();
-  const { state: pullState, pullDistance, progress, containerRef } = usePullToRefresh({
-    onRefresh: async () => {
-      await Promise.all([
-        utils.catalog.list.invalidate(),
-        utils.catalog.count.invalidate(),
-        utils.grants.savedList.invalidate(),
-      ]);
-      toast.success(t.catalog.grantsRefreshed);
-    },
-    enabled: isMobile,
-    threshold: 80,
-    maxPull: 140,
-  });
-
-  // Stabilize query input with debounced search and language
   const catalogInput = useMemo(
     () => ({
       search: debouncedSearch || undefined,
       language: debouncedSearch ? language : undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
-      country: selectedCountry !== "all" ? selectedCountry : undefined,
+      country: mapCountryCode || undefined,
+      state:   mapStateCode   || undefined,
+      city:    mapCityName    || undefined,
       type: selectedType !== "all" ? selectedType : undefined,
       sortBy,
       fundingType: fundingType !== "all" ? fundingType : undefined,
       targetDiagnosis: targetDiagnosis !== "all" ? targetDiagnosis : undefined,
       b2VisaEligible: b2VisaEligible !== "all" ? b2VisaEligible : undefined,
       hasDeadline: hasDeadline || undefined,
-      state: selectedState !== "all" ? selectedState : undefined,
-      city: selectedCity !== "all" ? selectedCity : undefined,
       page: (subStatus?.isActive || HAS_STATIC_DATA) ? page : 1,
       pageSize: (subStatus?.isActive || HAS_STATIC_DATA) ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
-    [debouncedSearch, language, selectedCategory, selectedCountry, selectedType, sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline, selectedState, selectedCity, page, subStatus?.isActive, HAS_STATIC_DATA]
+    [
+      debouncedSearch, language, selectedCategory, selectedType,
+      sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
+      page, subStatus?.isActive,
+      mapCountryCode, mapStateCode, mapCityName,
+    ]
   );
 
-  const { data: catalogData, isLoading: catalogLoading, isFetching } = trpc.catalog.list.useQuery(catalogInput, {
+  const { data: catalogData } = trpc.catalog.list.useQuery(catalogInput, {
     retry: false,
     placeholderData: (prev: any) => prev,
   });
 
-  // Get total count for display
-  const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
-
-  // On static deployments (no API), treat as active so all content is visible
-  const isStaticMode = !catalogData && HAS_STATIC_DATA;
-  const isActive = isStaticMode || subStatus?.isActive || false;
-  const isAuthLoading = isStaticMode ? false : (authLoading || (isAuthenticated && subLoading));
-
-  // Saved grants
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
   });
   const savedSet = useMemo(() => new Set(savedData?.grantIds || []), [savedData]);
 
+  const utils = trpc.useUtils();
   const toggleSave = trpc.grants.toggleSave.useMutation({
     onMutate: async ({ grantId }) => {
       await utils.grants.savedList.cancel();
@@ -193,19 +240,16 @@ export default function Catalog() {
     },
     onError: (_err: unknown, _vars: unknown, ctx: { prev?: { grantIds: string[] } } | undefined) => {
       if (ctx?.prev) utils.grants.savedList.setData(undefined, ctx.prev);
-      toast.error(t.grantDetail.failedToSave);
     },
-    onSettled: () => {
-      utils.grants.savedList.invalidate();
-    },
+    onSettled: () => utils.grants.savedList.invalidate(),
   });
 
-  // Map DB results to CatalogItem shape for CatalogCard
+  // Map items to CatalogItem shape (used in Phase 4 for map markers)
   const displayItems: CatalogItem[] = useMemo(() => {
-    // If API returned data, use it
     if (catalogData?.grants) {
       return catalogData.grants.map((g) => {
-        const trans = (g as any).translations?.[language];
+        type GrantTranslation = { name?: string; description?: string; eligibility?: string };
+        const trans = (g.translations as Record<string, GrantTranslation> | undefined)?.[language];
         return {
           id: g.id,
           name: trans?.name || g.name,
@@ -229,20 +273,17 @@ export default function Catalog() {
           documentsRequired: g.documentsRequired,
           b2VisaEligible: g.b2VisaEligible,
           state: g.state,
-        city: g.city,
-      };
-    });
+          city: g.city,
+        };
+      });
     }
-
-    // Static fallback: filter and paginate from bundled catalog.json
     if (STATIC_CATALOG) {
       let filtered: any[] = STATIC_CATALOG;
       if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
-      if (selectedCountry !== "all") filtered = filtered.filter((g: any) => g.country === selectedCountry);
       if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
-      // Extended filters for enriched data
-      if (selectedState !== "all") filtered = filtered.filter((g: any) => g.state === selectedState || g.state === "Nationwide");
-      if (selectedCity !== "all") filtered = filtered.filter((g: any) => !g.city || g.city === selectedCity);
+      if (mapCountryCode) filtered = filtered.filter((g: any) => g.country === mapCountryCode);
+      if (mapStateCode) filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
+      if (mapCityName) filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
       if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
       if (fundingType !== "all") filtered = filtered.filter((g: any) => g.fundingType === fundingType);
       if (b2VisaEligible !== "all") filtered = filtered.filter((g: any) => g.b2VisaEligible === b2VisaEligible);
@@ -262,282 +303,321 @@ export default function Catalog() {
         type: g.type as "grant" | "resource",
       }));
     }
-
     return [];
-  }, [catalogData, language, STATIC_CATALOG, selectedCategory, selectedCountry, selectedType, selectedState, selectedCity, targetDiagnosis, fundingType, b2VisaEligible, hasDeadline, debouncedSearch, page]);
+  }, [
+    catalogData, language, selectedCategory, selectedType,
+    targetDiagnosis, fundingType, b2VisaEligible,
+    hasDeadline, debouncedSearch, page,
+    mapCountryCode, mapStateCode, mapCityName,
+  ]);
 
   const usingStatic = !catalogData?.grants && HAS_STATIC_DATA;
   const totalItems = catalogData?.total || (usingStatic ? staticFilteredRef.current : 0);
-  const totalPages = catalogData?.totalPages || (usingStatic ? Math.ceil(staticFilteredRef.current / PAGE_SIZE) : 1);
-  const isLoading = isAuthLoading || (catalogLoading && !HAS_STATIC_DATA);
-  const isSearching = isFetching && !!debouncedSearch;
 
-  const resetFilters = () => {
+  // Map items — ALL filtered items for markers (no pagination).
+  // displayItems is capped at 30/page; mapItems uses the full static catalog so every
+  // matching grant appears on the map regardless of which page the user is on.
+  const mapItems: CatalogItem[] = useMemo(() => {
+    if (HAS_STATIC_DATA) {
+      let filtered: any[] = STATIC_CATALOG;
+      if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
+      if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
+      // Region filter: EU = any of 27 member countries; US/GB = exact match; empty = all
+      if (mapRegionCode === "EU" && !mapCountryCode) {
+        filtered = filtered.filter((g: any) => EU_MEMBER_CODES.includes(g.country));
+      } else if (mapCountryCode) {
+        filtered = filtered.filter((g: any) => g.country === mapCountryCode);
+      } else if (mapRegionCode === "US") {
+        filtered = filtered.filter((g: any) => g.country === "US");
+      } else if (mapRegionCode === "GB") {
+        filtered = filtered.filter((g: any) => g.country === "GB");
+      }
+      if (mapStateCode) filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
+      if (mapCityName) filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
+      if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
+      if (fundingType !== "all") filtered = filtered.filter((g: any) => g.fundingType === fundingType);
+      if (b2VisaEligible !== "all") filtered = filtered.filter((g: any) => g.b2VisaEligible === b2VisaEligible);
+      if (hasDeadline) filtered = filtered.filter((g: any) => g.deadline && g.deadline !== "");
+      if (debouncedSearch) {
+        const q = debouncedSearch.toLowerCase();
+        filtered = filtered.filter((g: any) =>
+          (g.name || "").toLowerCase().includes(q) ||
+          (g.organization || "").toLowerCase().includes(q) ||
+          (g.description || "").toLowerCase().includes(q)
+        );
+      }
+      // Snap "Nationwide" items to the selected state/city so their markers appear
+      // near the chosen location rather than at the country centre (which would be
+      // off-screen after flyTo zooms into the selected state/city).
+      return filtered.map((g: any) => {
+        const isNationwide = !g.state || /^(nationwide|national)/i.test(g.state.trim());
+        return {
+          ...g,
+          type: g.type as "grant" | "resource",
+          state: isNationwide && mapStateCode ? mapStateCode : g.state,
+          city:  isNationwide && mapCityName && mapStateCode ? mapCityName : g.city,
+        };
+      });
+    }
+    // No static data — fall back to current-page items
+    return displayItems;
+  }, [
+    selectedCategory, selectedType, mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
+    targetDiagnosis, fundingType, b2VisaEligible, hasDeadline, debouncedSearch,
+    displayItems,
+  ]);
+
+  // Stats bar — number of unique countries in the current result set
+  const countryCount = useMemo(
+    () => new Set(mapItems.map((g) => g.country).filter(Boolean)).size,
+    [mapItems],
+  );
+
+  const resetFilters = useCallback(() => {
     setSelectedCategory("all");
-    setSelectedCountry("all");
     setSelectedType("all");
     setSearchQuery("");
     setFundingType("all");
     setTargetDiagnosis("all");
     setB2VisaEligible("all");
     setHasDeadline(false);
-    setSelectedState("all");
-    setSelectedCity("all");
     setPage(1);
-  };
+    setMapRegionCode("");
+    setMapCountryCode("");
+    setMapStateCode("");
+    setMapCityName("");
+  }, []);
 
+  // Stats bar — clear a single filter chip
+  const handleClearFilter = useCallback((key: FilterKey) => {
+    switch (key) {
+      case "searchQuery":      setSearchQuery(""); setPage(1); break;
+      case "category":         setSelectedCategory("all"); setPage(1); break;
+      case "type":             setSelectedType("all"); setPage(1); break;
+      case "countryCode":
+        setMapRegionCode(""); setMapCountryCode(""); setMapStateCode(""); setMapCityName(""); break;
+      case "stateCode":        setMapStateCode(""); setMapCityName(""); break;
+      case "cityName":         setMapCityName(""); break;
+      case "fundingType":      setFundingType("all"); setPage(1); break;
+      case "targetDiagnosis":  setTargetDiagnosis("all"); setPage(1); break;
+      case "b2VisaEligible":   setB2VisaEligible("all"); setPage(1); break;
+      case "hasDeadline":      setHasDeadline(false); setPage(1); break;
+    }
+  }, []);
+
+  // Map instance state — shared by useMapFlyTo and useMapMarkers
+  const [mapInstance, setMapInstance] = useState<mapboxgl.Map | null>(null);
+  const handleMapReady = useCallback((map: mapboxgl.Map) => {
+    setMapInstance(map);
+  }, []);
+
+  // Phase 3 — fly to selected location whenever region / country / state / city changes
+  useMapFlyTo(mapInstance, mapRegionCode, mapCountryCode, mapStateCode, mapCityName);
+  // Phase 3b — country/region polygon highlight
+  useMapHighlight(mapInstance, mapRegionCode, mapCountryCode, mapStateCode, mapCityName);
+
+  // Phase 4 — clustered grant/resource markers; selectedItemId feeds Phase 5.
+  // mapItems (all filtered items, not paginated) is used so every visible marker
+  // can be clicked even when it is not on the current display page.
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  // When in Supabase view (SOCIAL/MEDICAL), show Supabase geo-tagged items on the map
+  const activeMapItems = isSupabaseView ? supabaseMapItems : mapItems;
+  useMapMarkers(mapInstance, activeMapItems, setSelectedItemId);
+
+  // Phase 5 — detail panel for the selected marker.
+  // Prefer displayItems (may carry translations) then fall back to mapItems (full catalog).
+  const selectedItem = useMemo(
+    () =>
+      displayItems.find((g) => g.id === selectedItemId) ??
+      mapItems.find((g) => g.id === selectedItemId) ??
+      supabaseMapItems.find((g) => g.id === selectedItemId) ??
+      null,
+    [displayItems, mapItems, supabaseMapItems, selectedItemId]
+  );
+  const toggleSaveMutateRef = useRef(toggleSave.mutate);
+  toggleSaveMutateRef.current = toggleSave.mutate;
+  const handleToggleSave = useCallback(() => {
+    if (!selectedItemId || !isAuthenticated) return;
+    toggleSaveMutateRef.current({ grantId: selectedItemId });
+  }, [selectedItemId, isAuthenticated]);
+  const handleClosePanel = useCallback(() => setSelectedItemId(null), []);
+
+  // ── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div ref={containerRef} className="min-h-screen flex flex-col bg-background theme-transition">
+    <div className="bg-background">
       <SEO
         title={t.seo.catalogTitle}
         description={t.seo.catalogDescription}
         canonicalPath="/catalog"
         keywords="grant catalog, search grants, medical grants, startup funding, scholarships, financial aid"
       />
+
+      {/* Desktop navbar — h-16 (4rem / 64px). Hidden on mobile; MobileHeader comes from App.tsx. */}
       <Navbar />
 
-      {/* Page header — compact */}
-      <div className="bg-secondary py-4 md:py-6 border-b border-border">
-        <div className="container px-4 md:px-0">
-          <h1 className="text-lg md:text-2xl font-bold text-foreground tracking-tight mb-0.5">
-            {t.catalog.title}
-          </h1>
-          <p className="text-muted-foreground text-xs md:text-sm max-w-xl">
-            {t.catalog.subtitle}
-          </p>
-        </div>
-      </div>
-
-      {/* Pull-to-refresh indicator — visible only on mobile during gesture */}
-      <PullToRefreshIndicator
-        state={pullState}
-        pullDistance={pullDistance}
-        progress={progress}
-      />
-
-      {/* Filter bar */}
-      <FilterBar
-        selectedCategory={selectedCategory}
-        selectedCountry={selectedCountry}
-        selectedType={selectedType}
-        onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
-        onCountryChange={(c) => { setSelectedCountry(c); setPage(1); }}
-        onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
-        itemCount={totalItems}
-        searchQuery={searchQuery}
-        onSearchChange={(q) => { setSearchQuery(q); setPage(1); }}
-        sortBy={sortBy}
-        onSortChange={(s) => { setSortBy(s); setPage(1); }}
-        fundingType={fundingType}
-        onFundingTypeChange={(v) => { setFundingType(v); setPage(1); }}
-        targetDiagnosis={targetDiagnosis}
-        onTargetDiagnosisChange={(v) => { setTargetDiagnosis(v); setPage(1); }}
-        b2VisaEligible={b2VisaEligible}
-        onB2VisaChange={(v) => { setB2VisaEligible(v); setPage(1); }}
-        hasDeadline={hasDeadline}
-        onHasDeadlineChange={(v) => { setHasDeadline(v); setPage(1); }}
-        selectedState={selectedState}
-        onStateChange={(v) => { setSelectedState(v); setSelectedCity("all"); setPage(1); }}
-        selectedCity={selectedCity}
-        onCityChange={(v) => { setSelectedCity(v); setPage(1); }}
-      />
-
-      {/* Cards grid — single column on mobile, multi on desktop */}
-      <div className="container px-4 md:px-0 py-3 md:py-4 flex-1 pb-24 md:pb-8">
-
-        {/* Results summary bar */}
-        {!isLoading && displayItems.length > 0 && (
-          <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-            <span>
-              <span className="font-semibold text-foreground">{totalItems}</span> {t.catalog.itemsCount}
-              {searchQuery && <span> — "{searchQuery}"</span>}
-            </span>
-          </div>
-        )}
-
-        {/* Active filter chips */}
-        {(() => {
-          const chips: { key: string; label: string; clear: () => void }[] = [];
-          if (selectedCategory !== "all") chips.push({ key: "cat", label: tCategory(selectedCategory), clear: () => { setSelectedCategory("all"); setPage(1); } });
-          if (selectedType !== "all") chips.push({ key: "type", label: selectedType === "grant" ? t.catalog.typeGrant : t.catalog.typeResource, clear: () => { setSelectedType("all"); setPage(1); } });
-          if (selectedState !== "all") chips.push({ key: "state", label: selectedState, clear: () => { setSelectedState("all"); setSelectedCity("all"); setPage(1); } });
-          if (selectedCity !== "all") chips.push({ key: "city", label: selectedCity, clear: () => { setSelectedCity("all"); setPage(1); } });
-          if (targetDiagnosis !== "all") chips.push({ key: "diag", label: targetDiagnosis, clear: () => { setTargetDiagnosis("all"); setPage(1); } });
-          if (fundingType !== "all") chips.push({ key: "fund", label: fundingType, clear: () => { setFundingType("all"); setPage(1); } });
-          if (chips.length === 0) return null;
-          return (
-            <div className="flex flex-wrap gap-2 mb-3">
-              {chips.map((f) => (
-                <span key={f.key} className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">
-                  {f.label}
-                  <button onClick={f.clear} className="hover:text-primary/70"><XIcon className="w-3 h-3" /></button>
-                </span>
-              ))}
-              <button onClick={resetFilters} className="text-xs text-destructive hover:underline ml-1">
-                {t.catalog.clearFilters}
-              </button>
-            </div>
-          );
-        })()}
-
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-            {Array.from({ length: isMobile ? 4 : 9 }).map((_, i) => (
-              <CatalogCardSkeleton key={i} index={i} />
-            ))}
-          </div>
-        ) : (
+      {/* Resource type switcher + view mode tabs */}
+      <div className="bg-background/95 backdrop-blur-sm border-b border-border px-3 py-1.5 flex items-center gap-2">
+        {viewMode === "map" && (
           <>
-            {/* Subtle search loading indicator */}
-            {isSearching && (
-              <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>{t.catalog.searching}</span>
-              </div>
+            <ResourceTypeTabs
+              value={supabaseResourceType}
+              onChange={setSupabaseResourceType}
+              counts={{ GRANT: mapItems.length }}
+            />
+            {isSupabaseView && supabaseLoading && (
+              <span className="text-xs text-muted-foreground ml-2">Loading…</span>
             )}
-
-            {displayItems.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-                  {displayItems.map((item, i) => (
-                    <CatalogCard
-                      key={item.id}
-                      item={item}
-                      index={i}
-                      isSaved={savedSet.has(item.id)}
-                      isAuthenticated={isAuthenticated}
-                      onToggleSave={(grantId) => toggleSave.mutate({ grantId })}
-                    />
-                  ))}
-                </div>
-
-                {/* Pagination — mobile-friendly with larger touch targets */}
-                {isActive && totalPages > 1 && (
-                  <div className="mt-6 md:mt-8 flex items-center justify-center gap-1 md:gap-2">
-                    <button
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page === 1}
-                      className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg active:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                    >
-                      {t.catalog.prev}
-                    </button>
-                    <div className="flex items-center gap-0.5 md:gap-1">
-                      {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                        let pageNum: number;
-                        if (totalPages <= 5) pageNum = i + 1;
-                        else if (page <= 3) pageNum = i + 1;
-                        else if (page >= totalPages - 2) pageNum = totalPages - 4 + i;
-                        else pageNum = page - 2 + i;
-                        return (
-                          <button
-                            key={pageNum}
-                            onClick={() => setPage(pageNum)}
-                            className={`w-10 h-10 md:w-9 md:h-9 text-sm rounded-lg transition-colors ${
-                              page === pageNum
-                                ? "bg-primary text-primary-foreground font-semibold"
-                                : "text-muted-foreground active:bg-secondary"
-                            }`}
-                          >
-                            {pageNum}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <button
-                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={page === totalPages}
-                      className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg active:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                    >
-                      {t.catalog.next}
-                    </button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="col-span-full py-16 text-center">
-                <SearchIcon className="w-12 h-12 text-muted-foreground/20 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">{t.catalog.noResults}</h3>
-                <p className="text-sm text-muted-foreground mb-6">{t.catalog.noResultsHint}</p>
-                <div className="flex gap-3 justify-center">
-                  <button onClick={resetFilters} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-secondary transition-colors">
-                    {t.catalog.clearFilters}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* ===== LOCKED CONTENT OVERLAY ===== */}
-            {!isActive && (
-              <div className="relative mt-4 md:mt-6">
-                {/* Blurred placeholder cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 blur-sm opacity-40 pointer-events-none select-none">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="bg-card border border-border rounded-lg p-4 md:p-5 h-40 md:h-48">
-                      <div className="h-4 bg-muted rounded w-3/4 mb-3" />
-                      <div className="h-3 bg-muted/60 rounded w-1/2 mb-2" />
-                      <div className="h-3 bg-muted/60 rounded w-full mb-2" />
-                      <div className="h-3 bg-muted/60 rounded w-2/3" />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Lock overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-                  <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl px-6 md:px-8 py-6 md:py-8 text-center shadow-lg max-w-md w-full">
-                    <Lock className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground/60 mx-auto mb-3 md:mb-4" />
-
-                    {!isAuthenticated ? (
-                      <>
-                        <h3 className="text-base md:text-lg font-bold text-foreground mb-2">
-                          {t.catalog.memberBanner}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-5 md:mb-6">
-                          {t.catalog.subtitle}
-                        </p>
-                        <div className="flex flex-col gap-3">
-                          <a
-                            href={getLoginUrl()}
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-primary-foreground bg-primary rounded-xl active:bg-primary/90 transition-colors"
-                          >
-                            <LogIn className="w-4 h-4" />
-                            {t.catalog.loginRegister}
-                          </a>
-                          <PricingCTA text={t.catalog.ctaButton} />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <h3 className="text-base md:text-lg font-bold text-foreground mb-2">
-                          {t.catalog.ctaTitle}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-5 md:mb-6">
-                          {t.catalog.ctaSubtitle}
-                        </p>
-                        <div className="flex flex-col gap-3">
-                          <PricingCTA text={t.catalog.ctaButton} size="large" />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Member CTA - only show for active subscribers at the bottom */}
-            {isActive && (
-              <div className="mt-8 md:mt-12 bg-secondary rounded-xl p-6 md:p-8 text-center border border-border">
-                <h3 className="text-lg md:text-xl font-bold text-foreground mb-2">{t.catalog.ctaTitle}</h3>
-                <p className="text-muted-foreground text-sm md:text-base mb-4 md:mb-6 max-w-md mx-auto">{t.catalog.ctaSubtitle}</p>
-                <p className="text-brand-green text-sm font-medium">{t.catalog.activeSubscriber}</p>
-              </div>
+            {isSupabaseView && !supabaseLoading && (
+              <span className="text-xs text-muted-foreground ml-2">
+                {supabaseResources.length} resources
+              </span>
             )}
           </>
         )}
+        <div className="ml-auto flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setViewMode("map")}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              viewMode === "map"
+                ? "bg-brand-green/10 text-brand-green"
+                : "text-muted-foreground hover:bg-secondary"
+            }`}
+          >
+            <Filter className="w-3.5 h-3.5" />
+            {t.smartSearch.tabFilters}
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("search")}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              viewMode === "search"
+                ? "bg-brand-green/10 text-brand-green"
+                : "text-muted-foreground hover:bg-secondary"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            {t.smartSearch.tab}
+          </button>
+        </div>
       </div>
 
-      <div className="hidden md:block">
-        <Footer />
+      {/* Smart Search view — replaces map when "Smart Search" tab is active */}
+      {viewMode === "search" && (
+        <div className="min-h-[calc(100dvh-12.25rem)] md:min-h-[calc(100dvh-8.75rem)] bg-background p-4 md:p-6 pb-24 md:pb-8 overflow-auto">
+          <SmartSearchPanel />
+        </div>
+      )}
+
+      {/* Map view — default */}
+      {viewMode === "map" && (<>
+      {/*
+       * Stats bar — h-10 (2.5rem) — shows grant count, country count, active filter chips.
+       * Rendered on both mobile and desktop.
+       */}
+      <MapStatsBar
+        totalCount={isSupabaseView ? supabaseResources.length : mapItems.length}
+        countryCount={countryCount}
+        filters={{
+          searchQuery,
+          category: selectedCategory,
+          type: selectedType,
+          countryCode: mapCountryCode,
+          stateCode: mapStateCode,
+          cityName: mapCityName,
+          fundingType,
+          targetDiagnosis,
+          b2VisaEligible,
+          hasDeadline,
+        }}
+        onClearFilter={handleClearFilter}
+        onClearAll={resetFilters}
+      />
+
+      {/*
+       * Map fills remaining viewport height below whichever header is visible.
+       *
+       * Mobile (<md):
+       *   MobileHeader (sticky h-14 = 3.5rem) — rendered by App.tsx above this page
+       *   StatsBar     (h-10 = 2.5rem)
+       *   MobileBottomNav (fixed h-16 = 4rem) — rendered by App.tsx
+       *   App.tsx wraps the Router in pb-16 (4rem) to keep content above the bottom nav.
+       *   Map height = 100dvh - 3.5rem(header) - 2.5rem(stats) - 4rem(bottom-pad) = 100dvh - 10rem
+       *
+       * Desktop (md+):
+       *   Navbar   (h-16 = 4rem) — inside this page
+       *   StatsBar (h-10 = 2.5rem)
+       *   Map height = 100dvh - 4rem - 2.5rem = 100dvh - 6.5rem
+       *
+       * Using dvh (dynamic viewport height) so the map fills the currently-visible
+       * viewport even when mobile browser chrome (address bar) shows/hides.
+       */}
+      {/*
+       * overflow-hidden is intentionally omitted here so that
+       * SearchableSelect dropdowns inside MapFilterPanel can overflow
+       * the panel boundary without being clipped.
+       */}
+      {/* Map height adjusted to account for the additional ResourceTypeTabs bar (~2.25rem) */}
+      <div className="relative h-[calc(100dvh-12.25rem)] md:h-[calc(100dvh-8.75rem)]">
+        <MapView
+          className="absolute inset-0 w-full h-full"
+          onMapReady={handleMapReady}
+          ariaLabel={t.catalog.title}
+        />
+
+        {/* Phase 2 — cascading filter panel overlay (lazy-loaded to defer country-state-city chunk) */}
+        <Suspense fallback={null}>
+          <MapFilterPanel
+            regionCode={mapRegionCode}
+            countryCode={mapCountryCode}
+            stateCode={mapStateCode}
+            cityName={mapCityName}
+            onRegionChange={setMapRegionCode}
+            onCountryChange={setMapCountryCode}
+            onStateChange={setMapStateCode}
+            onCityChange={setMapCityName}
+            selectedCategory={selectedCategory}
+            onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
+            selectedType={selectedType}
+            onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
+            totalItems={isSupabaseView ? supabaseResources.length : totalItems}
+            onClearAll={resetFilters}
+            supabaseResourceType={supabaseResourceType}
+            supabaseCategories={supabaseCategories}
+            supabaseCountries={supabaseCountries}
+            selectedSupabaseCategories={supabaseFilters.categories}
+            onSupabaseCategoriesChange={(ids) => supabaseDispatch({ type: 'SET_CATEGORIES', payload: ids })}
+            selectedSupabaseCountries={supabaseFilters.countries}
+            onSupabaseCountriesChange={(codes) => supabaseDispatch({ type: 'SET_COUNTRIES', payload: codes })}
+            currentSort={supabaseFilters.sort}
+            onSortChange={(sort) => supabaseDispatch({ type: 'SET_SORT', payload: sort })}
+            searchQuery={searchQuery}
+            amountMin={supabaseFilters.amount_min}
+            amountMax={supabaseFilters.amount_max}
+            onAmountMinChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MIN', payload: v })}
+            onAmountMaxChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MAX', payload: v })}
+            selectedEligibility={supabaseFilters.eligibility}
+            onEligibilityChange={(v) => supabaseDispatch({ type: 'SET_ELIGIBILITY', payload: v as import("@/types/resources").Eligibility | undefined })}
+            selectedTargetGroups={supabaseFilters.target_groups}
+            onTargetGroupsChange={(groups) => supabaseDispatch({ type: 'SET_TARGET_GROUPS', payload: groups })}
+            selectedClinicalPhase={supabaseFilters.clinical_phase}
+            onClinicalPhaseChange={(phase) => supabaseDispatch({ type: 'SET_CLINICAL_PHASE', payload: phase })}
+            selectedDiseaseAreas={supabaseFilters.disease_areas}
+            onDiseaseAreasChange={(areas) => supabaseDispatch({ type: 'SET_DISEASE_AREAS', payload: areas })}
+          />
+        </Suspense>
+
+        {/* Phase 5 — grant detail slide-in panel (lazy: loads after map, not on homepage) */}
+        <Suspense fallback={null}>
+          <GrantDetailPanel
+            item={selectedItem}
+            isSaved={selectedItemId ? savedSet.has(selectedItemId) : false}
+            onToggleSave={handleToggleSave}
+            onClose={handleClosePanel}
+          />
+        </Suspense>
       </div>
+      </>)}
     </div>
   );
 }

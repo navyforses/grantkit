@@ -36,6 +36,7 @@ interface TranslatedContent {
 
 // Category translation map
 const CATEGORY_LABELS: Record<string, Record<Language, string>> = {
+  all: { en: "All Categories", fr: "Toutes les catégories", es: "Todas las categorías", ru: "Все категории", ka: "ყველა კატეგორია" },
   medical_treatment: { en: "Medical & Treatment", fr: "Médical & Traitement", es: "Médico & Tratamiento", ru: "Медицина и лечение", ka: "სამედიცინო & მკურნალობა" },
   financial_assistance: { en: "Financial Assistance", fr: "Aide financière", es: "Asistencia financiera", ru: "Финансовая помощь", ka: "ფინანსური დახმარება" },
   assistive_technology: { en: "Assistive Technology", fr: "Technologie d'assistance", es: "Tecnología de asistencia", ru: "Вспомогательные технологии", ka: "დამხმარე ტექნოლოგია" },

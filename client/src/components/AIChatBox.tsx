@@ -2,181 +2,145 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Loader2, Send, User, Sparkles } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { Send, User, Sparkles, RotateCcw, Copy, AlertCircle, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Streamdown } from "streamdown";
+import { AnimatePresence } from "framer-motion";
+import { GrantFocusChip } from "./GrantFocusChip";
+import type { ParsedGrant } from "./GrantCard";
 
 /**
  * Message type matching server-side LLM Message interface
  */
 export type Message = {
-  role: "system" | "user" | "assistant";
+  role: "system" | "user" | "assistant" | "info";
   content: string;
+  timestamp?: Date;
 };
 
 export type AIChatBoxProps = {
-  /**
-   * Messages array to display in the chat.
-   * Should match the format used by invokeLLM on the server.
-   */
   messages: Message[];
-
-  /**
-   * Callback when user sends a message.
-   * Typically you'll call a tRPC mutation here to invoke the LLM.
-   */
   onSendMessage: (content: string) => void;
-
-  /**
-   * Whether the AI is currently generating a response
-   */
+  onClearMessages?: () => void;
   isLoading?: boolean;
-
-  /**
-   * Placeholder text for the input field
-   */
+  error?: boolean;
+  onRetry?: () => void;
   placeholder?: string;
-
-  /**
-   * Custom className for the container
-   */
   className?: string;
-
-  /**
-   * Height of the chat box (default: 600px)
-   */
-  height?: string | number;
-
-  /**
-   * Empty state message to display when no messages
-   */
   emptyStateMessage?: string;
-
-  /**
-   * Suggested prompts to display in empty state
-   * Click to send directly
-   */
   suggestedPrompts?: string[];
+  headerTitle?: string;
+  newChatLabel?: string;
+  copyLabel?: string;
+  errorMessage?: string;
+  retryLabel?: string;
+  /** Hide the card header (used when embedded inside GrantDetailPanel). */
+  hideHeader?: boolean;
+  // Grant focus mode
+  focusedGrant?: ParsedGrant | null;
+  onClearFocus?: () => void;
+  focusLabel?: string;
+  removeFocusLabel?: string;
+  focusPlaceholder?: string;
 };
 
 /**
- * A ready-to-use AI chat box component that integrates with the LLM system.
- *
- * Features:
- * - Matches server-side Message interface for seamless integration
- * - Markdown rendering with Streamdown
- * - Auto-scrolls to latest message
- * - Loading states
- * - Uses global theme colors from index.css
- *
- * @example
- * ```tsx
- * const ChatPage = () => {
- *   const [messages, setMessages] = useState<Message[]>([
- *     { role: "system", content: "You are a helpful assistant." }
- *   ]);
- *
- *   const chatMutation = trpc.ai.chat.useMutation({
- *     onSuccess: (response) => {
- *       // Assuming your tRPC endpoint returns the AI response as a string
- *       setMessages(prev => [...prev, {
- *         role: "assistant",
- *         content: response
- *       }]);
- *     },
- *     onError: (error) => {
- *       console.error("Chat error:", error);
- *       // Optionally show error message to user
- *     }
- *   });
- *
- *   const handleSend = (content: string) => {
- *     const newMessages = [...messages, { role: "user", content }];
- *     setMessages(newMessages);
- *     chatMutation.mutate({ messages: newMessages });
- *   };
- *
- *   return (
- *     <AIChatBox
- *       messages={messages}
- *       onSendMessage={handleSend}
- *       isLoading={chatMutation.isPending}
- *       suggestedPrompts={[
- *         "Explain quantum computing",
- *         "Write a hello world in Python"
- *       ]}
- *     />
- *   );
- * };
- * ```
+ * Strips non-Georgian / non-Latin Unicode blocks from AI responses
+ * to prevent Bengali, Korean, Japanese, Chinese characters slipping in.
  */
+function cleanNonGeorgianText(text: string): string {
+  // Keep: Georgian (U+10A0–U+10FF), Extended Georgian (U+2D00–U+2D2F, U+1C90–U+1CBF),
+  //       Latin, digits, punctuation, whitespace, common symbols, emoji
+  return text.replace(/[\u0980-\u09FF\uAC00-\uD7AF\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/g, "");
+}
+
+function formatTime(date: Date): string {
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+/**
+ * Custom link component for Streamdown — opens external links in new tab
+ */
+function MarkdownLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const { href, children, ...rest } = props;
+  const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
+  return (
+    <a
+      href={href}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+      className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+      {...rest}
+    >
+      {children}
+    </a>
+  );
+}
+
+const streamdownComponents = { a: MarkdownLink };
+
 export function AIChatBox({
   messages,
   onSendMessage,
+  onClearMessages,
   isLoading = false,
+  error = false,
+  onRetry,
   placeholder = "Type your message...",
   className,
-  height = "600px",
   emptyStateMessage = "Start a conversation with AI",
   suggestedPrompts,
+  headerTitle = "AI Assistant",
+  newChatLabel = "New chat",
+  copyLabel = "Copy",
+  errorMessage = "An error occurred. Please try again.",
+  retryLabel = "Retry",
+  hideHeader = false,
+  focusedGrant,
+  onClearFocus,
+  focusLabel = "Focus:",
+  removeFocusLabel = "Remove focus",
+  focusPlaceholder,
 }: AIChatBoxProps) {
   const [input, setInput] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const inputAreaRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Filter out system messages
+  // Filter out hidden system messages for display
   const displayMessages = messages.filter((msg) => msg.role !== "system");
 
-  // Calculate min-height for last assistant message to push user message to top
-  const [minHeightForLastMessage, setMinHeightForLastMessage] = useState(0);
-
-  useEffect(() => {
-    if (containerRef.current && inputAreaRef.current) {
-      const containerHeight = containerRef.current.offsetHeight;
-      const inputHeight = inputAreaRef.current.offsetHeight;
-      const scrollAreaHeight = containerHeight - inputHeight;
-
-      // Reserve space for:
-      // - padding (p-4 = 32px top+bottom)
-      // - user message: 40px (item height) + 16px (margin-top from space-y-4) = 56px
-      // Note: margin-bottom is not counted because it naturally pushes the assistant message down
-      const userMessageReservedHeight = 56;
-      const calculatedHeight = scrollAreaHeight - 32 - userMessageReservedHeight;
-
-      setMinHeightForLastMessage(Math.max(0, calculatedHeight));
-    }
-  }, []);
-
-  // Scroll to bottom helper function with smooth animation
+  // Scroll to bottom when messages change or loading starts
   const scrollToBottom = () => {
     const viewport = scrollAreaRef.current?.querySelector(
-      '[data-radix-scroll-area-viewport]'
-    ) as HTMLDivElement;
-
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement | null;
     if (viewport) {
       requestAnimationFrame(() => {
-        viewport.scrollTo({
-          top: viewport.scrollHeight,
-          behavior: 'smooth'
-        });
+        viewport.scrollTo({ top: viewport.scrollHeight, behavior: "smooth" });
       });
     }
   };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [displayMessages.length, isLoading]);
+
+  // Escape key dismisses focus mode
+  useEffect(() => {
+    if (!focusedGrant || !onClearFocus) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClearFocus();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [focusedGrant, onClearFocus]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedInput = input.trim();
     if (!trimmedInput || isLoading) return;
-
     onSendMessage(trimmedInput);
     setInput("");
-
-    // Scroll immediately after sending
-    scrollToBottom();
-
-    // Keep focus on input
     textareaRef.current?.focus();
   };
 
@@ -187,18 +151,56 @@ export function AIChatBox({
     }
   };
 
+  // Dynamic placeholder when focus mode is active
+  const activePlaceholder = focusedGrant && focusPlaceholder
+    ? focusPlaceholder.replace("{grantName}", focusedGrant.name)
+    : placeholder;
+
   return (
     <div
-      ref={containerRef}
       className={cn(
-        "flex flex-col bg-card text-card-foreground rounded-lg border shadow-sm",
+        "flex flex-col bg-card text-card-foreground rounded-lg border shadow-sm min-h-0",
         className
       )}
-      style={{ height }}
     >
+      {/* Card header with "New chat" button — hidden when embedded */}
+      {!hideHeader && (
+        <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <Sparkles className="size-4 text-primary" />
+            <span>{headerTitle}</span>
+          </div>
+          {onClearMessages && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onClearMessages}
+              className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw className="size-3.5 mr-1" />
+              {newChatLabel}
+            </Button>
+          )}
+        </div>
+      )}
+
+      {/* Grant Focus Chip — shown between header and messages */}
+      <AnimatePresence>
+        {focusedGrant && (
+          <GrantFocusChip
+            key="focus-chip"
+            grant={focusedGrant}
+            onClose={onClearFocus ?? (() => {})}
+            focusLabel={focusLabel}
+            removeFocusLabel={removeFocusLabel}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Messages Area */}
-      <div ref={scrollAreaRef} className="flex-1 overflow-hidden">
-        {displayMessages.length === 0 ? (
+      <div ref={scrollAreaRef} className="flex-1 min-h-0 overflow-hidden">
+        {displayMessages.length === 0 && !error ? (
           <div className="flex h-full flex-col p-4">
             <div className="flex flex-1 flex-col items-center justify-center gap-6 text-muted-foreground">
               <div className="flex flex-col items-center gap-3">
@@ -211,6 +213,7 @@ export function AIChatBox({
                   {suggestedPrompts.map((prompt, index) => (
                     <button
                       key={index}
+                      type="button"
                       onClick={() => onSendMessage(prompt)}
                       disabled={isLoading}
                       className="rounded-lg border border-border bg-card px-4 py-2 text-sm transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
@@ -226,25 +229,26 @@ export function AIChatBox({
           <ScrollArea className="h-full">
             <div className="flex flex-col space-y-4 p-4">
               {displayMessages.map((message, index) => {
-                // Apply min-height to last message only if NOT loading (when loading, the loading indicator gets it)
-                const isLastMessage = index === displayMessages.length - 1;
-                const shouldApplyMinHeight =
-                  isLastMessage && !isLoading && minHeightForLastMessage > 0;
+                // Info notification messages (focus removed, etc.)
+                if (message.role === "info") {
+                  return (
+                    <div key={index} className="flex justify-center">
+                      <span className="text-[11px] text-muted-foreground bg-muted px-3 py-1 rounded-full border border-border/50">
+                        {message.content}
+                      </span>
+                    </div>
+                  );
+                }
 
                 return (
                   <div
                     key={index}
                     className={cn(
-                      "flex gap-3",
+                      "flex gap-3 group",
                       message.role === "user"
                         ? "justify-end items-start"
                         : "justify-start items-start"
                     )}
-                    style={
-                      shouldApplyMinHeight
-                        ? { minHeight: `${minHeightForLastMessage}px` }
-                        : undefined
-                    }
                   >
                     {message.role === "assistant" && (
                       <div className="size-8 shrink-0 mt-1 rounded-full bg-primary/10 flex items-center justify-center">
@@ -252,23 +256,50 @@ export function AIChatBox({
                       </div>
                     )}
 
-                    <div
-                      className={cn(
-                        "max-w-[80%] rounded-lg px-4 py-2.5",
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-foreground"
-                      )}
-                    >
-                      {message.role === "assistant" ? (
-                        <div className="prose prose-sm dark:prose-invert max-w-none">
-                          <Streamdown>{message.content}</Streamdown>
-                        </div>
-                      ) : (
-                        <p className="whitespace-pre-wrap text-sm">
-                          {message.content}
-                        </p>
-                      )}
+                    <div className={cn("flex flex-col max-w-[80%]", message.role === "user" ? "items-end" : "items-start")}>
+                      <div
+                        className={cn(
+                          "rounded-lg px-4 py-2.5",
+                          message.role === "user"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-foreground"
+                        )}
+                      >
+                        {message.role === "assistant" ? (
+                          <div className="prose prose-base dark:prose-invert max-w-none text-[15px]">
+                            <Streamdown components={streamdownComponents}>{cleanNonGeorgianText(message.content)}</Streamdown>
+                          </div>
+                        ) : (
+                          <p className="whitespace-pre-wrap text-base">
+                            {message.content}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Timestamp + copy button */}
+                      <div className={cn(
+                        "flex items-center gap-1.5 mt-0.5 px-1",
+                        message.role === "user" ? "flex-row-reverse" : "flex-row"
+                      )}>
+                        {message.timestamp && (
+                          <span className="text-[10px] text-muted-foreground">
+                            {formatTime(message.timestamp)}
+                          </span>
+                        )}
+                        {message.role === "assistant" && (
+                          <button
+                            type="button"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
+                            onClick={() => {
+                              navigator.clipboard.writeText(message.content).catch(() => {});
+                            }}
+                            aria-label={copyLabel}
+                            title={copyLabel}
+                          >
+                            <Copy className="size-3 text-muted-foreground" />
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     {message.role === "user" && (
@@ -280,20 +311,41 @@ export function AIChatBox({
                 );
               })}
 
+              {/* Typing indicator */}
               {isLoading && (
-                <div
-                  className="flex items-start gap-3"
-                  style={
-                    minHeightForLastMessage > 0
-                      ? { minHeight: `${minHeightForLastMessage}px` }
-                      : undefined
-                  }
-                >
+                <div className="flex gap-3 justify-start items-start">
                   <div className="size-8 shrink-0 mt-1 rounded-full bg-primary/10 flex items-center justify-center">
                     <Sparkles className="size-4 text-primary" />
                   </div>
-                  <div className="rounded-lg bg-muted px-4 py-2.5">
-                    <Loader2 className="size-4 animate-spin text-muted-foreground" />
+                  <div className="rounded-lg px-4 py-3 bg-muted">
+                    <div className="flex gap-1.5 items-center">
+                      <div className="size-2 rounded-full bg-foreground/40 animate-bounce [animation-delay:-0.3s]" />
+                      <div className="size-2 rounded-full bg-foreground/40 animate-bounce [animation-delay:-0.15s]" />
+                      <div className="size-2 rounded-full bg-foreground/40 animate-bounce" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Error state */}
+              {error && !isLoading && (
+                <div className="flex gap-3 justify-start items-start">
+                  <div className="size-8 shrink-0 mt-1 rounded-full bg-destructive/10 flex items-center justify-center">
+                    <AlertCircle className="size-4 text-destructive" />
+                  </div>
+                  <div className="rounded-lg px-4 py-2.5 bg-destructive/10 text-destructive max-w-[80%]">
+                    <p className="text-sm">{errorMessage}</p>
+                    {onRetry && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={onRetry}
+                        className="mt-2 text-destructive border-destructive/30 hover:bg-destructive/10"
+                      >
+                        {retryLabel}
+                      </Button>
+                    )}
                   </div>
                 </div>
               )}
@@ -304,18 +356,18 @@ export function AIChatBox({
 
       {/* Input Area */}
       <form
-        ref={inputAreaRef}
         onSubmit={handleSubmit}
-        className="flex gap-2 p-4 border-t bg-background/50 items-end"
+        className="flex gap-2 p-4 border-t bg-background/50 items-end shrink-0"
       >
         <Textarea
           ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          className="flex-1 max-h-32 resize-none min-h-9"
+          placeholder={activePlaceholder}
+          className="flex-1 max-h-32 resize-none min-h-9 text-base"
           rows={1}
+          aria-label={headerTitle}
         />
         <Button
           type="submit"

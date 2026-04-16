@@ -41,7 +41,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-sans: "DM Sans", "Noto Sans Georgian", system-ui, -apple-system, sans-serif;
 
   /* GrantKit category colors */
   --color-cat-medical: oklch(0.55 0.2 260);
@@ -51,12 +51,13 @@
   --color-cat-startup: oklch(0.55 0.17 165);
 
   /* GrantKit brand — shared across themes */
-  --color-brand-green: oklch(0.65 0.2 145);
-  --color-brand-green-hover: oklch(0.6 0.22 145);
+  /* emerald-500 (#10B981) range — less aggressive than green-500 */
+  --color-brand-green: oklch(0.696 0.17 162);
+  --color-brand-green-hover: oklch(0.636 0.18 162);
   --color-navy: oklch(0.28 0.05 255);
   --color-navy-light: oklch(0.35 0.06 255);
-  --color-cta-green: oklch(0.65 0.2 145);
-  --color-cta-green-hover: oklch(0.6 0.22 145);
+  --color-cta-green: oklch(0.696 0.17 162);
+  --color-cta-green-hover: oklch(0.636 0.18 162);
 
   /* Hero section semantic tokens */
   --color-hero-bg: var(--hero-bg);
@@ -65,41 +66,41 @@
   --color-hero-overlay: var(--hero-overlay);
 }
 
-/* ☀️ SUN THEME (Light / Warm Cream) */
+/* ☀️ SUN THEME (Light / Clean White) */
 :root {
   --radius: 0.625rem;
 
-  /* Core surfaces */
-  --background: oklch(0.985 0.003 90);
-  --foreground: oklch(0.15 0.02 255);
+  /* Core surfaces — clean white, no warm beige tint */
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.148 0.026 257);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.02 255);
+  --card-foreground: oklch(0.148 0.026 257);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 255);
+  --popover-foreground: oklch(0.148 0.026 257);
 
   /* Primary: deep navy */
   --primary: oklch(0.28 0.05 255);
   --primary-foreground: oklch(0.98 0 0);
 
-  /* Secondary: warm light */
-  --secondary: oklch(0.965 0.005 90);
+  /* Secondary: very light gray */
+  --secondary: oklch(0.975 0 0);
   --secondary-foreground: oklch(0.35 0.04 255);
 
-  /* Muted: soft warm gray */
-  --muted: oklch(0.955 0.005 90);
-  --muted-foreground: oklch(0.48 0.02 255);
+  /* Muted: soft neutral gray */
+  --muted: oklch(0.975 0 0);
+  --muted-foreground: oklch(0.522 0.014 255);
 
-  /* Accent: subtle warm tint */
-  --accent: oklch(0.955 0.008 90);
-  --accent-foreground: oklch(0.15 0.02 255);
+  /* Accent: subtle tint */
+  --accent: oklch(0.97 0.004 255);
+  --accent-foreground: oklch(0.148 0.026 257);
 
   /* Destructive */
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
 
-  /* Borders & inputs */
-  --border: oklch(0.915 0.008 90);
-  --input: oklch(0.915 0.008 90);
+  /* Borders & inputs — gray-200 cool tone (#E5E7EB) */
+  --border: oklch(0.922 0.003 255);
+  --input: oklch(0.922 0.003 255);
   --ring: oklch(0.55 0.15 255);
 
   /* Charts */
@@ -129,37 +130,37 @@
 /* 🌙 MOON THEME (Dark / Deep Navy) */
 .dark {
   /* Core surfaces */
-  --background: oklch(0.14 0.025 255);
-  --foreground: oklch(0.93 0.005 250);
-  --card: oklch(0.18 0.025 255);
-  --card-foreground: oklch(0.93 0.005 250);
-  --popover: oklch(0.18 0.025 255);
-  --popover-foreground: oklch(0.93 0.005 250);
+  --background: oklch(17% .015 255);
+  --foreground: oklch(93% .005 250);
+  --card: oklch(23% .018 255);
+  --card-foreground: oklch(93% .005 250);
+  --popover: oklch(23% .018 255);
+  --popover-foreground: oklch(93% .005 250);
 
-  /* Primary: bright accent */
-  --primary: oklch(0.65 0.2 145);
-  --primary-foreground: oklch(0.15 0.02 255);
+  /* Primary: emerald accent (matches brand-green) */
+  --primary: oklch(69.6% .17 162);
+  --primary-foreground: oklch(15% .02 255);
 
   /* Secondary: dark slate */
-  --secondary: oklch(0.22 0.025 255);
-  --secondary-foreground: oklch(0.85 0.01 250);
+  --secondary: oklch(25% .018 255);
+  --secondary-foreground: oklch(85% .01 250);
 
   /* Muted: subtle dark */
-  --muted: oklch(0.2 0.02 255);
-  --muted-foreground: oklch(0.6 0.02 250);
+  --muted: oklch(22% .015 255);
+  --muted-foreground: oklch(65% .015 250);
 
   /* Accent: dark blue-gray */
-  --accent: oklch(0.22 0.03 255);
-  --accent-foreground: oklch(0.93 0.005 250);
+  --accent: oklch(25% .022 255);
+  --accent-foreground: oklch(93% .005 250);
 
   /* Destructive */
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
 
   /* Borders & inputs */
-  --border: oklch(0.26 0.025 255);
-  --input: oklch(0.26 0.025 255);
-  --ring: oklch(0.65 0.2 145);
+  --border: oklch(32% .018 255);
+  --input: oklch(32% .018 255);
+  --ring: oklch(69.6% .17 162);
 
   /* Charts */
   --chart-1: oklch(0.65 0.18 260);
@@ -169,13 +170,13 @@
   --chart-5: oklch(0.65 0.15 165);
 
   /* Sidebar */
-  --sidebar: oklch(0.16 0.025 255);
-  --sidebar-foreground: oklch(0.93 0.005 250);
-  --sidebar-accent: oklch(0.22 0.03 255);
-  --sidebar-accent-foreground: oklch(0.93 0.005 250);
-  --sidebar-border: oklch(0.26 0.025 255);
-  --sidebar-ring: oklch(0.65 0.2 145);
-  --sidebar-primary: oklch(0.65 0.2 145);
+  --sidebar: oklch(15% .015 255);
+  --sidebar-foreground: oklch(93% .005 250);
+  --sidebar-accent: oklch(25% .022 255);
+  --sidebar-accent-foreground: oklch(93% .005 250);
+  --sidebar-border: oklch(30% .018 255);
+  --sidebar-ring: oklch(0.696 0.17 162);
+  --sidebar-primary: oklch(0.696 0.17 162);
   --sidebar-primary-foreground: oklch(0.15 0.02 255);
 
   /* Hero section */
@@ -191,9 +192,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+    font-family: "DM Sans", "Noto Sans Georgian", system-ui, -apple-system, sans-serif;
     -webkit-tap-highlight-color: transparent;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    /* No always-on transition — theme toggle uses JS to suppress mass repaints */
   }
   /* Safe area for devices with notch/home indicator */
   .safe-area-bottom {
@@ -262,8 +263,155 @@
     animation: slide-up 0.3s ease-out;
   }
 
-  /* Theme transition for smooth switching */
+  /* Interactive element transitions — NOT used for theme switching */
   .theme-transition {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  /* ===== Hero GRANTKIT brand text ===== */
+  .hero-brand-text {
+    display: block;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+  }
+  .hero-sage {
+    color: oklch(0.65 0.06 155);
+  }
+  .dark .hero-sage {
+    color: oklch(0.55 0.08 160);
+  }
+
+  /* ===== Hero animated gradient blobs (CSS-only, no JS) ===== */
+  .hero-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(64px);
+    pointer-events: none;
+  }
+  .hero-blob-1 {
+    width: 420px;
+    height: 420px;
+    top: -120px;
+    left: -100px;
+    background: oklch(0.696 0.17 162 / 0.10);
+    animation: blob-float-1 18s ease-in-out infinite;
+  }
+  .hero-blob-2 {
+    width: 360px;
+    height: 360px;
+    bottom: -80px;
+    right: -100px;
+    background: oklch(0.65 0.06 155 / 0.08);
+    animation: blob-float-2 22s ease-in-out infinite;
+  }
+
+  @keyframes blob-float-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%       { transform: translate(20px, -20px) scale(1.06); }
+    66%       { transform: translate(-15px, 15px) scale(0.96); }
+  }
+  @keyframes blob-float-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%       { transform: translate(-30px, 20px) scale(1.08); }
+  }
+  @keyframes blob-float-3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    40%       { transform: translate(25px, -15px) scale(1.04); }
+    80%       { transform: translate(-10px, 10px) scale(0.95); }
+  }
+
+  /* ===== Mapbox GL overrides ===== */
+  /* Hide Mapbox logo (text attribution kept for ToS compliance) */
+  .mapboxgl-ctrl-logo {
+    display: none !important;
+  }
+  /* Compact attribution styling */
+  .mapboxgl-ctrl-attrib {
+    font-size: 10px !important;
+    background: transparent !important;
+  }
+  .dark .mapboxgl-ctrl-attrib {
+    color: oklch(0.7 0 0) !important;
+  }
+  /* Navigation control — match app theme */
+  .mapboxgl-ctrl-group {
+    border-radius: var(--radius-md) !important;
+    overflow: hidden;
+    border: 1px solid transparent !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+  }
+  .dark .mapboxgl-ctrl-group {
+    background-color: oklch(0.2 0.015 255) !important;
+    border-color: oklch(0.3 0.02 255) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+  }
+  .dark .mapboxgl-ctrl-group button {
+    background-color: oklch(0.2 0.015 255) !important;
+    border-bottom-color: oklch(0.3 0.02 255) !important;
+  }
+  .dark .mapboxgl-ctrl-group button .mapboxgl-ctrl-icon {
+    filter: invert(1) opacity(0.8) !important;
+  }
+  .dark .mapboxgl-ctrl-group button:hover {
+    background-color: oklch(0.28 0.02 255) !important;
+  }
+
+  /* ===== Grant map marker popups ===== */
+  .grant-map-popup .mapboxgl-popup-content {
+    background: oklch(1 0 0);
+    color: oklch(0.148 0.026 257);
+    border-radius: 8px;
+    padding: 8px 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    font-family: "DM Sans", "Noto Sans Georgian", system-ui, sans-serif;
+    font-size: 12px;
+    max-width: 220px;
+    pointer-events: none;
+  }
+  .dark .grant-map-popup .mapboxgl-popup-content {
+    background: oklch(0.2 0.015 255);
+    color: oklch(0.93 0.005 250);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  }
+  .grant-map-popup .mapboxgl-popup-tip {
+    border-top-color: oklch(1 0 0) !important;
+  }
+  .dark .grant-map-popup .mapboxgl-popup-tip {
+    border-top-color: oklch(0.2 0.015 255) !important;
+  }
+  .grant-popup-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .grant-popup-inner strong {
+    font-weight: 600;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .grant-popup-inner span {
+    font-size: 11px;
+    opacity: 0.65;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ===== Respect reduced motion preference ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-blob {
+      animation: none !important;
+    }
+    /* Framer Motion respects this via its built-in hook,
+       but also suppress any remaining CSS animations */
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

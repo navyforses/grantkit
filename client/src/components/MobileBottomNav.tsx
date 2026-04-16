@@ -8,11 +8,16 @@ import { Home, Search, LayoutDashboard, User, Shield, Sparkles } from "lucide-re
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLoginUrl } from "@/const";
+import { trpc } from "@/lib/trpc";
 
 export default function MobileBottomNav() {
   const [location] = useLocation();
   const { user, isAuthenticated } = useAuth();
   const { t } = useLanguage();
+  const { data: profile, isLoading: profileLoading } = trpc.onboarding.getProfile.useQuery(undefined, {
+    enabled: isAuthenticated,
+    retry: false,
+  });
 
   const isAdmin = user?.role === "admin";
 
@@ -41,7 +46,7 @@ export default function MobileBottomNav() {
         ]
       : []),
     {
-      href: isAuthenticated ? "/dashboard" : getLoginUrl(),
+      href: isAuthenticated ? (profileLoading ? "/dashboard" : (profile?.profileCompletedAt ? "/dashboard" : "/onboarding")) : getLoginUrl(),
       icon: LayoutDashboard,
       label: t.nav.dashboard,
       active: location === "/dashboard",
@@ -76,6 +81,7 @@ export default function MobileBottomNav() {
               <a
                 key={tab.label}
                 href={tab.href}
+                aria-current={tab.active ? "page" : undefined}
                 className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
                   tab.active
                     ? "text-brand-green"
@@ -91,6 +97,7 @@ export default function MobileBottomNav() {
             <Link
               key={tab.label}
               href={tab.href}
+              aria-current={tab.active ? "page" : undefined}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
                 tab.active
                   ? "text-brand-green"

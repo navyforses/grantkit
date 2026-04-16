@@ -22,6 +22,7 @@ export default function LanguageSwitcher() {
   return (
     <div ref={ref} className="relative">
       <button
+        type="button"
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium
           bg-muted hover:bg-muted text-foreground/80 transition-colors border border-border"
@@ -37,13 +38,14 @@ export default function LanguageSwitcher() {
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
+              type="button"
               onClick={() => {
                 setLanguage(lang.code);
                 setOpen(false);
               }}
               className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors
                 ${language === lang.code
-                  ? "bg-emerald-50 text-emerald-700 font-semibold"
+                  ? "bg-brand-green/10 text-brand-green font-semibold"
                   : "text-foreground/80 hover:bg-secondary"
                 }`}
             >

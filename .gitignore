@@ -117,3 +117,23 @@ client/public/__manus__/version.json
 
 # GitNexus knowledge graph (local-only, regenerated via `pnpm gitnexus:analyze`)
 .gitnexus/
+
+# Python bytecode cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Go module cache (when fetched locally)
+/root/
+
+# Archived development artifacts
+_archive/
+
+# Pending grant imports — tracked for daily discovery commits
+# pending-imports/
+
+# Manus development logs
+.manus/
+
+# Generated audit reports (scripts/)
+scripts/*.json

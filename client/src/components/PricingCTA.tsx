@@ -36,7 +36,7 @@ export default function PricingCTA({
     },
   });
 
-  const baseStyles = "inline-flex items-center gap-2 font-semibold rounded-lg transition-all duration-200 group cursor-pointer";
+  const baseStyles = "inline-flex items-center gap-2 font-semibold rounded-full transition-all duration-200 group cursor-pointer hover:scale-[1.02] active:scale-[0.99]";
   const sizeStyles = size === "large"
     ? "px-8 py-4 text-base"
     : "px-6 py-3 text-sm";
@@ -68,6 +68,7 @@ export default function PricingCTA({
 
   return (
     <button
+      type="button"
       onClick={handleClick}
       className={`${baseStyles} ${sizeStyles} ${variantStyles} ${className}`}
     >

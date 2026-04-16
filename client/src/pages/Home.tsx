@@ -9,9 +9,9 @@ import {
   ArrowRight,
   Calendar,
   Check,
+  ChevronDown,
   Clock,
   Globe,
-  HelpCircle,
   Lock,
   Mail,
   Search,
@@ -35,17 +35,18 @@ import { trpc } from "@/lib/trpc";
 import { catalogItems } from "@/data/catalogData";
 import { useMemo } from "react";
 
+// Scroll animation: trigger when 10% of the element is visible.
 const fadeInUp = {
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-100px", amount: 0.05 },
-  transition: { duration: 0.5, ease: "easeOut" as const },
+  viewport: { once: true, amount: 0.1 },
+  transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as const },
 };
 
 const stagger = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.05 },
+  viewport: { once: true, amount: 0.1 },
 };
 
 export default function Home() {
@@ -131,7 +132,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background theme-transition">
+    <div className="min-h-screen flex flex-col bg-background">
       <SEO
         title={t.seo.homeTitle}
         description={t.seo.homeDescription}
@@ -145,68 +146,67 @@ export default function Home() {
       <Navbar />
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(https://d2xsxph8kpxj0f.cloudfront.net/310519663102724389/ne96tB4yURpkfMNLLJuy9T/hero-bg-gHR255Ajhp8t6NjNb5USUg.webp)`,
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-hero-bg/90 via-hero-bg/85 to-hero-bg/90" />
-        {/* Mobile: tighter padding. Desktop: generous */}
-        <div className="relative container py-12 md:py-28 lg:py-32">
-          <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              <span className="inline-flex items-center gap-2 text-xs md:text-sm font-medium text-brand-green bg-brand-green/10 border border-brand-green/20 rounded-full px-3 py-1 md:px-4 md:py-1.5 mb-4 md:mb-6">
-                <Globe className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                {t.hero.badge}
-              </span>
-              {/* Mobile: smaller text. Desktop: large */}
-              <h1 className="text-3xl md:text-5xl lg:text-[56px] font-bold text-hero-text leading-[1.1] tracking-tight mb-3 md:mb-5">
-                {t.hero.title}
-                <span className="text-brand-green">{t.hero.titleAccent}</span>
-              </h1>
-              <p className="text-base md:text-xl text-hero-muted leading-relaxed mb-6 md:mb-8 max-w-2xl">
-                {t.hero.subtitle}
-              </p>
-              {/* Mobile: full-width CTA stack */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                <PricingCTA text={t.hero.cta} size="large" className="w-full sm:w-auto justify-center" />
-                <a
-                  href="/catalog"
-                  className="inline-flex items-center justify-center gap-2 text-sm font-medium text-hero-muted hover:text-hero-text transition-colors py-3 sm:py-0"
-                >
-                  {t.hero.seeCatalog}
-                  <ArrowRight className="w-4 h-4" />
-                </a>
-              </div>
-            </motion.div>
-          </div>
+      <section className="relative overflow-hidden bg-background">
+        {/* Animated gradient blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="hero-blob hero-blob-1" />
+          <div className="hero-blob hero-blob-2" />
+        </div>
 
-          {/* Stats — 2x2 grid on mobile, 4-col on desktop */}
+        <div className="relative container py-20 md:py-32 lg:py-40">
+          {/* SEO */}
+          <h1 className="sr-only">{t.hero.title}{t.hero.titleAccent}</h1>
+
+          {/* ── GRANTKIT branding ── */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            className="text-center mb-10 md:mb-14 select-none"
+            aria-hidden="true"
+          >
+            <span className="hero-brand-text text-[clamp(4rem,14vw,11rem)] font-bold leading-none tracking-tighter">
+              <span className="text-brand-green">GRANT</span>
+              <span className="hero-sage">KIT</span>
+            </span>
+          </motion.div>
+
+          {/* ── CTA only ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-            className="mt-10 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            className="text-center"
+          >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <PricingCTA text={t.hero.cta} size="large" className="w-full sm:w-auto justify-center" />
+              <a
+                href="/catalog"
+                className="inline-flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-3 sm:py-0"
+              >
+                {t.hero.seeCatalog}
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Stats row */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="mt-16 md:mt-24 flex items-center justify-center gap-10 md:gap-16 text-center"
           >
             {[
-              { icon: Globe, label: t.hero.statCountriesLabel, value: t.hero.statCountries },
-              { icon: Shield, label: t.hero.statMedicalLabel, value: t.hero.statMedical },
-              { icon: Zap, label: t.hero.statFinancialLabel, value: t.hero.statFinancial },
-              { icon: Calendar, label: t.hero.statUpdatedLabel, value: t.hero.statUpdated },
+              { value: t.hero.statGrants, label: t.hero.statGrantsLabel },
+              { value: t.hero.statCountries, label: t.hero.statCountriesLabel },
+              { value: t.hero.statMedical, label: t.hero.statMedicalLabel },
+              { value: t.hero.statFinancial, label: t.hero.statFinancialLabel },
+              { value: t.hero.statUpdated, label: t.hero.statUpdatedLabel },
             ].map((stat) => (
-              <div
-                key={stat.label}
-                className="bg-card/60 backdrop-blur-sm border border-border rounded-xl px-4 py-3 md:px-5 md:py-4"
-              >
-                <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-brand-green mb-1.5 md:mb-2" />
-                <p className="text-xl md:text-2xl font-bold text-hero-text">{stat.value}</p>
-                <p className="text-xs md:text-sm text-hero-muted/60 leading-tight">{stat.label}</p>
+              <div key={stat.label}>
+                <p className="text-xl md:text-3xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs md:text-sm text-muted-foreground/50 mt-1">{stat.label}</p>
               </div>
             ))}
           </motion.div>
@@ -254,7 +254,7 @@ export default function Home() {
                 <motion.div
                   key={i}
                   {...stagger}
-                  transition={{ duration: 0.4, delay: i * 0.15 }}
+                  transition={{ duration: 0.4, delay: i * 0.1 }}
                   className="relative text-center flex-shrink-0 w-[75vw] md:w-auto snap-center"
                 >
                   {/* Connector line — desktop only */}
@@ -298,7 +298,7 @@ export default function Home() {
                 key={i}
                 {...stagger}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="bg-card border border-border rounded-xl p-5 md:p-6 hover:shadow-sm transition-shadow"
+                className="bg-card border border-border rounded-xl p-5 md:p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
               >
                 <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center mb-3 md:mb-4">
                   <pain.icon className="w-5 h-5 text-red-500" />
@@ -337,7 +337,7 @@ export default function Home() {
                   key={i}
                   {...stagger}
                   transition={{ duration: 0.4, delay: i * 0.08 }}
-                  className="text-center p-5 md:p-6 rounded-xl border border-border hover:border-foreground/20 hover:shadow-sm transition-all flex-shrink-0 w-[60vw] sm:w-[45vw] lg:w-auto snap-center"
+                  className="text-center p-5 md:p-6 rounded-xl border border-border hover:border-foreground/20 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex-shrink-0 w-[60vw] sm:w-[45vw] lg:w-auto snap-center"
                 >
                   <span className="text-2xl md:text-3xl mb-2 md:mb-3 block">{item.icon}</span>
                   <h3 className="font-semibold text-foreground mb-1.5 md:mb-2 text-sm md:text-base">{item.title}</h3>
@@ -489,36 +489,38 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Plan toggle */}
-          <div className="flex items-center justify-center gap-2 md:gap-3 mb-8 md:mb-10">
-            <button
-              onClick={() => setPricingPlan("monthly")}
-              className={`px-4 md:px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                pricingPlan === "monthly"
-                  ? "bg-primary text-white shadow-sm"
-                  : "bg-card text-muted-foreground border border-border hover:border-foreground/20"
-              }`}
-            >
-              {t.pricing.monthly}
-            </button>
-            <button
-              onClick={() => setPricingPlan("annual")}
-              className={`px-4 md:px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                pricingPlan === "annual"
-                  ? "bg-primary text-white shadow-sm"
-                  : "bg-card text-muted-foreground border border-border hover:border-foreground/20"
-              }`}
-            >
-              {t.pricing.annual}
-              <span className="text-xs bg-brand-green text-white px-2 py-0.5 rounded-full font-semibold">
-                {t.pricing.annualSave}
-              </span>
-            </button>
+          {/* Plan toggle — animated pill selector */}
+          <div className="flex items-center justify-center mb-8 md:mb-10">
+            <div className="bg-card border border-border rounded-full p-1 flex items-center">
+              <button
+                onClick={() => setPricingPlan("monthly")}
+                className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  pricingPlan === "monthly"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t.pricing.monthly}
+              </button>
+              <button
+                onClick={() => setPricingPlan("annual")}
+                className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                  pricingPlan === "annual"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t.pricing.annual}
+                <span className="text-xs bg-brand-green text-white px-2 py-0.5 rounded-full font-semibold">
+                  {t.pricing.annualSave}
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Pricing card */}
           <motion.div {...fadeInUp} className="max-w-md mx-auto">
-            <div className="bg-card border-2 border-primary rounded-2xl p-6 md:p-8 shadow-lg">
+            <div className="relative bg-card rounded-2xl p-6 md:p-8 shadow-lg ring-2 ring-brand-green/40 shadow-brand-green/10">
               <div className="text-center mb-5 md:mb-6">
                 <div className="flex items-baseline justify-center gap-1">
                   <span className="text-4xl md:text-5xl font-bold text-foreground">
@@ -576,15 +578,15 @@ export default function Home() {
                   className="w-full flex items-center justify-between px-4 md:px-6 py-3.5 md:py-4 text-left active:bg-secondary md:hover:bg-secondary transition-colors"
                 >
                   <span className="font-medium text-foreground pr-4 text-sm md:text-base">{faq.q}</span>
-                  <HelpCircle
-                    className={`w-5 h-5 shrink-0 text-muted-foreground/60 transition-transform duration-200 ${
-                      openFaq === i ? "rotate-180 text-primary" : ""
+                  <ChevronDown
+                    className={`w-5 h-5 shrink-0 text-muted-foreground/60 transition-transform duration-300 ease-in-out ${
+                      openFaq === i ? "rotate-180 text-brand-green" : ""
                     }`}
                   />
                 </button>
                 <div
-                  className={`overflow-hidden transition-all duration-300 ${
-                    openFaq === i ? "max-h-40" : "max-h-0"
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    openFaq === i ? "max-h-64" : "max-h-0"
                   }`}
                 >
                   <p className="px-4 md:px-6 pb-4 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>

@@ -211,6 +211,7 @@ export default function FilterBar({
               />
               {searchQuery && (
                 <button
+                  type="button"
                   onClick={() => onSearchChange("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 active:text-muted-foreground"
                   aria-label="Clear search"
@@ -227,6 +228,7 @@ export default function FilterBar({
               const label = cat.value === "all" ? t.categories.all : tCategory(cat.value);
               return (
                 <button
+                  type="button"
                   key={cat.value}
                   onClick={() => onCategoryChange(cat.value)}
                   className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border flex-shrink-0 ${
@@ -247,6 +249,7 @@ export default function FilterBar({
             <div className="flex items-center gap-2">
               {/* Filter button — opens bottom sheet */}
               <button
+                type="button"
                 onClick={() => setShowMobileSheet(true)}
                 className={`inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border transition-all ${
                   totalActiveFilters > 0
@@ -313,6 +316,7 @@ export default function FilterBar({
                 <div className="flex items-center gap-3">
                   {totalActiveFilters > 0 && (
                     <button
+                      type="button"
                       onClick={clearAllFilters}
                       className="text-xs text-red-500 font-medium"
                     >
@@ -320,6 +324,7 @@ export default function FilterBar({
                     </button>
                   )}
                   <button
+                    type="button"
                     onClick={() => setShowMobileSheet(false)}
                     className="w-8 h-8 flex items-center justify-center rounded-full bg-muted active:bg-muted"
                   >
@@ -340,6 +345,7 @@ export default function FilterBar({
                     { value: "resource", label: t.catalog.typeResource },
                   ].map((opt) => (
                     <button
+                      type="button"
                       key={opt.value}
                       onClick={() => onTypeChange(opt.value as TypeValue)}
                       className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
@@ -441,6 +447,7 @@ export default function FilterBar({
                   <div className="flex flex-wrap gap-2">
                     {FUNDING_TYPE_VALUES.map((val) => (
                       <button
+                        type="button"
                         key={val}
                         onClick={() => onFundingTypeChange(val)}
                         className={`px-3.5 py-2 rounded-xl text-sm font-medium border transition-all ${
@@ -463,6 +470,7 @@ export default function FilterBar({
                   <div className="flex flex-wrap gap-2">
                     {B2_VISA_VALUES.map((val) => (
                       <button
+                        type="button"
                         key={val}
                         onClick={() => onB2VisaChange(val)}
                         className={`px-3.5 py-2 rounded-xl text-sm font-medium border transition-all ${
@@ -483,6 +491,7 @@ export default function FilterBar({
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">{t.filters.deadline}</label>
                   <button
+                    type="button"
                     onClick={() => onHasDeadlineChange(!hasDeadline)}
                     className={`w-full py-3 rounded-xl text-sm font-medium border transition-all ${
                       hasDeadline
@@ -497,6 +506,7 @@ export default function FilterBar({
 
               {/* Apply button */}
               <button
+                type="button"
                 onClick={() => setShowMobileSheet(false)}
                 className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold active:bg-primary transition-colors"
               >
@@ -523,7 +533,7 @@ export default function FilterBar({
                   className="w-full text-sm border border-border rounded-lg pl-9 pr-8 h-9 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/50"
                 />
                 {searchQuery && (
-                  <button onClick={() => onSearchChange("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground" aria-label="Clear">
+                  <button type="button" onClick={() => onSearchChange("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground" aria-label="Clear">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 )}
@@ -601,6 +611,7 @@ export default function FilterBar({
 
             {/* More Filters toggle */}
             <button
+              type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
               className={`inline-flex items-center gap-1.5 px-3 h-9 text-sm font-medium rounded-lg border transition-all shrink-0 ${
                 activeAdvancedCount > 0
@@ -682,6 +693,7 @@ export default function FilterBar({
 
                 {onHasDeadlineChange && (
                   <button
+                    type="button"
                     onClick={() => onHasDeadlineChange(!hasDeadline)}
                     className={`text-sm px-3 h-9 rounded-lg border transition-all ${
                       hasDeadline ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border"
@@ -693,6 +705,7 @@ export default function FilterBar({
 
                 {activeAdvancedCount > 0 && (
                   <button
+                    type="button"
                     onClick={() => {
                       onFundingTypeChange?.("all");
                       onTargetDiagnosisChange?.("all");

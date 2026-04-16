@@ -29,6 +29,8 @@ export interface Translations {
     statFinancialLabel: string;
     statUpdated: string;
     statUpdatedLabel: string;
+    statGrants: string;
+    statGrantsLabel: string;
   };
 
   // Problem section
@@ -251,6 +253,20 @@ export interface Translations {
     b2Eligible: string;
     usResidentsOnly: string;
     contactToConfirm: string;
+    // Map filter panel
+    allCountries: string;
+    allRegions: string;
+    category: string;
+    searchCountries: string;
+    searchRegions: string;
+    searchCities: string;
+    searchCategories: string;
+    clearAllFilters: string;
+    openFilters: string;
+    closeFilters: string;
+    nFound: string;
+    noResults: string;
+    typeMore: string;
   };
 
   // Grant detail page
@@ -296,6 +312,10 @@ export interface Translations {
     open: string;
     b2VisaOK: string;
     more: string;
+    grant: string;
+    resource: string;
+    eligibility: string;
+    close: string;
   };
 
   // Profile page
@@ -326,6 +346,93 @@ export interface Translations {
     backToHome: string;
     adminAccess: string;
     planName: string;
+    stepCountry: string;
+    stepCountryHint: string;
+    stepPurpose: string;
+    stepPurposeHint: string;
+    stepNeeds: string;
+    stepNeedsHint: string;
+    stepComplete: string;
+    stepCompleteHint: string;
+    purposeEducation: string;
+    purposeMedical: string;
+    purposeBusiness: string;
+    scholarship: string;
+    researchFunding: string;
+    certification: string;
+    languageCourse: string;
+    childSchool: string;
+    specializedTreatment: string;
+    childTreatment: string;
+    clinicalTrial: string;
+    chronicDisease: string;
+    mentalHealth: string;
+    dental: string;
+    maternity: string;
+    freeClinic: string;
+    medicationAccess: string;
+    rehabilitation: string;
+    startup: string;
+    businessExpansion: string;
+    employment: string;
+    freelance: string;
+    investment: string;
+    needVisa: string;
+    needHousing: string;
+    needFood: string;
+    needTransport: string;
+    needLegal: string;
+    needLanguage: string;
+    needBanking: string;
+    studentVisa: string;
+    medicalVisa: string;
+    workVisa: string;
+    startupVisa: string;
+    investorVisa: string;
+    nomadVisa: string;
+    temporaryHousing: string;
+    longTermRental: string;
+    hospitalNearby: string;
+    foodBank: string;
+    foodSubsidy: string;
+    hospitalTransport: string;
+    dailyTransport: string;
+    flightFunding: string;
+    fundingSection: string;
+    needsSection: string;
+    recentUpdates: string;
+    newResource: string;
+    updatedResource: string;
+    closedResource: string;
+    completeProfileBanner: string;
+    completeProfileCta: string;
+    editProfile: string;
+    noFundingResults: string;
+    noNeedsResults: string;
+    saveProfileError: string;
+    next: string;
+    back: string;
+    skip: string;
+    finish: string;
+  };
+
+  country: {
+    US: string;
+    GB: string;
+    DE: string;
+    FR: string;
+    NL: string;
+    IE: string;
+    ES: string;
+    IT: string;
+    PT: string;
+    SE: string;
+    AT: string;
+    BE: string;
+    DK: string;
+    FI: string;
+    EE: string;
+    CA: string;
   };
 
   // Admin panel
@@ -761,6 +868,126 @@ export interface Translations {
     reload: string;
   };
 
+  // AI Assistant page
+  aiAssistant: {
+    title: string;
+    subtitle: string;
+    description: string;
+    liveDatabase: string;
+    countries: string;
+    grants: string;
+    placeholder: string;
+    newChat: string;
+    emptyState: string;
+    copy: string;
+    error: string;
+    retry: string;
+    panelTitle: string;
+    suggestedPrompts: string[];
+    focusLabel: string;
+    focusRemoved: string;
+    askAboutGrant: string;
+    fullInfo: string;
+    removeFocus: string;
+    focusPlaceholder: string;
+    chatTab: string;
+    grantSuggestedPrompts: string[];
+  };
+
+  // Resource system (Supabase multi-category resources)
+  resources: {
+    // Type tabs
+    typeGrant: string
+    typeSocial: string
+    typeMedical: string
+    // Filter labels
+    filterCountry: string
+    filterStatus: string
+    filterAmount: string
+    filterDeadline: string
+    filterCategory: string
+    filterEligibility: string
+    filterTargetGroup: string
+    filterClearAll: string
+    filterClinicalPhase: string
+    filterDiseaseArea: string
+    resultsCount: string
+    // Status labels
+    statusOpen: string
+    statusClosed: string
+    statusUpcoming: string
+    statusOngoing: string
+    statusArchived: string
+    // Target groups
+    targetChildren: string
+    targetDisabled: string
+    targetVeterans: string
+    targetImmigrants: string
+    targetStudents: string
+    targetElderly: string
+    // Eligibility
+    eligibilityIndividual: string
+    eligibilityOrganization: string
+    eligibilityBoth: string
+    // Detail page
+    applyNow: string
+    sourceWebsite: string
+    viewDetails: string
+    relatedResources: string
+    amountRange: string
+    deadlineLabel: string
+    eligibilityLabel: string
+    locationLabel: string
+    categoriesLabel: string
+    clinicalPhaseLabel: string
+    nctIdLabel: string
+    diseaseAreasLabel: string
+    featuredBadge: string
+    verifiedBadge: string
+    rollingDeadline: string
+    noDeadline: string
+    daysLeft: string
+    dayLeft: string
+    closingSoon: string
+    // Empty / error
+    noResults: string
+    noResultsHint: string
+    errorLoading: string
+    // Sort/filter UI (new Supabase system)
+    filterByCategory: string
+    filterByCountry: string
+    filterByStatus: string
+    sortBy: string
+    sortNewest: string
+    sortDeadline: string
+    sortAmountHigh: string
+    sortAmountLow: string
+    sortName: string
+    sortRelevance: string
+    // Short-form labels (aliases for existing labels, used in sort/filter chips)
+    deadline: string
+    eligibility: string
+    individual: string
+    organization: string
+    both: string
+    targetGroups: string
+    children: string
+    disabled: string
+    veterans: string
+    immigrants: string
+    students: string
+    elderly: string
+    clinicalPhase: string
+    diseaseArea: string
+    clearFilters: string
+    // Admin resource management
+    addResource: string
+    editResource: string
+    importCSV: string
+    importSuccess: string
+    importErrors: string
+  }
+
   // SEO meta tags
   seo: {
     homeTitle: string;
@@ -778,5 +1005,21 @@ export interface Translations {
     termsDescription: string;
     refundTitle: string;
     refundDescription: string;
+  };
+
+  smartSearch: {
+    tab: string;
+    tabFilters: string;
+    placeholder: string;
+    hint: string;
+    searching: string;
+    resultsCount: string;
+    noResults: string;
+    poweredBy: string;
+    relevance: string;
+    tryExample: string;
+    example1: string;
+    example2: string;
+    example3: string;
   };
 }

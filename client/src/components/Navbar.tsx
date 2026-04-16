@@ -29,7 +29,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="hidden md:block bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-30 theme-transition">
+    <nav className="hidden md:block bg-background/80 backdrop-blur-md shadow-sm sticky top-0 z-30">
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -45,26 +45,33 @@ export default function Navbar() {
         <div className="flex items-center gap-3 sm:gap-5">
           <Link
             href="/"
-            className={`text-sm font-medium transition-colors ${
-              location === "/" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+            aria-current={location === "/" ? "page" : undefined}
+            className={`relative text-sm transition-colors pb-0.5 ${
+              location === "/"
+                ? "font-semibold text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.nav.home}
           </Link>
           <Link
             href="/catalog"
-            className={`text-sm font-medium transition-colors ${
-              location === "/catalog" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+            aria-current={location === "/catalog" ? "page" : undefined}
+            className={`relative text-sm transition-colors pb-0.5 ${
+              location === "/catalog"
+                ? "font-semibold text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.nav.catalog}
           </Link>
           <Link
             href="/ai-assistant"
-            className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${
+            aria-current={location === "/ai-assistant" ? "page" : undefined}
+            className={`relative inline-flex items-center gap-1.5 text-sm transition-colors pb-0.5 ${
               location === "/ai-assistant"
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground"
+                ? "font-semibold text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                : "font-medium text-muted-foreground hover:text-foreground"
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -79,6 +86,7 @@ export default function Navbar() {
                   {/* Dashboard link */}
                   <Link
                     href="/dashboard"
+                    aria-current={location === "/dashboard" ? "page" : undefined}
                     className={`inline-flex items-center gap-1 text-sm font-medium transition-colors ${
                       location === "/dashboard" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
@@ -112,6 +120,7 @@ export default function Navbar() {
                       </span>
                     </Link>
                     <button
+                      type="button"
                       onClick={handleLogout}
                       className="text-muted-foreground hover:text-destructive transition-colors p-1"
                       title={t.nav.logout}

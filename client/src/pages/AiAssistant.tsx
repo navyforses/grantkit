@@ -1,65 +1,155 @@
 /*
  * AI Grant Assistant — powered by MCP Toolbox for Databases
  *
- * Natural-language interface to the live GrantKit MySQL database.
- * The page wires the existing AIChatBox component to the server-side
- * ai.grantChat tRPC mutation which drives an agentic tool-use loop via
- * googleapis/mcp-toolbox and the Forge LLM.
+ * Full-viewport split-view layout:
+ *  - Collapsible header (hides after first message)
+ *  - Left: chat box (full width on mobile, 58% on desktop when grants found)
+ *  - Right: grant cards panel (desktop only, slides in when grants are extracted)
  */
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { AIChatBox, type Message } from "@/components/AIChatBox";
+import { GrantCard, parseGrantsFromResponse, type ParsedGrant } from "@/components/GrantCard";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { Sparkles, Database, Globe, Search } from "lucide-react";
-
-const SUGGESTED_PROMPTS = [
-  "Find cancer treatment grants in the USA",
-  "What housing assistance is available in Canada?",
-  "Show me education grants for low-income families",
-  "Find disability support grants in the UK",
-  "Are there grants available for rare disease patients?",
-  "What grants exist for medical expenses in Europe?",
-];
-
-const FEATURE_PILLS = [
-  { icon: Database, label: "Live database" },
-  { icon: Globe, label: "29 countries" },
-  { icon: Search, label: "640+ grants" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { buildGrantFocusContext } from "@/lib/grantFocusContext";
 
 export default function AiAssistant() {
+  const { t, language } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [lastInput, setLastInput] = useState<{
+    message: string;
+    history: { role: "user" | "assistant"; content: string }[];
+  } | null>(null);
+  const [extractedGrants, setExtractedGrants] = useState<ParsedGrant[]>([]);
+  const [focusedGrant, setFocusedGrant] = useState<ParsedGrant | null>(null);
+  const [selectedGrantName, setSelectedGrantName] = useState<string | null>(null);
 
-  const grantChat = trpc.ai.grantChat.useMutation({
-    onSuccess: (data) => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.reply },
-      ]);
+  // Keep a ref so callbacks always see the current focusedGrant without stale closure
+  const focusedGrantRef = useRef<ParsedGrant | null>(null);
+  focusedGrantRef.current = focusedGrant;
+
+  // Lock body scroll for full-viewport chat layout
+  useEffect(() => {
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
+
+  const grantChat = trpc.ai.grantChat.useMutation();
+
+  // Refs so callbacks stay stable regardless of mutation object identity
+  const mutateRef = useRef(grantChat.mutate);
+  mutateRef.current = grantChat.mutate;
+  const resetRef = useRef(grantChat.reset);
+  resetRef.current = grantChat.reset;
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+
+  const handleClearMessages = useCallback(() => {
+    setMessages([]);
+    setLastInput(null);
+    setExtractedGrants([]);
+    setFocusedGrant(null);
+    setSelectedGrantName(null);
+    resetRef.current();
+  }, []);
+
+  const handleSend = useCallback(
+    (content: string) => {
+      const history = messagesRef.current
+        .filter(
+          (m): m is { role: "user" | "assistant"; content: string; timestamp?: Date } =>
+            m.role === "user" || m.role === "assistant"
+        )
+        .map((m) => ({ role: m.role, content: m.content }));
+
+      // Show original message in chat; enrich for API if in focus mode
+      const currentFocus = focusedGrantRef.current;
+      const apiMessage = currentFocus
+        ? buildGrantFocusContext(content, currentFocus, language)
+        : content;
+
+      const input = { message: apiMessage, history };
+      setLastInput(input);
+      setMessages((prev) => [...prev, { role: "user", content, timestamp: new Date() }]);
+      mutateRef.current(input, {
+        onSuccess: (data) => {
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: data.reply, timestamp: new Date() },
+          ]);
+          // Only update extracted grants when not in focus mode
+          if (!focusedGrantRef.current) {
+            setExtractedGrants(parseGrantsFromResponse(data.reply));
+          }
+        },
+      });
     },
-    onError: () => {
+    [language]
+  );
+
+  const handleRetry = useCallback(() => {
+    if (!lastInput) return;
+    mutateRef.current(lastInput, {
+      onSuccess: (data) => {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.reply, timestamp: new Date() },
+        ]);
+        if (!focusedGrantRef.current) {
+          setExtractedGrants(parseGrantsFromResponse(data.reply));
+        }
+      },
+    });
+  }, [lastInput]);
+
+  /** Called when a grant card is clicked in the sidebar */
+  const handleGrantSelect = useCallback((grant: ParsedGrant) => {
+    // Toggle: clicking the already-selected card deselects it
+    setSelectedGrantName((prev) => (prev === grant.name ? null : grant.name));
+  }, []);
+
+  /** Called when "Ask about this grant" button in the expanded card is clicked */
+  const handleAskAbout = useCallback((grant: ParsedGrant) => {
+    setFocusedGrant(grant);
+    setSelectedGrantName(grant.name);
+  }, []);
+
+  /** Clears focus mode, collapses the sidebar card, and appends an info notification */
+  const handleClearFocus = useCallback(() => {
+    const name = focusedGrantRef.current?.name;
+    setFocusedGrant(null);
+    setSelectedGrantName(null);
+    if (name) {
       setMessages((prev) => [
         ...prev,
         {
-          role: "assistant",
-          content:
-            "Sorry, I encountered an error searching the database. " +
-            "Please try again or browse the [grant catalog](/catalog) directly.",
+          role: "info",
+          content: `${t.aiAssistant.focusRemoved}: ${name}`,
+          timestamp: new Date(),
         },
       ]);
-    },
-  });
+    }
+  }, [t.aiAssistant.focusRemoved]);
 
-  const handleSend = (content: string) => {
-    setMessages((prev) => [...prev, { role: "user", content }]);
-    grantChat.mutate({ message: content });
-  };
+  const FEATURE_PILLS = [
+    { icon: Database, label: t.aiAssistant.liveDatabase },
+    { icon: Globe, label: t.aiAssistant.countries },
+    { icon: Search, label: t.aiAssistant.grants },
+  ];
+
+  const hasMessages = messages.length > 0;
+  const hasGrants = extractedGrants.length > 0;
 
   return (
-    <div className="min-h-screen flex flex-col bg-secondary">
+    <div className="h-[calc(100dvh-3.5rem)] md:h-[100dvh] overflow-hidden flex flex-col bg-secondary">
       <SEO
         title="AI Grant Assistant — GrantKit"
         description="Find grants and support resources using natural language. Powered by AI and the live GrantKit database of 640+ grants across 29 countries."
@@ -67,57 +157,121 @@ export default function AiAssistant() {
       />
       <Navbar />
 
-      <main className="flex-1 container py-6 md:py-8 flex flex-col gap-5 max-w-4xl">
-        {/* ── Page header ───────────────────────────────────────────── */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-foreground leading-tight">
-                AI Grant Assistant
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                Powered by MCP Toolbox · Live database search
-              </p>
-            </div>
-          </div>
+      <main className="flex-1 min-h-0 container py-2 md:py-3 pb-20 md:pb-3 flex flex-col gap-3 max-w-7xl overflow-hidden">
 
-          <p className="text-sm text-muted-foreground max-w-2xl">
-            Describe what you're looking for — a condition, location, type of support —
-            and the assistant will search the live database to find matching grants
-            and resources.
-          </p>
+        {/* ── Collapsible header — hides after first message ── */}
+        <div
+          className={cn(
+            "shrink-0 overflow-hidden transition-all duration-300 ease-in-out",
+            hasMessages ? "max-h-0 opacity-0" : "max-h-[200px] opacity-100"
+          )}
+        >
+          <div className="flex flex-col gap-2 pb-1">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-foreground leading-tight">
+                  {t.aiAssistant.title}
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  {t.aiAssistant.subtitle}
+                </p>
+              </div>
+            </div>
 
-          {/* Feature pills */}
-          <div className="flex flex-wrap gap-2">
-            {FEATURE_PILLS.map(({ icon: Icon, label }) => (
-              <span
-                key={label}
-                className="inline-flex items-center gap-1.5 text-xs font-medium bg-card border border-border text-muted-foreground px-3 py-1 rounded-full"
-              >
-                <Icon className="w-3 h-3" />
-                {label}
-              </span>
-            ))}
+            <p className="text-sm text-muted-foreground max-w-2xl">
+              {t.aiAssistant.description}
+            </p>
+
+            <div className="flex flex-wrap gap-2">
+              {FEATURE_PILLS.map(({ icon: Icon, label }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium bg-card border border-border text-muted-foreground px-3 py-1 rounded-full"
+                >
+                  <Icon className="w-3 h-3" />
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* ── Chat box ──────────────────────────────────────────────── */}
-        <AIChatBox
-          messages={messages}
-          onSendMessage={handleSend}
-          isLoading={grantChat.isPending}
-          placeholder='Ask about grants… e.g. "cancer treatment grants in USA"'
-          className="flex-1"
-          height="calc(100vh - 300px)"
-          emptyStateMessage="Ask me about grants, funding, or support resources"
-          suggestedPrompts={SUGGESTED_PROMPTS}
-        />
-      </main>
+        {/* ── Content: chat + optional grants panel ── */}
+        <div className="flex-1 min-h-0 flex gap-4 overflow-hidden">
 
-      <Footer />
+          {/* Chat box */}
+          <AIChatBox
+            messages={messages}
+            onSendMessage={handleSend}
+            onClearMessages={handleClearMessages}
+            isLoading={grantChat.isPending}
+            error={grantChat.isError}
+            onRetry={handleRetry}
+            placeholder={t.aiAssistant.placeholder}
+            className={cn(
+              "min-h-0 flex-1",
+              hasGrants && "lg:flex-none lg:w-[58%]"
+            )}
+            headerTitle={t.aiAssistant.title}
+            emptyStateMessage={t.aiAssistant.emptyState}
+            newChatLabel={t.aiAssistant.newChat}
+            copyLabel={t.aiAssistant.copy}
+            errorMessage={t.aiAssistant.error}
+            retryLabel={t.aiAssistant.retry}
+            suggestedPrompts={t.aiAssistant.suggestedPrompts}
+            focusedGrant={focusedGrant}
+            onClearFocus={handleClearFocus}
+            focusLabel={t.aiAssistant.focusLabel}
+            removeFocusLabel={t.aiAssistant.removeFocus}
+            focusPlaceholder={t.aiAssistant.focusPlaceholder}
+          />
+
+          {/* ── Grants panel — desktop only, slides in when grants are extracted ── */}
+          <AnimatePresence>
+            {hasGrants && (
+              <motion.div
+                key="grants-panel"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 30 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="hidden lg:flex flex-col w-[42%] shrink-0 min-h-0 gap-3 overflow-hidden"
+              >
+                {/* Panel header */}
+                <div className="shrink-0 flex items-center gap-2 px-1">
+                  <h2 className="text-sm font-semibold text-foreground">
+                    {t.aiAssistant.panelTitle} ({extractedGrants.length})
+                  </h2>
+                </div>
+
+                {/* Staggered grant cards */}
+                <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-2 pr-1">
+                  {extractedGrants.map((grant, i) => (
+                    <motion.div
+                      key={`${grant.name}-${i}`}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay: i * 0.06 }}
+                    >
+                      <GrantCard
+                        grant={grant}
+                        isSelected={selectedGrantName === grant.name}
+                        onSelect={handleGrantSelect}
+                        onAskAbout={handleAskAbout}
+                        askAboutLabel={t.aiAssistant.askAboutGrant}
+                        fullInfoLabel={t.aiAssistant.fullInfo}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </main>
     </div>
   );
 }
