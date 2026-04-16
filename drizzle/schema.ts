@@ -1,4 +1,4 @@
-import { boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar, uniqueIndex, index } from "drizzle-orm/mysql-core";
+import { boolean, decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar, uniqueIndex, index } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -115,6 +115,14 @@ export const grants = mysqlTable("grants", {
   state: varchar("state", { length: 128 }),
   city: varchar("city", { length: 128 }),
 
+  // Geocoding fields (Phase 1)
+  address: varchar("address", { length: 500 }),
+  latitude: decimal("latitude", { precision: 10, scale: 7 }),
+  longitude: decimal("longitude", { precision: 10, scale: 7 }),
+  serviceArea: varchar("serviceArea", { length: 100 }),
+  officeHours: varchar("officeHours", { length: 200 }),
+  geocodedAt: timestamp("geocodedAt"),
+
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -123,6 +131,8 @@ export const grants = mysqlTable("grants", {
   index("grants_country_idx").on(table.country),
   index("grants_type_idx").on(table.type),
   index("grants_state_idx").on(table.state),
+  index("grants_lat_lng_idx").on(table.latitude, table.longitude),
+  index("grants_service_area_idx").on(table.serviceArea),
 ]);
 
 export type Grant = typeof grants.$inferSelect;
