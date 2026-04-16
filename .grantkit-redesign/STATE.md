@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-16T23:45:00Z
-**Current phase:** Phase 0 — complete (Mira). Ready for Phase 1 (Dmitri).
+**Last updated:** 2026-04-17T00:15:00Z
+**Current phase:** Phase 1 — complete (Dmitri). Ready for Phase 2 (Yuki).
 **Project start:** 2026-04-16
 
 ---
@@ -80,7 +80,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | # | Phase | Status | Owner | Completed |
 |---|-------|--------|-------|-----------|
 | 0 | Email/password authentication | 🟢 Complete | Mira | 2026-04-16 |
-| 1 | Database schema migration | ⚪ Not started | — | — |
+| 1 | Database schema migration | 🟢 Complete | Dmitri | 2026-04-17 |
 | 2 | Geocoding pipeline (Mapbox) | ⚪ Not started | — | — |
 | 3 | Mapbox setup + LocationMap component | ⚪ Not started | — | — |
 | 4A | CatalogToolbar + QuickChips | ⚪ Not started | — | — |
@@ -182,13 +182,50 @@ No blockers from Phase 0.
 ---
 
 ### Phase 1 — Database Migration
-**Status:** Not started
-**Team:** (to be assigned)
-**Files planned:**
-- drizzle/schema.ts (grants table: address, lat, lng, serviceArea, etc.)
-- server/routers.ts (return new fields in catalog.list/detail)
+**Status:** 🟢 Complete (2026-04-17)
+**Team:** Dmitri (Database Architect)
 
-**Log:** —
+**Files changed:**
+- `drizzle/schema.ts` — added `decimal` import; added 6 new columns
+  to `grants` table + 2 new indexes
+- `drizzle/0012_mean_kree.sql` — auto-generated migration (6 ADD
+  COLUMN, 2 CREATE INDEX)
+- `server/routers.ts` — `catalog.list`, `catalog.detail`, and
+  `catalog.preview` updated to return all 6 new fields
+
+**Exact columns added (all nullable):**
+| Column | Type | Notes |
+|--------|------|-------|
+| `address` | varchar(500) | Street address for geocoding input |
+| `latitude` | decimal(10,7) | Map pin latitude; 7 decimal places ≈ 1 cm precision |
+| `longitude` | decimal(10,7) | Map pin longitude |
+| `serviceArea` | varchar(100) | e.g. "USA nationwide", "Tennessee only" |
+| `officeHours` | varchar(200) | e.g. "Mon-Fri 8am-5pm CT" |
+| `geocodedAt` | timestamp | Null = never geocoded; set by Yuki's pipeline |
+
+**Indexes added:**
+- `grants_lat_lng_idx` on `(latitude, longitude)` — for future
+  bounding-box spatial queries in Phase 3
+- `grants_service_area_idx` on `(serviceArea)` — for filtering
+
+**Audit decisions:**
+- `phone`, `email` (as "grantEmail"), `website` already existed —
+  not duplicated. `websiteUrl` field in spec was silently mapped to
+  existing `website` (text) column.
+- `decimal(10,7)` chosen over `float`/`double` to avoid IEEE 754
+  rounding errors in lat/lng comparisons.
+- Lat/lng exposed in API as strings (Drizzle returns decimal as
+  string in mysql2); `null` when not yet geocoded.
+
+**Verification gates:**
+- `pnpm check` → **0 TypeScript errors**
+- `pnpm build` → **clean** (vite + esbuild server bundle)
+- `pnpm db:push` needs to run in Railway against live DB
+  (requires `DATABASE_URL`).
+
+**Hand-off to Yuki (Phase 2):** `geocodedAt` column is ready.
+Yuki's script should write `latitude`, `longitude`, `address`
+(normalized) and stamp `geocodedAt` on each row it processes.
 
 ---
 
@@ -293,6 +330,7 @@ encountered, with owner and resolution path.)
 |------|-------|--------|-------|
 | 2026-04-16 | Init | Project state initialized | Setup agent |
 | 2026-04-16 | Phase 0 | Email/password auth shipped: schema +8 fields, 5 tRPC procedures, 5-language emails, 5 frontend pages. pnpm check + build clean. | Mira |
+| 2026-04-17 | Phase 1 | Grants schema extended: +6 geocoding columns, +2 indexes, migration 0012 generated. catalog.list/detail/preview updated. pnpm check + build clean. | Dmitri |
 
 ---
 
