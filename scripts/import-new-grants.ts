@@ -52,7 +52,7 @@ function makeItemId(name: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
-    .slice(0, 80);
+    .slice(0, 60);
 }
 
 async function callLLM(
@@ -289,9 +289,9 @@ async function notifySubscribers(db: mysql.Connection, importedGrants: GrantEmai
 
   // Get active subscribers
   const [rows] = await db.execute(
-    "SELECT email, unsubscribeToken FROM newsletter_subscribers WHERE isActive = 1"
+    "SELECT email FROM newsletter_subscribers WHERE isActive = 1"
   );
-  const subscribers = rows as { email: string; unsubscribeToken: string }[];
+  const subscribers = rows as { email: string }[];
 
   if (subscribers.length === 0) {
     console.log("\n📭 აქტიური newsletter subscribers არ არის");
