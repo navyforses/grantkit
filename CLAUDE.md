@@ -214,7 +214,7 @@ RESEND_API_KEY
 
 ## 5-ფაზიანი განვითარების გეგმა — პროგრესი
 
-> ბოლო განახლება: 2026-04-15 (Phase 3 აუდიტი დასრულდა)
+> ბოლო განახლება: 2026-04-16 (Phase 3 metadata enrichment დასრულდა)
 
 ### ფაზა 0: გაწმენდა + Deploy Fix ✅
 - ✅ `package.json` merge conflict გამოსწორდა (commit `5137dab`)
@@ -236,35 +236,32 @@ RESEND_API_KEY
 - ✅ UI strings — 100% coverage ყველა 5 ენაში
 - ✅ DB translations — 629/629 გრანტი, 4 ენა (FR/ES/RU/KA) — **100%**
 
-### ფაზა 3: მონაცემთა გამდიდრება — მიმდინარე
-> აუდიტი: 2026-04-15 (Railway DB console-იდან)
+### ფაზა 3: მონაცემთა გამდიდრება ✅ (metadata) / ⚠️ (descriptions)
+> ბოლო განახლება: 2026-04-16
 
 **Core fields — სტატუსი:**
 - ✅ category — 629/629 (100%)
 - ✅ country — 629/629 (100%)
 - ✅ eligibility — 629/629 (100%)
 - ✅ description (არსებობა) — 629/629 (100%)
-- ⚠️ description (< 50 სიმბოლო) — **349/629 მოკლეა (55%)** → `pnpm enrich:descriptions`
+- ⚠️ description (< 50 სიმბოლო) — **349/629 მოკლეა (55%)** → `pnpm enrich:descriptions` (ბლოკირებულია: api.grantedai.com მიუწვდომელია ლოკალურად)
 
-**Enriched fields — ცარიელია:**
-- ❌ deadline — 0/629
-- ❌ applicationProcess — 0/629
-- ❌ targetDiagnosis — 0/629
-- ❌ ageRange — 0/629
-- ❌ geographicScope — 0/629
-- ❌ documentsRequired — 0/629
-- → `pnpm enrich:metadata` (სკრიპტი: `scripts/enrich-metadata.ts`)
+**Enriched fields — შევსებულია:**
+- ✅ deadline — 629/629 (100%)
+- ✅ applicationProcess — 629/629 (100%)
+- ✅ targetDiagnosis — 629/629 (100%)
+- ✅ ageRange — 629/629 (100%)
+- ✅ geographicScope — 629/629 (100%)
+- ✅ documentsRequired — 629/629 (100%)
+- გაშვებული: `pnpm enrich:metadata` (OpenRouter API, google/gemini-2.0-flash-001)
 
-**გასაკეთებელი:**
-1. Railway Variables-ში დაამატე: `BUILT_IN_FORGE_API_URL`, `BUILT_IN_FORGE_API_KEY`
-2. `railway run pnpm enrich:descriptions` — მოკლე description-ების გამდიდრება
-3. `railway run pnpm enrich:metadata` — enriched ველების შევსება
-4. საბოლოო აუდიტი Railway DB console-იდან
+**დარჩენილი:**
+- ⚠️ `enrich:descriptions` — მოკლე description-ების გამდიდრება ბლოკირებულია (api.grantedai.com მიუწვდომელია ლოკალურიდან და Railway-დან). საჭიროა ალტერნატიული მიდგომა (LLM-ით description generation)
 
 ### ფაზა 4: Daily Discovery Routine
 - ❌ **არ დაწყებულა**
 - ყოველდღიური ავტომატური გრანტების მოძიება
 
 ### შემდეგი ნაბიჯი
-**ფაზა 3 დასასრულებლად:** `railway run pnpm enrich:descriptions` + `railway run pnpm enrich:metadata`
+**ფაზა 3 დასასრულებლად:** `enrich:descriptions` — საჭიროა GrantedAI API-ს ალტერნატივა (LLM-ით description generation)
 **ფაზა 4 დასაწყებად:** ყოველდღიური გრანტების მოძიების ავტომატიზაცია

@@ -69,7 +69,7 @@ async function callForge(messages: { role: string; content: string }[], retries 
       const model = IS_GOOGLE_AI
         ? "gemini-2.0-flash"
         : IS_OPENROUTER
-          ? "google/gemini-2.0-flash-exp:free"
+          ? "google/gemini-2.0-flash-001"
           : "gemini-2.5-flash";
 
       const body: Record<string, unknown> = {
