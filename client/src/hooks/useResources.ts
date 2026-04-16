@@ -205,7 +205,7 @@ interface RealtimeCallbacks {
 
 export function useResourcesRealtime({ onInsert, onUpdate, onDelete }: RealtimeCallbacks) {
   useEffect(() => {
-    if (!USE_SUPABASE) return
+    if (!USE_SUPABASE || !supabase) return
 
     const channel = supabase
       .channel('resources-live')
@@ -227,7 +227,7 @@ export function useResourcesRealtime({ onInsert, onUpdate, onDelete }: RealtimeC
       .subscribe()
 
     return () => {
-      supabase.removeChannel(channel)
+      if (supabase) supabase.removeChannel(channel)
     }
   }, [onInsert, onUpdate, onDelete])
 }

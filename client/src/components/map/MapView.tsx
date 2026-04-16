@@ -75,8 +75,10 @@ export default function MapView({ className = "", onMapReady, ariaLabel = "Inter
     const resizeObserver = new ResizeObserver(() => map.resize());
     resizeObserver.observe(container);
 
-    // Notify parent when map finishes loading
-    map.once("load", () => onMapReady?.(map));
+    // Notify parent as soon as the style is loaded (not waiting for all tiles).
+    // This ensures isStyleLoaded() returns true when useMapMarkers effect runs,
+    // avoiding the race condition where style.load fires before the hook registers.
+    map.once("style.load", () => onMapReady?.(map));
 
     // Handle tile / style load errors (e.g. Mapbox 503, network offline)
     map.on("error", (e) => {

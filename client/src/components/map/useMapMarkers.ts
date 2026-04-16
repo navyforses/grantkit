@@ -53,8 +53,12 @@ function esc(s: string): string {
 function toGeoJSON(items: CatalogItem[]): GeoJSON.FeatureCollection<GeoJSON.Point> {
   const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
   for (const item of items) {
-    // Prefer direct lat/lng (Supabase resources) over geocoded lookup
-    const c = (item.latitude != null && item.longitude != null)
+    // Prefer direct lat/lng (Supabase resources) over geocoded lookup.
+    // Guard against NaN: `NaN != null` is true, so we must also check isFinite.
+    const hasDirectCoords =
+      item.latitude != null && item.longitude != null &&
+      isFinite(item.latitude as number) && isFinite(item.longitude as number);
+    const c = hasDirectCoords
       ? [item.longitude, item.latitude] as [number, number]
       : resolveItemCoords(item.country, item.state, item.city);
     if (!c) {
@@ -178,11 +182,16 @@ function fitToFeatures(
 
   for (const f of features) {
     const [lng, lat] = f.geometry.coordinates;
+    // Skip any coordinates that are NaN or ±Infinity (defensive guard)
+    if (!isFinite(lng) || !isFinite(lat)) continue;
     if (lng < minLng) minLng = lng;
     if (lng > maxLng) maxLng = lng;
     if (lat < minLat) minLat = lat;
     if (lat > maxLat) maxLat = lat;
   }
+
+  // Nothing finite found — bail out to avoid passing NaN/Infinity to Mapbox
+  if (!isFinite(minLng) || !isFinite(minLat)) return;
 
   // All points at exactly the same location — just centre there
   if (minLng === maxLng && minLat === maxLat) {
@@ -341,8 +350,12 @@ export function useMapMarkers(
       map.on("mouseleave", LYR_CLUSTER, clusterLeave);
     };
 
-    map.on("style.load", setup);
-    if (map.isStyleLoaded()) setup();
+    // MapView fires onMapReady from inside the style.load handler, so by the
+    // time this effect runs the style is guaranteed to be loaded. Call setup()
+    // unconditionally here — do NOT gate on isStyleLoaded() which is known to
+    // return stale values (mapbox-gl GitHub #8691, #6708, #9779).
+    map.on("style.load", setup); // re-runs on every theme switch (dark ↔ light)
+    setup();                     // initial load — style already loaded
 
     return () => {
       map.off("style.load", setup);

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import Login from "@/pages/Login";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
@@ -12,6 +12,8 @@ import MobileHeader from "./components/MobileHeader";
 import MobileBottomNav from "./components/MobileBottomNav";
 import Home from "./pages/Home";
 import OnboardingModal from "./components/OnboardingModal";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { ONBOARDING_STATE_STORAGE_KEY } from "@/components/onboarding/OnboardingFlow";
 
 // Heavy pages — lazy-loaded so vendor-mapbox (1.7 MB) and vendor-csc (8.5 MB)
 // are NOT included in the initial JS bundle.  They only download when the user
@@ -21,6 +23,7 @@ const GrantDetail    = lazy(() => import("./pages/GrantDetail"));
 const ResourceDetail = lazy(() => import("./pages/ResourceDetail"));
 const Profile     = lazy(() => import("./pages/Profile"));
 const Dashboard   = lazy(() => import("./pages/Dashboard"));
+const Onboarding  = lazy(() => import("./pages/Onboarding"));
 const Contact     = lazy(() => import("./pages/Contact"));
 const Privacy     = lazy(() => import("./pages/Privacy"));
 const Terms       = lazy(() => import("./pages/Terms"));
@@ -48,6 +51,7 @@ function Router() {
         <Route path="/resources/:slug" component={ResourceDetail} />
         <Route path="/profile" component={Profile} />
         <Route path="/dashboard" component={Dashboard} />
+        <Route path="/onboarding" component={Onboarding} />
         <Route path="/contact" component={Contact} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
@@ -75,6 +79,20 @@ function HtmlLangSetter() {
   return null;
 }
 
+function OnboardingResumeGuard() {
+  const { isAuthenticated, loading } = useAuth();
+  const [path, navigate] = useLocation();
+
+  useEffect(() => {
+    if (loading || !isAuthenticated) return;
+    if (path === "/onboarding") return;
+    const hasSavedState = Boolean(sessionStorage.getItem(ONBOARDING_STATE_STORAGE_KEY));
+    if (hasSavedState) navigate("/onboarding");
+  }, [isAuthenticated, loading, navigate, path]);
+
+  return null;
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -84,6 +102,7 @@ function App() {
             <Toaster />
             <PaddleInitializer />
             <HtmlLangSetter />
+            <OnboardingResumeGuard />
             <OnboardingModal />
             {/* Mobile-only header (hidden on md+) */}
             <MobileHeader />

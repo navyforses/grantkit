@@ -5,7 +5,7 @@ import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_
 import {
   updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats,
   getUserById, getSavedGrantIds, toggleSavedGrant, subscribeNewsletter,
-  completeOnboarding, listGrants, getGrantByItemId, getGrantTranslations,
+  completeOnboarding, updateUserProfile, getUserProfile, listGrants, getGrantByItemId, getGrantTranslations,
   getBulkGrantTranslations, createGrant, updateGrant, deleteGrant,
   hardDeleteGrant, upsertGrantTranslations, getGrantStats, getRelatedGrants,
   getActiveNewsletterSubscribers, getNewsletterSubscriberCount, exportAllGrants,
@@ -24,6 +24,8 @@ import {
   mapExternalGrantToLocal,
 } from "./externalGrants";
 import { runGrantAssistant } from "./toolboxClient";
+import { expandQuery } from "./queryExpander";
+import { searchGrantsMultiTerm } from "./smartSearch";
 import { z } from "zod";
 
 export const appRouter = router({
@@ -312,6 +314,54 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return await getDistinctCities(input.state);
       }),
+
+    // Smart Search — AI-powered multilingual search
+    smartSearch: publicProcedure
+      .input(z.object({
+        query: z.string().min(2).max(200),
+        country: z.string().optional(),
+        category: z.string().optional(),
+        limit: z.number().min(1).max(50).default(20),
+      }))
+      .query(async ({ input }) => {
+        try {
+          const expanded = await expandQuery(input.query);
+
+          const results = await searchGrantsMultiTerm(expanded.terms, {
+            country: input.country,
+            category: input.category,
+            limit: input.limit,
+          });
+
+          return {
+            results: results.map(r => ({
+              id: r.itemId,
+              name: r.name,
+              organization: r.organization || "",
+              description: r.description || "",
+              category: r.category,
+              country: r.country,
+              amount: r.amount || "",
+              deadline: r.deadline || "",
+              website: r.website || "",
+              eligibility: r.eligibility || "",
+              fundingType: r.fundingType || "",
+              state: r.state || "",
+              city: r.city || "",
+            })),
+            meta: {
+              originalQuery: expanded.original,
+              detectedLanguage: expanded.detectedLanguage,
+              englishQuery: expanded.englishQuery,
+              resultCount: results.length,
+              termsUsed: expanded.terms.length,
+            },
+          };
+        } catch (err) {
+          console.error("[smartSearch] Error:", err);
+          return { results: [], meta: { originalQuery: input.query, detectedLanguage: "en", englishQuery: input.query, resultCount: 0, termsUsed: 0 } };
+        }
+      }),
   }),
 
   // ===== Newsletter =====
@@ -337,6 +387,81 @@ export const appRouter = router({
       await completeOnboarding(ctx.user.id);
       return { success: true };
     }),
+
+    saveProfile: protectedProcedure
+      .input(z.object({
+        targetCountry: z.string(),
+        purposes: z.array(z.string()),
+        purposeDetails: z.array(z.string()),
+        needs: z.array(z.string()),
+        needDetails: z.array(z.string()),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        await updateUserProfile(ctx.user.id, {
+          targetCountry: input.targetCountry,
+          purposes: JSON.stringify(input.purposes),
+          purposeDetails: JSON.stringify(input.purposeDetails),
+          needs: JSON.stringify(input.needs),
+          needDetails: JSON.stringify(input.needDetails),
+        });
+        await completeOnboarding(ctx.user.id);
+        return { success: true };
+      }),
+
+    getProfile: protectedProcedure
+      .query(async ({ ctx }) => {
+        const profile = await getUserProfile(ctx.user.id);
+        if (!profile) return null;
+
+        const parseArrayField = (value: string | null): string[] => {
+          if (!value) return [];
+          try {
+            const parsed: unknown = JSON.parse(value);
+            return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+          } catch {
+            return [];
+          }
+        };
+
+        return {
+          targetCountry: profile.targetCountry,
+          purposes: parseArrayField(profile.purposes),
+          purposeDetails: parseArrayField(profile.purposeDetails),
+          needs: parseArrayField(profile.needs),
+          needDetails: parseArrayField(profile.needDetails),
+          profileCompletedAt: profile.profileCompletedAt ? profile.profileCompletedAt.toISOString() : null,
+        };
+      }),
+
+    updateProfile: protectedProcedure
+      .input(z.object({
+        targetCountry: z.string().optional(),
+        purposes: z.array(z.string()).optional(),
+        purposeDetails: z.array(z.string()).optional(),
+        needs: z.array(z.string()).optional(),
+        needDetails: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const updatePayload: {
+          targetCountry?: string;
+          purposes?: string;
+          purposeDetails?: string;
+          needs?: string;
+          needDetails?: string;
+        } = {};
+
+        if (input.targetCountry !== undefined) updatePayload.targetCountry = input.targetCountry;
+        if (input.purposes !== undefined) updatePayload.purposes = JSON.stringify(input.purposes);
+        if (input.purposeDetails !== undefined) updatePayload.purposeDetails = JSON.stringify(input.purposeDetails);
+        if (input.needs !== undefined) updatePayload.needs = JSON.stringify(input.needs);
+        if (input.needDetails !== undefined) updatePayload.needDetails = JSON.stringify(input.needDetails);
+
+        if (Object.keys(updatePayload).length > 0) {
+          await updateUserProfile(ctx.user.id, updatePayload);
+        }
+
+        return { success: true };
+      }),
   }),
 
   // ===== Admin Panel =====

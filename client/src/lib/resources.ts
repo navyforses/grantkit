@@ -75,6 +75,8 @@ async function fetchFromCatalogJson(filters: ResourceFilters): Promise<{ data: R
 // ─── Supabase query helpers ───────────────────────────────────────────────────
 
 async function fetchFromSupabase(filters: ResourceFilters): Promise<{ data: ResourceFull[]; count: number }> {
+  if (!supabase) return { data: [], count: 0 }
+
   let query = supabase
     .from('resources_full')
     .select('*', { count: 'exact' })
@@ -104,14 +106,22 @@ async function fetchFromSupabase(filters: ResourceFilters): Promise<{ data: Reso
 
   // Sorting
   const sortMap: Record<string, { column: string; ascending: boolean }> = {
-    newest: { column: 'created_at', ascending: false },
-    oldest: { column: 'created_at', ascending: true },
-    name_asc: { column: 'title', ascending: true },
-    name_desc: { column: 'title', ascending: false },
-    deadline: { column: 'deadline', ascending: true },
+    newest:      { column: 'created_at',  ascending: false },
+    oldest:      { column: 'created_at',  ascending: true },
+    name_asc:    { column: 'title',       ascending: true },
+    name_desc:   { column: 'title',       ascending: false },
+    deadline:    { column: 'deadline',    ascending: true },
+    amount_desc: { column: 'amount_max',  ascending: false },
+    amount_asc:  { column: 'amount_min',  ascending: true },
+    featured:    { column: 'is_featured', ascending: false },
   }
-  const sort = sortMap[filters.sort] ?? { column: 'created_at', ascending: false }
-  query = query.order(sort.column, { ascending: sort.ascending })
+  // relevance: only meaningful when search query is active — use search_vector ranking
+  if (filters.sort === 'relevance' && filters.search) {
+    // search_vector full-text search already ranked by ts_rank; no explicit order needed
+  } else {
+    const sort = sortMap[filters.sort] ?? { column: 'created_at', ascending: false }
+    query = query.order(sort.column, { ascending: sort.ascending })
+  }
 
   // Pagination
   const start = (filters.page - 1) * filters.limit
@@ -171,6 +181,8 @@ export async function fetchResourceBySlug(slug: string): Promise<ResourceFull | 
     return item ? mapCatalogItemToResource(item) : null
   }
 
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('resources_full')
     .select('*')
@@ -187,6 +199,8 @@ export async function fetchResourceBySlug(slug: string): Promise<ResourceFull | 
 
 export async function fetchCategories(resourceType?: ResourceType): Promise<Category[]> {
   if (!USE_SUPABASE) return []
+
+  if (!supabase) return []
 
   let query = supabase
     .from('categories')
@@ -223,6 +237,8 @@ export async function fetchCategories(resourceType?: ResourceType): Promise<Cate
 export async function fetchCountries(): Promise<Country[]> {
   if (!USE_SUPABASE) return []
 
+  if (!supabase) return []
+
   const [{ data: countries, error: ce }, { data: regions, error: re }] = await Promise.all([
     supabase.from('countries').select('*').order('name'),
     supabase.from('regions').select('*').order('name'),
@@ -250,6 +266,10 @@ export async function fetchResourceStats(): Promise<ResourceStats> {
       by_type: { GRANT: catalogItems.length, SOCIAL: 0, MEDICAL: 0 },
       by_status: { OPEN: catalogItems.length, CLOSED: 0, UPCOMING: 0, ONGOING: 0, ARCHIVED: 0 },
     }
+  }
+
+  if (!supabase) {
+    return { total: 0, by_type: { GRANT: 0, SOCIAL: 0, MEDICAL: 0 }, by_status: { OPEN: 0, CLOSED: 0, UPCOMING: 0, ONGOING: 0, ARCHIVED: 0 } }
   }
 
   const { data, error } = await supabase.from('resource_stats').select('*')

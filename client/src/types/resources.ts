@@ -46,6 +46,9 @@ export interface Resource {
 }
 
 export interface ResourceFull extends Resource {
+  purpose_tags?: string[]
+  need_tags?: string[]
+  country_codes?: string[]
   categories: {
     id: string
     name: string

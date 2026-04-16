@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
-    "build": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "build": "NODE_OPTIONS=--max-old-space-size=4096 vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js && esbuild server/migrate.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/migrate.js",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
@@ -16,7 +16,12 @@
     "gitnexus:serve": "gitnexus serve --port 4747",
     "enrich:descriptions": "tsx scripts/enrich-descriptions.ts",
     "enrich:descriptions:dry": "tsx scripts/enrich-descriptions.ts --dry-run",
-    "enrich:descriptions:deep": "tsx scripts/enrich-descriptions.ts --min-length=300 --limit=100"
+    "enrich:descriptions:deep": "tsx scripts/enrich-descriptions.ts --min-length=300 --limit=100",
+    "translate:audit": "tsx scripts/audit-translations.ts",
+    "translate:missing": "tsx scripts/translate-missing.ts",
+    "translate:missing:dry": "tsx scripts/translate-missing.ts --dry-run",
+    "enrich:metadata": "tsx scripts/enrich-metadata.ts",
+    "enrich:metadata:dry": "tsx scripts/enrich-metadata.ts --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
@@ -137,22 +142,6 @@
       "@tailwindcss/oxide",
       "@ladybugdb/core",
       "onnxruntime-node",
-      "tree-sitter",
-      "tree-sitter-c",
-      "tree-sitter-c-sharp",
-      "tree-sitter-cpp",
-      "tree-sitter-dart",
-      "tree-sitter-go",
-      "tree-sitter-java",
-      "tree-sitter-javascript",
-      "tree-sitter-kotlin",
-      "tree-sitter-php",
-      "tree-sitter-python",
-      "tree-sitter-ruby",
-      "tree-sitter-rust",
-      "tree-sitter-swift",
-      "tree-sitter-typescript",
-      "tree-sitter-cli",
       "sharp",
       "protobufjs"
     ]

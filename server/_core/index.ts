@@ -59,6 +59,11 @@ async function startServer() {
   // SEO routes (sitemap.xml, robots.txt)
   registerSeoRoutes(app);
 
+  // Health check for Railway / load balancers
+  app.get("/healthz", (_req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
+
   // Newsletter unsubscribe route (GET for email link compatibility)
   app.get("/api/newsletter/unsubscribe", async (req, res) => {
     const token = req.query.token as string;

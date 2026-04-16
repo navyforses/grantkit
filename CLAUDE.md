@@ -171,6 +171,10 @@ pnpm gitnexus:analyze          # კოდბაზის ანალიზი
 pnpm gitnexus:serve            # gitnexus MCP სერვერი
 pnpm enrich:descriptions       # GrantedAI-ით description-ების შევსება
 pnpm enrich:descriptions:dry   # dry-run (DB-ს არ ცვლის)
+pnpm enrich:metadata           # enriched ველების შევსება (deadline, appProcess...)
+pnpm enrich:metadata:dry       # dry-run (DB-ს არ ცვლის)
+pnpm translate:audit           # თარგმანების coverage აუდიტი
+pnpm translate:missing         # აკლია თარგმანების შევსება
 ```
 
 ---
@@ -205,3 +209,58 @@ RESEND_API_KEY
 6. **Soft delete:** grants-ს არასდროს hard delete — `isActive = 0` (გარდა `admin.hardDeleteGrant`)
 7. **i18n:** ახალი UI ტექსტი ყველა 5 ენაში უნდა დაემატოს (`client/src/i18n/`)
 8. **Scripts:** `scripts/` საქაღალდეში `stage*.cjs` ფაილებს **ნუ შეეხები** — ისტორიული მონაცემთა enrichment სკრიპტებია
+
+---
+
+## 5-ფაზიანი განვითარების გეგმა — პროგრესი
+
+> ბოლო განახლება: 2026-04-16 (Phase 3 metadata enrichment დასრულდა)
+
+### ფაზა 0: გაწმენდა + Deploy Fix ✅
+- ✅ `package.json` merge conflict გამოსწორდა (commit `5137dab`)
+- ✅ Vercel deploy გამოსწორდა (PR #69)
+- ✅ Root artifacts გაწმენდილია → `_archive/`
+- ✅ Railway deploy fix (PR #70): `railway.toml`, `/healthz`, resilient CMD, `static.ts` diagnostics
+
+### ფაზა 1: Onboarding + Dashboard + Smart Search ✅
+- ✅ Onboarding 3-step flow (StepCountry, StepPurpose, StepNeeds)
+- ✅ პერსონალიზებული Dashboard (funding + needs sections)
+- ✅ Smart Search (Claude Haiku + MySQL fallback, 5 ენა)
+- ✅ i18n — profile + country + smartSearch keys ყველა ენაში
+- ✅ DB migration `drizzle/0009_user_profile.sql`
+- ✅ Supabase SQL `supabase/smart-search-and-tags.sql`
+
+### ფაზა 2: თარგმანების დასრულება ✅
+- ✅ `scripts/audit-translations.ts` შექმნილია
+- ✅ `scripts/translate-missing.ts` შექმნილია (Forge API / Gemini 2.5-flash)
+- ✅ UI strings — 100% coverage ყველა 5 ენაში
+- ✅ DB translations — 629/629 გრანტი, 4 ენა (FR/ES/RU/KA) — **100%**
+
+### ფაზა 3: მონაცემთა გამდიდრება ✅
+> ბოლო განახლება: 2026-04-16
+
+**Core fields — სტატუსი:**
+- ✅ category — 629/629 (100%)
+- ✅ country — 629/629 (100%)
+- ✅ eligibility — 629/629 (100%)
+- ✅ description (არსებობა) — 629/629 (100%)
+- ✅ description (< 50 სიმბოლო) — **349/349 გამდიდრდა** (OpenRouter LLM, 2026-04-16)
+
+**Enriched fields — შევსებულია:**
+- ✅ deadline — 629/629 (100%)
+- ✅ applicationProcess — 629/629 (100%)
+- ✅ targetDiagnosis — 629/629 (100%)
+- ✅ ageRange — 629/629 (100%)
+- ✅ geographicScope — 629/629 (100%)
+- ✅ documentsRequired — 629/629 (100%)
+- გაშვებული: `pnpm enrich:metadata` (OpenRouter API, google/gemini-2.0-flash-001)
+
+**დარჩენილი:** არაფერი — ფაზა 3 სრულად დასრულებულია.
+
+### ფაზა 4: Daily Discovery Routine
+- ❌ **არ დაწყებულა**
+- ყოველდღიური ავტომატური გრანტების მოძიება
+
+### შემდეგი ნაბიჯი
+**ფაზა 3:** ✅ დასრულებულია
+**ფაზა 4 დასაწყებად:** ყოველდღიური გრანტების მოძიების ავტომატიზაცია
