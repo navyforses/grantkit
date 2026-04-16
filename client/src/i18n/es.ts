@@ -1030,4 +1030,16 @@ export const es: Translations = {
     errEmailUnverified: "Verifica tu correo antes de iniciar sesión.",
     errLocked: "Cuenta bloqueada temporalmente. Reintenta en unos minutos.",
   },
+
+  map: {
+    openInGoogle: "Abrir en Google Maps",
+    getDirections: "Cómo llegar",
+    zoomIn: "Acercar",
+    zoomOut: "Alejar",
+    locateMe: "Mi ubicación",
+    serviceArea: "área de servicio: {area}",
+    loading: "Cargando mapa…",
+    error: "Mapa no disponible",
+    noLocation: "Ubicación no publicada",
+  },
 };
