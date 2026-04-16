@@ -279,9 +279,23 @@ pnpm import:grants                # JSON-დან იმპორტი: --file
 
 **DB სტატუსი:** 637 აქტიური გრანტი (629 + 8 ახალი)
 
-**დარჩენილი:**
-- ❌ Scheduling (cron / GitHub Actions / Railway cron)
-- ❌ Newsletter notification ახალი გრანტების შესახებ
+**Newsletter notification:**
+- ✅ `--notify` ფლაგი `import-new-grants.ts`-ში — Resend API-ით batch email
+- ✅ notificationHistory DB-ში იწერება
+
+**Scheduling:**
+- ✅ `.github/workflows/daily-discovery.yml` — ყოველ დღე 08:00 UTC
+- ✅ Manual trigger: workflow_dispatch (category, country, notify inputs)
+- ⚠️ GitHub Secrets საჭიროა: `DATABASE_URL`, `ENRICHMENT_API_URL`, `ENRICHMENT_API_KEY`, `RESEND_API_KEY`
+
+**გამოყენება (ხელით):**
+```bash
+pnpm discovery                                        # ავტომატური როტაცია
+pnpm discovery -- --category=medical_treatment --country=US  # კონკრეტული
+pnpm import:grants -- --file=pending-imports/discovery-2026-04-16.json --notify
+```
 
 ### შემდეგი ნაბიჯი
-**ფაზა 4:** Scheduling + Newsletter integration
+**ფაზა 4 თითქმის დასრულებულია.** დარჩენილია:
+- GitHub Secrets-ის დამატება repo settings-ში
+- პირველი scheduled run-ის ტესტირება
