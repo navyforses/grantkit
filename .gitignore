@@ -129,7 +129,7 @@ __pycache__/
 # Archived development artifacts
 _archive/
 
-# Pending grant imports — tracked for deployment
+# Pending grant imports — tracked for daily discovery commits
 # pending-imports/
 
 # Manus development logs

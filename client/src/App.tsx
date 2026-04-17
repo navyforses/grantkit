@@ -31,6 +31,12 @@ const Refund      = lazy(() => import("./pages/Refund"));
 const Admin       = lazy(() => import("./pages/Admin"));
 const Analytics   = lazy(() => import("./pages/Analytics"));
 const AiAssistant = lazy(() => import("./pages/AiAssistant"));
+const Register        = lazy(() => import("./pages/Register"));
+const VerifyEmail     = lazy(() => import("./pages/VerifyEmail"));
+const ForgotPassword  = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword   = lazy(() => import("./pages/ResetPassword"));
+// Phase 3 verification page — only mounted in dev builds (see Router below).
+const DevMapTest      = lazy(() => import("./pages/DevMapTest"));
 
 // Blank screen (matches app background) shown while a lazy chunk downloads.
 // Avoids white flash on theme-aware pages.
@@ -45,6 +51,10 @@ function Router() {
         {/* Home and Login stay eager — they are the most common entry points */}
         <Route path="/" component={Home} />
         <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route path="/verify-email" component={VerifyEmail} />
+        <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/reset-password" component={ResetPassword} />
         {/* Everything else is lazy */}
         <Route path="/catalog" component={Catalog} />
         <Route path="/grant/:id" component={GrantDetail} />
@@ -59,6 +69,7 @@ function Router() {
         <Route path="/admin" component={Admin} />
         <Route path="/analytics" component={Analytics} />
         <Route path="/ai-assistant" component={AiAssistant} />
+        {import.meta.env.DEV && <Route path="/dev/map-test" component={DevMapTest} />}
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

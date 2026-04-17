@@ -1,7 +1,12 @@
-import { COOKIE_NAME } from "@shared/const";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
+import { sdk } from "./_core/sdk";
+import { ENV } from "./_core/env";
+import { TRPCError } from "@trpc/server";
+import bcrypt from "bcryptjs";
+import { randomBytes, randomUUID, timingSafeEqual } from "crypto";
 import {
   updateUserSubscription, listAllUsers, updateUserRole, getSubscriptionStats,
   getUserById, getSavedGrantIds, toggleSavedGrant, subscribeNewsletter,
@@ -12,11 +17,16 @@ import {
   unsubscribeByToken, createNotificationRecord, updateNotificationRecord,
   getNotificationHistory, bulkImportGrants, getDistinctStates, getDistinctCities,
   getDiversePreviewGrants,
+  getUserByEmail, createEmailPasswordUser, getUserByVerificationToken,
+  getUserByResetToken, markEmailVerified, setVerificationToken,
+  setResetPasswordToken, updatePasswordAndClearReset,
+  incrementFailedLoginAttempts, resetFailedLoginAttempts,
 } from "./db";
 import {
   sendSubscriptionEmail, sendAdminNewSubscriberNotification,
   sendBatchNewGrantNotifications, buildNewGrantsSubject,
-  type GrantEmailData,
+  sendVerificationEmail, sendPasswordResetEmail,
+  type GrantEmailData, type AuthEmailLang,
 } from "./emailService";
 import { parseCSV, parseExcel, validateBatch, type ImportParseResult } from "./importGrants";
 import {
@@ -39,6 +49,189 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+
+    // ===== Phase 0: Email/password authentication (Mira) =====
+    // Generic success/error messages avoid leaking which accounts exist.
+    // bcrypt 12 rounds + constant-time token compare for replay safety.
+
+    register: publicProcedure
+      .input(z.object({
+        email: z.string().trim().toLowerCase().email().max(320),
+        password: z.string().min(10).max(128),
+        name: z.string().trim().min(1).max(120).optional(),
+        language: z.enum(["en", "fr", "es", "ru", "ka"]).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const existing = await getUserByEmail(input.email);
+        if (existing) {
+          // Generic success — do not leak account existence.
+          // If the account exists but is unverified, silently re-send verification.
+          if (existing.passwordHash && !existing.emailVerified) {
+            const token = randomBytes(32).toString("hex");
+            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            await setVerificationToken(existing.id, token, expires);
+            const lang = (input.language ?? "en") as AuthEmailLang;
+            sendVerificationEmail(
+              { email: existing.email!, name: existing.name },
+              token,
+              ENV.appUrl,
+              lang
+            ).catch((err) => console.error("[Auth] Re-send verification failed:", err));
+          }
+          return { success: true } as const;
+        }
+
+        const passwordHash = await bcrypt.hash(input.password, 12);
+        const token = randomBytes(32).toString("hex");
+        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const openId = `email_${randomUUID()}`;
+
+        await createEmailPasswordUser({
+          openId,
+          email: input.email,
+          name: input.name ?? null,
+          passwordHash,
+          verificationToken: token,
+          verificationTokenExpires: expires,
+        });
+
+        const lang = (input.language ?? "en") as AuthEmailLang;
+        sendVerificationEmail(
+          { email: input.email, name: input.name ?? null },
+          token,
+          ENV.appUrl,
+          lang
+        ).catch((err) => console.error("[Auth] Verification email failed:", err));
+
+        return { success: true } as const;
+      }),
+
+    login: publicProcedure
+      .input(z.object({
+        email: z.string().trim().toLowerCase().email().max(320),
+        password: z.string().min(1).max(128),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const genericError = new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Invalid email or password.",
+        });
+
+        const user = await getUserByEmail(input.email);
+        if (!user || !user.passwordHash) {
+          // Constant-time dummy compare to resist user-enumeration timing attacks.
+          await bcrypt.compare(input.password, "$2a$12$" + "a".repeat(53));
+          throw genericError;
+        }
+
+        if (user.lockedUntil && user.lockedUntil.getTime() > Date.now()) {
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: "Account temporarily locked. Try again later.",
+          });
+        }
+
+        const matches = await bcrypt.compare(input.password, user.passwordHash);
+        if (!matches) {
+          const nextAttempts = (user.failedLoginAttempts ?? 0) + 1;
+          const lockUntil = nextAttempts >= 5
+            ? new Date(Date.now() + 15 * 60 * 1000)
+            : null;
+          await incrementFailedLoginAttempts(user.id, lockUntil);
+          throw genericError;
+        }
+
+        if (!user.emailVerified) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Please verify your email before signing in.",
+          });
+        }
+
+        await resetFailedLoginAttempts(user.id);
+
+        const sessionToken = await sdk.signSession({
+          openId: user.openId,
+          appId: ENV.appId,
+          name: user.name ?? user.email ?? "",
+        });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+        return { success: true } as const;
+      }),
+
+    verifyEmail: publicProcedure
+      .input(z.object({ token: z.string().min(10).max(256) }))
+      .mutation(async ({ input }) => {
+        const user = await getUserByVerificationToken(input.token);
+        if (!user || !user.verificationToken || !user.verificationTokenExpires) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired verification link." });
+        }
+
+        // Constant-time compare.
+        const a = Buffer.from(user.verificationToken);
+        const b = Buffer.from(input.token);
+        if (a.length !== b.length || !timingSafeEqual(a, b)) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired verification link." });
+        }
+
+        if (user.verificationTokenExpires.getTime() < Date.now()) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired verification link." });
+        }
+
+        await markEmailVerified(user.id);
+        return { success: true } as const;
+      }),
+
+    forgotPassword: publicProcedure
+      .input(z.object({
+        email: z.string().trim().toLowerCase().email().max(320),
+        language: z.enum(["en", "fr", "es", "ru", "ka"]).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const user = await getUserByEmail(input.email);
+        // Always return success — do not leak which emails are registered.
+        if (user && user.passwordHash) {
+          const token = randomBytes(32).toString("hex");
+          const expires = new Date(Date.now() + 60 * 60 * 1000);
+          await setResetPasswordToken(user.id, token, expires);
+          const lang = (input.language ?? "en") as AuthEmailLang;
+          sendPasswordResetEmail(
+            { email: user.email!, name: user.name },
+            token,
+            ENV.appUrl,
+            lang
+          ).catch((err) => console.error("[Auth] Password reset email failed:", err));
+        }
+        return { success: true } as const;
+      }),
+
+    resetPassword: publicProcedure
+      .input(z.object({
+        token: z.string().min(10).max(256),
+        password: z.string().min(10).max(128),
+      }))
+      .mutation(async ({ input }) => {
+        const user = await getUserByResetToken(input.token);
+        if (!user || !user.resetPasswordToken || !user.resetPasswordTokenExpires) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired reset link." });
+        }
+
+        const a = Buffer.from(user.resetPasswordToken);
+        const b = Buffer.from(input.token);
+        if (a.length !== b.length || !timingSafeEqual(a, b)) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired reset link." });
+        }
+
+        if (user.resetPasswordTokenExpires.getTime() < Date.now()) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired reset link." });
+        }
+
+        const passwordHash = await bcrypt.hash(input.password, 12);
+        await updatePasswordAndClearReset(user.id, passwordHash);
+        return { success: true } as const;
+      }),
   }),
 
   subscription: router({
@@ -194,6 +387,13 @@ export const appRouter = router({
             b2VisaEligible: g.b2VisaEligible || "",
             state: g.state || "",
             city: g.city || "",
+            // Geocoding fields (Phase 1)
+            address: g.address || "",
+            latitude: g.latitude ? String(g.latitude) : null,
+            longitude: g.longitude ? String(g.longitude) : null,
+            serviceArea: g.serviceArea || "",
+            officeHours: g.officeHours || "",
+            geocodedAt: g.geocodedAt ?? null,
             translations: translations[g.itemId] || {},
           })),
           total: result.total,
@@ -240,6 +440,13 @@ export const appRouter = router({
             b2VisaEligible: grant.b2VisaEligible || "",
             state: grant.state || "",
             city: grant.city || "",
+            // Geocoding fields (Phase 1)
+            address: grant.address || "",
+            latitude: grant.latitude ? String(grant.latitude) : null,
+            longitude: grant.longitude ? String(grant.longitude) : null,
+            serviceArea: grant.serviceArea || "",
+            officeHours: grant.officeHours || "",
+            geocodedAt: grant.geocodedAt ?? null,
           },
           translations,
           related: related.map(r => ({
@@ -296,8 +503,15 @@ export const appRouter = router({
           geographicScope: g.geographicScope || "",
           documentsRequired: g.documentsRequired || "",
           b2VisaEligible: g.b2VisaEligible || "",
-          state: g.state,
-          city: g.city,
+          state: g.state || "",
+          city: g.city || "",
+          // Geocoding fields (Phase 1)
+          address: g.address || "",
+          latitude: g.latitude ? String(g.latitude) : null,
+          longitude: g.longitude ? String(g.longitude) : null,
+          serviceArea: g.serviceArea || "",
+          officeHours: g.officeHours || "",
+          geocodedAt: g.geocodedAt ?? null,
           translations: translations[g.itemId] || {},
         })),
       };

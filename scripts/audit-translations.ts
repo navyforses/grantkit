@@ -1,120 +1,90 @@
 #!/usr/bin/env tsx
 /**
- * audit-translations.ts — Check grant translation coverage across all languages.
+ * audit-translations.ts — Grant translation coverage per language.
  *
- * For each active grant in MySQL, checks if grantTranslations entries exist
- * for FR, ES, RU, KA with non-empty name and description.
+ * Checks every active grant for FR/ES/RU/KA translations in grant_translations.
+ * Outputs coverage % and list of missing itemIds per language.
+ * Saves report to scripts/translation-audit.json for translate-missing.ts.
  *
- * Usage: pnpm tsx scripts/audit-translations.ts
+ * Usage: pnpm translate:audit
  * Requires: DATABASE_URL in .env or environment
  */
 
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/mysql2";
-import { grants, grantTranslations } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import * as fs from "fs";
+import mysql from "mysql2/promise";
 
 const LANGUAGES = ["fr", "es", "ru", "ka"] as const;
+type Lang = (typeof LANGUAGES)[number];
 
 async function main() {
   if (!process.env.DATABASE_URL) {
-    console.error("DATABASE_URL is required");
+    console.error("❌ DATABASE_URL is required");
     process.exit(1);
   }
 
-  const db = drizzle(process.env.DATABASE_URL);
+  const db = await mysql.createConnection(process.env.DATABASE_URL);
+  console.log("Connected to database.\n");
 
   // 1. Get all active grants
-  const allGrants = await db
-    .select({ itemId: grants.itemId, name: grants.name })
-    .from(grants)
-    .where(eq(grants.isActive, true));
+  const [grantRows] = await db.execute<mysql.RowDataPacket[]>(
+    "SELECT itemId, name FROM grants WHERE isActive = 1 ORDER BY id"
+  );
+  const allGrants = grantRows as { itemId: string; name: string }[];
+  const total = allGrants.length;
+  console.log(`Total active grants: ${total}\n`);
 
-  console.log(`Total active grants: ${allGrants.length}`);
+  // 2. Get all existing translations (only non-empty names)
+  const [transRows] = await db.execute<mysql.RowDataPacket[]>(
+    "SELECT grantItemId, language FROM grant_translations WHERE name IS NOT NULL AND name != ''"
+  );
 
-  // 2. Get all existing translations
-  const allTranslations = await db
-    .select({
-      grantItemId: grantTranslations.grantItemId,
-      language: grantTranslations.language,
-      name: grantTranslations.name,
-      description: grantTranslations.description,
-    })
-    .from(grantTranslations);
-
-  // Build lookup: { grantItemId: { lang: { name, description } } }
-  const translationMap = new Map<string, Map<string, { name: string | null; description: string | null }>>();
-  for (const t of allTranslations) {
-    if (!translationMap.has(t.grantItemId)) {
-      translationMap.set(t.grantItemId, new Map());
-    }
-    translationMap.get(t.grantItemId)!.set(t.language, {
-      name: t.name,
-      description: t.description,
-    });
+  // Build set: "itemId:lang"
+  const translatedSet = new Set<string>();
+  for (const row of transRows as { grantItemId: string; language: string }[]) {
+    translatedSet.add(`${row.grantItemId}:${row.language}`);
   }
 
-  // 3. Audit each language
-  const report: Record<string, { complete: number; missing: number; missingIds: string[] }> = {};
+  // 3. Audit per language
+  console.log("=== Translation Coverage ===\n");
+  const byLanguage: Record<string, { complete: number; missing: number; percentage: number; missingIds: string[] }> = {};
 
   for (const lang of LANGUAGES) {
     const missingIds: string[] = [];
     let complete = 0;
 
-    for (const grant of allGrants) {
-      const langMap = translationMap.get(grant.itemId);
-      const trans = langMap?.get(lang);
-
-      if (!trans || !trans.name || trans.name.trim() === "") {
-        missingIds.push(grant.itemId);
-      } else {
+    for (const g of allGrants) {
+      if (translatedSet.has(`${g.itemId}:${lang}`)) {
         complete++;
+      } else {
+        missingIds.push(g.itemId);
       }
     }
 
-    report[lang] = {
-      complete,
-      missing: missingIds.length,
-      missingIds,
-    };
+    const pct = total > 0 ? Number(((complete / total) * 100).toFixed(1)) : 0;
+    byLanguage[lang] = { complete, missing: missingIds.length, percentage: pct, missingIds };
+
+    const bar = "█".repeat(Math.floor(pct / 5)) + "░".repeat(20 - Math.floor(pct / 5));
+    console.log(`${lang.toUpperCase()}  ${bar}  ${pct}%  (${complete}/${total}, ${missingIds.length} missing)`);
   }
 
-  // 4. Print report
-  const total = allGrants.length;
-  console.log("\n=== Grant Translation Audit ===\n");
-  console.log(`Total active grants: ${total}\n`);
+  // 4. Save report
+  const report = { total, generatedAt: new Date().toISOString(), byLanguage };
+  fs.writeFileSync("scripts/translation-audit.json", JSON.stringify(report, null, 2));
+  console.log("\n✅ Report saved to scripts/translation-audit.json");
 
-  for (const lang of LANGUAGES) {
-    const r = report[lang];
-    const pct = ((r.complete / total) * 100).toFixed(1);
-    console.log(`${lang.toUpperCase()}: ${r.complete}/${total} (${pct}%) — ${r.missing} missing`);
+  const needsWork = LANGUAGES.some((l) => byLanguage[l].percentage < 95);
+  if (needsWork) {
+    console.log("⚠️  Some languages are below 95%. Run: pnpm translate:missing");
+  } else {
+    console.log("✅ All languages are at 95%+.");
   }
 
-  // 5. Output JSON report
-  const jsonReport = {
-    total,
-    byLanguage: Object.fromEntries(
-      LANGUAGES.map((lang) => [
-        lang,
-        {
-          complete: report[lang].complete,
-          missing: report[lang].missing,
-          percentage: Number(((report[lang].complete / total) * 100).toFixed(1)),
-          missingIds: report[lang].missingIds,
-        },
-      ])
-    ),
-  };
-
-  // Write to file for Task 2 to consume
-  const fs = await import("fs");
-  fs.writeFileSync("scripts/translation-audit.json", JSON.stringify(jsonReport, null, 2));
-  console.log("\nReport saved to scripts/translation-audit.json");
-
+  await db.end();
   process.exit(0);
 }
 
 main().catch((err) => {
-  console.error("Audit failed:", err);
+  console.error("Audit failed:", err.message);
   process.exit(1);
 });

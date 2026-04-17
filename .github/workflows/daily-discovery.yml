@@ -1,0 +1,108 @@
+name: Daily Grant Discovery
+
+on:
+  schedule:
+    # ყოველ დღე 08:00 UTC (12:00 თბილისის დროით)
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      category:
+        description: 'კონკრეტული კატეგორია (ცარიელი = ავტომატური როტაცია)'
+        required: false
+        type: string
+      country:
+        description: 'ქვეყანა (მაგ: US, FR, UK)'
+        required: false
+        type: string
+      notify:
+        description: 'გაუგზავნე newsletter subscribers-ს?'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  discover-and-import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Discovery
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ENRICHMENT_API_URL: ${{ secrets.ENRICHMENT_API_URL }}
+          ENRICHMENT_API_KEY: ${{ secrets.ENRICHMENT_API_KEY }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.category }}" ]; then
+            ARGS="$ARGS --category=${{ inputs.category }}"
+          fi
+          if [ -n "${{ inputs.country }}" ]; then
+            ARGS="$ARGS --country=${{ inputs.country }}"
+          fi
+          pnpm tsx scripts/daily-discovery.ts $ARGS
+
+      - name: Find discovery file
+        id: find-file
+        run: |
+          FILE=$(ls -t pending-imports/discovery-*.json 2>/dev/null | head -1)
+          if [ -z "$FILE" ]; then
+            echo "No discovery file found"
+            echo "found=false" >> $GITHUB_OUTPUT
+          else
+            echo "file=$FILE" >> $GITHUB_OUTPUT
+            echo "found=true" >> $GITHUB_OUTPUT
+            COUNT=$(python3 -c "import json; print(len(json.load(open('$FILE'))))")
+            echo "count=$COUNT" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Import & Enrich & Translate
+        if: steps.find-file.outputs.found == 'true' && steps.find-file.outputs.count != '0'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ENRICHMENT_API_URL: ${{ secrets.ENRICHMENT_API_URL }}
+          ENRICHMENT_API_KEY: ${{ secrets.ENRICHMENT_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          NOTIFY_FLAG=""
+          # Default: notify on schedule; on manual: use input
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            NOTIFY_FLAG="--notify"
+          elif [ "${{ inputs.notify }}" = "true" ]; then
+            NOTIFY_FLAG="--notify"
+          fi
+          pnpm tsx scripts/import-new-grants.ts --file=${{ steps.find-file.outputs.file }} $NOTIFY_FLAG
+
+      - name: Translate missing (fallback)
+        if: steps.find-file.outputs.found == 'true' && steps.find-file.outputs.count != '0'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ENRICHMENT_API_URL: ${{ secrets.ENRICHMENT_API_URL }}
+          ENRICHMENT_API_KEY: ${{ secrets.ENRICHMENT_API_KEY }}
+        run: |
+          pnpm tsx scripts/audit-translations.ts
+          pnpm tsx scripts/translate-missing.ts
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Daily Discovery Results" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.find-file.outputs.found }}" = "true" ]; then
+            echo "- **Discovered:** ${{ steps.find-file.outputs.count }} new grants" >> $GITHUB_STEP_SUMMARY
+            echo "- **File:** ${{ steps.find-file.outputs.file }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- No new grants discovered today" >> $GITHUB_STEP_SUMMARY
+          fi

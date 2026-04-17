@@ -137,6 +137,113 @@ export async function getUserByPaddleCustomerId(customerId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+// ===== Email/password auth helpers (Phase 0) =====
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createEmailPasswordUser(data: {
+  openId: string;
+  email: string;
+  name: string | null;
+  passwordHash: string;
+  verificationToken: string;
+  verificationTokenExpires: Date;
+}): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(users).values({
+    openId: data.openId,
+    email: data.email,
+    name: data.name,
+    passwordHash: data.passwordHash,
+    loginMethod: "email",
+    emailVerified: false,
+    verificationToken: data.verificationToken,
+    verificationTokenExpires: data.verificationTokenExpires,
+  });
+
+  return Number(result[0].insertId);
+}
+
+export async function getUserByVerificationToken(token: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.verificationToken, token)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserByResetToken(token: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.resetPasswordToken, token)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function markEmailVerified(userId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({
+    emailVerified: true,
+    verificationToken: null,
+    verificationTokenExpires: null,
+  }).where(eq(users.id, userId));
+}
+
+export async function setVerificationToken(userId: number, token: string, expires: Date): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({
+    verificationToken: token,
+    verificationTokenExpires: expires,
+  }).where(eq(users.id, userId));
+}
+
+export async function setResetPasswordToken(userId: number, token: string, expires: Date): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({
+    resetPasswordToken: token,
+    resetPasswordTokenExpires: expires,
+  }).where(eq(users.id, userId));
+}
+
+export async function updatePasswordAndClearReset(userId: number, passwordHash: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({
+    passwordHash,
+    resetPasswordToken: null,
+    resetPasswordTokenExpires: null,
+    failedLoginAttempts: 0,
+    lockedUntil: null,
+  }).where(eq(users.id, userId));
+}
+
+export async function incrementFailedLoginAttempts(userId: number, lockUntil: Date | null): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({
+    failedLoginAttempts: sql`${users.failedLoginAttempts} + 1`,
+    ...(lockUntil ? { lockedUntil: lockUntil } : {}),
+  }).where(eq(users.id, userId));
+}
+
+export async function resetFailedLoginAttempts(userId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({
+    failedLoginAttempts: 0,
+    lockedUntil: null,
+    lastSignedIn: new Date(),
+  }).where(eq(users.id, userId));
+}
+
 // ===== Saved Grants helpers =====
 
 export async function getSavedGrantIds(userId: number): Promise<string[]> {

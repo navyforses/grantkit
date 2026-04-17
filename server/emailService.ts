@@ -491,3 +491,228 @@ export async function sendBatchNewGrantNotifications(
 
   return result;
 }
+
+// ===== Auth email templates (Phase 0) — email verification + password reset =====
+
+export type AuthEmailLang = "en" | "fr" | "es" | "ru" | "ka";
+
+interface AuthEmailCopy {
+  verifySubject: string;
+  verifyHeading: string;
+  verifyGreeting: (name: string) => string;
+  verifyBody: string;
+  verifyButton: string;
+  verifyFallback: string;
+  verifyExpiry: string;
+  verifyIgnore: string;
+  resetSubject: string;
+  resetHeading: string;
+  resetGreeting: (name: string) => string;
+  resetBody: string;
+  resetButton: string;
+  resetFallback: string;
+  resetExpiry: string;
+  resetIgnore: string;
+}
+
+const AUTH_COPY: Record<AuthEmailLang, AuthEmailCopy> = {
+  en: {
+    verifySubject: "Verify your GrantKit email",
+    verifyHeading: "Verify your email",
+    verifyGreeting: (n) => `Hi ${n || "there"},`,
+    verifyBody: "Thanks for signing up for GrantKit. Please verify your email address to finish setting up your account.",
+    verifyButton: "Verify email",
+    verifyFallback: "Or copy and paste this link into your browser:",
+    verifyExpiry: "This link expires in 24 hours.",
+    verifyIgnore: "If you did not create a GrantKit account, you can safely ignore this email.",
+    resetSubject: "Reset your GrantKit password",
+    resetHeading: "Reset your password",
+    resetGreeting: (n) => `Hi ${n || "there"},`,
+    resetBody: "We received a request to reset the password for your GrantKit account. Click the button below to choose a new password.",
+    resetButton: "Reset password",
+    resetFallback: "Or copy and paste this link into your browser:",
+    resetExpiry: "This link expires in 1 hour.",
+    resetIgnore: "If you did not request a password reset, you can safely ignore this email — your password will not change.",
+  },
+  fr: {
+    verifySubject: "Vérifiez votre e-mail GrantKit",
+    verifyHeading: "Vérifiez votre e-mail",
+    verifyGreeting: (n) => `Bonjour ${n || ""},`,
+    verifyBody: "Merci de vous être inscrit sur GrantKit. Veuillez vérifier votre adresse e-mail pour finaliser la création de votre compte.",
+    verifyButton: "Vérifier l'e-mail",
+    verifyFallback: "Ou copiez-collez ce lien dans votre navigateur :",
+    verifyExpiry: "Ce lien expire dans 24 heures.",
+    verifyIgnore: "Si vous n'avez pas créé de compte GrantKit, vous pouvez ignorer cet e-mail.",
+    resetSubject: "Réinitialisez votre mot de passe GrantKit",
+    resetHeading: "Réinitialiser votre mot de passe",
+    resetGreeting: (n) => `Bonjour ${n || ""},`,
+    resetBody: "Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte GrantKit. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.",
+    resetButton: "Réinitialiser le mot de passe",
+    resetFallback: "Ou copiez-collez ce lien dans votre navigateur :",
+    resetExpiry: "Ce lien expire dans 1 heure.",
+    resetIgnore: "Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail — votre mot de passe ne sera pas modifié.",
+  },
+  es: {
+    verifySubject: "Verifica tu correo de GrantKit",
+    verifyHeading: "Verifica tu correo",
+    verifyGreeting: (n) => `Hola ${n || ""},`,
+    verifyBody: "Gracias por registrarte en GrantKit. Verifica tu dirección de correo para terminar de configurar tu cuenta.",
+    verifyButton: "Verificar correo",
+    verifyFallback: "O copia y pega este enlace en tu navegador:",
+    verifyExpiry: "Este enlace expira en 24 horas.",
+    verifyIgnore: "Si no creaste una cuenta en GrantKit, puedes ignorar este correo.",
+    resetSubject: "Restablece tu contraseña de GrantKit",
+    resetHeading: "Restablecer contraseña",
+    resetGreeting: (n) => `Hola ${n || ""},`,
+    resetBody: "Hemos recibido una solicitud para restablecer la contraseña de tu cuenta de GrantKit. Haz clic en el botón para elegir una nueva contraseña.",
+    resetButton: "Restablecer contraseña",
+    resetFallback: "O copia y pega este enlace en tu navegador:",
+    resetExpiry: "Este enlace expira en 1 hora.",
+    resetIgnore: "Si no solicitaste el restablecimiento, puedes ignorar este correo — tu contraseña no cambiará.",
+  },
+  ru: {
+    verifySubject: "Подтвердите email в GrantKit",
+    verifyHeading: "Подтвердите email",
+    verifyGreeting: (n) => `Здравствуйте${n ? ", " + n : ""}!`,
+    verifyBody: "Спасибо за регистрацию в GrantKit. Пожалуйста, подтвердите ваш email, чтобы завершить создание аккаунта.",
+    verifyButton: "Подтвердить email",
+    verifyFallback: "Или скопируйте эту ссылку в браузер:",
+    verifyExpiry: "Ссылка действительна 24 часа.",
+    verifyIgnore: "Если вы не создавали аккаунт в GrantKit, просто проигнорируйте это письмо.",
+    resetSubject: "Сброс пароля GrantKit",
+    resetHeading: "Сброс пароля",
+    resetGreeting: (n) => `Здравствуйте${n ? ", " + n : ""}!`,
+    resetBody: "Мы получили запрос на сброс пароля вашего аккаунта GrantKit. Нажмите кнопку, чтобы задать новый пароль.",
+    resetButton: "Сбросить пароль",
+    resetFallback: "Или скопируйте эту ссылку в браузер:",
+    resetExpiry: "Ссылка действительна 1 час.",
+    resetIgnore: "Если вы не запрашивали сброс пароля, просто проигнорируйте это письмо — пароль останется прежним.",
+  },
+  ka: {
+    verifySubject: "დაადასტურეთ თქვენი GrantKit-ის ელფოსტა",
+    verifyHeading: "დაადასტურეთ ელფოსტა",
+    verifyGreeting: (n) => `გამარჯობა${n ? ", " + n : ""}!`,
+    verifyBody: "მადლობა GrantKit-ზე რეგისტრაციისთვის. გთხოვთ, დაადასტუროთ ელფოსტა ანგარიშის დასრულებისთვის.",
+    verifyButton: "ელფოსტის დადასტურება",
+    verifyFallback: "ან დააკოპირეთ ეს ბმული ბრაუზერში:",
+    verifyExpiry: "ბმული მოქმედებს 24 საათი.",
+    verifyIgnore: "თუ არ დარეგისტრირებულხართ GrantKit-ზე, შეგიძლიათ უგულებელყოთ ეს შეტყობინება.",
+    resetSubject: "GrantKit-ის პაროლის აღდგენა",
+    resetHeading: "პაროლის აღდგენა",
+    resetGreeting: (n) => `გამარჯობა${n ? ", " + n : ""}!`,
+    resetBody: "მივიღეთ თქვენი GrantKit ანგარიშის პაროლის აღდგენის მოთხოვნა. დააჭირეთ ღილაკს ახალი პაროლის დასაყენებლად.",
+    resetButton: "პაროლის აღდგენა",
+    resetFallback: "ან დააკოპირეთ ეს ბმული ბრაუზერში:",
+    resetExpiry: "ბმული მოქმედებს 1 საათი.",
+    resetIgnore: "თუ არ გითხოვიათ პაროლის აღდგენა, უგულებელყავით ეს შეტყობინება — თქვენი პაროლი არ შეიცვლება.",
+  },
+};
+
+function buildAuthEmailHtml(opts: {
+  heading: string;
+  greeting: string;
+  body: string;
+  buttonText: string;
+  buttonUrl: string;
+  fallbackLabel: string;
+  expiryNote: string;
+  ignoreNote: string;
+}): string {
+  const content = `
+    <h2 style="margin:0 0 16px;color:#18181b;font-size:22px;font-weight:600;">${opts.heading}</h2>
+    <p style="margin:0 0 12px;color:#3f3f46;font-size:15px;line-height:1.6;">${opts.greeting}</p>
+    <p style="margin:0 0 20px;color:#3f3f46;font-size:15px;line-height:1.6;">${opts.body}</p>
+    <div style="text-align:center;margin:28px 0 20px;">
+      <a href="${opts.buttonUrl}" style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">${opts.buttonText}</a>
+    </div>
+    <p style="margin:0 0 8px;color:#71717a;font-size:13px;line-height:1.5;">${opts.fallbackLabel}</p>
+    <p style="margin:0 0 20px;word-break:break-all;"><a href="${opts.buttonUrl}" style="color:${BRAND_COLOR};font-size:13px;">${opts.buttonUrl}</a></p>
+    <p style="margin:24px 0 8px;color:#a1a1aa;font-size:12px;line-height:1.5;">${opts.expiryNote}</p>
+    <p style="margin:0;color:#a1a1aa;font-size:12px;line-height:1.5;">${opts.ignoreNote}</p>
+  `;
+  return baseTemplate(opts.heading, content);
+}
+
+export async function sendVerificationEmail(
+  recipient: EmailRecipient,
+  token: string,
+  appUrl: string,
+  lang: AuthEmailLang = "en"
+): Promise<SendEmailResult> {
+  const resend = getResendClient();
+  if (!resend) return { success: false, error: "Email service not configured" };
+  if (!recipient.email) return { success: false, error: "No email address" };
+
+  const copy = AUTH_COPY[lang] ?? AUTH_COPY.en;
+  const verifyUrl = `${appUrl.replace(/\/$/, "")}/verify-email?token=${encodeURIComponent(token)}`;
+
+  try {
+    const html = buildAuthEmailHtml({
+      heading: copy.verifyHeading,
+      greeting: copy.verifyGreeting(recipient.name || ""),
+      body: copy.verifyBody,
+      buttonText: copy.verifyButton,
+      buttonUrl: verifyUrl,
+      fallbackLabel: copy.verifyFallback,
+      expiryNote: copy.verifyExpiry,
+      ignoreNote: copy.verifyIgnore,
+    });
+    const { data, error } = await resend.emails.send({
+      from: `${BRAND_NAME} <${FROM_EMAIL}>`,
+      to: [recipient.email],
+      subject: copy.verifySubject,
+      html,
+    });
+    if (error) {
+      console.error(`[Email] Failed to send verification to ${recipient.email}:`, error);
+      return { success: false, error: error.message };
+    }
+    return { success: true, messageId: data?.id };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("[Email] Error sending verification email:", message);
+    return { success: false, error: message };
+  }
+}
+
+export async function sendPasswordResetEmail(
+  recipient: EmailRecipient,
+  token: string,
+  appUrl: string,
+  lang: AuthEmailLang = "en"
+): Promise<SendEmailResult> {
+  const resend = getResendClient();
+  if (!resend) return { success: false, error: "Email service not configured" };
+  if (!recipient.email) return { success: false, error: "No email address" };
+
+  const copy = AUTH_COPY[lang] ?? AUTH_COPY.en;
+  const resetUrl = `${appUrl.replace(/\/$/, "")}/reset-password?token=${encodeURIComponent(token)}`;
+
+  try {
+    const html = buildAuthEmailHtml({
+      heading: copy.resetHeading,
+      greeting: copy.resetGreeting(recipient.name || ""),
+      body: copy.resetBody,
+      buttonText: copy.resetButton,
+      buttonUrl: resetUrl,
+      fallbackLabel: copy.resetFallback,
+      expiryNote: copy.resetExpiry,
+      ignoreNote: copy.resetIgnore,
+    });
+    const { data, error } = await resend.emails.send({
+      from: `${BRAND_NAME} <${FROM_EMAIL}>`,
+      to: [recipient.email],
+      subject: copy.resetSubject,
+      html,
+    });
+    if (error) {
+      console.error(`[Email] Failed to send password reset to ${recipient.email}:`, error);
+      return { success: false, error: error.message };
+    }
+    return { success: true, messageId: data?.id };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("[Email] Error sending password reset email:", message);
+    return { success: false, error: message };
+  }
+}
