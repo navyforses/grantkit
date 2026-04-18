@@ -1044,4 +1044,33 @@ export const ka: Translations = {
     error: "რუკა მიუწვდომელია",
     noLocation: "ადგილმდებარეობა არ არის მითითებული",
   },
+
+  toolbar: {
+    search: {
+      placeholder: "მოძებნე გრანტი ან რესურსი",
+    },
+    type: {
+      label: "ტიპი",
+      all: "ყველა",
+      grant: "გრანტები",
+      resource: "რესურსები",
+    },
+    region: {
+      label: "რეგიონი",
+      all: "ყველა რეგიონი",
+    },
+    category: {
+      label: "კატეგორია",
+      all: "ყველა კატეგორია",
+    },
+    view: {
+      split: "ორმაგი",
+      map: "რუკა",
+      list: "სია",
+    },
+  },
+
+  chips: {
+    ariaLabel: "კატეგორიის სწრაფი ფილტრები",
+  },
 };

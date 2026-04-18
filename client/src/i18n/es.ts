@@ -1042,4 +1042,33 @@ export const es: Translations = {
     error: "Mapa no disponible",
     noLocation: "Ubicación no publicada",
   },
+
+  toolbar: {
+    search: {
+      placeholder: "Buscar subvenciones y recursos",
+    },
+    type: {
+      label: "Tipo",
+      all: "Todos",
+      grant: "Subvenciones",
+      resource: "Recursos",
+    },
+    region: {
+      label: "Región",
+      all: "Todas las regiones",
+    },
+    category: {
+      label: "Categoría",
+      all: "Todas las categorías",
+    },
+    view: {
+      split: "Mixto",
+      map: "Mapa",
+      list: "Lista",
+    },
+  },
+
+  chips: {
+    ariaLabel: "Filtros rápidos de categoría",
+  },
 };

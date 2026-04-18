@@ -1172,6 +1172,46 @@ export async function getDistinctCities(stateName: string) {
   return result.map(r => ({ city: r.city as string, count: Number(r.count) }));
 }
 
+/** Get distinct country codes with grant counts for filter dropdown */
+export async function getDistinctCountries() {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ country: grants.country, count: count() })
+    .from(grants)
+    .where(
+      and(
+        eq(grants.isActive, true),
+        sql`${grants.country} IS NOT NULL AND ${grants.country} != ''`
+      )
+    )
+    .groupBy(grants.country)
+    .orderBy(desc(count()));
+
+  return result.map(r => ({ country: r.country as string, count: Number(r.count) }));
+}
+
+/** Get category counts (active grants only) for filter chips */
+export async function getCategoryCounts() {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ category: grants.category, count: count() })
+    .from(grants)
+    .where(
+      and(
+        eq(grants.isActive, true),
+        sql`${grants.category} IS NOT NULL AND ${grants.category} != ''`
+      )
+    )
+    .groupBy(grants.category)
+    .orderBy(desc(count()));
+
+  return result.map(r => ({ category: r.category as string, count: Number(r.count) }));
+}
+
 /** Get related grants by category (excluding the current one) */
 /** Export all grants with their translations for CSV/Excel export */
 export async function exportAllGrants(options?: {

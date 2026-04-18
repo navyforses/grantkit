@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-17T02:00:00Z
-**Current phase:** Phase 3 — in progress (Luca).
+**Last updated:** 2026-04-18T18:00:00Z
+**Current phase:** Phase 4A complete (Priya). Phase 4B ready to start (Arash).
 **Project start:** 2026-04-16
 
 ---
@@ -107,7 +107,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 1 | Database schema migration | 🟢 Complete | Dmitri | 2026-04-17 |
 | 2 | Geocoding pipeline | 🟢 Complete | Yuki | 2026-04-17 |
 | 3 | Google Maps setup + LocationMap component | 🟢 Complete | Luca | 2026-04-17 |
-| 4A | CatalogToolbar + QuickChips | ⚪ Not started | — | — |
+| 4A | CatalogToolbar + QuickChips | 🟢 Complete | Priya | 2026-04-18 |
 | 4B | Split-view Catalog layout | ⚪ Not started | — | — |
 | 5 | GrantDetail page rewrite | ⚪ Not started | — | — |
 | 6 | Google Maps deep-link audit | ⚪ Not started | — | — |
@@ -375,14 +375,105 @@ for Google Maps marker pins.
 ---
 
 ### Phase 4A — CatalogToolbar + QuickChips
-**Status:** Not started
-**Files planned:**
-- client/src/components/CatalogToolbar.tsx (new)
-- client/src/components/QuickChips.tsx (new)
-- client/src/components/FilterBar.tsx (DELETE after confirming)
-- client/src/pages/Catalog.tsx (update)
+**Status:** 🟢 Complete (2026-04-18, Priya)
 
-**Log:** —
+**Files changed:**
+- `client/src/components/CatalogToolbar.tsx` (new, 324 lines) — horizontal
+  filter bar with debounced (300 ms) search, type/region/category dropdowns
+  (Radix DropdownMenu), and a Split/Map/List segmented view toggle. Exports
+  `ToolbarTypeValue`, `ToolbarViewMode`.
+- `client/src/components/QuickChips.tsx` (new, 94 lines) — horizontally
+  scrollable category chip row with auto-scroll-into-view for the active
+  chip, click-to-deselect, and scroll-snap on mobile.
+- `client/src/pages/Catalog.tsx` — wired both components above the existing
+  filter/search tab row. Added `layoutMode` state (`split` default) that
+  Phase 4B (Arash) will use to drive the actual split-view layout. Search,
+  type, region (US/EU/GB), and category are all two-way bound to existing
+  filter state so every chip/dropdown click reflects in the URL and the
+  existing MapStatsBar.
+- `client/src/components/FilterBar.tsx` — **deleted** (731 lines removed).
+  The `SortValue` type was first relocated to `client/src/lib/constants.ts`;
+  no other component imported from FilterBar.
+- `client/src/lib/constants.ts` — added `SortValue` export (moved from
+  FilterBar before deletion).
+- `client/src/i18n/types.ts` — new `toolbar` and `chips` sections in the
+  `Translations` interface.
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — toolbar + chips strings
+  translated into all five supported languages (natural phrasing,
+  especially Georgian).
+- `client/src/vite-env.d.ts` — fixed a pre-existing truncation bug
+  (committed in 949146f) that kept TypeScript from compiling the repo.
+  Restored the `ImportMeta { readonly env: ImportMetaEnv }` augmentation.
+- `server/db.ts` — added `getDistinctCountries()` and `getCategoryCounts()`
+  Drizzle queries backing the new toolbar data (active grants only,
+  grouped + counted server-side).
+- `server/routers.ts` — added `catalog.regions` and `catalog.categoryCounts`
+  public queries. `regions` collapses country-level counts into US / EU
+  (27 member sum) / GB buckets.
+
+**Decisions:**
+- **Non-destructive layout wiring.** Phase 4A deliberately does **not**
+  change the Catalog page's split/map/list layout — that is Phase 4B
+  (Arash). `layoutMode` is stored as first-class state so the toolbar is
+  visibly interactive; Arash swaps the renderer to consume it.
+- **Region grouping in tRPC, not client.** `catalog.regions` maps raw
+  country rows to a `{US, EU, GB}` region bucket on the server so
+  QuickChips/toolbar can display counts without re-scanning 637 grants
+  in the browser. EU is the 27 member-state sum.
+- **Category labels.** The existing `t.admin.cat*` keys only cover 9 of
+  16 category slugs. Rather than duplicate strings across the i18n
+  interface, the Catalog page passes a local `labelFor(value)` helper
+  that uses admin translations where they exist and falls back to a
+  humanised form (`"medical_treatment"` → `"Medical Treatment"`) for the
+  rest. Phase 7 (i18n audit) should consolidate this.
+- **Search debounce lives in the toolbar.** Parent `Catalog.tsx`
+  continues to debounce via `useDebouncedValue` for its query inputs,
+  but the toolbar owns its own 300 ms delay so the input feels snappy
+  without firing a tRPC call on every keystroke.
+
+**Pre-existing bugs found & fixed:**
+- `client/src/vite-env.d.ts` had an unfinished line (`in`) committed in
+  `949146f`. `tsc --noEmit` failed on every branch. Restored.
+- `client/src/pages/Catalog.tsx` passed `activeMapItems: CatalogItem[]`
+  into `<MapPanel grants={...}>`, whose `MapPanelGrant` type requires
+  an index signature. This was latent (masked by the vite-env syntax
+  error). Cast at the call site. Phase 4B can revisit if Arash refactors
+  MapPanel's grant type.
+
+**Verification gates:**
+- `pnpm check` → 0 errors.
+- `pnpm build` → clean (both vite client bundle and esbuild server bundle).
+
+**Hand-off to Arash (Phase 4B):**
+1. `<CatalogToolbar>` and `<QuickChips>` now render at the top of
+   `Catalog.tsx`, above the existing resource-type tabs and MapStatsBar.
+   They are already wired to `searchQuery`, `selectedType`,
+   `mapRegionCode`, and `selectedCategory`.
+2. The `layoutMode` state (`"split" | "map" | "list"`) is the switch for
+   Phase 4B. When `layoutMode === "split"`, render a 50/50 list + map.
+   When `"list"`, hide the map; when `"map"`, hide the list. The
+   existing `viewMode` state (`"map" | "search"`) is separate — it
+   toggles the Smart Search panel and should remain.
+3. `availableCategories` in `Catalog.tsx` already aggregates counts from
+   the server; reuse it for the list side-bar header if you like.
+4. The pulsing-ring marker animation (deferred from Phase 3) is still
+   open for polish.
+5. No new env vars or migrations required for this phase.
+
+**Log:**
+- 2026-04-18 14:00 — Priya started. Read Catalog.tsx, FilterBar.tsx,
+  MapPanel, googleMapsLoader, constants, and the existing i18n schema.
+- 2026-04-18 15:10 — Moved `SortValue` out of FilterBar → constants. Added
+  `getDistinctCountries`/`getCategoryCounts` to `server/db.ts` and exposed
+  `catalog.regions`/`catalog.categoryCounts` tRPC queries.
+- 2026-04-18 16:05 — Created CatalogToolbar (search + 3 dropdowns +
+  segmented view toggle) and QuickChips (auto-scroll active chip). Both
+  use design tokens `bg-[#0F1419]` / teal `#1D9E75` / `#5DCAA5`.
+- 2026-04-18 17:00 — Extended Translations interface with `toolbar` +
+  `chips`; translated into en/fr/es/ru/ka.
+- 2026-04-18 17:40 — Wired both components into Catalog.tsx; deleted
+  FilterBar.tsx (731 lines; no remaining imports).
+- 2026-04-18 17:55 — `pnpm check` green; `pnpm build` clean.
 
 ---
 
@@ -454,6 +545,7 @@ encountered, with owner and resolution path.)
 | 2026-04-17 | Phase 2 | Geocoding pipeline: geocode-grants.ts (idempotent, resumable, 110ms rate limit). Dry-run verified. pnpm check clean. | Yuki |
 | 2026-04-17 | Phase 3 | Google Maps migration + map components: googleMaps.ts, LocationMap.tsx, MapPanel.tsx (MarkerClusterer), DevMapTest, vite-env.d.ts, map i18n in 5 langs. pnpm check + build clean. | Luca |
 | 2026-04-18 | Doc fix | Updated STATE.md: Mapbox → Google Maps references in tech stack, phase names, decisions, quirks, external resources. Added Technical Stack Note section. Change Log updated. No remaining Mapbox references in phase plans. | Haiku |
+| 2026-04-18 | Phase 4A | CatalogToolbar + QuickChips shipped (search debounce, type/region/category dropdowns, Split/Map/List segmented toggle, horizontally scrollable chips). FilterBar.tsx deleted (731 lines). Added `catalog.regions` + `catalog.categoryCounts` tRPC queries. i18n toolbar+chips keys in 5 languages. Fixed pre-existing vite-env.d.ts corruption. pnpm check + build clean. | Priya |
 
 ---
 
