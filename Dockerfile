@@ -15,13 +15,17 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Accept VITE_* build-time env vars from Railway (baked into the JS bundle by Vite)
-ARG VITE_MAPBOX_TOKEN
-ENV VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN
-
 ARG VITE_SUPABASE_URL
 ARG VITE_SUPABASE_ANON_KEY
 ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
 ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+
+# Google Maps (Catalog + GrantDetail). Without these, the client renders
+# the "Map unavailable" fallback even if the key is set at runtime.
+ARG VITE_GOOGLE_MAPS_BROWSER_KEY
+ARG VITE_GOOGLE_MAPS_MAP_ID
+ENV VITE_GOOGLE_MAPS_BROWSER_KEY=$VITE_GOOGLE_MAPS_BROWSER_KEY
+ENV VITE_GOOGLE_MAPS_MAP_ID=$VITE_GOOGLE_MAPS_MAP_ID
 
 # Build client + server
 RUN pnpm run build
