@@ -43,6 +43,7 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { GrantJsonLd } from "@/components/JsonLd";
 import GrantDetailSkeleton from "@/components/GrantDetailSkeleton";
+import LocationMap from "@/components/LocationMap";
 import { catalogItems } from "@/data/catalogData";
 
 /** Collapsible section for mobile — expands/collapses content */
@@ -211,6 +212,15 @@ export default function GrantDetail() {
     : item.state === "Nationwide" ? t.grantDetail.nationwideUSA : translatedCountry;
   const borderColor = getCategoryBorderColor(item.category);
   const primaryLink = item.website || "";
+
+  // Location map: API returns lat/lng as strings (Drizzle decimal). Static
+  // fallback (catalogItems) does not include coordinates, so item.latitude
+  // may be undefined — toFiniteNumber gracefully coerces.
+  const mapLat = toFiniteNumber(item.latitude);
+  const mapLng = toFiniteNumber(item.longitude);
+  const hasMapCoords = mapLat !== null && mapLng !== null;
+  const mapAddress = (item.address && String(item.address).trim())
+    || [item.city, item.state, translatedCountry].filter(Boolean).join(", ");
 
   const fundingTypeLabels: Record<string, string> = {
     one_time: t.filters.oneTime,
@@ -512,6 +522,28 @@ export default function GrantDetail() {
                       </span>
                     ))}
                   </div>
+                </CollapsibleSection>
+              </div>
+            )}
+
+            {/* Location Map — shown when grant has geocoded coordinates.
+                Uses the same card chrome as other content blocks so the map
+                inherits the CollapsibleSection pattern on mobile. */}
+            {hasMapCoords && (
+              <div className="bg-card border border-border rounded-xl md:rounded-lg p-4 md:p-6">
+                <CollapsibleSection
+                  title={t.grantDetail.location}
+                  icon={<MapPin className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground/60" />}
+                  defaultOpen={true}
+                >
+                  <LocationMap
+                    latitude={mapLat as number}
+                    longitude={mapLng as number}
+                    address={mapAddress}
+                    organization={item.organization || ""}
+                    serviceArea={content.geographicScope || undefined}
+                    height={320}
+                  />
                 </CollapsibleSection>
               </div>
             )}
@@ -918,4 +950,13 @@ export default function GrantDetail() {
       </div>
     </div>
   );
+}
+
+/** Coerce an unknown coordinate value (string | number | null | undefined)
+ *  into a finite number, or null if not parseable. API returns Drizzle
+ *  decimal as string; the static fallback may omit the field entirely. */
+function toFiniteNumber(v: unknown): number | null {
+  if (v == null) return null;
+  const n = typeof v === "number" ? v : Number(v);
+  return Number.isFinite(n) ? n : null;
 }

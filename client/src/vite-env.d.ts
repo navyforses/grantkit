@@ -1,7 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_MAPBOX_TOKEN: string;
+  readonly VITE_GOOGLE_MAPS_BROWSER_KEY: string;
+  readonly VITE_GOOGLE_MAPS_MAP_ID?: string;
   readonly VITE_FRONTEND_FORGE_API_KEY?: string;
   readonly VITE_FRONTEND_FORGE_API_URL?: string;
   readonly VITE_APP_ID?: string;
@@ -9,6 +10,4 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_ANON_KEY?: string;
 }
 
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
+in

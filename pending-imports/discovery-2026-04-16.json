@@ -1,0 +1,56 @@
+[
+  {
+    "name": "ENS International Selection",
+    "category": "scholarships",
+    "country": "FR",
+    "eligibility": "Outstanding students in the Arts & Sciences for entry into either 2nd or 3rd year.",
+    "description": "The École Normale Supérieure (ENS) offers scholarships to international students to pursue a diploma. The selection is highly competitive, targeting students who demonstrate exceptional academic potential, granting access to ENS's rigorous curriculum and research environment.",
+    "website": "https://www.ens.psl.eu/en/academics/international-selection",
+    "organization": "École Normale Supérieure (ENS)"
+  },
+  {
+    "name": "IDEXLYON Scholarships",
+    "category": "scholarships",
+    "country": "FR",
+    "eligibility": "International students applying for Master's programs at Université de Lyon member institutions.",
+    "description": "The IDEXLYON project provides scholarships intending to attract top international students to Master's programs within the Université de Lyon consortium. These scholarships offer financial support to cover living expenses and tuition fees, fostering international academic collaboration.",
+    "website": "https://www.universite-lyon.fr/recherche/l-idexlyon/l-idexlyon-127479.kjsp",
+    "organization": "Université de Lyon"
+  },
+  {
+    "name": "INSA Scholarships",
+    "category": "scholarships",
+    "country": "FR",
+    "eligibility": "International students admitted to INSA engineering programs.",
+    "description": "INSA (National Institute of Applied Sciences) offers scholarships for international students to support their engineering studies in France. The scholarship aims to encourage diversity and academic excellence within INSA's engineering programs by providing financial assistance.",
+    "website": "https://www.insa-france.fr/en",
+    "organization": "INSA (National Institute of Applied Sciences)"
+  },
+  {
+    "name": "University of Paris-Saclay International Master's Scholarships",
+    "category": "scholarships",
+    "country": "FR",
+    "eligibility": "International students applying for Master's programs at the University of Paris-Saclay.",
+    "description": "The University of Paris-Saclay offers scholarships to international students enrolled in its Master's programs. It supports talented students, encouraging international academic exchange and research collaboration through financial aid.",
+    "website": "https://www.universite-paris-saclay.fr/en/education/masters/international-masters-scholarships",
+    "organization": "University of Paris-Saclay"
+  },
+  {
+    "name": "Fondation Rainbow Bridge",
+    "category": "scholarships",
+    "country": "FR",
+    "eligibility": "Young women from developing countries wishing to pursue studies in France.",
+    "description": "The Rainbow Bridge Foundation provides scholarships to young women from developing countries who wish to pursue higher education in France. The grants enable women to access quality education, to promote their professional development and empower them to contribute to their home countries.",
+    "website": "http://www.fondationrainbowbridge.org/en/",
+    "organization": "Fondation Rainbow Bridge"
+  },
+  {
+    "name": "Erasmus+ Programme",
+    "category": "scholarships",
+    "country": "FR",
+    "eligibility": "EU and Non-EU students enrolled in participating institutions for study abroad or traineeships. Check directly with the institution in France you are applying to.",
+    "description": "The Erasmus+ programme provides opportunities for higher education students to study or undertake a traineeship abroad, mostly in partner countries within the EU. The funding promotes cultural and academic exchange. The details of Erasmus funding can vary greatly, so you must contact your university/school directly.",
+    "website": "https://erasmus-plus.ec.europa.eu/",
+    "organization": "European Commission"
+  }
+]

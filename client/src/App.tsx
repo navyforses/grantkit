@@ -15,9 +15,9 @@ import OnboardingModal from "./components/OnboardingModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { ONBOARDING_STATE_STORAGE_KEY } from "@/components/onboarding/OnboardingFlow";
 
-// Heavy pages — lazy-loaded so vendor-mapbox (1.7 MB) and vendor-csc (8.5 MB)
-// are NOT included in the initial JS bundle.  They only download when the user
-// navigates to the relevant route.
+// Heavy pages — lazy-loaded so Google Maps JS API, @googlemaps/markerclusterer,
+// and country-state-city (8.5 MB) are NOT included in the initial JS bundle.
+// They only download when the user navigates to the relevant route.
 const Catalog        = lazy(() => import("./pages/Catalog"));
 const GrantDetail    = lazy(() => import("./pages/GrantDetail"));
 const ResourceDetail = lazy(() => import("./pages/ResourceDetail"));
@@ -126,8 +126,4 @@ function App() {
           </TooltipProvider>
         </LanguageProvider>
       </ThemeProvider>
-    </ErrorBoundary>
-  );
-}
-
-export default App;
+    </ErrorBoundary>

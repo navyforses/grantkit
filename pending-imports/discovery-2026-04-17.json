@@ -1,0 +1,156 @@
+[
+  {
+    "name": "Ride Connect",
+    "category": "travel_transport",
+    "country": "US",
+    "eligibility": "Sponsors or organizers of transportation programs",
+    "description": "This program through the National Aging and Disability Transportation Center provides funding and resources to help improve transportation options, specifically for older adults and people with disabilities. They offer resources, webinars, and best case studies, as well as financial assistance for certain programs. Check back frequently for application dates and deadlines.",
+    "website": "https://www.nadtc.org/services/ride-connect/",
+    "organization": "National Aging and Disability Transportation Center"
+  },
+  {
+    "name": "DOI Tribal Transportation Program",
+    "category": "travel_transport",
+    "country": "US",
+    "eligibility": "Federally-recognized Tribes",
+    "description": "The Tribal Transportation Program provides funding to improve transportation infrastructure on tribal lands, including roads, bridges, and transit systems. It supports planning, design, construction, and maintenance projects that enhance access and safety for tribal communities. The program recognizes the unique transportation needs of tribal nations.",
+    "website": "https://www.fhwa.dot.gov/tribal/ttpprog.cfm",
+    "organization": "Department of Interior (DOI)"
+  },
+  {
+    "name": "DOT Thriving Communities Program (TCP)",
+    "category": "travel_transport",
+    "country": "US",
+    "eligibility": "Disadvantaged communities",
+    "description": "The Thriving Communities Program provides technical assistance to disadvantaged communities to help them identify, plan, and develop infrastructure projects that improve transportation access and connectivity. This includes assistance with grant writing, project planning, and community engagement. The goal is to ensure that all communities have access to safe, reliable, and affordable transportation options.",
+    "website": "https://www.transportation.gov/thriving-communities",
+    "organization": "Department of Transportation (DOT)"
+  },
+  {
+    "name": "National Trade Corridors Fund",
+    "category": "travel_transport",
+    "country": "Canada",
+    "eligibility": "Provinces, territories, municipal or regional governments, Indigenous organizations, for-profit and not-for-profit organizations, and ports.",
+    "description": "The National Trade Corridors Fund supports investments in critical transportation infrastructure to facilitate trade. Funding supports projects that improve the efficiency and reliability of supply chains. Eligible projects include improvements to ports, rail lines, roadways, and border crossings.",
+    "website": "https://www.infrastructure.gc.ca/ntcf-fncc/index-eng.html",
+    "organization": "Transport Canada"
+  },
+  {
+    "name": "Zero Emission Vehicle Infrastructure Program (ZEVIP)",
+    "category": "travel_transport",
+    "country": "Canada",
+    "eligibility": "Legal entities validly incorporated or registered in Canada",
+    "description": "The ZEVIP provides funding to reduce greenhouse gas emissions by increasing the availability of publicly accessible charging and hydrogen refuelling stations. Funding priority is for projects targeting multi-unit residential buildings, workplaces, on-street locations, light-duty vehicle fleets, and medium- and heavy-duty vehicle fleets. Eligible projects must be located in Canada.",
+    "website": "https://natural-resources.canada.ca/energy-efficiency/zero-emission-vehicles/zero-emission-vehicle-infrastructure-program/21876",
+    "organization": "Natural Resources Canada"
+  },
+  {
+    "name": "Canada Community-Building Fund",
+    "category": "travel_transport",
+    "country": "Canada",
+    "eligibility": "Municipalities across Canada",
+    "description": "This fund, formerly known as the Gas Tax Fund, provides funding to municipalities for infrastructure projects. Municipalities have the flexibility to allocate the funding to various priorities, including public transit, roads, and active transporation projects. The fund supports local governments to address their specific infrastructure needs and priorities.",
+    "website": "https://www.infrastructure.gc.ca/ccbf-fcc/index-eng.html",
+    "organization": "Infrastructure Canada"
+  },
+  {
+    "name": "Go Ultra Low Company Car Scheme",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Businesses registered in the UK that operate company car fleets.",
+    "description": "Provides funding and support to businesses switching to ultra-low emission vehicles for their company car fleets. This includes grants towards the purchase price of eligible vehicles and resources to help businesses understand the benefits and practicalities of adopting electric vehicles. The goal is to encourage wider adoption of low-emission transport in the UK.",
+    "website": "https://www.gov.uk/government/collections/government-grants-for-low-emission-vehicles",
+    "organization": "Office for Zero Emission Vehicles (OZEV)"
+  },
+  {
+    "name": "Plug-in Taxi Grant",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Licensed taxi drivers and owners purchasing eligible low-emission taxis.",
+    "description": "Offers grants to taxi drivers and owners to help with the cost of purchasing new, eligible plug-in taxis. This initiative aims to reduce emissions from the taxi fleet and improve air quality in urban areas. The grant covers a portion of the purchase price of the vehicle.",
+    "website": "https://www.gov.uk/plug-in-car-van-taxi-grant/taxi-eligibility",
+    "organization": "Office for Zero Emission Vehicles (OZEV)"
+  },
+  {
+    "name": "Bus Service Operators Grant (BSOG)",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Bus operators running eligible local bus services in England, Scotland and Wales.",
+    "description": "This grant helps bus operators keep fares down by providing a reimbursement for fuel duty. It aims to support the provision of bus services, especially in rural and less profitable areas. The grant lessens the financial burden on operators, enabling continued service provision.",
+    "website": "https://www.gov.uk/government/collections/bus-service-operators-grant-bsog",
+    "organization": "Department for Transport"
+  },
+  {
+    "name": "Freight Grants - Scottish Government",
+    "category": "travel_transport",
+    "country": "UK",
+    "state": "Scotland",
+    "eligibility": "Businesses moving freight by sea to/from remote Scottish Islands, certain forms of agricultural produce, or rail.",
+    "description": "Various freight grants are offered by the Scottish Government to support the movement of goods to and from remote areas. These include grants for sea freight to island communities and grants to encourage rail freight. These grants are designed to reduce transport costs and support local economies.",
+    "website": "https://www.transport.gov.scot/our-approach/strategy-and-policy/freight/",
+    "organization": "Scottish Government"
+  },
+  {
+    "name": "Rural Fuel Duty Relief scheme",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Petrol retailers in designated remote rural areas.",
+    "description": "The scheme reduces the cost of fuel for consumers in designated areas by offering retailers a reduction in fuel duty. This helps to lower the price of petrol and diesel, making travel more affordable in rural communities. The relief is passed onto consumers at the pump.",
+    "website": "https://www.gov.uk/rural-fuel-duty-relief",
+    "organization": "HM Revenue & Customs"
+  },
+  {
+    "name": "Telus Community Boards",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Registered charities addressing the needs of youth.",
+    "description": "Telus Community Boards provide funding to grassroots charities and community organizations that support youth-focused initiatives in specific communities across Canada. They empower local leaders to make funding decisions in their own communities, supporting programs that address education, health, and well-being.",
+    "website": "https://www.telus.com/en/about/company-overview/community-investment/community-boards",
+    "organization": "Telus"
+  },
+  {
+    "name": "RBC Youth Mental Well-being Project",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Organizations supporting youth mental health programs",
+    "description": "The RBC Youth Mental Well-being Project supports a wide range of programs that provide access to early intervention, increase awareness, and reduce the stigma of mental illness among young people. They partner with various organizations to deliver innovative and evidence-based mental health services.",
+    "website": "https://www.rbc.com/community-social-impact/youth-well-being/index.html",
+    "organization": "RBC"
+  },
+  {
+    "name": "Federation of Canadian Municipalities - Green Municipal Fund",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Municipalities and their partners implementing sustainable community development plans and projects",
+    "description": "The Green Municipal Fund (GMF), offered by the Federation of Canadian Municipalities (FCM), supports municipal initiatives that improve air, water and soil quality, reduce greenhouse gas emissions and promote sustainable community development. While focused on environmental projects, many of these have community elements related to social service accessibility.",
+    "website": "https://fcm.ca/en/programs/green-municipal-fund",
+    "organization": "Federation of Canadian Municipalities"
+  },
+  {
+    "name": "Esmee Fairbairn Foundation: Social Change Grants",
+    "category": "social_services",
+    "country": "UK",
+    "eligibility": "Organisations with strong ideas that can lead to tangible and sustainable change in the UK.",
+    "description": "Supports organisations working to address social and environmental injustice. The focus is on projects that are innovative, systemic, and aim to create lasting change for communities and individuals.",
+    "website": "https://esmeefairbairn.org.uk/",
+    "organization": "Esmee Fairbairn Foundation"
+  },
+  {
+    "name": "Allen Lane Foundation: Social Welfare Grants",
+    "category": "social_services",
+    "country": "UK",
+    "eligibility": "Small registered charities, voluntary groups, and social enterprises based in the UK ",
+    "description": "Provides grants to small organisations working to support vulnerable and marginalised groups. The focus is on projects that address inequality and promote social justice, particularly for those facing multiple disadvantages.",
+    "website": "https://www.allenlane.org.uk/",
+    "organization": "Allen Lane Foundation"
+  },
+  {
+    "name": "Grants for Disabled Children",
+    "category": "social_services",
+    "country": "UK",
+    "eligibility": "Families with a disabled child living in the UK",
+    "description": "This grant offers support to families with disabled children for equipment, therapies, and other services that can improve the child's quality of life. Grants help families afford items and services that are not covered by statutory funding.",
+    "website": "https://familyfund.org.uk/",
+    "organization": "Family Fund"
+  }
+]

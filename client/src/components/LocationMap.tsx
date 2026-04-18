@@ -1,28 +1,34 @@
 /*
- * LocationMap — single-pin Mapbox map for the GrantDetail page.
+ * LocationMap — single-pin Google Map for the GrantDetail page.
  *
  * Design (matches Image 3 in the redesign brief):
- *   - Dark Mapbox style, single teal pin with pulsing ring.
- *   - Popup shows organization + address + "Open in Google Maps" link.
+ *   - Dark vector map, single teal pin with pulsing ring.
+ *   - InfoWindow shows organization + address + "Open in Google Maps" link.
  *   - Bottom-left controls: zoom +, zoom −, locate-me.
  *   - Bottom-right label: "service area: {area}".
  *
- * Performance:
+ * Lifecycle:
  *   - Map instance lives in a useRef and is *not* torn down on prop changes.
- *   - lat/lng changes use map.setCenter() / marker.setLngLat() — no reinit.
+ *   - lat/lng/address/organization changes update the marker + info window
+ *     in place — no re-init.
  *   - Container is observed for size changes and resized in place.
+ *
+ * Dependencies:
+ *   - @googlemaps/js-api-loader (singleton via lib/googleMapsLoader)
+ *   - VITE_GOOGLE_MAPS_BROWSER_KEY + VITE_GOOGLE_MAPS_MAP_ID env vars
  */
 
-import { useCallback, useEffect, useRef } from "react";
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Crosshair, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { openInGoogleMaps } from "@/lib/googleMaps";
+import {
+  GOOGLE_MAP_ID,
+  googleMapsReady,
+  loadMapsAndMarker,
+} from "@/lib/googleMapsLoader";
 
-const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined;
-const STYLE_DARK = "mapbox://styles/mapbox/dark-v11";
 const TEAL = "#1D9E75";
 
 interface LocationMapProps {
@@ -46,95 +52,122 @@ export default function LocationMap({
 }: LocationMapProps) {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markerRef = useRef<mapboxgl.Marker | null>(null);
-  const popupRef = useRef<mapboxgl.Popup | null>(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
+  const infoRef = useRef<google.maps.InfoWindow | null>(null);
 
-  // Stable ref to current address/org so the popup HTML can rebuild without
-  // depending on inline closures that would re-run the init effect.
+  // Keep popup content reactive without re-running the init effect.
   const popupContentRef = useRef({ organization, address });
   popupContentRef.current = { organization, address };
 
-  // ── Map init (runs once per mount) ──────────────────────────────────────
+  const [loadError, setLoadError] = useState(false);
+
+  // ── Map init (once per mount) ──────────────────────────────────────────
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || !TOKEN) return;
+    if (!container || !googleMapsReady) {
+      if (!googleMapsReady) setLoadError(true);
+      return;
+    }
 
-    mapboxgl.accessToken = TOKEN;
+    let disposed = false;
+    let resizeObserver: ResizeObserver | null = null;
 
-    const map = new mapboxgl.Map({
-      container,
-      style: STYLE_DARK,
-      center: [longitude, latitude],
-      zoom: 13,
-      attributionControl: false,
-      dragRotate: false,
-      touchPitch: false,
-    });
-    map.touchZoomRotate.disableRotation();
-    map.addControl(new mapboxgl.AttributionControl({ compact: true }), "top-right");
+    loadMapsAndMarker()
+      .then(({ maps, marker }) => {
+        if (disposed || !containerRef.current) return;
 
-    // Custom marker: teal dot + pulsing ring.
-    const el = document.createElement("div");
-    el.className = "lm-marker";
-    el.innerHTML = `
-      <div class="lm-marker-pulse"></div>
-      <div class="lm-marker-pulse lm-marker-pulse-2"></div>
-      <div class="lm-marker-dot"></div>
-    `;
+        const map = new maps.Map(containerRef.current, {
+          center: { lat: latitude, lng: longitude },
+          zoom: 13,
+          mapId: GOOGLE_MAP_ID,
+          colorScheme: "DARK" as google.maps.ColorScheme,
+          disableDefaultUI: true,
+          clickableIcons: false,
+          gestureHandling: "greedy",
+          keyboardShortcuts: false,
+        });
+        mapRef.current = map;
 
-    const popupHtml = buildPopupHtml(
-      popupContentRef.current.organization,
-      popupContentRef.current.address,
-      t.map.openInGoogle,
-    );
-    const popup = new mapboxgl.Popup({
-      offset: 18,
-      closeButton: true,
-      className: "lm-popup",
-    }).setHTML(popupHtml);
-    popupRef.current = popup;
+        // Custom DOM pin: teal dot + two pulsing rings.
+        const pinEl = document.createElement("div");
+        pinEl.className = "lm-marker";
+        pinEl.innerHTML = `
+          <div class="lm-marker-pulse"></div>
+          <div class="lm-marker-pulse lm-marker-pulse-2"></div>
+          <div class="lm-marker-dot"></div>
+        `;
 
-    const marker = new mapboxgl.Marker({ element: el, anchor: "center" })
-      .setLngLat([longitude, latitude])
-      .setPopup(popup)
-      .addTo(map);
-    markerRef.current = marker;
+        const advMarker = new marker.AdvancedMarkerElement({
+          map,
+          position: { lat: latitude, lng: longitude },
+          content: pinEl,
+        });
+        markerRef.current = advMarker;
 
-    // Wire up the "Open in Google Maps" link inside the popup.
-    popup.on("open", () => {
-      const node = popup.getElement()?.querySelector<HTMLAnchorElement>(
-        "[data-action='open-google-maps']",
-      );
-      if (node) {
-        const handler = (e: MouseEvent) => {
-          e.preventDefault();
-          openInGoogleMaps({
-            latitude,
-            longitude,
-            address: popupContentRef.current.address,
-            organization: popupContentRef.current.organization,
-          });
-        };
-        node.addEventListener("click", handler);
-        // Cleanup is handled implicitly when the popup closes (DOM removed).
-      }
-    });
+        const info = new maps.InfoWindow({
+          content: buildPopupHtml(
+            popupContentRef.current.organization,
+            popupContentRef.current.address,
+            t.map.openInGoogle,
+          ),
+        });
+        infoRef.current = info;
 
-    mapRef.current = map;
+        // Pin click → open InfoWindow.
+        advMarker.addListener("gmp-click", () => {
+          info.open({ map, anchor: advMarker });
+        });
 
-    const ro = new ResizeObserver(() => map.resize());
-    ro.observe(container);
+        // Wire up "Open in Google Maps" after the info window DOM is inserted.
+        info.addListener("domready", () => {
+          const root = document.querySelector(
+            ".gm-style .gm-style-iw .lm-popup-body",
+          );
+          const link = root?.querySelector<HTMLAnchorElement>(
+            "[data-action='open-google-maps']",
+          );
+          if (!link) return;
+          const handler = (e: MouseEvent) => {
+            e.preventDefault();
+            openInGoogleMaps({
+              latitude,
+              longitude,
+              address: popupContentRef.current.address,
+              organization: popupContentRef.current.organization,
+            });
+          };
+          link.addEventListener("click", handler, { once: true });
+        });
+
+        // Resize map when container dimensions change (split-view, zoom, rotate).
+        // NB: `event` and other static helpers live on the global `google.maps`
+        // namespace (populated as a side effect of importLibrary), not on the
+        // MapsLibrary return value which only exposes constructors.
+        resizeObserver = new ResizeObserver(() => {
+          google.maps.event.trigger(map, "resize");
+        });
+        resizeObserver.observe(container);
+      })
+      .catch((err) => {
+        if (disposed) return;
+        // eslint-disable-next-line no-console
+        console.error("LocationMap: Google Maps load failed", err);
+        setLoadError(true);
+      });
 
     return () => {
-      ro.disconnect();
-      map.remove();
+      disposed = true;
+      resizeObserver?.disconnect();
+      infoRef.current?.close();
+      infoRef.current = null;
+      if (markerRef.current) {
+        markerRef.current.map = null;
+        markerRef.current = null;
+      }
       mapRef.current = null;
-      markerRef.current = null;
-      popupRef.current = null;
     };
-    // Intentional: latitude/longitude/address/organization changes are handled
-    // by the next effect via setCenter/setLngLat — no full reinit.
+    // Map init runs once. Prop changes are handled by the next effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -142,34 +175,41 @@ export default function LocationMap({
   useEffect(() => {
     const map = mapRef.current;
     const marker = markerRef.current;
-    const popup = popupRef.current;
-    if (!map || !marker || !popup) return;
-    marker.setLngLat([longitude, latitude]);
-    map.setCenter([longitude, latitude]);
-    popup.setHTML(buildPopupHtml(organization, address, t.map.openInGoogle));
+    const info = infoRef.current;
+    if (!map || !marker || !info) return;
+    const pos = { lat: latitude, lng: longitude };
+    marker.position = pos;
+    map.setCenter(pos);
+    info.setContent(buildPopupHtml(organization, address, t.map.openInGoogle));
   }, [latitude, longitude, address, organization, t.map.openInGoogle]);
 
-  // ── Controls: zoom +/− and locate-me ───────────────────────────────────
-  const zoomIn = useCallback(() => mapRef.current?.zoomIn(), []);
-  const zoomOut = useCallback(() => mapRef.current?.zoomOut(), []);
+  // ── Controls ──────────────────────────────────────────────────────────
+  const zoomIn = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.setZoom((map.getZoom() ?? 13) + 1);
+  }, []);
+  const zoomOut = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.setZoom((map.getZoom() ?? 13) - 1);
+  }, []);
   const locateMe = useCallback(() => {
-    if (!navigator.geolocation || !mapRef.current) return;
+    const map = mapRef.current;
+    if (!navigator.geolocation || !map) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        mapRef.current?.flyTo({
-          center: [pos.coords.longitude, pos.coords.latitude],
-          zoom: 13,
-          duration: 1200,
-        });
+        map.panTo({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        map.setZoom(13);
       },
       () => {
-        // User denied or unavailable — silent. Could surface a toast later.
+        // User denied or unavailable — silent.
       },
       { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 },
     );
   }, []);
 
-  if (!TOKEN) {
+  if (loadError || !googleMapsReady) {
     return (
       <div
         style={{ height }}
@@ -191,7 +231,7 @@ export default function LocationMap({
         className,
       )}
     >
-      {/* Inject scoped marker + popup styles once per page (re-render safe). */}
+      {/* Scoped marker + popup styles injected once per render; idempotent. */}
       <style>{LOCATION_MAP_CSS}</style>
 
       <div
@@ -271,6 +311,7 @@ const LOCATION_MAP_CSS = `
   position: relative;
   width: 16px;
   height: 16px;
+  transform: translate(-50%, -50%);
 }
 .lm-marker-dot {
   position: absolute;
@@ -295,20 +336,26 @@ const LOCATION_MAP_CSS = `
   100% { transform: scale(2.6); opacity: 0;    }
 }
 
-.mapboxgl-popup.lm-popup .mapboxgl-popup-content {
-  background: rgba(15,23,30,0.96);
+/* Google InfoWindow body styling (scoped via our wrapper class). */
+.gm-style .gm-style-iw-c:has(.lm-popup-body) {
+  background: rgba(15,23,30,0.96) !important;
   border: 1px solid var(--lm-teal);
-  border-radius: 8px;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4) !important;
+  padding: 0 !important;
+}
+.gm-style .gm-style-iw-c:has(.lm-popup-body) .gm-style-iw-d {
+  overflow: hidden !important;
+}
+.gm-style .gm-style-iw-tc:has(+ div .lm-popup-body)::after {
+  background: rgba(15,23,30,0.96) !important;
+}
+.lm-popup-body {
   color: #f4f8fa;
   padding: 10px 12px;
   font-size: 12px;
   line-height: 1.4;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
   max-width: 240px;
-}
-.mapboxgl-popup.lm-popup .mapboxgl-popup-tip { border-top-color: var(--lm-teal); }
-.mapboxgl-popup.lm-popup .mapboxgl-popup-close-button {
-  color: #94a3b8; font-size: 14px; padding: 2px 6px; right: 2px; top: 0;
 }
 .lm-popup-org  { font-weight: 600; color: #fff; margin-bottom: 2px; }
 .lm-popup-addr { color: #cbd5e1; margin-bottom: 6px; }

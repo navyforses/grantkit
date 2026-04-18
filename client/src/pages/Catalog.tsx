@@ -21,17 +21,14 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
-import MapView from "@/components/map/MapView";
+import MapPanel from "@/components/MapPanel";
 import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
 import ResourceTypeTabs from "@/components/ResourceTypeTabs";
 import { useResources, useResourcesRealtime, useCategories, useCountries } from "@/hooks/useResources";
 import type { ResourceType } from "@/types/resources";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
 const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
-import { useMapFlyTo } from "@/hooks/useMapFlyTo";
-import { useMapHighlight } from "@/hooks/useMapHighlight";
-import { useMapMarkers } from "@/components/map/useMapMarkers";
-import type mapboxgl from "mapbox-gl";
+import { useGoogleMapFlyTo } from "@/hooks/useGoogleMapFlyTo";
 
 const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
@@ -405,24 +402,29 @@ export default function Catalog() {
     }
   }, []);
 
-  // Map instance state — shared by useMapFlyTo and useMapMarkers
-  const [mapInstance, setMapInstance] = useState<mapboxgl.Map | null>(null);
-  const handleMapReady = useCallback((map: mapboxgl.Map) => {
+  // Map instance state — used by useGoogleMapFlyTo (country/state/city → camera).
+  // MapPanel owns the markers/clustering/hover itself, so we no longer need the
+  // old useMapMarkers/useMapHighlight hooks.
+  const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
+  const handleMapReady = useCallback((map: google.maps.Map) => {
     setMapInstance(map);
   }, []);
 
-  // Phase 3 — fly to selected location whenever region / country / state / city changes
-  useMapFlyTo(mapInstance, mapRegionCode, mapCountryCode, mapStateCode, mapCityName);
-  // Phase 3b — country/region polygon highlight
-  useMapHighlight(mapInstance, mapRegionCode, mapCountryCode, mapStateCode, mapCityName);
+  // Fly the camera when the user picks a region / country / state / city.
+  useGoogleMapFlyTo(mapInstance, mapRegionCode, mapCountryCode, mapStateCode, mapCityName);
 
-  // Phase 4 — clustered grant/resource markers; selectedItemId feeds Phase 5.
-  // mapItems (all filtered items, not paginated) is used so every visible marker
-  // can be clicked even when it is not on the current display page.
+  // Phase 5 — the currently-selected grant that powers GrantDetailPanel.
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   // When in Supabase view (SOCIAL/MEDICAL), show Supabase geo-tagged items on the map
   const activeMapItems = isSupabaseView ? supabaseMapItems : mapItems;
-  useMapMarkers(mapInstance, activeMapItems, setSelectedItemId);
+
+  // MapPanel accepts items with direct lat/lng only. Items without coordinates
+  // are simply skipped, matching the old useMapMarkers fallback behaviour for
+  // non-geocoded grants (until the daily geocoding job fills them in).
+  const handleMarkerClick = useCallback(
+    (grant: { id: string }) => setSelectedItemId(grant.id),
+    [],
+  );
 
   // Phase 5 — detail panel for the selected marker.
   // Prefer displayItems (may carry translations) then fall back to mapItems (full catalog).
@@ -559,10 +561,12 @@ export default function Catalog() {
        */}
       {/* Map height adjusted to account for the additional ResourceTypeTabs bar (~2.25rem) */}
       <div className="relative h-[calc(100dvh-12.25rem)] md:h-[calc(100dvh-8.75rem)]">
-        <MapView
+        <MapPanel
           className="absolute inset-0 w-full h-full"
+          grants={activeMapItems}
+          highlightedId={selectedItemId}
+          onMarkerClick={handleMarkerClick}
           onMapReady={handleMapReady}
-          ariaLabel={t.catalog.title}
         />
 
         {/* Phase 2 — cascading filter panel overlay (lazy-loaded to defer country-state-city chunk) */}

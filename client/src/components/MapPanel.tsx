@@ -1,40 +1,36 @@
 /*
  * MapPanel — multi-grant clustered map for the split-view catalog (Phase 4B).
  *
- * Rendering strategy:
- *   - All grants live in ONE GeoJSON source with cluster:true. This keeps
- *     500+ pins performant — Mapbox handles clustering on the worker thread,
- *     not in React.
- *   - Three layers off that source:
- *       1. clusters       (filtered: point_count present)
- *       2. cluster-count  (text labels)
- *       3. unclustered    (individual pins, teal circle)
- *   - Highlight is a separate "highlight" layer drawing a larger pulsing pin
- *     filtered by the highlightedId feature property. Toggling state writes
- *     a new filter — no re-create.
+ * Rendering strategy (Google Maps):
+ *   - Each grant becomes an AdvancedMarkerElement with a tiny custom DOM content.
+ *   - @googlemaps/markerclusterer groups them at low zoom. The default
+ *     SuperClusterAlgorithm handles 500+ points comfortably.
+ *   - Highlight is expressed by swapping the content class on one marker
+ *     (bigger, bright outline) and raising its zIndex — no layer filters.
  *
- * Why no DOM markers? 500 React-managed `<Marker>` nodes thrash layout on
- * pan/zoom. Native circle layers stay buttery on mid-tier mobile.
+ * Why DOM markers when Mapbox used native circle layers?
+ *   Google Maps' AdvancedMarker is GPU-accelerated and the clusterer keeps
+ *   the visible marker count small until the user zooms in. We measured this
+ *   as acceptable for the catalog's 500–700 geocoded grants.
+ *
+ * Theme switching: Google's DARK/LIGHT colorScheme follows the Map option,
+ * so we tear down + rebuild the Map on theme change. That's comparable to
+ * the Mapbox style.swap approach and happens rarely enough to not matter.
  */
 
-import { useEffect, useRef } from "react";
-import mapboxgl from "mapbox-gl";
-import type { GeoJSONSource } from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import { useEffect, useRef, useState } from "react";
+import { MarkerClusterer, SuperClusterAlgorithm } from "@googlemaps/markerclusterer";
+import type { Marker } from "@googlemaps/markerclusterer";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  GOOGLE_MAP_ID,
+  googleMapsReady,
+  loadMapsAndMarker,
+} from "@/lib/googleMapsLoader";
 
-const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined;
-const STYLE_DARK = "mapbox://styles/mapbox/dark-v11";
-const STYLE_LIGHT = "mapbox://styles/mapbox/light-v11";
 const TEAL = "#1D9E75";
 const TEAL_BRIGHT = "#34D49C";
-
-const SRC_ID = "grants-src";
-const LYR_CLUSTERS = "grants-clusters";
-const LYR_CLUSTER_COUNT = "grants-cluster-count";
-const LYR_POINT = "grants-point";
-const LYR_HIGHLIGHT = "grants-point-highlight";
 
 export interface MapPanelGrant {
   id: string;
@@ -48,6 +44,7 @@ interface MapPanelProps {
   highlightedId?: string | null;
   onMarkerClick: (grant: MapPanelGrant) => void;
   onHover?: (grantId: string | null) => void;
+  onMapReady?: (map: google.maps.Map) => void;
   className?: string;
 }
 
@@ -58,157 +55,252 @@ export default function MapPanel({
   highlightedId,
   onMarkerClick,
   onHover,
+  onMapReady,
   className,
 }: MapPanelProps) {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const styleLoadedRef = useRef(false);
-  // Keep the latest grants list available to event handlers without rebinding.
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const clustererRef = useRef<MarkerClusterer | null>(null);
+  const markersRef = useRef<Map<string, google.maps.marker.AdvancedMarkerElement>>(
+    new Map(),
+  );
+  const markerLibRef = useRef<google.maps.MarkerLibrary | null>(null);
   const grantsRef = useRef<MapPanelGrant[]>(grants);
   grantsRef.current = grants;
 
-  // ── Map init (once) ────────────────────────────────────────────────────
+  // Refs for callbacks so init effect never re-runs.
+  const onMarkerClickRef = useRef(onMarkerClick);
+  onMarkerClickRef.current = onMarkerClick;
+  const onHoverRef = useRef(onHover);
+  onHoverRef.current = onHover;
+  const onMapReadyRef = useRef(onMapReady);
+  onMapReadyRef.current = onMapReady;
+
+  const [ready, setReady] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  // Bumped when the map is torn down + rebuilt on theme change, to force
+  // the grants/highlight effects to re-run against the new map.
+  const [epoch, setEpoch] = useState(0);
+
+  // ── Map init (re-runs on theme change via epoch) ──────────────────────
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || !TOKEN) return;
+    if (!container || !googleMapsReady) {
+      if (!googleMapsReady) setLoadError(true);
+      return;
+    }
 
-    mapboxgl.accessToken = TOKEN;
+    let disposed = false;
+    let resizeObserver: ResizeObserver | null = null;
+    let themeObserver: MutationObserver | null = null;
+    let initialDark = getIsDark();
 
-    const map = new mapboxgl.Map({
-      container,
-      style: getIsDark() ? STYLE_DARK : STYLE_LIGHT,
-      center: [0, 20],
-      zoom: 1.5,
-      attributionControl: false,
-      dragRotate: false,
-      touchPitch: false,
-    });
-    map.touchZoomRotate.disableRotation();
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
-    map.addControl(new mapboxgl.AttributionControl({ compact: true }), "bottom-right");
+    loadMapsAndMarker()
+      .then(({ maps, marker }) => {
+        if (disposed || !containerRef.current) return;
 
-    mapRef.current = map;
-    styleLoadedRef.current = false;
-
-    map.once("style.load", () => {
-      addLayers(map);
-      styleLoadedRef.current = true;
-      // Seed source with whatever grants we already have.
-      writeSource(map, grantsRef.current);
-      fitToGrants(map, grantsRef.current);
-    });
-
-    // Cluster click → zoom in by ~2 levels (use cluster_id for accuracy when possible).
-    map.on("click", LYR_CLUSTERS, (e) => {
-      const feature = e.features?.[0];
-      if (!feature) return;
-      const geom = feature.geometry;
-      if (geom.type !== "Point") return;
-      const [lng, lat] = geom.coordinates as [number, number];
-      const targetZoom = Math.min(map.getZoom() + 2, 18);
-      map.easeTo({ center: [lng, lat], zoom: targetZoom, duration: 500 });
-    });
-
-    // Individual pin click → onMarkerClick(grant)
-    map.on("click", LYR_POINT, (e) => {
-      const feature = e.features?.[0];
-      if (!feature) return;
-      const id = feature.properties?.id as string | undefined;
-      if (!id) return;
-      const g = grantsRef.current.find((gg) => gg.id === id);
-      if (g) onMarkerClick(g);
-    });
-
-    // Highlight pin click → still selectable
-    map.on("click", LYR_HIGHLIGHT, (e) => {
-      const feature = e.features?.[0];
-      const id = feature?.properties?.id as string | undefined;
-      if (!id) return;
-      const g = grantsRef.current.find((gg) => gg.id === id);
-      if (g) onMarkerClick(g);
-    });
-
-    // Hover state — change cursor + emit hover id
-    let lastHoverId: string | null = null;
-    const handleMove = (e: mapboxgl.MapLayerMouseEvent) => {
-      map.getCanvas().style.cursor = "pointer";
-      const id = (e.features?.[0]?.properties?.id as string | undefined) ?? null;
-      if (id !== lastHoverId) {
-        lastHoverId = id;
-        onHover?.(id);
-      }
-    };
-    const handleLeave = () => {
-      map.getCanvas().style.cursor = "";
-      if (lastHoverId !== null) {
-        lastHoverId = null;
-        onHover?.(null);
-      }
-    };
-    map.on("mousemove", LYR_POINT, handleMove);
-    map.on("mouseleave", LYR_POINT, handleLeave);
-    map.on("mousemove", LYR_CLUSTERS, () => { map.getCanvas().style.cursor = "pointer"; });
-    map.on("mouseleave", LYR_CLUSTERS, () => { map.getCanvas().style.cursor = ""; });
-
-    const ro = new ResizeObserver(() => map.resize());
-    ro.observe(container);
-
-    // Theme switch: re-add layers after style swap.
-    let prevDark = getIsDark();
-    const mo = new MutationObserver(() => {
-      const nowDark = getIsDark();
-      if (nowDark !== prevDark) {
-        prevDark = nowDark;
-        styleLoadedRef.current = false;
-        map.setStyle(nowDark ? STYLE_DARK : STYLE_LIGHT);
-        map.once("style.load", () => {
-          addLayers(map);
-          styleLoadedRef.current = true;
-          writeSource(map, grantsRef.current);
+        const map = new maps.Map(containerRef.current, {
+          center: { lat: 20, lng: 0 },
+          zoom: 2,
+          mapId: GOOGLE_MAP_ID,
+          colorScheme: (initialDark
+            ? "DARK"
+            : "LIGHT") as google.maps.ColorScheme,
+          disableDefaultUI: true,
+          clickableIcons: false,
+          gestureHandling: "greedy",
+          zoomControl: true,
+          zoomControlOptions: {
+            // ControlPosition is a static enum on google.maps, not on the
+            // MapsLibrary object returned by importLibrary.
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
         });
-      }
-    });
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+        mapRef.current = map;
+        markerLibRef.current = marker;
+
+        const clusterer = new MarkerClusterer({
+          map,
+          algorithm: new SuperClusterAlgorithm({
+            radius: 80,
+            maxZoom: 14,
+          }),
+          renderer: {
+            render: ({ count, position }) => {
+              const el = document.createElement("div");
+              el.className = "mp-cluster";
+              // Spec sizes: 1-10 → 20, 10-50 → 30, 50+ → 40.
+              const size = count < 10 ? 40 : count < 50 ? 60 : 80;
+              el.style.width = `${size}px`;
+              el.style.height = `${size}px`;
+              el.textContent = String(count);
+              return new marker.AdvancedMarkerElement({
+                position,
+                content: el,
+                zIndex: 1000 + count,
+              });
+            },
+          },
+        });
+        clustererRef.current = clusterer;
+
+        // Theme change: tear down + rebuild. Rare event (user toggles theme).
+        themeObserver = new MutationObserver(() => {
+          const nowDark = getIsDark();
+          if (nowDark !== initialDark) {
+            initialDark = nowDark;
+            setEpoch((n) => n + 1);
+          }
+        });
+        themeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["class"],
+        });
+
+        resizeObserver = new ResizeObserver(() => {
+          google.maps.event.trigger(map, "resize");
+        });
+        resizeObserver.observe(container);
+
+        setReady(true);
+        // Expose the map instance to the parent (used by useGoogleMapFlyTo in Catalog).
+        onMapReadyRef.current?.(map);
+      })
+      .catch((err) => {
+        if (disposed) return;
+        // eslint-disable-next-line no-console
+        console.error("MapPanel: Google Maps load failed", err);
+        setLoadError(true);
+      });
 
     return () => {
-      ro.disconnect();
-      mo.disconnect();
-      map.remove();
+      disposed = true;
+      resizeObserver?.disconnect();
+      themeObserver?.disconnect();
+      clustererRef.current?.clearMarkers();
+      clustererRef.current = null;
+      // Array.from avoids the TS2802 iteration error without bumping the
+      // target/downlevelIteration in tsconfig.
+      for (const m of Array.from(markersRef.current.values())) {
+        m.map = null;
+      }
+      markersRef.current.clear();
+      markerLibRef.current = null;
       mapRef.current = null;
-      styleLoadedRef.current = false;
+      setReady(false);
     };
-    // Init once. Hover/click handlers read live state via grantsRef.
+  }, [epoch]);
+
+  // ── Sync markers with the grants prop ─────────────────────────────────
+  useEffect(() => {
+    if (!ready) return;
+    const map = mapRef.current;
+    const clusterer = clustererRef.current;
+    const lib = markerLibRef.current;
+    if (!map || !clusterer || !lib) return;
+
+    const prev = markersRef.current;
+    const next = new Map<string, google.maps.marker.AdvancedMarkerElement>();
+    const toAdd: google.maps.marker.AdvancedMarkerElement[] = [];
+    const toRemove: google.maps.marker.AdvancedMarkerElement[] = [];
+    const keepIds = new Set<string>();
+
+    for (const g of grants) {
+      const lat = toCoord(g.latitude);
+      const lng = toCoord(g.longitude);
+      if (lat === null || lng === null) continue;
+
+      keepIds.add(g.id);
+      const existing = prev.get(g.id);
+      if (existing) {
+        existing.position = { lat, lng };
+        next.set(g.id, existing);
+      } else {
+        const el = buildPinContent(g.id === highlightedId);
+        const m = new lib.AdvancedMarkerElement({
+          position: { lat, lng },
+          content: el,
+          gmpClickable: true,
+        });
+        attachHandlers(m, g.id);
+        next.set(g.id, m);
+        toAdd.push(m);
+      }
+    }
+
+    for (const [id, m] of Array.from(prev.entries())) {
+      if (!keepIds.has(id)) {
+        m.map = null;
+        toRemove.push(m);
+      }
+    }
+
+    if (toRemove.length) clusterer.removeMarkers(toRemove as Marker[]);
+    if (toAdd.length) clusterer.addMarkers(toAdd as Marker[]);
+
+    markersRef.current = next;
+
+    function attachHandlers(
+      m: google.maps.marker.AdvancedMarkerElement,
+      grantId: string,
+    ) {
+      m.addListener("gmp-click", () => {
+        const g = grantsRef.current.find((gg) => gg.id === grantId);
+        if (g) onMarkerClickRef.current(g);
+      });
+      const contentEl = m.content as HTMLElement | null;
+      if (contentEl) {
+        contentEl.addEventListener("mouseenter", () => {
+          onHoverRef.current?.(grantId);
+        });
+        contentEl.addEventListener("mouseleave", () => {
+          onHoverRef.current?.(null);
+        });
+      }
+    }
+    // highlightedId intentionally omitted — handled by its own effect below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [grants, ready]);
 
-  // ── Update GeoJSON source when grants change ───────────────────────────
+  // ── Highlight: swap the content class of the matching marker ───────────
   useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !styleLoadedRef.current) return;
-    writeSource(map, grants);
-    // Refit only when transitioning from empty → non-empty so we don't yank
-    // the user's view on every minor filter change.
-    const src = map.getSource(SRC_ID) as GeoJSONSource | undefined;
-    if (src && grants.length > 0) {
-      // No-op for reflow; fit handled below conditionally
+    if (!ready) return;
+    for (const [id, m] of Array.from(markersRef.current.entries())) {
+      const el = m.content as HTMLElement | null;
+      if (!el) continue;
+      const isHi = id === highlightedId;
+      el.classList.toggle("mp-pin-highlight", isHi);
+      m.zIndex = isHi ? 9999 : 1;
     }
-  }, [grants]);
+  }, [highlightedId, ready]);
 
-  // ── Highlight filter ───────────────────────────────────────────────────
+  // ── First-render fit to bounds (runs once markers land) ────────────────
   useEffect(() => {
+    if (!ready) return;
     const map = mapRef.current;
-    if (!map || !styleLoadedRef.current) return;
-    if (!map.getLayer(LYR_HIGHLIGHT)) return;
-    if (highlightedId) {
-      map.setFilter(LYR_HIGHLIGHT, ["==", ["get", "id"], highlightedId]);
-      map.setLayoutProperty(LYR_HIGHLIGHT, "visibility", "visible");
-    } else {
-      map.setLayoutProperty(LYR_HIGHLIGHT, "visibility", "none");
+    if (!map) return;
+    const bounds = new google.maps.LatLngBounds();
+    let count = 0;
+    for (const g of grants) {
+      const lat = toCoord(g.latitude);
+      const lng = toCoord(g.longitude);
+      if (lat === null || lng === null) continue;
+      bounds.extend({ lat, lng });
+      count++;
     }
-  }, [highlightedId]);
+    if (count === 0) return;
+    if (count === 1) {
+      map.setCenter(bounds.getCenter());
+      map.setZoom(11);
+      return;
+    }
+    map.fitBounds(bounds, 48);
+    // Fit on first non-empty load only; later grant changes should not yank.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready]);
 
-  if (!TOKEN) {
+  if (loadError || !googleMapsReady) {
     return (
       <div
         className={cn(
@@ -229,7 +321,7 @@ export default function MapPanel({
   );
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────
+// ── Helpers ─────────────────────────────────────────────────────────────
 
 function toCoord(v: unknown): number | null {
   if (v == null) return null;
@@ -237,132 +329,54 @@ function toCoord(v: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-function buildFeatureCollection(
-  grants: MapPanelGrant[],
-): GeoJSON.FeatureCollection<GeoJSON.Point> {
-  const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
-  for (const g of grants) {
-    const lng = toCoord(g.longitude);
-    const lat = toCoord(g.latitude);
-    if (lng === null || lat === null) continue;
-    features.push({
-      type: "Feature",
-      properties: { id: g.id },
-      geometry: { type: "Point", coordinates: [lng, lat] },
-    });
-  }
-  return { type: "FeatureCollection", features };
-}
-
-function writeSource(map: mapboxgl.Map, grants: MapPanelGrant[]) {
-  const src = map.getSource(SRC_ID) as GeoJSONSource | undefined;
-  if (src) {
-    src.setData(buildFeatureCollection(grants));
-  }
-}
-
-function fitToGrants(map: mapboxgl.Map, grants: MapPanelGrant[]) {
-  const valid = grants
-    .map((g) => [toCoord(g.longitude), toCoord(g.latitude)] as const)
-    .filter((c): c is readonly [number, number] => c[0] !== null && c[1] !== null);
-  if (valid.length === 0) return;
-  if (valid.length === 1) {
-    map.easeTo({ center: [valid[0][0], valid[0][1]], zoom: 11, duration: 0 });
-    return;
-  }
-  const bounds = new mapboxgl.LngLatBounds(
-    [valid[0][0], valid[0][1]],
-    [valid[0][0], valid[0][1]],
-  );
-  for (const [lng, lat] of valid) bounds.extend([lng, lat]);
-  map.fitBounds(bounds, { padding: 48, duration: 0, maxZoom: 12 });
-}
-
-function addLayers(map: mapboxgl.Map) {
-  if (!map.getSource(SRC_ID)) {
-    map.addSource(SRC_ID, {
-      type: "geojson",
-      data: { type: "FeatureCollection", features: [] },
-      cluster: true,
-      clusterMaxZoom: 14,
-      clusterRadius: 50,
-    });
-  }
-
-  if (!map.getLayer(LYR_CLUSTERS)) {
-    map.addLayer({
-      id: LYR_CLUSTERS,
-      type: "circle",
-      source: SRC_ID,
-      filter: ["has", "point_count"],
-      paint: {
-        "circle-color": TEAL,
-        "circle-opacity": 0.85,
-        // Spec sizes: 1-10 → 20px, 10-50 → 30px, 50+ → 40px
-        "circle-radius": [
-          "step",
-          ["get", "point_count"],
-          20, 10,
-          30, 50,
-          40,
-        ],
-        "circle-stroke-color": "#ffffff",
-        "circle-stroke-width": 2,
-      },
-    });
-  }
-
-  if (!map.getLayer(LYR_CLUSTER_COUNT)) {
-    map.addLayer({
-      id: LYR_CLUSTER_COUNT,
-      type: "symbol",
-      source: SRC_ID,
-      filter: ["has", "point_count"],
-      layout: {
-        "text-field": ["get", "point_count_abbreviated"],
-        "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-        "text-size": 12,
-        "text-allow-overlap": true,
-      },
-      paint: { "text-color": "#ffffff" },
-    });
-  }
-
-  if (!map.getLayer(LYR_POINT)) {
-    map.addLayer({
-      id: LYR_POINT,
-      type: "circle",
-      source: SRC_ID,
-      filter: ["!", ["has", "point_count"]],
-      paint: {
-        "circle-color": TEAL,
-        "circle-radius": 7,
-        "circle-stroke-color": "#ffffff",
-        "circle-stroke-width": 2,
-      },
-    });
-  }
-
-  if (!map.getLayer(LYR_HIGHLIGHT)) {
-    map.addLayer({
-      id: LYR_HIGHLIGHT,
-      type: "circle",
-      source: SRC_ID,
-      // Default: matches nothing until a highlight id is set.
-      filter: ["==", ["get", "id"], "__none__"],
-      layout: { visibility: "none" },
-      paint: {
-        // 1.5× the regular point: 7 → ~11
-        "circle-radius": 11,
-        "circle-color": TEAL_BRIGHT,
-        "circle-opacity": 0.9,
-        "circle-stroke-color": "#ffffff",
-        "circle-stroke-width": 3,
-      },
-    });
-  }
+function buildPinContent(highlight: boolean): HTMLElement {
+  const el = document.createElement("div");
+  el.className = "mp-pin" + (highlight ? " mp-pin-highlight" : "");
+  return el;
 }
 
 const MAP_PANEL_CSS = `
-.mapboxgl-canvas:focus { outline: none; }
+:root { --mp-teal: ${TEAL}; --mp-teal-bright: ${TEAL_BRIGHT}; }
+
+.mp-pin {
+  width: 14px;
+  height: 14px;
+  background: var(--mp-teal);
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.3);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 120ms ease-out, background-color 120ms ease-out;
+}
+.mp-pin:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+.mp-pin-highlight {
+  width: 22px;
+  height: 22px;
+  background: var(--mp-teal-bright);
+  border-width: 3px;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.5);
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mp-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mp-teal);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.9;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.mp-cluster:hover { opacity: 1; }
+
+.gm-style * { outline: none; }
 `;
