@@ -1042,4 +1042,33 @@ export const ru: Translations = {
     error: "Карта недоступна",
     noLocation: "Адрес не указан публично",
   },
+
+  toolbar: {
+    search: {
+      placeholder: "Поиск грантов и ресурсов",
+    },
+    type: {
+      label: "Тип",
+      all: "Все",
+      grant: "Гранты",
+      resource: "Ресурсы",
+    },
+    region: {
+      label: "Регион",
+      all: "Все регионы",
+    },
+    category: {
+      label: "Категория",
+      all: "Все категории",
+    },
+    view: {
+      split: "Смешанный",
+      map: "Карта",
+      list: "Список",
+    },
+  },
+
+  chips: {
+    ariaLabel: "Быстрые фильтры по категориям",
+  },
 };

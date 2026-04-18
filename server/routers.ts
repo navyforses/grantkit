@@ -16,6 +16,7 @@ import {
   getActiveNewsletterSubscribers, getNewsletterSubscriberCount, exportAllGrants,
   unsubscribeByToken, createNotificationRecord, updateNotificationRecord,
   getNotificationHistory, bulkImportGrants, getDistinctStates, getDistinctCities,
+  getDistinctCountries, getCategoryCounts,
   getDiversePreviewGrants,
   getUserByEmail, createEmailPasswordUser, getUserByVerificationToken,
   getUserByResetToken, markEmailVerified, setVerificationToken,
@@ -528,6 +529,35 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return await getDistinctCities(input.state);
       }),
+
+    // Get distinct regions (grouped country codes) with counts for toolbar dropdown
+    regions: publicProcedure.query(async () => {
+      const rows = await getDistinctCountries();
+      const EU = new Set([
+        "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU",
+        "IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE",
+      ]);
+      const countryTotals = new Map<string, number>();
+      for (const r of rows) countryTotals.set(r.country, r.count);
+
+      const us = countryTotals.get("US") ?? 0;
+      const gb = countryTotals.get("GB") ?? 0;
+      let eu = 0;
+      countryTotals.forEach((count, code) => {
+        if (EU.has(code)) eu += count;
+      });
+
+      const regions: Array<{ code: string; count: number }> = [];
+      if (us > 0) regions.push({ code: "US", count: us });
+      if (eu > 0) regions.push({ code: "EU", count: eu });
+      if (gb > 0) regions.push({ code: "GB", count: gb });
+      return regions;
+    }),
+
+    // Get grant counts per category for QuickChips
+    categoryCounts: publicProcedure.query(async () => {
+      return await getCategoryCounts();
+    }),
 
     // Smart Search — AI-powered multilingual search
     smartSearch: publicProcedure

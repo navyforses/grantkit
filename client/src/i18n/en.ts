@@ -1044,4 +1044,33 @@ export const en: Translations = {
     error: "Map unavailable",
     noLocation: "Location not publicly listed",
   },
+
+  toolbar: {
+    search: {
+      placeholder: "Search grants and resources",
+    },
+    type: {
+      label: "Type",
+      all: "All",
+      grant: "Grants",
+      resource: "Resources",
+    },
+    region: {
+      label: "Region",
+      all: "All regions",
+    },
+    category: {
+      label: "Category",
+      all: "All categories",
+    },
+    view: {
+      split: "Split",
+      map: "Map",
+      list: "List",
+    },
+  },
+
+  chips: {
+    ariaLabel: "Quick category filters",
+  },
 };

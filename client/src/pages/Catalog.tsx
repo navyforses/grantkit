@@ -13,8 +13,9 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Filter, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import SmartSearchPanel from "@/components/SmartSearchPanel";
-import { type SortValue } from "@/components/FilterBar";
-import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, EU_MEMBER_CODES } from "@/lib/constants";
+import CatalogToolbar, { type ToolbarTypeValue, type ToolbarViewMode } from "@/components/CatalogToolbar";
+import QuickChips from "@/components/QuickChips";
+import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, type SortValue, REGIONS, CATEGORIES, EU_MEMBER_CODES } from "@/lib/constants";
 import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -93,6 +94,12 @@ export default function Catalog() {
 
   // View mode: map (default) or smart search
   const [viewMode, setViewMode] = useState<"map" | "search">("map");
+
+  // Phase 4A — toolbar-driven layout mode. Split is the default on desktop;
+  // Phase 4B (Arash) wires this to the actual split-view layout. For now the
+  // state is kept here so the toolbar is interactive and the URL can remember
+  // the user's preference.
+  const [layoutMode, setLayoutMode] = useState<ToolbarViewMode>("split");
 
   // Sync filter state to URL
   useEffect(() => {
@@ -214,6 +221,52 @@ export default function Catalog() {
     retry: false,
     placeholderData: (prev: any) => prev,
   });
+
+  // Phase 4A — toolbar data: regions & per-category counts (aggregated server-side).
+  const { data: regionCounts } = trpc.catalog.regions.useQuery(undefined, { retry: false });
+  const { data: categoryCounts } = trpc.catalog.categoryCounts.useQuery(undefined, { retry: false });
+
+  const availableRegions = useMemo(() => {
+    const countByCode = new Map<string, number>();
+    (regionCounts ?? []).forEach((r) => countByCode.set(r.code, r.count));
+    return REGIONS.map((r) => ({
+      code: r.code,
+      label: r.label,
+      flag: r.flag,
+      count: countByCode.get(r.code) ?? 0,
+    }));
+  }, [regionCounts]);
+
+  const availableCategories = useMemo(() => {
+    const countById = new Map<string, number>();
+    (categoryCounts ?? []).forEach((c) => countById.set(c.category, c.count));
+    // Map known admin-panel labels to category values; fall back to a humanised form.
+    const labelFor = (value: string): string => {
+      const adminKey: Record<string, keyof typeof t.admin | undefined> = {
+        medical_treatment:     "catMedicalTreatment",
+        financial_assistance:  "catFinancialAssistance",
+        assistive_technology:  "catAssistiveTechnology",
+        social_services:       "catSocialServices",
+        scholarships:          "catScholarships",
+        housing:               "catHousing",
+        travel_transport:      "catTravelTransport",
+        international:         "catInternational",
+        other:                 "catOther",
+      };
+      const key = adminKey[value];
+      if (key) return t.admin[key] as string;
+      return value.replace(/_/g, " ").replace(/\b\w/g, (ch) => ch.toUpperCase());
+    };
+    return CATEGORIES
+      .filter((c) => c.value !== "all")
+      .map((c) => ({
+        id: c.value,
+        label: labelFor(c.value),
+        count: countById.get(c.value) ?? 0,
+        icon: c.icon,
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [categoryCounts, t.admin]);
 
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -457,6 +510,38 @@ export default function Catalog() {
       {/* Desktop navbar — h-16 (4rem / 64px). Hidden on mobile; MobileHeader comes from App.tsx. */}
       <Navbar />
 
+      {/*
+       * Phase 4A — horizontal catalog toolbar + quick category chips.
+       * These sit above the existing filter/view tabs. The segmented
+       * Split/Map/List selector is wired to `layoutMode`; Phase 4B will
+       * use that value to render the actual layout split.
+       */}
+      <CatalogToolbar
+        searchQuery={searchQuery}
+        onSearchChange={(q) => { setSearchQuery(q); setPage(1); }}
+        typeFilter={selectedType as ToolbarTypeValue}
+        onTypeChange={(t) => { setSelectedType(t as TypeValue); setPage(1); }}
+        regionFilter={mapRegionCode || null}
+        onRegionChange={(code) => {
+          setMapRegionCode((code ?? "") as RegionCode);
+          setMapCountryCode("");
+          setMapStateCode("");
+          setMapCityName("");
+        }}
+        categoryFilter={selectedCategory === "all" ? null : selectedCategory}
+        onCategoryChange={(c) => { setSelectedCategory((c ?? "all") as CategoryValue); setPage(1); }}
+        viewMode={layoutMode}
+        onViewChange={setLayoutMode}
+        availableRegions={availableRegions}
+        availableCategories={availableCategories}
+      />
+      <QuickChips
+        categories={availableCategories}
+        activeId={selectedCategory === "all" ? null : selectedCategory}
+        onSelect={(id) => { setSelectedCategory((id ?? "all") as CategoryValue); setPage(1); }}
+        ariaLabel={t.chips.ariaLabel}
+      />
+
       {/* Resource type switcher + view mode tabs */}
       <div className="bg-background/95 backdrop-blur-sm border-b border-border px-3 py-1.5 flex items-center gap-2">
         {viewMode === "map" && (
@@ -563,7 +648,7 @@ export default function Catalog() {
       <div className="relative h-[calc(100dvh-12.25rem)] md:h-[calc(100dvh-8.75rem)]">
         <MapPanel
           className="absolute inset-0 w-full h-full"
-          grants={activeMapItems}
+          grants={activeMapItems as unknown as import("@/components/MapPanel").MapPanelGrant[]}
           highlightedId={selectedItemId}
           onMarkerClick={handleMarkerClick}
           onMapReady={handleMapReady}

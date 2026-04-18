@@ -121,6 +121,9 @@ export const EU_CENTER: { lat: number; lng: number; zoom: number } = {
 // ===== Type Filter =====
 export type TypeValue = "all" | "grant" | "resource";
 
+// ===== Sort Filter =====
+export type SortValue = "name_asc" | "name_desc" | "category" | "country" | "state" | "newest";
+
 // ===== Category Styles =====
 const CATEGORY_STYLES: Record<string, { bg: string; text: string; border: string; borderLeft: string }> = {
   medical_treatment: {

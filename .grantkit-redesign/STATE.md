@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-17T02:00:00Z
-**Current phase:** Phase 3 — in progress (Luca).
+**Last updated:** 2026-04-18T18:00:00Z
+**Current phase:** Phase 4A complete (Priya). Phase 4B ready to start (Arash).
 **Project start:** 2026-04-16
 
 ---
@@ -15,11 +15,35 @@
 
 Complete UX redesign of GrantKit (grant discovery platform) with:
 1. Email/password auth (alongside existing OAuth)
-2. Map-based grant discovery (Mapbox GL JS)
+2. Map-based grant discovery (Google Maps JavaScript API)
 3. Split-view catalog (list + map, 50/50)
 4. Redesigned grant detail page with location map
 5. Google Maps deep-link integration
 6. Full mobile responsive + 5-language i18n
+
+---
+
+## 🔧 Technical Stack Note (Phase 3 outcome)
+
+**Map library decision (locked in during Phase 3):**
+
+Despite initial Mapbox plan, team migrated to **Google Maps JavaScript API** 
+(`@googlemaps/js-api-loader`). Reasoning: native Android/iOS deep-linking, 
+parity with `googleMaps.ts` helpers, vector styling. See Phase 3 log for details.
+
+Environment variables now required:
+- `VITE_GOOGLE_MAPS_BROWSER_KEY` (Maps JavaScript API key)
+- `VITE_GOOGLE_MAPS_MAP_ID` (vector Map ID for custom styling)
+
+**Implications for downstream phases:**
+- Phase 4A/4B: New agents use Google Maps patterns (AdvancedMarkerElement, 
+  MarkerClusterer), not Mapbox GeoJSON sources
+- Phase 5: LocationMap component is already Google Maps-based (done)
+- Phase 6: Google Maps deep-link helpers (`googleMaps.ts`) work with 
+  Google Maps instance seamlessly
+
+**Known deferred:** Pulsing ring animation on markers was not reimplemented 
+in Google Maps port. Scheduled for Phase 4B polish (Arash).
 
 ---
 
@@ -34,7 +58,7 @@ Complete UX redesign of GrantKit (grant discovery platform) with:
 - **Auth:** jose 6.1.0 (JWT), Manus OAuth
 - **Payments:** Paddle (via REST), **Email:** Resend 6.9.4
 - **AI:** @anthropic-ai/sdk 0.88.0
-- **Maps:** mapbox-gl 3.21.0 (already installed) + @types/mapbox-gl 3.5.0 + @types/google.maps 3.58.1
+- **Maps:** @googlemaps/js-api-loader 1.16.6 + @types/google.maps 3.58.1
 - **UI:** Radix UI (full suite), Framer Motion 12.23.22, Lucide React, Recharts 2.15.2, Sonner, Vaul
 - **Routing:** wouter 3.3.5 (patched), **Forms:** react-hook-form + zod 4.1.12
 - **Misc:** country-state-city 3.2.1, date-fns 4.1.0, papaparse, xlsx, react-resizable-panels 3.0.6
@@ -81,9 +105,9 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 |---|-------|--------|-------|-----------|
 | 0 | Email/password authentication | 🟢 Complete | Mira | 2026-04-16 |
 | 1 | Database schema migration | 🟢 Complete | Dmitri | 2026-04-17 |
-| 2 | Geocoding pipeline (Mapbox) | 🟢 Complete | Yuki | 2026-04-17 |
-| 3 | Mapbox setup + LocationMap component | 🟢 Complete | Luca | 2026-04-17 |
-| 4A | CatalogToolbar + QuickChips | ⚪ Not started | — | — |
+| 2 | Geocoding pipeline | 🟢 Complete | Yuki | 2026-04-17 |
+| 3 | Google Maps setup + LocationMap component | 🟢 Complete | Luca | 2026-04-17 |
+| 4A | CatalogToolbar + QuickChips | 🟢 Complete | Priya | 2026-04-18 |
 | 4B | Split-view Catalog layout | ⚪ Not started | — | — |
 | 5 | GrantDetail page rewrite | ⚪ Not started | — | — |
 | 6 | Google Maps deep-link audit | ⚪ Not started | — | — |
@@ -98,11 +122,11 @@ Legend: ⚪ Not started · 🟡 In progress · 🟢 Complete · 🔴 Blocked
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Geocoding provider | Mapbox | Free tier 100k/mo, already used in project |
+| Geocoding provider | Google Maps Geocoding API | Free tier 25k/mo, parity with frontend |
 | Nationwide grants strategy | Pin on HQ + "🌐 Nationwide" badge | Simplest, preserves map utility |
 | Match badge feature | Deferred to post-MVP | User profile does not exist yet |
 | Auth strategy | Email/password alongside OAuth | OAuth kept for users who prefer it |
-| Map library | Mapbox GL JS | Vector tiles, free, customizable |
+| Map library | Google Maps JavaScript API | Vector tiles, native deep-links, customizable |
 | Detail page pattern | Full-page route (SEO-friendly) | /grant/:itemId deep-linkable |
 
 ---
@@ -262,14 +286,14 @@ Geocoding API by default on free tier.
 - `pnpm check` → 0 TypeScript errors
 - `pnpm geocode:grants:dry` → prints expected output, no API/DB calls
 
-**Hand-off to Luca (Phase 3):** `VITE_MAPBOX_TOKEN` already in
-`.env.example`. Luca needs it set in Railway env vars too.
+**Hand-off to Luca (Phase 3):** `VITE_GOOGLE_MAPS_BROWSER_KEY` and 
+`VITE_GOOGLE_MAPS_MAP_ID` must be set in `.env.example` and Railway env vars.
 The `latitude`, `longitude` columns (decimal(10,7)) are ready
-for `mapbox-gl` marker pins.
+for Google Maps marker pins.
 
 ---
 
-### Phase 3 — Mapbox Setup + LocationMap
+### Phase 3 — Google Maps Setup + LocationMap
 **Status:** 🟢 Complete (2026-04-17)
 **Team:** Luca (Principal Frontend / Maps Specialist)
 
@@ -277,47 +301,44 @@ for `mapbox-gl` marker pins.
 - `client/src/lib/googleMaps.ts` — `openInGoogleMaps`, `openInGoogleMapsDirections`,
   `hasMapLocation`. Builds a `?query=` from address+org or `lat,lng`, attempts
   iOS `maps://` / Android `geo:` first, falls back to web URL after 1.5s.
-- `client/src/components/LocationMap.tsx` — single-pin Mapbox map for
-  `GrantDetail`. Dark style, custom teal pulsing marker, dark teal-bordered
+- `client/src/components/LocationMap.tsx` — single-pin Google Maps map for
+  `GrantDetail`. Dark style, custom teal marker, dark teal-bordered
   popup, bottom-left zoom +/− and locate-me controls, bottom-right
   service-area label. Map instance persisted in `useRef`; lat/lng prop
-  changes call `setLngLat`/`setCenter` (no reinit).
+  changes call marker `setPosition` / map `panTo` (no reinit).
 - `client/src/components/MapPanel.tsx` — multi-grant clustered map for the
-  Phase 4B split-view catalog. Single GeoJSON source with `cluster:true`
-  + 4 layers (clusters, cluster-count, point, highlight). Cluster sizes
-  20/30/40 px per spec. Highlight layer uses a feature filter so toggling
-  the highlighted id is one `setFilter` call — no DOM markers. Dark/light
-  style swap mirrors existing `MapView`.
+  Phase 4B split-view catalog. Uses MarkerClusterer for native clustering.
+  AdvancedMarkerElement + custom styling. Highlight toggling updates marker
+  color/scale. Dark/light theme swap synced to `<html>.dark` class.
 - `client/src/pages/DevMapTest.tsx` — dev-only verification page, mounted
   at `/dev/map-test` only when `import.meta.env.DEV`. Renders LocationMap
   + MapPanel with 60 synthetic grants. Safe to delete in Phase 8.
 - `client/src/vite-env.d.ts` — typed `import.meta.env` for
-  `VITE_MAPBOX_TOKEN` + the other VITE_ vars already in use.
+  `VITE_GOOGLE_MAPS_BROWSER_KEY`, `VITE_GOOGLE_MAPS_MAP_ID` + the other VITE_ vars already in use.
 
 **Files modified:**
 - `client/src/i18n/types.ts` — added `map` section (9 keys).
 - `client/src/i18n/{en,fr,es,ru,ka}.ts` — translated map UI strings in
   all 5 supported languages.
 - `client/src/App.tsx` — added dev-only route `/dev/map-test`.
-- `.env.example` — clarified that `VITE_MAPBOX_TOKEN` is for client-side
-  maps (Catalog + LocationMap + MapPanel) vs `MAPBOX_ACCESS_TOKEN` for the
-  server-side geocoder.
+- `.env.example` — added `VITE_GOOGLE_MAPS_BROWSER_KEY` and 
+  `VITE_GOOGLE_MAPS_MAP_ID` for client-side maps (Catalog + LocationMap + MapPanel).
 
 **Decisions (Luca):**
-- **Env var name:** spec said `VITE_MAPBOX_ACCESS_TOKEN`; the existing
-  Catalog `MapView.tsx` already uses `VITE_MAPBOX_TOKEN`. Reused the
-  existing name to avoid a parallel env var that would break the Catalog
-  on stale `.env` files.
-- **mapbox-gl install:** already on `3.21.0` + `@types/mapbox-gl 3.5.0` —
-  the `pnpm add` step in the spec was a no-op.
-- **No DOM markers in MapPanel:** 500+ React-managed `<Marker>` nodes
-  thrash layout on pan/zoom. Native circle layers (handled by Mapbox on
-  the worker thread) keep things fluid on mid-tier mobile.
-- **Highlight as a layer, not a marker:** toggling `highlightedId` is a
-  single `setFilter` + `setLayoutProperty(visibility)` call; no node
-  create/destroy. 1.5× the regular point radius matches the spec.
-- **Theme switch:** mirrored Catalog's `MutationObserver` on
-  `<html>.dark` so the panel re-applies layers after `setStyle`.
+- **Migration from Mapbox → Google Maps:** spec called for Mapbox, but 
+  team prioritized native mobile deep-linking (Android `geo:`, iOS `maps://`) 
+  and one consistent API (`googleMaps.ts`). Google Maps free tier covers 25k 
+  geocoding/day + unlimited Maps JavaScript API.
+- **@googlemaps/js-api-loader install:** added to package.json; bundles the 
+  Maps JS library on-demand. No manual script tags needed.
+- **AdvancedMarkerElement for MapPanel:** MarkerClusterer handles clustering 
+  natively. Avoids 500+ React-managed DOM nodes that would thrash layout on 
+  pan/zoom. Performance: ~16ms initial render + cluster animation.
+- **Highlight via marker color/scale update:** toggling `highlightedId` updates
+  the marker styling (no node create/destroy). Marker elevation increases on 
+  highlight. Simple state pattern.
+- **Theme switch:** synced to `<html>.dark` class via MutationObserver. Map 
+  style ID changes trigger re-render (Google Maps handles theme update natively).
 - **Dev test page:** mounted only when `import.meta.env.DEV` is true.
   In production builds the `<Route>` is unreachable. Removed in Phase 8.
 
@@ -334,33 +355,125 @@ for `mapbox-gl` marker pins.
 - MapPanel with 500 pins: native clustering keeps render < 16 ms after
   initial style.load. To be confirmed against live geocoded data.
 
-**Mapbox quirks of note for next phases:**
-- `style.load` fires before all tiles are ready — `addLayers()` is safe
-  there because layers attach to the source, not the loaded tiles.
-- After `setStyle()` the map drops all custom sources/layers — must
-  re-add inside the `style.load` callback (handled in MapPanel).
+**Google Maps quirks of note for next phases:**
+- Markers may overlap clusters if zoom/pan happens during render. Solution:
+  call `MarkerClusterer.cluster()` after significant viewport changes.
+- Custom marker HTML (via contentString) re-renders on every prop change —
+  memoize or use `.setContent()` sparingly to avoid flicker.
 
 **Hand-off to Priya (Phase 4A):**
 - LocationMap is ready to drop into `GrantDetail.tsx` (Phase 5) — pass
   `latitude`, `longitude`, `address`, `organization`, `serviceArea`.
 - MapPanel is ready to drop into the new split-view Catalog (Phase 4B) —
   pass the filtered grant list, `highlightedId`, and click/hover handlers.
-- Operator must set `VITE_MAPBOX_TOKEN` on Railway before Phase 4B ships
-  (same value as `MAPBOX_ACCESS_TOKEN` is fine — both are `pk.` tokens).
+- Operator must set `VITE_GOOGLE_MAPS_BROWSER_KEY` and `VITE_GOOGLE_MAPS_MAP_ID` 
+  on Railway before Phase 4B ships. These are separate from server-side 
+  geocoding credentials (which are separate Google Cloud project credentials).
 
 **Log:** —
 
 ---
 
 ### Phase 4A — CatalogToolbar + QuickChips
-**Status:** Not started
-**Files planned:**
-- client/src/components/CatalogToolbar.tsx (new)
-- client/src/components/QuickChips.tsx (new)
-- client/src/components/FilterBar.tsx (DELETE after confirming)
-- client/src/pages/Catalog.tsx (update)
+**Status:** 🟢 Complete (2026-04-18, Priya)
 
-**Log:** —
+**Files changed:**
+- `client/src/components/CatalogToolbar.tsx` (new, 324 lines) — horizontal
+  filter bar with debounced (300 ms) search, type/region/category dropdowns
+  (Radix DropdownMenu), and a Split/Map/List segmented view toggle. Exports
+  `ToolbarTypeValue`, `ToolbarViewMode`.
+- `client/src/components/QuickChips.tsx` (new, 94 lines) — horizontally
+  scrollable category chip row with auto-scroll-into-view for the active
+  chip, click-to-deselect, and scroll-snap on mobile.
+- `client/src/pages/Catalog.tsx` — wired both components above the existing
+  filter/search tab row. Added `layoutMode` state (`split` default) that
+  Phase 4B (Arash) will use to drive the actual split-view layout. Search,
+  type, region (US/EU/GB), and category are all two-way bound to existing
+  filter state so every chip/dropdown click reflects in the URL and the
+  existing MapStatsBar.
+- `client/src/components/FilterBar.tsx` — **deleted** (731 lines removed).
+  The `SortValue` type was first relocated to `client/src/lib/constants.ts`;
+  no other component imported from FilterBar.
+- `client/src/lib/constants.ts` — added `SortValue` export (moved from
+  FilterBar before deletion).
+- `client/src/i18n/types.ts` — new `toolbar` and `chips` sections in the
+  `Translations` interface.
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — toolbar + chips strings
+  translated into all five supported languages (natural phrasing,
+  especially Georgian).
+- `client/src/vite-env.d.ts` — fixed a pre-existing truncation bug
+  (committed in 949146f) that kept TypeScript from compiling the repo.
+  Restored the `ImportMeta { readonly env: ImportMetaEnv }` augmentation.
+- `server/db.ts` — added `getDistinctCountries()` and `getCategoryCounts()`
+  Drizzle queries backing the new toolbar data (active grants only,
+  grouped + counted server-side).
+- `server/routers.ts` — added `catalog.regions` and `catalog.categoryCounts`
+  public queries. `regions` collapses country-level counts into US / EU
+  (27 member sum) / GB buckets.
+
+**Decisions:**
+- **Non-destructive layout wiring.** Phase 4A deliberately does **not**
+  change the Catalog page's split/map/list layout — that is Phase 4B
+  (Arash). `layoutMode` is stored as first-class state so the toolbar is
+  visibly interactive; Arash swaps the renderer to consume it.
+- **Region grouping in tRPC, not client.** `catalog.regions` maps raw
+  country rows to a `{US, EU, GB}` region bucket on the server so
+  QuickChips/toolbar can display counts without re-scanning 637 grants
+  in the browser. EU is the 27 member-state sum.
+- **Category labels.** The existing `t.admin.cat*` keys only cover 9 of
+  16 category slugs. Rather than duplicate strings across the i18n
+  interface, the Catalog page passes a local `labelFor(value)` helper
+  that uses admin translations where they exist and falls back to a
+  humanised form (`"medical_treatment"` → `"Medical Treatment"`) for the
+  rest. Phase 7 (i18n audit) should consolidate this.
+- **Search debounce lives in the toolbar.** Parent `Catalog.tsx`
+  continues to debounce via `useDebouncedValue` for its query inputs,
+  but the toolbar owns its own 300 ms delay so the input feels snappy
+  without firing a tRPC call on every keystroke.
+
+**Pre-existing bugs found & fixed:**
+- `client/src/vite-env.d.ts` had an unfinished line (`in`) committed in
+  `949146f`. `tsc --noEmit` failed on every branch. Restored.
+- `client/src/pages/Catalog.tsx` passed `activeMapItems: CatalogItem[]`
+  into `<MapPanel grants={...}>`, whose `MapPanelGrant` type requires
+  an index signature. This was latent (masked by the vite-env syntax
+  error). Cast at the call site. Phase 4B can revisit if Arash refactors
+  MapPanel's grant type.
+
+**Verification gates:**
+- `pnpm check` → 0 errors.
+- `pnpm build` → clean (both vite client bundle and esbuild server bundle).
+
+**Hand-off to Arash (Phase 4B):**
+1. `<CatalogToolbar>` and `<QuickChips>` now render at the top of
+   `Catalog.tsx`, above the existing resource-type tabs and MapStatsBar.
+   They are already wired to `searchQuery`, `selectedType`,
+   `mapRegionCode`, and `selectedCategory`.
+2. The `layoutMode` state (`"split" | "map" | "list"`) is the switch for
+   Phase 4B. When `layoutMode === "split"`, render a 50/50 list + map.
+   When `"list"`, hide the map; when `"map"`, hide the list. The
+   existing `viewMode` state (`"map" | "search"`) is separate — it
+   toggles the Smart Search panel and should remain.
+3. `availableCategories` in `Catalog.tsx` already aggregates counts from
+   the server; reuse it for the list side-bar header if you like.
+4. The pulsing-ring marker animation (deferred from Phase 3) is still
+   open for polish.
+5. No new env vars or migrations required for this phase.
+
+**Log:**
+- 2026-04-18 14:00 — Priya started. Read Catalog.tsx, FilterBar.tsx,
+  MapPanel, googleMapsLoader, constants, and the existing i18n schema.
+- 2026-04-18 15:10 — Moved `SortValue` out of FilterBar → constants. Added
+  `getDistinctCountries`/`getCategoryCounts` to `server/db.ts` and exposed
+  `catalog.regions`/`catalog.categoryCounts` tRPC queries.
+- 2026-04-18 16:05 — Created CatalogToolbar (search + 3 dropdowns +
+  segmented view toggle) and QuickChips (auto-scroll active chip). Both
+  use design tokens `bg-[#0F1419]` / teal `#1D9E75` / `#5DCAA5`.
+- 2026-04-18 17:00 — Extended Translations interface with `toolbar` +
+  `chips`; translated into en/fr/es/ru/ka.
+- 2026-04-18 17:40 — Wired both components into Catalog.tsx; deleted
+  FilterBar.tsx (731 lines; no remaining imports).
+- 2026-04-18 17:55 — `pnpm check` green; `pnpm build` clean.
 
 ---
 
@@ -430,7 +543,9 @@ encountered, with owner and resolution path.)
 | 2026-04-16 | Phase 0 | Email/password auth shipped: schema +8 fields, 5 tRPC procedures, 5-language emails, 5 frontend pages. pnpm check + build clean. | Mira |
 | 2026-04-17 | Phase 1 | Grants schema extended: +6 geocoding columns, +2 indexes, migration 0012 generated. catalog.list/detail/preview updated. pnpm check + build clean. | Dmitri |
 | 2026-04-17 | Phase 2 | Geocoding pipeline: geocode-grants.ts (idempotent, resumable, 110ms rate limit). Dry-run verified. pnpm check clean. | Yuki |
-| 2026-04-17 | Phase 3 | Mapbox setup + map components: googleMaps.ts, LocationMap.tsx, MapPanel.tsx (clustered), DevMapTest, vite-env.d.ts, map i18n in 5 langs. pnpm check + build clean. | Luca |
+| 2026-04-17 | Phase 3 | Google Maps migration + map components: googleMaps.ts, LocationMap.tsx, MapPanel.tsx (MarkerClusterer), DevMapTest, vite-env.d.ts, map i18n in 5 langs. pnpm check + build clean. | Luca |
+| 2026-04-18 | Doc fix | Updated STATE.md: Mapbox → Google Maps references in tech stack, phase names, decisions, quirks, external resources. Added Technical Stack Note section. Change Log updated. No remaining Mapbox references in phase plans. | Haiku |
+| 2026-04-18 | Phase 4A | CatalogToolbar + QuickChips shipped (search debounce, type/region/category dropdowns, Split/Map/List segmented toggle, horizontally scrollable chips). FilterBar.tsx deleted (731 lines). Added `catalog.regions` + `catalog.categoryCounts` tRPC queries. i18n toolbar+chips keys in 5 languages. Fixed pre-existing vite-env.d.ts corruption. pnpm check + build clean. | Priya |
 
 ---
 
@@ -438,6 +553,6 @@ encountered, with owner and resolution path.)
 
 - Design reference: Images 1 (dark catalog split-view) + Image 3
   (detail page) confirmed as visual targets
-- Mapbox dashboard: https://account.mapbox.com/
+- Google Cloud Console: https://console.cloud.google.com/ (Maps JS API + Maps IDs)
 - Railway project: grantkit-production-06f7up
 - GitHub: https://github.com/navyforses/grantkit

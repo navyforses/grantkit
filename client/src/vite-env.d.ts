@@ -10,4 +10,6 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_ANON_KEY?: string;
 }
 
-in
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

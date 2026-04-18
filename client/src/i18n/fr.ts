@@ -1042,4 +1042,33 @@ export const fr: Translations = {
     error: "Carte indisponible",
     noLocation: "Adresse non communiquée publiquement",
   },
+
+  toolbar: {
+    search: {
+      placeholder: "Rechercher des subventions et ressources",
+    },
+    type: {
+      label: "Type",
+      all: "Tous",
+      grant: "Subventions",
+      resource: "Ressources",
+    },
+    region: {
+      label: "Région",
+      all: "Toutes les régions",
+    },
+    category: {
+      label: "Catégorie",
+      all: "Toutes les catégories",
+    },
+    view: {
+      split: "Mixte",
+      map: "Carte",
+      list: "Liste",
+    },
+  },
+
+  chips: {
+    ariaLabel: "Filtres rapides par catégorie",
+  },
 };

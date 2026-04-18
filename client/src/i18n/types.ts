@@ -1023,6 +1023,37 @@ export interface Translations {
     example3: string;
   };
 
+  // Catalog toolbar (Phase 4A — horizontal filter bar)
+  toolbar: {
+    search: {
+      placeholder: string;
+    };
+    type: {
+      label: string;
+      all: string;
+      grant: string;
+      resource: string;
+    };
+    region: {
+      label: string;
+      all: string;
+    };
+    category: {
+      label: string;
+      all: string;
+    };
+    view: {
+      split: string;
+      map: string;
+      list: string;
+    };
+  };
+
+  // Quick category chips (Phase 4A — horizontally scrollable shortcuts)
+  chips: {
+    ariaLabel: string;
+  };
+
   // Map (LocationMap + MapPanel + Google Maps deep-link)
   map: {
     openInGoogle: string;
