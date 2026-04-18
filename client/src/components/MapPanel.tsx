@@ -178,13 +178,13 @@ export default function MapPanel({
       disposed = true;
       resizeObserver?.disconnect();
       themeObserver?.disconnect();
+      // clusterer.clearMarkers() already assigns m.map = null on each marker.
+      // A second manual loop over markersRef triggered the Google Maps
+      // AdvancedMarkerElement "Cannot read properties of undefined (reading
+      // 'getRootNode')" crash on teardown (reproducible under the ka_ALL
+      // locale bundle). We rely on the clusterer for detachment.
       clustererRef.current?.clearMarkers();
       clustererRef.current = null;
-      // Array.from avoids the TS2802 iteration error without bumping the
-      // target/downlevelIteration in tsconfig.
-      for (const m of Array.from(markersRef.current.values())) {
-        m.map = null;
-      }
       markersRef.current.clear();
       markerLibRef.current = null;
       mapRef.current = null;

@@ -42,7 +42,12 @@ function getLoader(): Loader {
   }
   loader = new Loader({
     apiKey: API_KEY,
-    version: "weekly",
+    // "quarterly" — stable release channel. "weekly" introduced an
+    // AdvancedMarkerElement regression ("Cannot read properties of undefined
+    // (reading 'getRootNode')") reproducible in non-English locale bundles
+    // (observed with ka_ALL). Quarterly is published every ~3 months and is
+    // the recommended channel for production apps.
+    version: "quarterly",
     // We pre-warm these at first use; individual callers still request their slice.
     libraries: ["maps", "marker", "places"],
   });
