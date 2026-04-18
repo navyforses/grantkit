@@ -610,6 +610,21 @@ export async function listGrants(options?: {
 
   const { search, language, category, country, type, sortBy = "name_asc", fundingType, targetDiagnosis, ageRange, b2VisaEligible, hasDeadline, state, city, limit = 50, offset = 0, activeOnly = true } = options || {};
 
+  // Coerce LIMIT/OFFSET to safe non-negative integers and emit as SQL literals.
+  // Reason: mysql2 prepared-statement binding of numeric LIMIT/OFFSET can fail
+  // with ER_WRONG_ARGUMENTS on some MySQL server builds (observed on Railway
+  // MySQL 9.6). Using sql.raw bypasses param binding for these clauses.
+  const safeInt = (n: unknown, fallback: number, max: number) => {
+    const v = Math.floor(Number(n));
+    if (!Number.isFinite(v) || v < 0) return fallback;
+    return v > max ? max : v;
+  };
+  // `.limit()` / `.offset()` are typed `number | Placeholder`, but Drizzle's
+  // runtime accepts SQL objects (dialect.ts `buildLimit` branches on `object`).
+  // Cast to any to bypass the strict type signature.
+  const limitLit: any = sql.raw(String(safeInt(limit, 50, 1000)));
+  const offsetLit: any = sql.raw(String(safeInt(offset, 0, 1_000_000)));
+
   // Helper to add enrichment filter conditions
   const addEnrichmentFilters = (conditions: any[]) => {
     if (fundingType && fundingType !== "all") {
@@ -676,7 +691,7 @@ export async function listGrants(options?: {
     const orderByClause = getOrderByClause(sortBy);
 
     const [grantList, countResult] = await Promise.all([
-      db.select().from(grants).where(whereClause).orderBy(orderByClause).limit(limit).offset(offset),
+      db.select().from(grants).where(whereClause).orderBy(orderByClause).limit(limitLit).offset(offsetLit),
       db.select({ count: count() }).from(grants).where(whereClause),
     ]);
 
@@ -723,8 +738,8 @@ export async function listGrants(options?: {
       .from(grants)
       .where(whereClause)
       .orderBy(orderByClause)
-      .limit(limit)
-      .offset(offset),
+      .limit(limitLit)
+      .offset(offsetLit),
     db
       .select({ count: count() })
       .from(grants)
