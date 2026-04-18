@@ -126,4 +126,8 @@ function App() {
           </TooltipProvider>
         </LanguageProvider>
       </ThemeProvider>
-    </ErrorBoundary>
+    </ErrorBoundary>
+  );
+}
+
+export default App;
