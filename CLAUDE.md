@@ -10,7 +10,7 @@
 
 - Backend (Express + tRPC) + Frontend (React SPA) → ერთ Railway სერვისზე
 - MySQL → Railway MySQL plugin, **იმავე** Railway პროექტში
-- URL: `https://grantkit-production-06f7up.railway.app`
+- URL: `https://grantkit-production-06f7.up.railway.app`
 
 **Vercel** — **გამოიყენება ᲛᲮᲝᲚᲝᲓ FRONTEND-ისთვის** (სარეზერვო / staging):
 - `vercel.json` არსებობს კოდში მაგრამ **Railway არის primary deployment**
