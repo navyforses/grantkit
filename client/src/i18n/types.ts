@@ -1054,6 +1054,13 @@ export interface Translations {
     ariaLabel: string;
   };
 
+  // Mobile catalog tab switcher (Phase 4B — list/map tabs below 768px)
+  mobileCatalog: {
+    ariaLabel: string;
+    list: string; // "List ({count})"
+    map: string;
+  };
+
   // Map (LocationMap + MapPanel + Google Maps deep-link)
   map: {
     openInGoogle: string;
