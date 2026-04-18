@@ -15,6 +15,10 @@ import Navbar from "@/components/Navbar";
 import SmartSearchPanel from "@/components/SmartSearchPanel";
 import CatalogToolbar, { type ToolbarTypeValue, type ToolbarViewMode } from "@/components/CatalogToolbar";
 import QuickChips from "@/components/QuickChips";
+import SplitView from "@/components/SplitView";
+import GrantList from "@/components/GrantList";
+import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
+import { useIsMobile } from "@/hooks/useMobile";
 import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, type SortValue, REGIONS, CATEGORIES, EU_MEMBER_CODES } from "@/lib/constants";
 import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -95,11 +99,11 @@ export default function Catalog() {
   // View mode: map (default) or smart search
   const [viewMode, setViewMode] = useState<"map" | "search">("map");
 
-  // Phase 4A — toolbar-driven layout mode. Split is the default on desktop;
-  // Phase 4B (Arash) wires this to the actual split-view layout. For now the
-  // state is kept here so the toolbar is interactive and the URL can remember
-  // the user's preference.
+  // Phase 4A — toolbar-driven layout mode (consumed by Phase 4B renderers).
   const [layoutMode, setLayoutMode] = useState<ToolbarViewMode>("split");
+  // Phase 4B — mobile tab switcher state (list | map). Only used below 768 px.
+  const [mobileTab, setMobileTab] = useState<MobileCatalogTab>("list");
+  const isMobile = useIsMobile();
 
   // Sync filter state to URL
   useEffect(() => {
@@ -479,6 +483,12 @@ export default function Catalog() {
     [],
   );
 
+  // Phase 4B — split/list/mobile click handlers. Full-item navigation.
+  const handleCardNavigate = useCallback(
+    (item: CatalogItem) => navigate(`/grant/${item.id}`),
+    [navigate],
+  );
+
   // Phase 5 — detail panel for the selected marker.
   // Prefer displayItems (may carry translations) then fall back to mapItems (full catalog).
   const selectedItem = useMemo(
@@ -622,89 +632,100 @@ export default function Catalog() {
       />
 
       {/*
-       * Map fills remaining viewport height below whichever header is visible.
-       *
-       * Mobile (<md):
-       *   MobileHeader (sticky h-14 = 3.5rem) — rendered by App.tsx above this page
-       *   StatsBar     (h-10 = 2.5rem)
-       *   MobileBottomNav (fixed h-16 = 4rem) — rendered by App.tsx
-       *   App.tsx wraps the Router in pb-16 (4rem) to keep content above the bottom nav.
-       *   Map height = 100dvh - 3.5rem(header) - 2.5rem(stats) - 4rem(bottom-pad) = 100dvh - 10rem
-       *
-       * Desktop (md+):
-       *   Navbar   (h-16 = 4rem) — inside this page
-       *   StatsBar (h-10 = 2.5rem)
-       *   Map height = 100dvh - 4rem - 2.5rem = 100dvh - 6.5rem
-       *
-       * Using dvh (dynamic viewport height) so the map fills the currently-visible
-       * viewport even when mobile browser chrome (address bar) shows/hides.
+       * Phase 4B — layoutMode branching. The outer div owns the height so every
+       * layout variant fills the same viewport footprint below the top bars.
+       * Mobile always gets the MobileCatalogView tab switcher regardless of
+       * layoutMode (split-view doesn't fit below 768 px).
        */}
-      {/*
-       * overflow-hidden is intentionally omitted here so that
-       * SearchableSelect dropdowns inside MapFilterPanel can overflow
-       * the panel boundary without being clipped.
-       */}
-      {/* Map height adjusted to account for the additional ResourceTypeTabs bar (~2.25rem) */}
       <div className="relative h-[calc(100dvh-12.25rem)] md:h-[calc(100dvh-8.75rem)]">
-        <MapPanel
-          className="absolute inset-0 w-full h-full"
-          grants={activeMapItems as unknown as import("@/components/MapPanel").MapPanelGrant[]}
-          highlightedId={selectedItemId}
-          onMarkerClick={handleMarkerClick}
-          onMapReady={handleMapReady}
-        />
-
-        {/* Phase 2 — cascading filter panel overlay (lazy-loaded to defer country-state-city chunk) */}
-        <Suspense fallback={null}>
-          <MapFilterPanel
-            regionCode={mapRegionCode}
-            countryCode={mapCountryCode}
-            stateCode={mapStateCode}
-            cityName={mapCityName}
-            onRegionChange={setMapRegionCode}
-            onCountryChange={setMapCountryCode}
-            onStateChange={setMapStateCode}
-            onCityChange={setMapCityName}
-            selectedCategory={selectedCategory}
-            onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
-            selectedType={selectedType}
-            onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
-            totalItems={isSupabaseView ? supabaseResources.length : totalItems}
-            onClearAll={resetFilters}
-            supabaseResourceType={supabaseResourceType}
-            supabaseCategories={supabaseCategories}
-            supabaseCountries={supabaseCountries}
-            selectedSupabaseCategories={supabaseFilters.categories}
-            onSupabaseCategoriesChange={(ids) => supabaseDispatch({ type: 'SET_CATEGORIES', payload: ids })}
-            selectedSupabaseCountries={supabaseFilters.countries}
-            onSupabaseCountriesChange={(codes) => supabaseDispatch({ type: 'SET_COUNTRIES', payload: codes })}
-            currentSort={supabaseFilters.sort}
-            onSortChange={(sort) => supabaseDispatch({ type: 'SET_SORT', payload: sort })}
-            searchQuery={searchQuery}
-            amountMin={supabaseFilters.amount_min}
-            amountMax={supabaseFilters.amount_max}
-            onAmountMinChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MIN', payload: v })}
-            onAmountMaxChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MAX', payload: v })}
-            selectedEligibility={supabaseFilters.eligibility}
-            onEligibilityChange={(v) => supabaseDispatch({ type: 'SET_ELIGIBILITY', payload: v as import("@/types/resources").Eligibility | undefined })}
-            selectedTargetGroups={supabaseFilters.target_groups}
-            onTargetGroupsChange={(groups) => supabaseDispatch({ type: 'SET_TARGET_GROUPS', payload: groups })}
-            selectedClinicalPhase={supabaseFilters.clinical_phase}
-            onClinicalPhaseChange={(phase) => supabaseDispatch({ type: 'SET_CLINICAL_PHASE', payload: phase })}
-            selectedDiseaseAreas={supabaseFilters.disease_areas}
-            onDiseaseAreasChange={(areas) => supabaseDispatch({ type: 'SET_DISEASE_AREAS', payload: areas })}
+        {isMobile ? (
+          <MobileCatalogView
+            grants={activeMapItems}
+            tab={mobileTab}
+            onTabChange={setMobileTab}
+            onCardClick={handleCardNavigate}
+            onMarkerClick={handleCardNavigate}
+            onMapReady={handleMapReady}
           />
-        </Suspense>
-
-        {/* Phase 5 — grant detail slide-in panel (lazy: loads after map, not on homepage) */}
-        <Suspense fallback={null}>
-          <GrantDetailPanel
-            item={selectedItem}
-            isSaved={selectedItemId ? savedSet.has(selectedItemId) : false}
-            onToggleSave={handleToggleSave}
-            onClose={handleClosePanel}
+        ) : layoutMode === "split" ? (
+          <SplitView
+            grants={activeMapItems}
+            onCardClick={handleCardNavigate}
+            onMarkerClick={handleCardNavigate}
+            onMapReady={handleMapReady}
+            emptyLabel={t.catalog.noResults}
           />
-        </Suspense>
+        ) : layoutMode === "list" ? (
+          <div className="h-full w-full bg-[#0F1419]">
+            <GrantList
+              grants={activeMapItems}
+              onCardClick={handleCardNavigate}
+              emptyLabel={t.catalog.noResults}
+            />
+          </div>
+        ) : (
+          <>
+            <MapPanel
+              className="absolute inset-0 w-full h-full"
+              grants={activeMapItems as unknown as import("@/components/MapPanel").MapPanelGrant[]}
+              highlightedId={selectedItemId}
+              onMarkerClick={handleMarkerClick}
+              onMapReady={handleMapReady}
+            />
+
+            {/* Phase 2 — cascading filter panel overlay (map-only; split/list rely on the toolbar) */}
+            <Suspense fallback={null}>
+              <MapFilterPanel
+                regionCode={mapRegionCode}
+                countryCode={mapCountryCode}
+                stateCode={mapStateCode}
+                cityName={mapCityName}
+                onRegionChange={setMapRegionCode}
+                onCountryChange={setMapCountryCode}
+                onStateChange={setMapStateCode}
+                onCityChange={setMapCityName}
+                selectedCategory={selectedCategory}
+                onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
+                selectedType={selectedType}
+                onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
+                totalItems={isSupabaseView ? supabaseResources.length : totalItems}
+                onClearAll={resetFilters}
+                supabaseResourceType={supabaseResourceType}
+                supabaseCategories={supabaseCategories}
+                supabaseCountries={supabaseCountries}
+                selectedSupabaseCategories={supabaseFilters.categories}
+                onSupabaseCategoriesChange={(ids) => supabaseDispatch({ type: 'SET_CATEGORIES', payload: ids })}
+                selectedSupabaseCountries={supabaseFilters.countries}
+                onSupabaseCountriesChange={(codes) => supabaseDispatch({ type: 'SET_COUNTRIES', payload: codes })}
+                currentSort={supabaseFilters.sort}
+                onSortChange={(sort) => supabaseDispatch({ type: 'SET_SORT', payload: sort })}
+                searchQuery={searchQuery}
+                amountMin={supabaseFilters.amount_min}
+                amountMax={supabaseFilters.amount_max}
+                onAmountMinChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MIN', payload: v })}
+                onAmountMaxChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MAX', payload: v })}
+                selectedEligibility={supabaseFilters.eligibility}
+                onEligibilityChange={(v) => supabaseDispatch({ type: 'SET_ELIGIBILITY', payload: v as import("@/types/resources").Eligibility | undefined })}
+                selectedTargetGroups={supabaseFilters.target_groups}
+                onTargetGroupsChange={(groups) => supabaseDispatch({ type: 'SET_TARGET_GROUPS', payload: groups })}
+                selectedClinicalPhase={supabaseFilters.clinical_phase}
+                onClinicalPhaseChange={(phase) => supabaseDispatch({ type: 'SET_CLINICAL_PHASE', payload: phase })}
+                selectedDiseaseAreas={supabaseFilters.disease_areas}
+                onDiseaseAreasChange={(areas) => supabaseDispatch({ type: 'SET_DISEASE_AREAS', payload: areas })}
+              />
+            </Suspense>
+
+            {/* Phase 5 — grant detail slide-in panel (map-only; split/list navigate to /grant/{id}) */}
+            <Suspense fallback={null}>
+              <GrantDetailPanel
+                item={selectedItem}
+                isSaved={selectedItemId ? savedSet.has(selectedItemId) : false}
+                onToggleSave={handleToggleSave}
+                onClose={handleClosePanel}
+              />
+            </Suspense>
+          </>
+        )}
       </div>
       </>)}
     </div>

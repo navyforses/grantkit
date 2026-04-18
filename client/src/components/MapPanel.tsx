@@ -359,6 +359,31 @@ const MAP_PANEL_CSS = `
   border-width: 3px;
   box-shadow: 0 0 0 2px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.5);
   transform: translate(-50%, -50%) scale(1);
+  animation: mp-pin-beat 1.5s ease-in-out infinite;
+}
+/* Phase 4B — pulsing ring on the highlighted marker. Two rings rendered
+   via ::before and ::after so the pulse appears continuous. */
+.mp-pin-highlight::before,
+.mp-pin-highlight::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px solid var(--mp-teal-bright);
+  pointer-events: none;
+  opacity: 0;
+  animation: mp-pin-ring 1.5s ease-out infinite;
+}
+.mp-pin-highlight::after {
+  animation-delay: 0.75s;
+}
+@keyframes mp-pin-beat {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.12); }
+}
+@keyframes mp-pin-ring {
+  0%   { transform: scale(0.85); opacity: 0.85; }
+  100% { transform: scale(2.2);  opacity: 0;    }
 }
 
 .mp-cluster {
