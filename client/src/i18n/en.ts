@@ -1056,15 +1056,21 @@ export const en: Translations = {
     search: {
       placeholder: "Search grants and resources",
     },
-    type: {
-      label: "Type",
-      all: "All",
-      grant: "Grants",
-      resource: "Resources",
-    },
     region: {
       label: "Region",
       all: "All regions",
+    },
+    country: {
+      label: "Country",
+      all: "All countries",
+    },
+    state: {
+      label: "State",
+      all: "All states",
+    },
+    city: {
+      label: "City",
+      all: "All cities",
     },
     category: {
       label: "Category",

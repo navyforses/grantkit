@@ -1054,15 +1054,21 @@ export const ru: Translations = {
     search: {
       placeholder: "Поиск грантов и ресурсов",
     },
-    type: {
-      label: "Тип",
-      all: "Все",
-      grant: "Гранты",
-      resource: "Ресурсы",
-    },
     region: {
       label: "Регион",
       all: "Все регионы",
+    },
+    country: {
+      label: "Страна",
+      all: "Все страны",
+    },
+    state: {
+      label: "Штат",
+      all: "Все штаты",
+    },
+    city: {
+      label: "Город",
+      all: "Все города",
     },
     category: {
       label: "Категория",

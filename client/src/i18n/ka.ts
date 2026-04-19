@@ -1056,15 +1056,21 @@ export const ka: Translations = {
     search: {
       placeholder: "მოძებნე გრანტი ან რესურსი",
     },
-    type: {
-      label: "ტიპი",
-      all: "ყველა",
-      grant: "გრანტები",
-      resource: "რესურსები",
-    },
     region: {
       label: "რეგიონი",
       all: "ყველა რეგიონი",
+    },
+    country: {
+      label: "ქვეყანა",
+      all: "ყველა ქვეყანა",
+    },
+    state: {
+      label: "შტატი",
+      all: "ყველა შტატი",
+    },
+    city: {
+      label: "ქალაქი",
+      all: "ყველა ქალაქი",
     },
     category: {
       label: "კატეგორია",

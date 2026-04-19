@@ -13,7 +13,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Filter, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import SmartSearchPanel from "@/components/SmartSearchPanel";
-import CatalogToolbar, { type ToolbarTypeValue, type ToolbarViewMode } from "@/components/CatalogToolbar";
+import CatalogToolbar, { type ToolbarViewMode } from "@/components/CatalogToolbar";
 import SplitView from "@/components/SplitView";
 import GrantList from "@/components/GrantList";
 import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
@@ -228,6 +228,23 @@ export default function Catalog() {
   const { data: regionCounts } = trpc.catalog.regions.useQuery(undefined, { retry: false });
   const { data: categoryCounts } = trpc.catalog.categoryCounts.useQuery(undefined, { retry: false });
 
+  // Cascading location dropdowns:
+  //   Region → Country → State → City. Each query is keyed on the parent
+  //   value so options auto-narrow whenever the user picks a higher level.
+  //   `enabled` flags skip the network round-trip for empty parents.
+  const { data: countryRows } = trpc.catalog.countries.useQuery(
+    { region: mapRegionCode || undefined },
+    { retry: false },
+  );
+  const { data: stateRows } = trpc.catalog.states.useQuery(
+    { country: mapCountryCode || undefined },
+    { retry: false, enabled: !!mapCountryCode },
+  );
+  const { data: cityRows } = trpc.catalog.cities.useQuery(
+    { state: mapStateCode || "" },
+    { retry: false, enabled: !!mapStateCode },
+  );
+
   const availableRegions = useMemo(() => {
     const countByCode = new Map<string, number>();
     (regionCounts ?? []).forEach((r) => countByCode.set(r.code, r.count));
@@ -269,6 +286,38 @@ export default function Catalog() {
       }))
       .sort((a, b) => b.count - a.count);
   }, [categoryCounts, t.admin]);
+
+  // Country dropdown options. Try to localise via the existing `t.country`
+  // table; for ISO codes we don't translate (currently 16 of 29) fall back
+  // to the raw code so the user still sees something meaningful.
+  const availableCountries = useMemo(() => {
+    const countryNames = t.country as Record<string, string | undefined>;
+    return (countryRows ?? []).map((r) => ({
+      code: r.country,
+      label: countryNames[r.country] ?? r.country,
+      count: r.count,
+    }));
+  }, [countryRows, t.country]);
+
+  // State dropdown options — `state` strings come straight from the DB
+  // (e.g. "California"). Pseudo-locations like "Nationwide"/"International"
+  // are filtered server-side.
+  const availableStates = useMemo(() => {
+    return (stateRows ?? []).map((r) => ({
+      value: r.state,
+      label: r.state,
+      count: r.count,
+    }));
+  }, [stateRows]);
+
+  // City dropdown options — populated when a state is selected.
+  const availableCities = useMemo(() => {
+    return (cityRows ?? []).map((r) => ({
+      value: r.city,
+      label: r.city,
+      count: r.count,
+    }));
+  }, [cityRows]);
 
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -527,20 +576,42 @@ export default function Catalog() {
       <CatalogToolbar
         searchQuery={searchQuery}
         onSearchChange={(q) => { setSearchQuery(q); setPage(1); }}
-        typeFilter={selectedType as ToolbarTypeValue}
-        onTypeChange={(t) => { setSelectedType(t as TypeValue); setPage(1); }}
         regionFilter={mapRegionCode || null}
         onRegionChange={(code) => {
           setMapRegionCode((code ?? "") as RegionCode);
+          // Reset everything below in the cascade — the previously picked
+          // country may not belong to the new region.
           setMapCountryCode("");
           setMapStateCode("");
           setMapCityName("");
+          setPage(1);
+        }}
+        countryFilter={mapCountryCode || null}
+        onCountryChange={(code) => {
+          setMapCountryCode(code ?? "");
+          setMapStateCode("");
+          setMapCityName("");
+          setPage(1);
+        }}
+        stateFilter={mapStateCode || null}
+        onStateChange={(value) => {
+          setMapStateCode(value ?? "");
+          setMapCityName("");
+          setPage(1);
+        }}
+        cityFilter={mapCityName || null}
+        onCityChange={(value) => {
+          setMapCityName(value ?? "");
+          setPage(1);
         }}
         categoryFilter={selectedCategory === "all" ? null : selectedCategory}
         onCategoryChange={(c) => { setSelectedCategory((c ?? "all") as CategoryValue); setPage(1); }}
         viewMode={layoutMode}
         onViewChange={setLayoutMode}
         availableRegions={availableRegions}
+        availableCountries={availableCountries}
+        availableStates={availableStates}
+        availableCities={availableCities}
         availableCategories={availableCategories}
       />
 

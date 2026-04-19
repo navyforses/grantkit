@@ -1054,15 +1054,21 @@ export const es: Translations = {
     search: {
       placeholder: "Buscar subvenciones y recursos",
     },
-    type: {
-      label: "Tipo",
-      all: "Todos",
-      grant: "Subvenciones",
-      resource: "Recursos",
-    },
     region: {
       label: "Región",
       all: "Todas las regiones",
+    },
+    country: {
+      label: "País",
+      all: "Todos los países",
+    },
+    state: {
+      label: "Estado",
+      all: "Todos los estados",
+    },
+    city: {
+      label: "Ciudad",
+      all: "Todas las ciudades",
     },
     category: {
       label: "Categoría",
