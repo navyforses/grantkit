@@ -518,10 +518,21 @@ export const appRouter = router({
       };
     }),
 
-    // Get distinct states for filter dropdown
-    states: publicProcedure.query(async () => {
-      return await getDistinctStates();
-    }),
+    // Get distinct states for filter dropdown — optionally narrowed to a country
+    states: publicProcedure
+      .input(z.object({ country: z.string().optional() }).optional())
+      .query(async ({ input }) => {
+        return await getDistinctStates(input?.country || undefined);
+      }),
+
+    // Get distinct countries for the toolbar Country dropdown — optionally
+    // narrowed to a region bucket (US / EU / GB). When region is omitted,
+    // returns every country with at least one active grant.
+    countries: publicProcedure
+      .input(z.object({ region: z.string().optional() }).optional())
+      .query(async ({ input }) => {
+        return await getDistinctCountries(input?.region || undefined);
+      }),
 
     // Get distinct cities for a given state (for cascading filter)
     cities: publicProcedure

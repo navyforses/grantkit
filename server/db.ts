@@ -1146,20 +1146,25 @@ export async function getGrantStats() {
   return { total, active, inactive: total - active, grants: grantsCount, resources: resourcesCount };
 }
 
-/** Get distinct states with grant counts for filter dropdown */
-export async function getDistinctStates() {
+/** Get distinct states with grant counts for filter dropdown.
+ *  Optionally filter to a specific country. */
+export async function getDistinctStates(countryCode?: string) {
   const db = await getDb();
   if (!db) return [];
+
+  const conditions = [
+    eq(grants.isActive, true),
+    sql`${grants.state} IS NOT NULL AND ${grants.state} != ''`,
+    // Hide pseudo-locations from the cascade dropdown — they are not
+    // real geographic units and would just clutter the picker.
+    sql`${grants.state} NOT IN ('Nationwide', 'International')`,
+  ];
+  if (countryCode) conditions.push(eq(grants.country, countryCode));
 
   const result = await db
     .select({ state: grants.state, count: count() })
     .from(grants)
-    .where(
-      and(
-        eq(grants.isActive, true),
-        sql`${grants.state} IS NOT NULL AND ${grants.state} != ''`
-      )
-    )
+    .where(and(...conditions))
     .groupBy(grants.state)
     .orderBy(desc(count()));
 
@@ -1187,20 +1192,35 @@ export async function getDistinctCities(stateName: string) {
   return result.map(r => ({ city: r.city as string, count: Number(r.count) }));
 }
 
-/** Get distinct country codes with grant counts for filter dropdown */
-export async function getDistinctCountries() {
+/** Get distinct country codes with grant counts for filter dropdown.
+ *  Optionally restrict to a region bucket (US / EU / GB) — used by the
+ *  toolbar's cascading Country dropdown so the options narrow when the
+ *  user has already picked a region. */
+export async function getDistinctCountries(region?: string) {
   const db = await getDb();
   if (!db) return [];
+
+  const conditions = [
+    eq(grants.isActive, true),
+    sql`${grants.country} IS NOT NULL AND ${grants.country} != ''`,
+  ];
+
+  if (region === "US") {
+    conditions.push(eq(grants.country, "US"));
+  } else if (region === "GB") {
+    conditions.push(eq(grants.country, "GB"));
+  } else if (region === "EU") {
+    const EU_CODES = [
+      "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU",
+      "IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE",
+    ];
+    conditions.push(sql`${grants.country} IN (${sql.join(EU_CODES.map(c => sql`${c}`), sql`, `)})`);
+  }
 
   const result = await db
     .select({ country: grants.country, count: count() })
     .from(grants)
-    .where(
-      and(
-        eq(grants.isActive, true),
-        sql`${grants.country} IS NOT NULL AND ${grants.country} != ''`
-      )
-    )
+    .where(and(...conditions))
     .groupBy(grants.country)
     .orderBy(desc(count()));
 

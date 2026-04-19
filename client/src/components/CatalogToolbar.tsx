@@ -33,15 +33,33 @@ interface CategoryOption {
   icon?: string;
 }
 
+interface CountryOption {
+  code: string;       // ISO code (US, GB, DE, …)
+  label: string;      // localised country name
+  count?: number;
+}
+
+interface PlaceOption {
+  value: string;      // raw state name or city name
+  label: string;
+  count?: number;
+}
+
 export interface CatalogToolbarProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
 
-  typeFilter: ToolbarTypeValue;
-  onTypeChange: (t: ToolbarTypeValue) => void;
-
   regionFilter: string | null;
   onRegionChange: (r: string | null) => void;
+
+  countryFilter: string | null;
+  onCountryChange: (c: string | null) => void;
+
+  stateFilter: string | null;
+  onStateChange: (s: string | null) => void;
+
+  cityFilter: string | null;
+  onCityChange: (c: string | null) => void;
 
   categoryFilter: string | null;
   onCategoryChange: (c: string | null) => void;
@@ -50,6 +68,9 @@ export interface CatalogToolbarProps {
   onViewChange: (m: ToolbarViewMode) => void;
 
   availableRegions: RegionOption[];
+  availableCountries: CountryOption[];
+  availableStates: PlaceOption[];
+  availableCities: PlaceOption[];
   availableCategories: CategoryOption[];
 }
 
@@ -58,15 +79,22 @@ const SEARCH_DEBOUNCE_MS = 300;
 export default function CatalogToolbar({
   searchQuery,
   onSearchChange,
-  typeFilter,
-  onTypeChange,
   regionFilter,
   onRegionChange,
+  countryFilter,
+  onCountryChange,
+  stateFilter,
+  onStateChange,
+  cityFilter,
+  onCityChange,
   categoryFilter,
   onCategoryChange,
   viewMode,
   onViewChange,
   availableRegions,
+  availableCountries,
+  availableStates,
+  availableCities,
   availableCategories,
 }: CatalogToolbarProps) {
   const { t } = useLanguage();
@@ -87,22 +115,34 @@ export default function CatalogToolbar({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localSearch]);
 
-  const typeLabel =
-    typeFilter === "grant"
-      ? t.toolbar.type.grant
-      : typeFilter === "resource"
-        ? t.toolbar.type.resource
-        : t.toolbar.type.all;
-
   const selectedRegion = regionFilter
     ? availableRegions.find((r) => r.code === regionFilter)
     : null;
   const regionLabel = selectedRegion?.label ?? t.toolbar.region.all;
 
+  const selectedCountry = countryFilter
+    ? availableCountries.find((c) => c.code === countryFilter)
+    : null;
+  const countryLabel = selectedCountry?.label ?? t.toolbar.country.all;
+
+  const selectedState = stateFilter
+    ? availableStates.find((s) => s.value === stateFilter)
+    : null;
+  const stateLabel = selectedState?.label ?? t.toolbar.state.all;
+
+  const selectedCity = cityFilter
+    ? availableCities.find((c) => c.value === cityFilter)
+    : null;
+  const cityLabel = selectedCity?.label ?? t.toolbar.city.all;
+
   const selectedCategory = categoryFilter
     ? availableCategories.find((c) => c.id === categoryFilter)
     : null;
   const categoryLabel = selectedCategory?.label ?? t.toolbar.category.all;
+
+  // Cascade gates: a child dropdown is only meaningful once its parent is set.
+  const stateEnabled = !!countryFilter && availableStates.length > 0;
+  const cityEnabled = !!stateFilter && availableCities.length > 0;
 
   return (
     <div
@@ -141,29 +181,7 @@ export default function CatalogToolbar({
         )}
       </label>
 
-      {/* Type dropdown */}
-      <ToolbarDropdown
-        label={t.toolbar.type.label}
-        value={typeLabel}
-        active={typeFilter !== "all"}
-        ariaLabel={t.toolbar.type.label}
-      >
-        {([
-          { value: "all", label: t.toolbar.type.all },
-          { value: "grant", label: t.toolbar.type.grant },
-          { value: "resource", label: t.toolbar.type.resource },
-        ] as const).map((opt) => (
-          <DropdownMenuItem
-            key={opt.value}
-            data-active={typeFilter === opt.value}
-            onSelect={() => onTypeChange(opt.value)}
-          >
-            {opt.label}
-          </DropdownMenuItem>
-        ))}
-      </ToolbarDropdown>
-
-      {/* Region dropdown */}
+      {/* Region dropdown — top of the location cascade. */}
       <ToolbarDropdown
         label={t.toolbar.region.label}
         value={regionLabel}
@@ -186,6 +204,92 @@ export default function CatalogToolbar({
             <span>{r.label}</span>
             {typeof r.count === "number" && (
               <span className="ml-auto text-xs text-white/40">{r.count}</span>
+            )}
+          </DropdownMenuItem>
+        ))}
+      </ToolbarDropdown>
+
+      {/* Country dropdown — narrows by region when one is picked. */}
+      <ToolbarDropdown
+        label={t.toolbar.country.label}
+        value={countryLabel}
+        active={!!countryFilter}
+        ariaLabel={t.toolbar.country.label}
+      >
+        <DropdownMenuItem
+          data-active={countryFilter === null}
+          onSelect={() => onCountryChange(null)}
+        >
+          {t.toolbar.country.all}
+        </DropdownMenuItem>
+        {availableCountries.map((c) => (
+          <DropdownMenuItem
+            key={c.code}
+            data-active={countryFilter === c.code}
+            onSelect={() => onCountryChange(c.code)}
+          >
+            <span>{c.label}</span>
+            {typeof c.count === "number" && (
+              <span className="ml-auto text-xs text-white/40">{c.count}</span>
+            )}
+          </DropdownMenuItem>
+        ))}
+      </ToolbarDropdown>
+
+      {/* State dropdown — disabled until a country is picked. Most non-US
+          countries have no per-state data, so the cascade gate keeps the UI
+          honest about what's available. */}
+      <ToolbarDropdown
+        label={t.toolbar.state.label}
+        value={stateLabel}
+        active={!!stateFilter}
+        ariaLabel={t.toolbar.state.label}
+        disabled={!stateEnabled}
+      >
+        <DropdownMenuItem
+          data-active={stateFilter === null}
+          onSelect={() => onStateChange(null)}
+        >
+          {t.toolbar.state.all}
+        </DropdownMenuItem>
+        {availableStates.map((s) => (
+          <DropdownMenuItem
+            key={s.value}
+            data-active={stateFilter === s.value}
+            onSelect={() => onStateChange(s.value)}
+          >
+            <span>{s.label}</span>
+            {typeof s.count === "number" && (
+              <span className="ml-auto text-xs text-white/40">{s.count}</span>
+            )}
+          </DropdownMenuItem>
+        ))}
+      </ToolbarDropdown>
+
+      {/* City dropdown — disabled until a state is picked. Picking a city
+          drives the map's flyTo via useGoogleMapFlyTo. */}
+      <ToolbarDropdown
+        label={t.toolbar.city.label}
+        value={cityLabel}
+        active={!!cityFilter}
+        ariaLabel={t.toolbar.city.label}
+        disabled={!cityEnabled}
+      >
+        <DropdownMenuItem
+          data-active={cityFilter === null}
+          onSelect={() => onCityChange(null)}
+        >
+          {t.toolbar.city.all}
+        </DropdownMenuItem>
+        {availableCities.map((c) => (
+          <DropdownMenuItem
+            key={c.value}
+            data-active={cityFilter === c.value}
+            onSelect={() => onCityChange(c.value)}
+          >
+            <span>{c.label}</span>
+            {typeof c.count === "number" && (
+              <span className="ml-auto text-xs text-white/40">{c.count}</span>
             )}
           </DropdownMenuItem>
         ))}
@@ -256,30 +360,49 @@ interface ToolbarDropdownProps {
   value: string;
   active: boolean;
   ariaLabel: string;
+  /** When true, the trigger renders muted and the menu does not open. */
+  disabled?: boolean;
   children: React.ReactNode;
 }
 
-function ToolbarDropdown({ label, value, active, ariaLabel, children }: ToolbarDropdownProps) {
+function ToolbarDropdown({
+  label,
+  value,
+  active,
+  ariaLabel,
+  disabled,
+  children,
+}: ToolbarDropdownProps) {
   const [open, setOpen] = useState(false);
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu open={open && !disabled} onOpenChange={(o) => !disabled && setOpen(o)}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
           aria-label={ariaLabel}
+          aria-disabled={disabled || undefined}
+          disabled={disabled}
           className={cn(
             "h-8 inline-flex items-center gap-1.5 px-3 rounded-md text-[13px] whitespace-nowrap",
             "border transition-colors",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
-            active
-              ? "bg-[#1D9E75]/15 text-[#5DCAA5] border-[#1D9E75]/30 font-medium"
-              : "bg-transparent text-[#9CA3AF] border-white/[0.08] hover:bg-white/[0.04] hover:text-white/80",
+            disabled
+              ? "bg-transparent text-white/25 border-white/[0.05] cursor-not-allowed"
+              : active
+                ? "bg-[#1D9E75]/15 text-[#5DCAA5] border-[#1D9E75]/30 font-medium"
+                : "bg-transparent text-[#9CA3AF] border-white/[0.08] hover:bg-white/[0.04] hover:text-white/80",
           )}
         >
-          <span className="text-white/40">{label}:</span>
-          <span className={cn(active ? "text-[#5DCAA5]" : "text-white/80")}>{value}</span>
+          <span className={cn(disabled ? "text-white/20" : "text-white/40")}>{label}:</span>
+          <span
+            className={cn(
+              disabled ? "text-white/30" : active ? "text-[#5DCAA5]" : "text-white/80",
+            )}
+          >
+            {value}
+          </span>
           <ChevronDown
-            className={cn("w-3.5 h-3.5 transition-transform", open && "rotate-180")}
+            className={cn("w-3.5 h-3.5 transition-transform", open && !disabled && "rotate-180")}
             aria-hidden="true"
           />
         </button>

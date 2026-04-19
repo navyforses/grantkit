@@ -1023,18 +1023,25 @@ export interface Translations {
     example3: string;
   };
 
-  // Catalog toolbar (Phase 4A — horizontal filter bar)
+  // Catalog toolbar (Phase 4A — horizontal filter bar; cascading
+  // location dropdowns added afterwards: Region → Country → State → City)
   toolbar: {
     search: {
       placeholder: string;
     };
-    type: {
+    region: {
       label: string;
       all: string;
-      grant: string;
-      resource: string;
     };
-    region: {
+    country: {
+      label: string;
+      all: string;
+    };
+    state: {
+      label: string;
+      all: string;
+    };
+    city: {
       label: string;
       all: string;
     };
