@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-18T21:00:00Z
-**Current phase:** Phase 4B complete (Arash). Phase 5 ready to start (Sofia).
+**Last updated:** 2026-04-19T00:00:00Z
+**Current phase:** Phase 5 complete (Sofia). Phase 6 ready to start (Kenji).
 **Project start:** 2026-04-16
 
 ---
@@ -109,7 +109,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 3 | Google Maps setup + LocationMap component | 🟢 Complete | Luca | 2026-04-17 |
 | 4A | CatalogToolbar + QuickChips | 🟢 Complete | Priya | 2026-04-18 |
 | 4B | Split-view Catalog layout | 🟢 Complete | Arash | 2026-04-18 |
-| 5 | GrantDetail page rewrite | ⚪ Not started | — | — |
+| 5 | GrantDetail page rewrite | 🟢 Complete | Sofia | 2026-04-19 |
 | 6 | Google Maps deep-link audit | ⚪ Not started | — | — |
 | 7 | Mobile + i18n full audit | ⚪ Not started | — | — |
 | 8 | Polish, testing, deploy | ⚪ Not started | — | — |
@@ -594,11 +594,121 @@ for Google Maps marker pins.
 ---
 
 ### Phase 5 — GrantDetail Rewrite
-**Status:** Not started
-**Files planned:**
-- client/src/pages/GrantDetail.tsx (rewrite)
+**Status:** 🟢 Complete (2026-04-19, Sofia)
 
-**Log:** —
+**Files rewritten:**
+- `client/src/pages/GrantDetail.tsx` — full rewrite (~560 LOC, was
+  ~962 LOC). Desktop: full-width breadcrumb bar + 50/50 two-column
+  grid. Left column: badges row, H1 title + org, metrics grid
+  (2-col, 0–8 cells rendered conditionally), description card with
+  category-coloured left border, eligibility card, CTA stack
+  (Apply / Save / Share). Right column: LocationMap (280 px) with
+  inline "Get Directions" button, Office card (website, phone,
+  email, officeHours), application process card, required
+  documents (chip pills). Related grants rendered full-width
+  below the grid — horizontal snap-scroll on mobile, 3-col grid
+  on desktop. Mobile layout stacks all sections sequentially and
+  adds a sticky bottom CTA (Apply + Share + Save, `bottom-16` to
+  clear `MobileBottomNav`). Dark theme: `#0F1419` page, `#1D9E75`
+  teal primary, `#5DCAA5` teal accent, `bg-white/[0.03-0.06]`
+  cards with `border-white/[0.06-0.12]`.
+
+**Files modified:**
+- `client/src/i18n/types.ts` — new `detail: { … }` section
+  (20 keys): breadcrumb labels, map-action labels, section
+  headings, metrics-grid column labels.
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — `detail` section
+  translated into all five supported languages.
+
+**Files unchanged (reused as-is):**
+- `client/src/components/LocationMap.tsx` (Luca, Phase 3) —
+  dropped in with `height={280}`, `serviceArea` fed from
+  `content.geographicScope`.
+- `client/src/lib/googleMaps.ts` (Luca) — `openInGoogleMapsDirections`
+  wired into the "Get Directions" button in the right column.
+- `client/src/components/GrantDetailSkeleton.tsx` — reused for
+  loading state; no redesign needed for a one-screen skeleton.
+- `client/src/components/SEO.tsx`, `JsonLd.tsx` — same
+  integrations preserved (SEO title/description/keywords + JSON-LD).
+
+**Decisions (Sofia):**
+- **Breadcrumb over sticky "Back" button.** The old page's
+  `< Back to Catalog` button was replaced by a proper
+  `Home > Grants & Resources > {grant}` breadcrumb row
+  (aria-labelled `<nav>`). Better for SEO (crawlable), gives
+  context at a glance, and preserves a one-tap path back.
+  Mobile hides the word "Home" to keep the row compact.
+- **Kept the static-fallback logic.** API-driven `grant` is
+  still the primary source; `catalogItems` remains the offline
+  fallback when `catalog.detail` fails (same pattern as before).
+  `toFiniteNumber` coerces the Drizzle-decimal lat/lng strings
+  (or `null` when the bundled fallback omits coords).
+- **Conditional metrics grid.** Only cells with data render,
+  laid out in a 2-col grid. Order was tuned for common scan
+  patterns: money → time → place → scope → status → funding →
+  age → conditions. Each cell is one line via `truncate`.
+- **Separate `detail` i18n section, not more keys under
+  `grantDetail`.** The old `grantDetail` keys are still used for
+  status/action strings shared with skeletons / error paths;
+  the redesign-specific strings (breadcrumb, metric labels,
+  map actions) live in a fresh `detail` namespace. This makes
+  the redesign keys easy to audit in Phase 7 and clearly
+  separates new copy from legacy.
+- **LocationMap is show-or-omit.** When `latitude`/`longitude`
+  are null (≈ 8 grants without geocoded coords), the entire
+  right-column map card is hidden — no fallback text/empty-map.
+  The "Get Directions" button is inside the card header, so
+  when the card is omitted the button disappears with it.
+  Open-in-maps from the office card is covered by the
+  LocationMap's internal InfoWindow link.
+- **Mobile sticky bar behaviour.** 3 buttons (Apply, Share,
+  Save) inline; Apply takes flex-1. `bottom-16` clears the
+  existing `MobileBottomNav`. `pb-32 lg:pb-10` on the main
+  content avoids the bar overlapping the footer/documents card.
+  Tailwind `safe-area-bottom` utility handles iOS notch.
+- **Text hierarchy.** H1 at `text-[28px]` desktop / `text-xl`
+  mobile. Section headings are 11 px uppercase white/60 so the
+  grant *content* (descriptions, eligibility) reads at a
+  higher visual weight than meta-chrome — opposite of most
+  admin-style dark dashboards.
+
+**Verification gates:**
+- `pnpm check` → **0 TypeScript errors**.
+- `pnpm build` → clean production build (vite client + esbuild
+  server bundle). Only pre-existing warnings: chunk-size
+  (client) and `direct-eval` (server `vite.js` dynamic import).
+
+**Hand-off to Kenji (Phase 6):**
+- `openInGoogleMapsDirections` is already wired into the detail
+  page — test the full mobile fallback chain (iOS `maps://`,
+  Android `geo:`, desktop web) on the detail page's "Get
+  Directions" button, not just the LocationMap InfoWindow link.
+- `hasMapLocation` helper in `googleMaps.ts` may be useful for
+  any remaining call sites that still show a disabled
+  map-button when coords are missing.
+- The CatalogCard / GrantDetailPanel still have legacy
+  "Apply" + website links that do NOT go through the
+  mobile-fallback helper. Audit and unify.
+- No new env vars, migrations, or components required by
+  Phase 5. Sofia's rewrite is a pure client-side change.
+
+**Log:**
+- 2026-04-19 00:15 — Sofia started. Synced branch with `main`.
+- 2026-04-19 00:20 — Updated STATE.md Phase 5 → 🟡.
+- 2026-04-19 00:30 — Read `GrantDetail.tsx` (962 LOC),
+  `LocationMap.tsx`, `googleMaps.ts`, `i18n/types.ts`,
+  `i18n/en.ts`, end-of-file sections of fr/es/ru/ka.
+- 2026-04-19 00:45 — Extended `Translations` interface with
+  `detail: { … }` (20 keys). Added translations in all 5
+  languages.
+- 2026-04-19 01:10 — Rewrote `GrantDetail.tsx`: breadcrumb bar,
+  2-col desktop layout, metrics grid, LocationMap card with
+  directions button, office card with officeHours, mobile
+  sticky CTA.
+- 2026-04-19 01:30 — `pnpm check` → 0 errors. `pnpm build` →
+  clean (only pre-existing warnings).
+- 2026-04-19 01:35 — Updated STATE.md Phase 5 → 🟢 with
+  hand-off notes for Kenji.
 
 ---
 
@@ -653,6 +763,7 @@ encountered, with owner and resolution path.)
 | 2026-04-18 | Doc fix | Updated STATE.md: Mapbox → Google Maps references in tech stack, phase names, decisions, quirks, external resources. Added Technical Stack Note section. Change Log updated. No remaining Mapbox references in phase plans. | Haiku |
 | 2026-04-18 | Phase 4A | CatalogToolbar + QuickChips shipped (search debounce, type/region/category dropdowns, Split/Map/List segmented toggle, horizontally scrollable chips). FilterBar.tsx deleted (731 lines). Added `catalog.regions` + `catalog.categoryCounts` tRPC queries. i18n toolbar+chips keys in 5 languages. Fixed pre-existing vite-env.d.ts corruption. pnpm check + build clean. | Priya |
 | 2026-04-18 | Phase 4B | Split-view catalog: CatalogCardCompact (memoised 92 px card), GrantList (react-window virtualisation, 50 ms hover debounce, scroll-to-row on external highlight), SplitView (40/60 md–lg → 50/50 lg+), MobileCatalogView (List/Map tab switcher). Pulsing-ring animation added to MapPanel `.mp-pin-highlight`. Cards click → `/grant/{id}`. i18n mobileCatalog keys in 5 languages. Added `react-window@2.2.7`. pnpm check + build clean. | Arash |
+| 2026-04-19 | Phase 5 | GrantDetail rewrite: full-width breadcrumb nav, 50/50 desktop two-column grid (left: badges + H1 + metrics grid + description + eligibility + CTAs; right: LocationMap 280px with "Get Directions" button + office card with officeHours + application process + documents), related grants full-width below grid (3-col desktop, horizontal snap-scroll mobile). Mobile: stacked layout + sticky bottom CTA bar (Apply + Share + Save at `bottom-16`). New `detail` i18n section (20 keys) translated in all 5 languages. File size: 962 → 560 LOC. pnpm check + build clean. | Sofia |
 
 ---
 

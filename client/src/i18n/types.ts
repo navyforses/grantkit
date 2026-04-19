@@ -1061,6 +1061,30 @@ export interface Translations {
     map: string;
   };
 
+  // Grant detail page redesign (Phase 5 — Sofia)
+  detail: {
+    breadcrumbHome: string;
+    breadcrumbCatalog: string;
+    getDirections: string;
+    openInMaps: string;
+    officeTitle: string;
+    officeHours: string;
+    locationTitle: string;
+    processTitle: string;
+    docsTitle: string;
+    eligibilityTitle: string;
+    descriptionTitle: string;
+    metricAmount: string;
+    metricDeadline: string;
+    metricLocation: string;
+    metricScope: string;
+    metricStatus: string;
+    metricFunding: string;
+    metricAge: string;
+    metricConditions: string;
+    relatedTitle: string;
+  };
+
   // Map (LocationMap + MapPanel + Google Maps deep-link)
   map: {
     openInGoogle: string;
