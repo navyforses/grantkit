@@ -106,7 +106,46 @@ pnpm geocode:grants
 | `ENOTFOUND mysql.railway.internal`                                      | Using internal URL from outside Railway       | Set `$env:DATABASE_URL` to `MYSQL_PUBLIC_URL` (not `MYSQL_URL`)     |
 | `Places API 403: Requests from referer <empty> are blocked.`            | Using the HTTP-referrer-restricted browser key | Use the server key `grantkit-server-geocoding-v2` instead           |
 | `Places API 403: This API is not enabled`                               | Key doesn't include Places API (New)          | In GCP Credentials → edit key → API restrictions → add Places API (New) + Geocoding API |
+| `country mismatch (got GB, expected UK)` (or similar)                   | DB row has a non-ISO country code (e.g. `UK` instead of `GB`) | Run `pnpm normalize:countries:dry` to preview, then `pnpm normalize:countries`, then re-run `pnpm geocode:grants` |
 | `PERMISSION_DENIED: billing`                                            | Billing not enabled on GCP project            | Enable billing on the Google Cloud project                          |
+
+### Re-running geocoding after fixing data
+
+1. Delete the local checkpoint so the pipeline re-scans every row:
+   ```powershell
+   Remove-Item .grantkit-redesign/geocode-checkpoint.json
+   ```
+   (On bash: `rm .grantkit-redesign/geocode-checkpoint.json`)
+2. Run `pnpm geocode:grants` again. The `WHERE latitude IS NULL`
+   filter skips every row that was geocoded successfully on the
+   previous pass, so only the leftover failures are retried.
+3. If fail rate still blocks the run (> 20%), add `--no-halt` once
+   you've accepted that the remaining failures are unresolvable
+   (e.g. address-less LLM-discovered stubs).
+
+---
+
+## 🌍 Country-code Normalisation
+
+The `grants.country` column stores **ISO 3166-1 alpha-2** codes
+(`US`, `GB`, `DE`, …). A stale pattern in the LLM-driven
+`daily-discovery.ts` pipeline sometimes wrote `UK` instead of `GB`,
+and occasional full names like `United States` slipped through. Those
+rows fail `geocode:grants` with `country mismatch (got GB, expected UK)`
+because Google Places returns the ISO form while the script compared
+against the raw DB value.
+
+**Normaliser lives at `scripts/_lib/countryCodes.ts`** and is now
+wired into `import-new-grants.ts` automatically, so new inserts use
+the canonical form. For the existing DB:
+
+```powershell
+pnpm normalize:countries:dry   # preview what would change
+pnpm normalize:countries       # apply — transactional, idempotent
+```
+
+The script touches only rows whose current value differs from the
+normalised form. It's safe to run repeatedly.
 
 ---
 
