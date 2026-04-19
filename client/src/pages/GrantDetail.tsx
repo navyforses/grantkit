@@ -48,6 +48,7 @@ import SEO from "@/components/SEO";
 import { GrantJsonLd } from "@/components/JsonLd";
 import GrantDetailSkeleton from "@/components/GrantDetailSkeleton";
 import LocationMap from "@/components/LocationMap";
+import { useGeocodedAddress } from "@/hooks/useGeocodedAddress";
 import { openInGoogleMapsDirections } from "@/lib/googleMaps";
 import { catalogItems } from "@/data/catalogData";
 
@@ -168,9 +169,22 @@ export default function GrantDetail() {
   // Coords: API returns decimal as string; static fallback may omit entirely.
   const mapLat = toFiniteNumber((item as any).latitude);
   const mapLng = toFiniteNumber((item as any).longitude);
-  const hasMapCoords = mapLat !== null && mapLng !== null;
   const mapAddress = ((item as any).address && String((item as any).address).trim())
     || [item.city, item.state, translatedCountry].filter(Boolean).join(", ");
+  // Query string for the geocoder — prefix the org name so results are
+  // more specific than a bare city/state ("St Jude Memphis" vs "Memphis").
+  const geocodeQuery = [item.organization, mapAddress].filter(Boolean).join(", ");
+  // Client-side geocoding fallback for rows where the Phase 2 batch
+  // pipeline has not yet populated latitude/longitude in the DB.
+  const geo = useGeocodedAddress({
+    address: geocodeQuery,
+    fallbackLat: mapLat,
+    fallbackLng: mapLng,
+  });
+  const resolvedLat = geo.lat;
+  const resolvedLng = geo.lng;
+  const hasResolvedCoords = resolvedLat !== null && resolvedLng !== null;
+  const showMapPanel = Boolean(mapAddress) && !geo.error;
   const officeHours = (item as any).officeHours as string | undefined;
 
   const fundingTypeLabels: Record<string, string> = {
@@ -193,8 +207,11 @@ export default function GrantDetail() {
 
   const handleDirections = () => {
     openInGoogleMapsDirections({
-      latitude: mapLat ?? undefined,
-      longitude: mapLng ?? undefined,
+      // Prefer resolved coords (from DB or from the client-side geocoder
+      // fallback) so the directions URL is lat/lng-accurate even for
+      // grants the batch geocoder has not yet processed.
+      latitude: resolvedLat ?? undefined,
+      longitude: resolvedLng ?? undefined,
       address: mapAddress,
       organization: item.organization || undefined,
     });
@@ -445,8 +462,14 @@ export default function GrantDetail() {
           {/* ═════ RIGHT COLUMN ═════ */}
           <div className="space-y-5 mt-5 lg:mt-0">
 
-            {/* LocationMap */}
-            {hasMapCoords && (
+            {/* LocationMap — always rendered when we have *any* address
+                info. If the DB already has lat/lng we mount the map
+                immediately; otherwise the useGeocodedAddress hook resolves
+                the address through the Google Maps Geocoder (cached in
+                sessionStorage) and we show a skeleton for ~200–500 ms while
+                that resolves. Geocoder hard-failures hide the panel so we
+                don't ship a permanently-broken box. */}
+            {showMapPanel && (
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl overflow-hidden">
                 <div className="px-4 pt-4 pb-3 flex items-center justify-between gap-2">
                   <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider flex items-center gap-2">
@@ -456,22 +479,36 @@ export default function GrantDetail() {
                   <button
                     type="button"
                     onClick={handleDirections}
+                    disabled={!hasResolvedCoords}
                     aria-label={`${t.deepLink.getDirections} — ${item.organization || mapAddress} (${t.deepLink.nativeAppHint})`}
-                    className="flex items-center gap-1.5 text-xs text-[#5DCAA5] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5DCAA5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1419] rounded px-1 py-0.5 transition-colors font-medium whitespace-nowrap"
+                    className="flex items-center gap-1.5 text-xs text-[#5DCAA5] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5DCAA5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1419] rounded px-1 py-0.5 transition-colors font-medium whitespace-nowrap disabled:text-white/30 disabled:cursor-not-allowed"
                   >
                     <Navigation className="w-3.5 h-3.5" aria-hidden="true" />
                     {t.detail.getDirections}
                   </button>
                 </div>
                 <div className="px-4 pb-4">
-                  <LocationMap
-                    latitude={mapLat as number}
-                    longitude={mapLng as number}
-                    address={mapAddress}
-                    organization={item.organization || ""}
-                    serviceArea={content.geographicScope || undefined}
-                    height={280}
-                  />
+                  {hasResolvedCoords ? (
+                    <LocationMap
+                      latitude={resolvedLat as number}
+                      longitude={resolvedLng as number}
+                      address={mapAddress}
+                      organization={item.organization || ""}
+                      serviceArea={content.geographicScope || undefined}
+                      height={280}
+                    />
+                  ) : (
+                    <div
+                      role="status"
+                      aria-live="polite"
+                      aria-label={t.map.loading}
+                      style={{ height: 280 }}
+                      className="w-full rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center overflow-hidden relative"
+                    >
+                      <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-white/[0.02] via-[#1D9E75]/[0.05] to-white/[0.02]" />
+                      <span className="relative text-xs text-white/40">{t.map.loading}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
