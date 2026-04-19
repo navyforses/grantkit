@@ -564,6 +564,14 @@ export default function Catalog() {
         keywords="grant catalog, search grants, medical grants, startup funding, scholarships, financial aid"
       />
 
+      {/* Skip navigation — keyboard users can jump straight to the grant list/map */}
+      <a
+        href="#catalog-main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[#1D9E75] focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
+      >
+        Skip to catalog
+      </a>
+
       {/* Desktop navbar — h-16 (4rem / 64px). Hidden on mobile; MobileHeader comes from App.tsx. */}
       <Navbar />
 
@@ -649,9 +657,9 @@ export default function Catalog() {
 
       {/* Smart Search view — replaces map when "Smart Search" tab is active */}
       {viewMode === "search" && (
-        <div className="min-h-[calc(100dvh-12.25rem)] md:min-h-[calc(100dvh-8.75rem)] bg-background p-4 md:p-6 pb-24 md:pb-8 overflow-auto">
+        <main id="catalog-main" className="min-h-[calc(100dvh-12.25rem)] md:min-h-[calc(100dvh-8.75rem)] bg-background p-4 md:p-6 pb-24 md:pb-8 overflow-auto">
           <SmartSearchPanel />
-        </div>
+        </main>
       )}
 
       {/* Map view — default */}
@@ -685,7 +693,7 @@ export default function Catalog() {
        * Mobile always gets the MobileCatalogView tab switcher regardless of
        * layoutMode (split-view doesn't fit below 768 px).
        */}
-      <div className="relative h-[calc(100dvh-12.25rem)] md:h-[calc(100dvh-8.75rem)]">
+      <main id="catalog-main" className="relative h-[calc(100dvh-12.25rem)] md:h-[calc(100dvh-8.75rem)]">
         {isMobile ? (
           <MobileCatalogView
             grants={activeMapItems}
@@ -774,7 +782,7 @@ export default function Catalog() {
             </Suspense>
           </>
         )}
-      </div>
+      </main>
       </>)}
     </div>
   );

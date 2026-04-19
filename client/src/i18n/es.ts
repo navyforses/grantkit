@@ -1041,6 +1041,7 @@ export const es: Translations = {
     loading: "Cargando mapa…",
     error: "Mapa no disponible",
     noLocation: "Ubicación no publicada",
+    ariaLabel: "Mapa interactivo de subvenciones",
   },
 
   deepLink: {

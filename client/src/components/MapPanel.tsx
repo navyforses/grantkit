@@ -316,7 +316,7 @@ export default function MapPanel({
   return (
     <div className={cn("relative w-full h-full overflow-hidden bg-secondary", className)}>
       <style>{MAP_PANEL_CSS}</style>
-      <div ref={containerRef} className="absolute inset-0" role="region" aria-label={t.map.loading} />
+      <div ref={containerRef} className="absolute inset-0" role="application" aria-label={t.map.ariaLabel} />
     </div>
   );
 }
@@ -384,6 +384,10 @@ const MAP_PANEL_CSS = `
 @keyframes mp-pin-ring {
   0%   { transform: scale(0.85); opacity: 0.85; }
   100% { transform: scale(2.2);  opacity: 0;    }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mp-pin-highlight { animation: none; }
+  .mp-pin-highlight::before, .mp-pin-highlight::after { animation: none; opacity: 0; }
 }
 
 .mp-cluster {

@@ -29,7 +29,8 @@
     "geocode:grants:dry": "tsx scripts/geocode-grants.ts --dry-run",
     "geocode:grants:limit10": "tsx scripts/geocode-grants.ts --limit=10",
     "normalize:countries:dry": "tsx scripts/normalize-country-codes.ts --dry-run",
-    "normalize:countries": "tsx scripts/normalize-country-codes.ts"
+    "normalize:countries": "tsx scripts/normalize-country-codes.ts",
+    "sitemap:generate": "tsx scripts/generate-sitemap.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
