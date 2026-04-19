@@ -20,6 +20,8 @@ import "dotenv/config";
 import mysql from "mysql2/promise";
 import fs from "fs";
 
+import { normalizeCountryCode } from "./_lib/countryCodes";
+
 // ── Config ───────────────────────────────────────────────────────────────────
 
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -410,11 +412,14 @@ async function main() {
     }
 
     try {
-      // Step 1: Insert into DB
+      // Step 1: Insert into DB. Normalise country to ISO 3166-1 alpha-2
+      // so downstream code (geocoding pipeline, frontend flag map,
+      // region bucketing) can rely on a single canonical form.
+      const normalizedCountry = normalizeCountryCode(grant.country) ?? grant.country;
       await db.execute(
         `INSERT INTO grants (itemId, name, category, country, state, eligibility, description, isActive, createdAt, updatedAt)
          VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())`,
-        [itemId, grant.name, grant.category, grant.country, grant.state || null, grant.eligibility, grant.description]
+        [itemId, grant.name, grant.category, normalizedCountry, grant.state || null, grant.eligibility, grant.description]
       );
       process.stdout.write("insert ✔ ");
 

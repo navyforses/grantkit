@@ -209,6 +209,7 @@ RESEND_API_KEY
 6. **Soft delete:** grants-ს არასდროს hard delete — `isActive = 0` (გარდა `admin.hardDeleteGrant`)
 7. **i18n:** ახალი UI ტექსტი ყველა 5 ენაში უნდა დაემატოს (`client/src/i18n/`)
 8. **Scripts:** `scripts/` საქაღალდეში `stage*.cjs` ფაილებს **ნუ შეეხები** — ისტორიული მონაცემთა enrichment სკრიპტებია
+9. **Ops runbook:** სანამ ოპერატორს (მომხმარებელს) API key შექმნის / Railway env var-ის დაყენების / ნებისმიერი setup task-ის გაკეთებას სთხოვ — **ჯერ წაიკითხე `.grantkit-redesign/OPS.md`**. იქ ჩაწერილია რა უკვე არსებობს (server-side Google Maps key, MySQL public URL და ა.შ.) რომ იგივე სამუშაო ორჯერ არ გაკეთდეს.
 
 ---
 
