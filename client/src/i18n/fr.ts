@@ -1043,6 +1043,13 @@ export const fr: Translations = {
     noLocation: "Adresse non communiquée publiquement",
   },
 
+  deepLink: {
+    openInGoogleMaps: "Ouvrir dans Google Maps",
+    getDirections: "Itinéraire",
+    externalLink: "ouvre dans un nouvel onglet",
+    nativeAppHint: "Ouvre votre application de cartes si elle est installée",
+  },
+
   toolbar: {
     search: {
       placeholder: "Rechercher des subventions et ressources",

@@ -1043,6 +1043,13 @@ export const ru: Translations = {
     noLocation: "Адрес не указан публично",
   },
 
+  deepLink: {
+    openInGoogleMaps: "Открыть в Google Картах",
+    getDirections: "Проложить маршрут",
+    externalLink: "откроется в новой вкладке",
+    nativeAppHint: "Откроется в приложении карт, если оно установлено",
+  },
+
   toolbar: {
     search: {
       placeholder: "Поиск грантов и ресурсов",

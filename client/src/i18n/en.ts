@@ -1045,6 +1045,13 @@ export const en: Translations = {
     noLocation: "Location not publicly listed",
   },
 
+  deepLink: {
+    openInGoogleMaps: "Open in Google Maps",
+    getDirections: "Get directions",
+    externalLink: "opens in a new tab",
+    nativeAppHint: "Opens in your maps app if installed",
+  },
+
   toolbar: {
     search: {
       placeholder: "Search grants and resources",

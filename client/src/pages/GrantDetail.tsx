@@ -454,10 +454,12 @@ export default function GrantDetail() {
                     {t.detail.locationTitle}
                   </h2>
                   <button
+                    type="button"
                     onClick={handleDirections}
-                    className="flex items-center gap-1.5 text-xs text-[#5DCAA5] hover:text-white transition-colors font-medium whitespace-nowrap"
+                    aria-label={`${t.deepLink.getDirections} — ${item.organization || mapAddress} (${t.deepLink.nativeAppHint})`}
+                    className="flex items-center gap-1.5 text-xs text-[#5DCAA5] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5DCAA5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1419] rounded px-1 py-0.5 transition-colors font-medium whitespace-nowrap"
                   >
-                    <Navigation className="w-3.5 h-3.5" />
+                    <Navigation className="w-3.5 h-3.5" aria-hidden="true" />
                     {t.detail.getDirections}
                   </button>
                 </div>

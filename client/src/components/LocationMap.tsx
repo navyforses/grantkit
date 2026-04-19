@@ -286,11 +286,21 @@ function buildPopupHtml(organization: string, address: string, openLabel: string
   const safeOrg = escapeHtml(organization || "");
   const safeAddr = escapeHtml(address || "");
   const safeLabel = escapeHtml(openLabel);
+  // The popup link is rendered inside Google's InfoWindow DOM, outside our
+  // React tree. We bake aria-label + rel attrs into the HTML directly so
+  // screen readers announce the destination + new-tab behaviour.
+  const ariaLabel = escapeHtml(`${openLabel} — ${organization || address}`);
   return `
     <div class="lm-popup-body">
       <div class="lm-popup-org">${safeOrg}</div>
       ${safeAddr ? `<div class="lm-popup-addr">${safeAddr}</div>` : ""}
-      <a href="#" data-action="open-google-maps" class="lm-popup-link">↗ ${safeLabel}</a>
+      <a href="#"
+         data-action="open-google-maps"
+         class="lm-popup-link"
+         role="button"
+         aria-label="${ariaLabel}"
+         rel="noopener noreferrer"
+      >↗ ${safeLabel}</a>
     </div>
   `;
 }

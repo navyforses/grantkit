@@ -1098,6 +1098,16 @@ export interface Translations {
     noLocation: string;
   };
 
+  // Deep-link aria-labels (Phase 6 — Kenji)
+  // Used on every Google Maps button/link so screen readers announce the
+  // destination + that the link opens in a new tab/native app.
+  deepLink: {
+    openInGoogleMaps: string;     // visible text + aria-label
+    getDirections: string;        // visible text + aria-label
+    externalLink: string;         // generic aria-suffix: "(opens in new tab)"
+    nativeAppHint: string;        // a11y description for mobile
+  };
+
   // Auth (Phase 0 — email/password)
   auth: {
     tabEmail: string;

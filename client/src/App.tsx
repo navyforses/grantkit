@@ -36,7 +36,9 @@ const VerifyEmail     = lazy(() => import("./pages/VerifyEmail"));
 const ForgotPassword  = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword   = lazy(() => import("./pages/ResetPassword"));
 // Phase 3 verification page — only mounted in dev builds (see Router below).
-const DevMapTest      = lazy(() => import("./pages/DevMapTest"));
+const DevMapTest        = lazy(() => import("./pages/DevMapTest"));
+// Phase 6 (Kenji) deep-link harness — DEV-only, see Router gate below.
+const DevDeepLinkTest   = lazy(() => import("./pages/DevDeepLinkTest"));
 
 // Blank screen (matches app background) shown while a lazy chunk downloads.
 // Avoids white flash on theme-aware pages.
@@ -70,6 +72,7 @@ function Router() {
         <Route path="/analytics" component={Analytics} />
         <Route path="/ai-assistant" component={AiAssistant} />
         {import.meta.env.DEV && <Route path="/dev/map-test" component={DevMapTest} />}
+        {import.meta.env.DEV && <Route path="/dev/deep-link-test" component={DevDeepLinkTest} />}
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

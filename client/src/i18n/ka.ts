@@ -1045,6 +1045,13 @@ export const ka: Translations = {
     noLocation: "ადგილმდებარეობა არ არის მითითებული",
   },
 
+  deepLink: {
+    openInGoogleMaps: "გახსნა Google Maps-ში",
+    getDirections: "მარშრუტი",
+    externalLink: "იხსნება ახალ ფანჯარაში",
+    nativeAppHint: "გაიხსნება რუკის აპლიკაციაში, თუ დაყენებულია",
+  },
+
   toolbar: {
     search: {
       placeholder: "მოძებნე გრანტი ან რესურსი",
