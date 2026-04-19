@@ -1051,8 +1051,10 @@ export const fr: Translations = {
   },
 
   toolbar: {
+    ariaLabel: "Filtres du catalogue",
     search: {
       placeholder: "Rechercher des subventions et ressources",
+      clearAriaLabel: "Effacer la recherche",
     },
     region: {
       label: "Région",
@@ -1075,6 +1077,7 @@ export const fr: Translations = {
       all: "Toutes les catégories",
     },
     view: {
+      ariaLabel: "Mode d'affichage",
       split: "Mixte",
       map: "Carte",
       list: "Liste",

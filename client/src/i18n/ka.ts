@@ -1053,8 +1053,10 @@ export const ka: Translations = {
   },
 
   toolbar: {
+    ariaLabel: "კატალოგის ფილტრები",
     search: {
       placeholder: "მოძებნე გრანტი ან რესურსი",
+      clearAriaLabel: "ძიების გასუფთავება",
     },
     region: {
       label: "რეგიონი",
@@ -1077,6 +1079,7 @@ export const ka: Translations = {
       all: "ყველა კატეგორია",
     },
     view: {
+      ariaLabel: "ხედვის რეჟიმი",
       split: "ორმაგი",
       map: "რუკა",
       list: "სია",

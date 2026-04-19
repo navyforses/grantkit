@@ -111,7 +111,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 4B | Split-view Catalog layout | 🟢 Complete | Arash | 2026-04-18 |
 | 5 | GrantDetail page rewrite | 🟢 Complete | Sofia | 2026-04-19 |
 | 6 | Google Maps deep-link audit | 🟢 Complete | Kenji | 2026-04-19 |
-| 7 | Mobile + i18n full audit | ⚪ Not started | — | — |
+| 7 | Mobile + i18n full audit | 🟢 Complete | Amina | 2026-04-19 |
 | 8 | Polish, testing, deploy | ⚪ Not started | — | — |
 
 Legend: ⚪ Not started · 🟡 In progress · 🟢 Complete · 🔴 Blocked
@@ -871,12 +871,46 @@ for Google Maps marker pins.
 ---
 
 ### Phase 7 — Mobile + i18n Audit
-**Status:** Not started
-**Files planned:**
-- All new components (responsive polish)
-- All 5 i18n files (completeness check)
+**Status:** 🟢 Complete (2026-04-19, Amina)
 
-**Log:** —
+**Files changed:**
+- `client/src/i18n/types.ts` — added `toolbar.ariaLabel`, `toolbar.search.clearAriaLabel`, `toolbar.view.ariaLabel` (3 new keys)
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — added 3 new toolbar keys in all 5 languages
+- `client/src/components/CatalogToolbar.tsx` — mobile overflow fix (`overflow-x-auto scrollbar-hide`); search narrows on mobile (`w-36 sm:flex-1`); all dropdowns `flex-shrink-0`; spacer hidden on mobile; hardcoded English aria-labels replaced with i18n keys
+- `client/src/pages/GrantDetail.tsx` — breadcrumb P0 fix: removed `<button>` inside `<Link>` (invalid `<a>`>`<button>` HTML); added `aria-current="page"` on current crumb, `aria-hidden="true"` on chevron icons; added `aria-label` on home link
+- `.grantkit-redesign/audit-phase7.md` — full audit report (i18n coverage, mobile responsive, a11y findings, P0/P1/P2 issue log)
+
+**Key findings:**
+- i18n: **100% coverage (954 keys) across all 5 languages** before audit — all phases added translations correctly
+- Mobile: CatalogToolbar overflowed at 375px (P0) — fixed with overflow-x-auto
+- A11y P0: breadcrumb had invalid `<a>`>`<button>` nesting — fixed
+- A11y P0: 3 hardcoded English aria-labels in CatalogToolbar — fixed with i18n keys
+- Georgian phrasing: all new sections reviewed — natural and correct
+- P1/P2 issues documented in audit report for Jonas (Phase 8)
+
+**Verification gates:**
+- `pnpm check` → **0 TypeScript errors**
+- `pnpm build` → **clean** (only pre-existing chunk-size + direct-eval warnings)
+
+**Hand-off to Jonas (Phase 8):**
+- See `.grantkit-redesign/audit-phase7.md` § P1/P2 for prioritised remaining a11y items
+- Footer not shown on mobile in GrantDetail — add minimal legal links row or MobileBottomNav link
+- MapPanel needs `role="application"` + `aria-label` for screen readers
+- Consider adding `<main>` landmark to Catalog page and skip-nav link
+- Lighthouse performance baseline should be run in Phase 8 (cannot exercise UI in this sandbox)
+- DevMapTest + DevDeepLinkTest pages are safe to delete in Phase 8
+
+**Log:**
+- 2026-04-19 — Amina started. Synced branch (new pending-imports files from main). Read STATE.md, TEAM_ROSTER.md, CLAUDE.md.
+- Updated Phase 7 → 🟡 In progress.
+- Ran automated i18n audit: 954 keys × 5 languages = 4770 key-values — all present.
+- Found 3 missing i18n keys in toolbar section (`ariaLabel`, `search.clearAriaLabel`, `view.ariaLabel`) — not in types.ts or any lang file. Added to types.ts + all 5 languages.
+- Fixed P0 breadcrumb HTML: `<Link><button>` → `<Link>` (no inner button). Added `aria-current`, `aria-hidden`.
+- Fixed P0 CatalogToolbar mobile overflow: `overflow-x-auto scrollbar-hide`, flex-shrink-0 on controls.
+- Fixed P0 CatalogToolbar hardcoded English aria-labels → i18n keys.
+- `pnpm check` → 0 errors. `pnpm build` → clean.
+- Created `audit-phase7.md` with full findings.
+- Updated Phase 7 → 🟢 Complete.
 
 ---
 
@@ -913,6 +947,7 @@ encountered, with owner and resolution path.)
 | 2026-04-18 | Phase 4B | Split-view catalog: CatalogCardCompact (memoised 92 px card), GrantList (react-window virtualisation, 50 ms hover debounce, scroll-to-row on external highlight), SplitView (40/60 md–lg → 50/50 lg+), MobileCatalogView (List/Map tab switcher). Pulsing-ring animation added to MapPanel `.mp-pin-highlight`. Cards click → `/grant/{id}`. i18n mobileCatalog keys in 5 languages. Added `react-window@2.2.7`. pnpm check + build clean. | Arash |
 | 2026-04-19 | Phase 5 | GrantDetail rewrite: full-width breadcrumb nav, 50/50 desktop two-column grid (left: badges + H1 + metrics grid + description + eligibility + CTAs; right: LocationMap 280px with "Get Directions" button + office card with officeHours + application process + documents), related grants full-width below grid (3-col desktop, horizontal snap-scroll mobile). Mobile: stacked layout + sticky bottom CTA bar (Apply + Share + Save at `bottom-16`). New `detail` i18n section (20 keys) translated in all 5 languages. File size: 962 → 560 LOC. pnpm check + build clean. | Sofia |
 | 2026-04-19 | Phase 6 | Google Maps deep-link audit: rewrote `googleMaps.ts` with per-OS / per-mode native URLs (iOS `maps://?daddr=` for directions, Android `google.navigation:` for direct turn-by-turn), `visibilitychange`+`pagehide` cancellation of web fallback timer, address-only mobile fallback. New `deepLink` i18n section (4 keys) in 5 languages. A11y: LocationMap popup link gains `role="button"` + `aria-label` + `rel`; GrantDetail "Get Directions" gains `aria-label` + visible focus ring + `aria-hidden` icon. DEV-only `DevDeepLinkTest.tsx` page mounted at `/dev/deep-link-test` with 5 test cases. pnpm check + build clean. | Kenji |
+| 2026-04-19 | Phase 7 | Mobile + i18n audit: 100% i18n coverage confirmed (954 keys × 5 langs). Fixed P0 breadcrumb invalid HTML (`<Link><button>` → `<Link>`). Fixed P0 CatalogToolbar mobile overflow (overflow-x-auto). Fixed P0 hardcoded English aria-labels (3 keys). Added 3 new i18n keys (toolbar.ariaLabel, search.clearAriaLabel, view.ariaLabel) to types.ts + all 5 langs. P1/P2 issues documented in audit-phase7.md for Jonas. pnpm check + build clean. | Amina |
 
 ---
 

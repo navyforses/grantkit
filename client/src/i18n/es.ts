@@ -1051,8 +1051,10 @@ export const es: Translations = {
   },
 
   toolbar: {
+    ariaLabel: "Filtros del catálogo",
     search: {
       placeholder: "Buscar subvenciones y recursos",
+      clearAriaLabel: "Borrar búsqueda",
     },
     region: {
       label: "Región",
@@ -1075,6 +1077,7 @@ export const es: Translations = {
       all: "Todas las categorías",
     },
     view: {
+      ariaLabel: "Modo de vista",
       split: "Mixto",
       map: "Mapa",
       list: "Lista",

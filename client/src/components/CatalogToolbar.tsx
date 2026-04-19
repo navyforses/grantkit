@@ -147,11 +147,11 @@ export default function CatalogToolbar({
   return (
     <div
       role="toolbar"
-      aria-label="Catalog filters"
-      className="h-12 px-6 flex items-center gap-3 bg-[#0F1419] border-b border-white/[0.06]"
+      aria-label={t.toolbar.ariaLabel}
+      className="h-12 px-2 sm:px-6 flex items-center gap-2 sm:gap-3 bg-[#0F1419] border-b border-white/[0.06] overflow-x-auto scrollbar-hide"
     >
       {/* Search input */}
-      <label className="relative flex-1 max-w-[480px]">
+      <label className="relative flex-shrink-0 w-36 sm:flex-1 sm:w-auto sm:max-w-[480px]">
         <Search
           className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"
           aria-hidden="true"
@@ -173,7 +173,7 @@ export default function CatalogToolbar({
           <button
             type="button"
             onClick={() => setLocalSearch("")}
-            aria-label="Clear search"
+            aria-label={t.toolbar.search.clearAriaLabel}
             className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80"
           >
             <X className="w-3.5 h-3.5" />
@@ -321,14 +321,14 @@ export default function CatalogToolbar({
         ))}
       </ToolbarDropdown>
 
-      {/* Spacer */}
-      <div className="flex-1" />
+      {/* Push view toggle to the right on large screens */}
+      <div className="hidden sm:flex flex-1" />
 
       {/* Segmented view toggle */}
       <div
         role="tablist"
-        aria-label="View mode"
-        className="inline-flex items-center rounded-md bg-white/[0.04] border border-white/[0.08] p-0.5 gap-0.5"
+        aria-label={t.toolbar.view.ariaLabel}
+        className="inline-flex items-center rounded-md bg-white/[0.04] border border-white/[0.08] p-0.5 gap-0.5 flex-shrink-0"
       >
         <ViewToggleButton
           active={viewMode === "split"}
@@ -383,7 +383,7 @@ function ToolbarDropdown({
           aria-disabled={disabled || undefined}
           disabled={disabled}
           className={cn(
-            "h-8 inline-flex items-center gap-1.5 px-3 rounded-md text-[13px] whitespace-nowrap",
+            "h-8 inline-flex items-center gap-1.5 px-3 rounded-md text-[13px] whitespace-nowrap flex-shrink-0",
             "border transition-colors",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
             disabled
