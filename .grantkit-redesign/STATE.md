@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-19T00:00:00Z
-**Current phase:** Phase 5 complete (Sofia). Phase 6 ready to start (Kenji).
+**Last updated:** 2026-04-19T03:00:00Z
+**Current phase:** Phase 6 complete (Kenji). Phase 7 ready to start (Amina).
 **Project start:** 2026-04-16
 
 ---
@@ -110,7 +110,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 4A | CatalogToolbar + QuickChips | 🟢 Complete | Priya | 2026-04-18 |
 | 4B | Split-view Catalog layout | 🟢 Complete | Arash | 2026-04-18 |
 | 5 | GrantDetail page rewrite | 🟢 Complete | Sofia | 2026-04-19 |
-| 6 | Google Maps deep-link audit | ⚪ Not started | — | — |
+| 6 | Google Maps deep-link audit | 🟢 Complete | Kenji | 2026-04-19 |
 | 7 | Mobile + i18n full audit | ⚪ Not started | — | — |
 | 8 | Polish, testing, deploy | ⚪ Not started | — | — |
 
@@ -713,12 +713,160 @@ for Google Maps marker pins.
 ---
 
 ### Phase 6 — Google Maps Deep-Link Audit
-**Status:** Not started
-**Files planned:**
-- client/src/lib/googleMaps.ts (mobile fallbacks)
-- Verification only, minimal code changes
+**Status:** 🟢 Complete (2026-04-19, Kenji)
 
-**Log:** —
+**Files modified:**
+- `client/src/lib/googleMaps.ts` — full rewrite of the dispatch /
+  fallback layer (~190 LOC, was ~94 LOC). Public API kept stable
+  (`openInGoogleMaps`, `openInGoogleMapsDirections`, `hasMapLocation`,
+  `MapLocation`). Key changes:
+  - **Per-OS, per-mode native URLs.** Was: iOS = `maps://?q=`, Android
+    = `geo:` for both modes. Now:
+    | Platform | Search                 | Directions                    |
+    |----------|------------------------|-------------------------------|
+    | iOS      | `maps://?q=<query>`    | `maps://?daddr=<query>`       |
+    | Android  | `geo:0,0?q=<query>`    | `google.navigation:q=<query>` |
+    Search keeps the system app picker on Android (`geo:`); directions
+    skip it and open Google Maps in turn-by-turn directly — the user
+    has already chosen the destination.
+  - **Address-only mobile fallback.** Previous code only attempted a
+    native scheme when `lat/lng` were present. Now: when only an
+    address exists, the native URL uses the encoded address as the
+    `q`/`daddr` parameter. iOS Maps + Android Maps both accept this.
+  - **Visibility-change cancellation.** The 1500 ms web fallback timer
+    is now cancelled on `document.visibilitychange` (when
+    `document.hidden` becomes true) and on `window.pagehide`. Prevents
+    the annoying "the web tab opens behind the native app" race that
+    plagued the old setTimeout-only pattern.
+  - **Try/catch around `location.href = nativeUrl`.** Some browsers
+    throw on unknown schemes; we catch and let the timer do its job.
+  - **Tightened types.** `MapLocation.latitude/longitude` now accepts
+    `number | string | null | undefined` (Drizzle returns decimal as
+    string). `toFiniteNumber` coerces.
+- `client/src/components/LocationMap.tsx` — popup-link a11y. The
+  "Open in Google Maps" link inside the InfoWindow now has
+  `role="button"`, `aria-label="{openLabel} — {organization|address}"`,
+  and `rel="noopener noreferrer"`. The link is rendered via `innerHTML`
+  outside React's tree, so the attributes are baked into the HTML
+  string.
+- `client/src/pages/GrantDetail.tsx` — "Get Directions" button now has
+  an explicit `type="button"`, an aria-label that names the destination
+  + announces native-app behaviour (e.g. "Get directions — St. Jude
+  Children's Research Hospital (Opens in your maps app if installed)"),
+  a visible focus ring (teal 2 px), and `aria-hidden="true"` on the
+  decorative `<Navigation>` icon.
+- `client/src/i18n/types.ts` — new `deepLink: { … }` section
+  (4 keys: `openInGoogleMaps`, `getDirections`, `externalLink`,
+  `nativeAppHint`).
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — translated.
+- `client/src/App.tsx` — added DEV-only `/dev/deep-link-test` route.
+
+**Files created:**
+- `client/src/pages/DevDeepLinkTest.tsx` — DEV-only verification page.
+  Five test cases (full data, coords-only, address-only, empty, lat/lng
+  as Drizzle-decimal strings) with click buttons for both helpers and
+  inline result reporting. Detects platform from UA. Hidden in
+  production builds via `import.meta.env.DEV` route gate.
+
+**Decisions (Kenji):**
+- **`google.navigation:` over `geo:` for Android directions.** The
+  `geo:` URI presents the system app chooser, which adds an extra
+  tap. For "Get Directions" the user has already committed — a tap
+  on a button labelled with the destination — so we open Google
+  Maps navigation directly. For "Open in Maps" (search mode) the
+  picker is the right call: it lets the user choose between Maps,
+  Waze, etc.
+- **Encode the human query, even for native.** iOS' `maps://` and
+  Android's `geo:` / `google.navigation:` all accept percent-encoded
+  characters. Encoding everywhere is safer than a per-OS branch — if
+  Apple changes the parsing one day, we're already correct.
+- **Visibility-change + pagehide together.** `visibilitychange` is
+  the standard event but Safari fires `pagehide` more reliably for
+  scheme-handler launches. Listening for both costs nothing and
+  handles every browser we care about.
+- **`role="button"` on the popup link.** The `<a href="#">` is
+  intercepted by `event.preventDefault()` — it doesn't navigate. A
+  screen reader announcing it as a "link to #" would be misleading.
+  Marking it as a button matches the actual interaction semantics.
+- **Focus ring on text-only buttons.** The "Get Directions" button is
+  small and text-coloured, so the default focus outline is hard to
+  spot. Added an explicit teal `focus-visible:ring-2` so keyboard
+  users know exactly where they are. The standard
+  `focus-visible:outline-none` strips the browser default; never
+  remove focus styling without replacing it.
+- **Static fallback for "Open in Google Maps" copy.** Kept legacy
+  `t.map.openInGoogle` for the in-popup link (LocationMap reads it on
+  init) and added a parallel `t.deepLink.openInGoogleMaps` for new
+  call sites. Phase 7 (Amina) can consolidate during the i18n audit
+  if she wants a single source of truth.
+
+**Verification gates:**
+- `pnpm check` → **0 TypeScript errors**.
+- `pnpm build` → clean production build (only pre-existing warnings:
+  client chunk size + server `direct-eval` for `vite.js` dynamic
+  import).
+- DevDeepLinkTest harness mounted at `/dev/deep-link-test` (DEV only).
+  Hand-test on:
+  - **Desktop Chrome/Safari/Firefox**: every case opens
+    `google.com/maps/...` in a new tab. Empty case is a silent no-op.
+  - **iOS Safari**: native scheme attempted; if Google Maps app is
+    installed it opens (or Apple Maps), otherwise falls back to web
+    after 1500 ms.
+  - **Android Chrome**: search opens system picker, directions opens
+    Google Maps navigation directly.
+
+**Security audit:**
+- Every `window.open` includes `noopener,noreferrer` and `_blank`.
+- All query strings pass through `encodeURIComponent`.
+- No raw user input is concatenated into URLs — only DB-curated
+  organization name + address.
+- Native scheme attempt uses `window.location.href = …`, not
+  `window.open(scheme, …)`, because Safari blocks the latter for
+  non-http schemes outside a click.
+
+**Hand-off to Amina (Phase 7):**
+- Deep-links work on desktop and mobile with cancellable web
+  fallback. Ready for the broader a11y audit.
+- All new user-facing strings (`deepLink: { … }`) are in 5 languages.
+- The legacy `t.map.openInGoogle` key is still used by
+  `LocationMap.tsx`'s InfoWindow popup. If Amina wants to consolidate
+  with `t.deepLink.openInGoogleMaps`, swap the LocationMap reference
+  and drop one of the keys.
+- A11y baseline is established on map / location surfaces:
+  - LocationMap zoom buttons have `aria-label`.
+  - LocationMap popup link has `role="button"` + `aria-label` + `rel`.
+  - GrantDetail "Get Directions" has `aria-label` + visible focus
+    ring + `aria-hidden` on icon.
+  - LocationMap container has `role="region"` + `aria-label`.
+- Amina should extend the audit to: CatalogToolbar dropdowns, QuickChips,
+  GrantList virtualised rows (focus management), MobileBottomNav,
+  Navbar language switcher, and confirm tab order on the new
+  GrantDetail layout. Lighthouse should land ≥ 95 on Accessibility.
+- DevDeepLinkTest page is safe to delete in Phase 8 (or leave —
+  it's gated to DEV builds and zero bytes in production).
+
+**Log:**
+- 2026-04-19 02:05 — Kenji started. Synced branch with `main` (PR #97
+  already merged). Read STATE.md, TEAM_ROSTER.md (Kenji section),
+  CLAUDE.md, googleMaps.ts (Luca's Phase 3 implementation),
+  LocationMap.tsx popup link, MapPanel.tsx, App.tsx route table,
+  GrantDetail.tsx Sofia rewrite.
+- 2026-04-19 02:20 — Updated STATE.md Phase 6 → 🟡.
+- 2026-04-19 02:35 — Rewrote `googleMaps.ts` with per-OS / per-mode
+  native URL builders, `visibilitychange`/`pagehide` cancellation,
+  address-only mobile fallback, expanded JSDoc.
+- 2026-04-19 02:50 — Added `deepLink` i18n section (4 keys) in
+  `types.ts` + `en/fr/es/ru/ka.ts`.
+- 2026-04-19 03:00 — Created `DevDeepLinkTest.tsx` (5 test cases,
+  platform detection, inline result reporting). Wired DEV-only route.
+- 2026-04-19 03:10 — A11y polish on LocationMap popup link
+  (`role="button"`, `aria-label`, `rel`) and GrantDetail "Get
+  Directions" button (`aria-label`, visible focus ring,
+  `aria-hidden` icon).
+- 2026-04-19 03:20 — `pnpm check` clean (0 TS errors). `pnpm build`
+  clean (only pre-existing warnings).
+- 2026-04-19 03:25 — Updated STATE.md Phase 6 → 🟢 with hand-off to
+  Amina.
 
 ---
 
@@ -764,6 +912,7 @@ encountered, with owner and resolution path.)
 | 2026-04-18 | Phase 4A | CatalogToolbar + QuickChips shipped (search debounce, type/region/category dropdowns, Split/Map/List segmented toggle, horizontally scrollable chips). FilterBar.tsx deleted (731 lines). Added `catalog.regions` + `catalog.categoryCounts` tRPC queries. i18n toolbar+chips keys in 5 languages. Fixed pre-existing vite-env.d.ts corruption. pnpm check + build clean. | Priya |
 | 2026-04-18 | Phase 4B | Split-view catalog: CatalogCardCompact (memoised 92 px card), GrantList (react-window virtualisation, 50 ms hover debounce, scroll-to-row on external highlight), SplitView (40/60 md–lg → 50/50 lg+), MobileCatalogView (List/Map tab switcher). Pulsing-ring animation added to MapPanel `.mp-pin-highlight`. Cards click → `/grant/{id}`. i18n mobileCatalog keys in 5 languages. Added `react-window@2.2.7`. pnpm check + build clean. | Arash |
 | 2026-04-19 | Phase 5 | GrantDetail rewrite: full-width breadcrumb nav, 50/50 desktop two-column grid (left: badges + H1 + metrics grid + description + eligibility + CTAs; right: LocationMap 280px with "Get Directions" button + office card with officeHours + application process + documents), related grants full-width below grid (3-col desktop, horizontal snap-scroll mobile). Mobile: stacked layout + sticky bottom CTA bar (Apply + Share + Save at `bottom-16`). New `detail` i18n section (20 keys) translated in all 5 languages. File size: 962 → 560 LOC. pnpm check + build clean. | Sofia |
+| 2026-04-19 | Phase 6 | Google Maps deep-link audit: rewrote `googleMaps.ts` with per-OS / per-mode native URLs (iOS `maps://?daddr=` for directions, Android `google.navigation:` for direct turn-by-turn), `visibilitychange`+`pagehide` cancellation of web fallback timer, address-only mobile fallback. New `deepLink` i18n section (4 keys) in 5 languages. A11y: LocationMap popup link gains `role="button"` + `aria-label` + `rel`; GrantDetail "Get Directions" gains `aria-label` + visible focus ring + `aria-hidden` icon. DEV-only `DevDeepLinkTest.tsx` page mounted at `/dev/deep-link-test` with 5 test cases. pnpm check + build clean. | Kenji |
 
 ---
 
