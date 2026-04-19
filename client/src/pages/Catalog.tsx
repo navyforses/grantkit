@@ -28,7 +28,6 @@ import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
 import MapPanel from "@/components/MapPanel";
 import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
-import ResourceTypeTabs from "@/components/ResourceTypeTabs";
 import { useResources, useResourcesRealtime, useCategories, useCountries } from "@/hooks/useResources";
 import type { ResourceType } from "@/types/resources";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
@@ -552,25 +551,10 @@ export default function Catalog() {
         ariaLabel={t.chips.ariaLabel}
       />
 
-      {/* Resource type switcher + view mode tabs */}
+      {/* View mode toggle (Filters / Smart Search) — the resource-type
+          switcher lived here before Phase 4A but is now collapsed into
+          the CatalogToolbar's Type dropdown. */}
       <div className="bg-background/95 backdrop-blur-sm border-b border-border px-3 py-1.5 flex items-center gap-2">
-        {viewMode === "map" && (
-          <>
-            <ResourceTypeTabs
-              value={supabaseResourceType}
-              onChange={setSupabaseResourceType}
-              counts={{ GRANT: mapItems.length }}
-            />
-            {isSupabaseView && supabaseLoading && (
-              <span className="text-xs text-muted-foreground ml-2">Loading…</span>
-            )}
-            {isSupabaseView && !supabaseLoading && (
-              <span className="text-xs text-muted-foreground ml-2">
-                {supabaseResources.length} resources
-              </span>
-            )}
-          </>
-        )}
         <div className="ml-auto flex items-center gap-1">
           <button
             type="button"
