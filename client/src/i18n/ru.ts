@@ -1041,6 +1041,7 @@ export const ru: Translations = {
     loading: "Загрузка карты…",
     error: "Карта недоступна",
     noLocation: "Адрес не указан публично",
+    ariaLabel: "Интерактивная карта грантов",
   },
 
   deepLink: {

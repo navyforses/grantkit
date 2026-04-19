@@ -1043,6 +1043,7 @@ export const en: Translations = {
     loading: "Loading map…",
     error: "Map unavailable",
     noLocation: "Location not publicly listed",
+    ariaLabel: "Interactive grant locations map",
   },
 
   deepLink: {
