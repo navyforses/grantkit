@@ -1032,6 +1032,7 @@ export const fr: Translations = {
   },
 
   map: {
+    ariaLabel: "Carte des emplacements de subventions",
     openInGoogle: "Ouvrir dans Google Maps",
     getDirections: "Itinéraire",
     zoomIn: "Zoom avant",

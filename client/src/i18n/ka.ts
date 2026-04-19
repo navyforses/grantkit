@@ -1034,6 +1034,7 @@ export const ka: Translations = {
   },
 
   map: {
+    ariaLabel: "გრანტების მდებარეობის რუკა",
     openInGoogle: "გახსნა Google Maps-ში",
     getDirections: "მიმართულება",
     zoomIn: "მიახლოება",

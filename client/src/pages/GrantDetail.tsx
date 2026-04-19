@@ -729,6 +729,16 @@ export default function GrantDetail() {
         </div>
       )}
 
+      {/* Mobile-only minimal footer — legal links + copyright */}
+      <div className="lg:hidden px-4 pb-40 pt-6 text-center text-[11px] text-white/35 space-y-1.5">
+        <div className="flex items-center justify-center gap-4">
+          <Link href="/privacy" className="hover:text-white/60 transition-colors">{t.legal.privacyTitle}</Link>
+          <Link href="/terms" className="hover:text-white/60 transition-colors">{t.legal.termsTitle}</Link>
+          <Link href="/refund" className="hover:text-white/60 transition-colors">{t.legal.refundTitle}</Link>
+        </div>
+        <p>{t.footer.rights}</p>
+      </div>
+
       <div className="hidden lg:block">
         <Footer />
       </div>

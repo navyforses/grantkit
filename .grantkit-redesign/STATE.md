@@ -112,7 +112,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 5 | GrantDetail page rewrite | 🟢 Complete | Sofia | 2026-04-19 |
 | 6 | Google Maps deep-link audit | 🟢 Complete | Kenji | 2026-04-19 |
 | 7 | Mobile + i18n full audit | 🟢 Complete | Amina | 2026-04-19 |
-| 8 | Polish, testing, deploy | ⚪ Not started | — | — |
+| 8 | Polish, testing, deploy | 🟢 Complete | Jonas | 2026-04-19 |
 
 Legend: ⚪ Not started · 🟡 In progress · 🟢 Complete · 🔴 Blocked
 
@@ -915,14 +915,49 @@ for Google Maps marker pins.
 ---
 
 ### Phase 8 — Polish & Deploy
-**Status:** Not started
-**Files planned:**
-- Performance optimization
-- Error boundaries
-- SEO meta tags
-- Railway deployment verification
+**Status:** 🟢 Complete (2026-04-19, Jonas)
 
-**Log:** —
+**Files changed:**
+- `client/src/i18n/types.ts` — added `map.ariaLabel` key to `map` section
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — added `map.ariaLabel` translations in all 5 languages
+- `client/src/components/MapPanel.tsx` — changed inner map div from `role="region"` → `role="application"`, updated `aria-label` to use `t.map.ariaLabel`
+- `client/src/pages/GrantDetail.tsx` — added mobile-only minimal footer row (privacy/terms/refund links + copyright) above the existing desktop-only `<Footer />`
+- `client/src/components/CatalogToolbar.tsx` — removed redundant `aria-disabled` from ToolbarDropdown button trigger (native `disabled` attr is sufficient; both together caused double announcement by screen readers)
+- `client/public/robots.txt` — created (allows all, disallows /admin /api/ /analytics, points to sitemap)
+- `client/public/sitemap.xml` — created (static pages: home, catalog, login, register, contact, privacy, terms, refund; home includes hreflang for 5 languages)
+- `client/src/App.tsx` — removed `DevMapTest` + `DevDeepLinkTest` lazy imports and DEV-only routes
+- `client/src/pages/DevMapTest.tsx` — deleted (was gated to DEV builds only; no longer needed)
+- `client/src/pages/DevDeepLinkTest.tsx` — deleted (was gated to DEV builds only; no longer needed)
+- `.grantkit-redesign/STATE.md` — Phase 8 → 🟢, change log updated
+
+**Confirmed already in place (no changes needed):**
+- ✅ Vite `manualChunks` (vendor-csc, vendor-gmaps, vendor-react, vendor-framer, vendor-trpc) — configured by Arash (Phase 4B)
+- ✅ `React.lazy` + `Suspense` for all heavy pages — configured by Arash (Phase 4B)
+- ✅ `ErrorBoundary` class component — exists at App-level + uses i18n
+- ✅ `react-helmet-async` + `SEO.tsx` + `JsonLd.tsx` — fully implemented
+- ✅ `HelmetProvider` in `main.tsx`
+- ✅ CatalogCardCompact has `role="article"` — already fixed before this phase
+
+**P1 issues from audit-phase7.md — all resolved:**
+| Issue | Fix |
+|-------|-----|
+| MapPanel has no `role="application"` or `aria-label` | Changed inner map div to `role="application" aria-label={t.map.ariaLabel}`. New i18n key added to types.ts + all 5 languages. |
+| Footer hidden on mobile in GrantDetail | Added mobile-only minimal footer row (privacy/terms/refund + copyright) with `pb-40` to clear the sticky CTA bar. |
+| CatalogToolbar disabled dropdowns: double aria-disabled + disabled | Removed `aria-disabled` — native `disabled` attr is sufficient. |
+| CatalogCardCompact no role | Already had `role="article"` from Phase 4B — no change needed. |
+
+**Verification gates:**
+- ✅ `pnpm check` → 0 TypeScript errors
+- ✅ `pnpm build` → clean (only pre-existing chunk-size + direct-eval warnings)
+
+**Deployment:**
+- Changes pushed to branch `claude/review-project-plan-57ppn`
+- Railway auto-deploys from GitHub on merge to main
+
+**Log:**
+- 2026-04-19 — Jonas started. Read STATE.md, TEAM_ROSTER.md, OPS.md, audit-phase7.md. Phase 7 🟢. Phase 8 → 🟡.
+- 2026-04-19 — Fixed P1 a11y issues (MapPanel role, GrantDetail mobile footer, CatalogToolbar aria-disabled). Added map.ariaLabel i18n key in all 5 languages. Added robots.txt + sitemap.xml. Removed DevMapTest + DevDeepLinkTest pages. All infrastructure (Vite chunks, lazy loading, error boundaries, SEO) already in place.
+- 2026-04-19 — `pnpm check` → 0 errors. `pnpm build` → clean. Phase 8 → 🟢.
 
 ---
 
@@ -948,6 +983,7 @@ encountered, with owner and resolution path.)
 | 2026-04-19 | Phase 5 | GrantDetail rewrite: full-width breadcrumb nav, 50/50 desktop two-column grid (left: badges + H1 + metrics grid + description + eligibility + CTAs; right: LocationMap 280px with "Get Directions" button + office card with officeHours + application process + documents), related grants full-width below grid (3-col desktop, horizontal snap-scroll mobile). Mobile: stacked layout + sticky bottom CTA bar (Apply + Share + Save at `bottom-16`). New `detail` i18n section (20 keys) translated in all 5 languages. File size: 962 → 560 LOC. pnpm check + build clean. | Sofia |
 | 2026-04-19 | Phase 6 | Google Maps deep-link audit: rewrote `googleMaps.ts` with per-OS / per-mode native URLs (iOS `maps://?daddr=` for directions, Android `google.navigation:` for direct turn-by-turn), `visibilitychange`+`pagehide` cancellation of web fallback timer, address-only mobile fallback. New `deepLink` i18n section (4 keys) in 5 languages. A11y: LocationMap popup link gains `role="button"` + `aria-label` + `rel`; GrantDetail "Get Directions" gains `aria-label` + visible focus ring + `aria-hidden` icon. DEV-only `DevDeepLinkTest.tsx` page mounted at `/dev/deep-link-test` with 5 test cases. pnpm check + build clean. | Kenji |
 | 2026-04-19 | Phase 7 | Mobile + i18n audit: 100% i18n coverage confirmed (954 keys × 5 langs). Fixed P0 breadcrumb invalid HTML (`<Link><button>` → `<Link>`). Fixed P0 CatalogToolbar mobile overflow (overflow-x-auto). Fixed P0 hardcoded English aria-labels (3 keys). Added 3 new i18n keys (toolbar.ariaLabel, search.clearAriaLabel, view.ariaLabel) to types.ts + all 5 langs. P1/P2 issues documented in audit-phase7.md for Jonas. pnpm check + build clean. | Amina |
+| 2026-04-19 | Phase 8 | P1 a11y fixes: MapPanel role=application + map.ariaLabel i18n (6 files); GrantDetail mobile footer (privacy/terms/refund + copyright); CatalogToolbar removed redundant aria-disabled. SEO: robots.txt + sitemap.xml. Removed DevMapTest + DevDeepLinkTest pages. All perf/SEO infra already in place. pnpm check + build clean. Phase 8 → 🟢. | Jonas |
 
 ---
 

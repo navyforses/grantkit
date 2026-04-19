@@ -316,7 +316,7 @@ export default function MapPanel({
   return (
     <div className={cn("relative w-full h-full overflow-hidden bg-secondary", className)}>
       <style>{MAP_PANEL_CSS}</style>
-      <div ref={containerRef} className="absolute inset-0" role="region" aria-label={t.map.loading} />
+      <div ref={containerRef} className="absolute inset-0" role="application" aria-label={t.map.ariaLabel} />
     </div>
   );
 }

@@ -380,7 +380,6 @@ function ToolbarDropdown({
         <button
           type="button"
           aria-label={ariaLabel}
-          aria-disabled={disabled || undefined}
           disabled={disabled}
           className={cn(
             "h-8 inline-flex items-center gap-1.5 px-3 rounded-md text-[13px] whitespace-nowrap flex-shrink-0",

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /analytics
+
+Sitemap: https://grantkit-production-06f7.up.railway.app/sitemap.xml
