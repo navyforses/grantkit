@@ -1026,8 +1026,10 @@ export interface Translations {
   // Catalog toolbar (Phase 4A — horizontal filter bar; cascading
   // location dropdowns added afterwards: Region → Country → State → City)
   toolbar: {
+    ariaLabel: string;         // aria-label on the toolbar container
     search: {
       placeholder: string;
+      clearAriaLabel: string;  // aria-label on the ✕ clear button
     };
     region: {
       label: string;
@@ -1050,6 +1052,7 @@ export interface Translations {
       all: string;
     };
     view: {
+      ariaLabel: string;       // aria-label on the Split/Map/List tablist
       split: string;
       map: string;
       list: string;

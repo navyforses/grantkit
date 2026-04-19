@@ -1053,8 +1053,10 @@ export const en: Translations = {
   },
 
   toolbar: {
+    ariaLabel: "Catalog filters",
     search: {
       placeholder: "Search grants and resources",
+      clearAriaLabel: "Clear search",
     },
     region: {
       label: "Region",
@@ -1077,6 +1079,7 @@ export const en: Translations = {
       all: "All categories",
     },
     view: {
+      ariaLabel: "View mode",
       split: "Split",
       map: "Map",
       list: "List",

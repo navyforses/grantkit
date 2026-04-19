@@ -1051,8 +1051,10 @@ export const ru: Translations = {
   },
 
   toolbar: {
+    ariaLabel: "Фильтры каталога",
     search: {
       placeholder: "Поиск грантов и ресурсов",
+      clearAriaLabel: "Очистить поиск",
     },
     region: {
       label: "Регион",
@@ -1075,6 +1077,7 @@ export const ru: Translations = {
       all: "Все категории",
     },
     view: {
+      ariaLabel: "Режим просмотра",
       split: "Смешанный",
       map: "Карта",
       list: "Список",

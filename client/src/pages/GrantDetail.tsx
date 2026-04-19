@@ -318,20 +318,23 @@ export default function GrantDetail() {
         className="border-b border-white/[0.06] bg-[#0F1419]"
       >
         <div className="container px-4 py-2.5 flex items-center gap-1.5 text-[13px] text-white/50 overflow-hidden">
-          <Link href="/">
-            <button className="hover:text-white/80 transition-colors flex items-center gap-1 shrink-0">
-              <Home className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{t.detail.breadcrumbHome}</span>
-            </button>
+          <Link
+            href="/"
+            className="hover:text-white/80 transition-colors flex items-center gap-1 shrink-0"
+            aria-label={t.detail.breadcrumbHome}
+          >
+            <Home className="w-3.5 h-3.5" aria-hidden="true" />
+            <span className="hidden sm:inline">{t.detail.breadcrumbHome}</span>
           </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-white/25 shrink-0" />
-          <Link href="/catalog">
-            <button className="hover:text-white/80 transition-colors shrink-0 truncate">
-              {t.detail.breadcrumbCatalog}
-            </button>
+          <ChevronRight className="w-3.5 h-3.5 text-white/25 shrink-0" aria-hidden="true" />
+          <Link
+            href="/catalog"
+            className="hover:text-white/80 transition-colors shrink-0 truncate"
+          >
+            {t.detail.breadcrumbCatalog}
           </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-white/25 shrink-0" />
-          <span className="text-white/75 truncate font-medium">{content.name}</span>
+          <ChevronRight className="w-3.5 h-3.5 text-white/25 shrink-0" aria-hidden="true" />
+          <span className="text-white/75 truncate font-medium" aria-current="page">{content.name}</span>
         </div>
       </nav>
 
