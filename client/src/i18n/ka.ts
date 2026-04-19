@@ -1077,10 +1077,6 @@ export const ka: Translations = {
     },
   },
 
-  chips: {
-    ariaLabel: "კატეგორიის სწრაფი ფილტრები",
-  },
-
   mobileCatalog: {
     ariaLabel: "კატალოგის ხედი",
     list: "სია ({count})",

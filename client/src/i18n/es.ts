@@ -1075,10 +1075,6 @@ export const es: Translations = {
     },
   },
 
-  chips: {
-    ariaLabel: "Filtros rápidos de categoría",
-  },
-
   mobileCatalog: {
     ariaLabel: "Vista del catálogo",
     list: "Lista ({count})",

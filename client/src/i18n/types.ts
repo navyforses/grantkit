@@ -1049,11 +1049,6 @@ export interface Translations {
     };
   };
 
-  // Quick category chips (Phase 4A — horizontally scrollable shortcuts)
-  chips: {
-    ariaLabel: string;
-  };
-
   // Mobile catalog tab switcher (Phase 4B — list/map tabs below 768px)
   mobileCatalog: {
     ariaLabel: string;
