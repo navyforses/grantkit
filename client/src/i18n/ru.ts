@@ -1075,10 +1075,6 @@ export const ru: Translations = {
     },
   },
 
-  chips: {
-    ariaLabel: "Быстрые фильтры по категориям",
-  },
-
   mobileCatalog: {
     ariaLabel: "Вид каталога",
     list: "Список ({count})",

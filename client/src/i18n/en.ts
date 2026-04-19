@@ -1077,10 +1077,6 @@ export const en: Translations = {
     },
   },
 
-  chips: {
-    ariaLabel: "Quick category filters",
-  },
-
   mobileCatalog: {
     ariaLabel: "Catalog view",
     list: "List ({count})",

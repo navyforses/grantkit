@@ -14,7 +14,6 @@ import { Filter, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import SmartSearchPanel from "@/components/SmartSearchPanel";
 import CatalogToolbar, { type ToolbarTypeValue, type ToolbarViewMode } from "@/components/CatalogToolbar";
-import QuickChips from "@/components/QuickChips";
 import SplitView from "@/components/SplitView";
 import GrantList from "@/components/GrantList";
 import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
@@ -543,12 +542,6 @@ export default function Catalog() {
         onViewChange={setLayoutMode}
         availableRegions={availableRegions}
         availableCategories={availableCategories}
-      />
-      <QuickChips
-        categories={availableCategories}
-        activeId={selectedCategory === "all" ? null : selectedCategory}
-        onSelect={(id) => { setSelectedCategory((id ?? "all") as CategoryValue); setPage(1); }}
-        ariaLabel={t.chips.ariaLabel}
       />
 
       {/* View mode toggle (Filters / Smart Search) — the resource-type
