@@ -66,6 +66,17 @@ export default function Navbar() {
             {t.nav.catalog}
           </Link>
           <Link
+            href="/organizations"
+            aria-current={location.startsWith("/organizations") ? "page" : undefined}
+            className={`relative text-sm transition-colors pb-0.5 ${
+              location.startsWith("/organizations")
+                ? "font-semibold text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-brand-green"
+                : "font-medium text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t.nav.organizations}
+          </Link>
+          <Link
             href="/ai-assistant"
             aria-current={location === "/ai-assistant" ? "page" : undefined}
             className={`relative inline-flex items-center gap-1.5 text-sm transition-colors pb-0.5 ${

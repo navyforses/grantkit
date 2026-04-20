@@ -4,6 +4,7 @@ export const en: Translations = {
   nav: {
     home: "Home",
     catalog: "Grants & Resources",
+    organizations: "Organizations",
     subscribe: "Subscribe",
     profile: "Profile",
     dashboard: "Dashboard",
@@ -978,6 +979,30 @@ export const en: Translations = {
     example3: "housing assistance",
   },
 
+  organizations: {
+    title: "Organizations",
+    subtitle: "538 verified organizations providing grants and support services across 29 countries.",
+    searchPlaceholder: "Search organizations...",
+    filters: {
+      country: "Country",
+      category: "Category",
+      hasLocation: "Has location",
+    },
+    mapLegend: {
+      hq: "Headquarters",
+      branch: "Branch",
+    },
+    detail: {
+      branches: "Branches",
+      relatedGrants: "Related grants",
+      contact: "Contact",
+      visitWebsite: "Visit website",
+      viewOnMap: "View details",
+    },
+    empty: "No organizations match your filters.",
+    loading: "Loading organizations...",
+  },
+
   auth: {
     tabEmail: "Email & password",
     tabOAuth: "Single sign-on",
@@ -1046,7 +1071,6 @@ export const en: Translations = {
     loading: "Loading map…",
     error: "Map unavailable",
     noLocation: "Location not publicly listed",
-    ariaLabel: "Interactive grant locations map",
   },
 
   deepLink: {

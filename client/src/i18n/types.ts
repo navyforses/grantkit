@@ -3,6 +3,7 @@ export interface Translations {
   nav: {
     home: string;
     catalog: string;
+    organizations: string;
     subscribe: string;
     profile: string;
     dashboard: string;
@@ -1125,7 +1126,6 @@ export interface Translations {
     loading: string;
     error: string;
     noLocation: string;
-    ariaLabel: string;  // role="application" aria-label for MapPanel
   };
 
   // Deep-link aria-labels (Phase 6 — Kenji)
@@ -1136,6 +1136,31 @@ export interface Translations {
     getDirections: string;        // visible text + aria-label
     externalLink: string;         // generic aria-suffix: "(opens in new tab)"
     nativeAppHint: string;        // a11y description for mobile
+  };
+
+  // Organizations catalog (Phase 7 — 538 orgs / 872 branches)
+  organizations: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    filters: {
+      country: string;
+      category: string;
+      hasLocation: string;
+    };
+    mapLegend: {
+      hq: string;
+      branch: string;
+    };
+    detail: {
+      branches: string;
+      relatedGrants: string;
+      contact: string;
+      visitWebsite: string;
+      viewOnMap: string;
+    };
+    empty: string;
+    loading: string;
   };
 
   // Auth (Phase 0 — email/password)

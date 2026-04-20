@@ -35,7 +35,9 @@
     "audit:locations:sample": "tsx scripts/audit-locations.ts --limit=20",
     "enhance:locations:dry": "tsx scripts/enhance-locations.ts",
     "enhance:locations": "tsx scripts/enhance-locations.ts --apply",
-    "enhance:locations:sample": "tsx scripts/enhance-locations.ts --limit=10"
+    "enhance:locations:sample": "tsx scripts/enhance-locations.ts --limit=10",
+    "import:organizations": "tsx scripts/import-organizations.ts",
+    "import:organizations:dry": "tsx scripts/import-organizations.ts --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
@@ -132,6 +134,7 @@
     "cross-env": "^7.0.3",
     "drizzle-kit": "^0.31.4",
     "esbuild": "^0.25.0",
+    "exceljs": "^4.4.0",
     "gitnexus": "^1.5.3",
     "pnpm": "^10.15.1",
     "postcss": "^8.4.47",
