@@ -1042,6 +1042,7 @@ export const fr: Translations = {
     loading: "Chargement de la carte…",
     error: "Carte indisponible",
     noLocation: "Adresse non communiquée publiquement",
+    ariaLabel: "Carte interactive des subventions",
   },
 
   deepLink: {

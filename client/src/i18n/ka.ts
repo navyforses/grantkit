@@ -1044,6 +1044,7 @@ export const ka: Translations = {
     loading: "რუკის ჩატვირთვა…",
     error: "რუკა მიუწვდომელია",
     noLocation: "ადგილმდებარეობა არ არის მითითებული",
+    ariaLabel: "გრანტების ინტერაქტიური რუკა",
   },
 
   deepLink: {

@@ -385,6 +385,10 @@ const MAP_PANEL_CSS = `
   0%   { transform: scale(0.85); opacity: 0.85; }
   100% { transform: scale(2.2);  opacity: 0;    }
 }
+@media (prefers-reduced-motion: reduce) {
+  .mp-pin-highlight { animation: none; }
+  .mp-pin-highlight::before, .mp-pin-highlight::after { animation: none; opacity: 0; }
+}
 
 .mp-cluster {
   display: flex;

@@ -1102,6 +1102,7 @@ export interface Translations {
     loading: string;
     error: string;
     noLocation: string;
+    ariaLabel: string;  // role="application" aria-label for MapPanel
   };
 
   // Deep-link aria-labels (Phase 6 — Kenji)

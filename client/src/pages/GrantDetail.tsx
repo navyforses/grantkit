@@ -729,18 +729,18 @@ export default function GrantDetail() {
         </div>
       )}
 
-      {/* Mobile-only minimal footer — legal links + copyright */}
-      <div className="lg:hidden px-4 pb-40 pt-6 text-center text-[11px] text-white/35 space-y-1.5">
-        <div className="flex items-center justify-center gap-4">
-          <Link href="/privacy" className="hover:text-white/60 transition-colors">{t.legal.privacyTitle}</Link>
-          <Link href="/terms" className="hover:text-white/60 transition-colors">{t.legal.termsTitle}</Link>
-          <Link href="/refund" className="hover:text-white/60 transition-colors">{t.legal.refundTitle}</Link>
-        </div>
-        <p>{t.footer.rights}</p>
-      </div>
-
+      {/* Desktop footer */}
       <div className="hidden lg:block">
         <Footer />
+      </div>
+
+      {/* Mobile footer — minimal legal links above sticky CTA / MobileBottomNav */}
+      <div className="lg:hidden px-4 pb-36 pt-4 border-t border-white/[0.04] flex items-center justify-center gap-4 text-[11px] text-white/30">
+        <Link href="/privacy" className="hover:text-white/60 transition-colors">{t.nav.legal}</Link>
+        <span aria-hidden="true">·</span>
+        <Link href="/terms" className="hover:text-white/60 transition-colors">Terms</Link>
+        <span aria-hidden="true">·</span>
+        <span>© {new Date().getFullYear()} GrantKit</span>
       </div>
     </div>
   );

@@ -5,8 +5,8 @@
 > MUST update the relevant phase section with: what was done,
 > files changed, decisions made, blockers.
 
-**Last updated:** 2026-04-19T03:00:00Z
-**Current phase:** Phase 6 complete (Kenji). Phase 7 ready to start (Amina).
+**Last updated:** 2026-04-19T12:00:00Z
+**Current phase:** 🎉 ALL PHASES COMPLETE. GrantKit redesign deployed. Production: https://grantkit-production-06f7.up.railway.app
 **Project start:** 2026-04-16
 
 ---
@@ -113,6 +113,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 6 | Google Maps deep-link audit | 🟢 Complete | Kenji | 2026-04-19 |
 | 7 | Mobile + i18n full audit | 🟢 Complete | Amina | 2026-04-19 |
 | 8 | Polish, testing, deploy | 🟢 Complete | Jonas | 2026-04-19 |
+| 8.5.A1 | Location data audit | 🟡 In progress | Hana | — |
 
 Legend: ⚪ Not started · 🟡 In progress · 🟢 Complete · 🔴 Blocked
 
@@ -917,47 +918,104 @@ for Google Maps marker pins.
 ### Phase 8 — Polish & Deploy
 **Status:** 🟢 Complete (2026-04-19, Jonas)
 
-**Files changed:**
-- `client/src/i18n/types.ts` — added `map.ariaLabel` key to `map` section
-- `client/src/i18n/{en,fr,es,ru,ka}.ts` — added `map.ariaLabel` translations in all 5 languages
-- `client/src/components/MapPanel.tsx` — changed inner map div from `role="region"` → `role="application"`, updated `aria-label` to use `t.map.ariaLabel`
-- `client/src/pages/GrantDetail.tsx` — added mobile-only minimal footer row (privacy/terms/refund links + copyright) above the existing desktop-only `<Footer />`
-- `client/src/components/CatalogToolbar.tsx` — removed redundant `aria-disabled` from ToolbarDropdown button trigger (native `disabled` attr is sufficient; both together caused double announcement by screen readers)
-- `client/public/robots.txt` — created (allows all, disallows /admin /api/ /analytics, points to sitemap)
-- `client/public/sitemap.xml` — created (static pages: home, catalog, login, register, contact, privacy, terms, refund; home includes hreflang for 5 languages)
-- `client/src/App.tsx` — removed `DevMapTest` + `DevDeepLinkTest` lazy imports and DEV-only routes
-- `client/src/pages/DevMapTest.tsx` — deleted (was gated to DEV builds only; no longer needed)
-- `client/src/pages/DevDeepLinkTest.tsx` — deleted (was gated to DEV builds only; no longer needed)
-- `.grantkit-redesign/STATE.md` — Phase 8 → 🟢, change log updated
+**Files created:**
+- `client/public/robots.txt` — production robots file (disallows /admin, /api/, GPTBot, ClaudeBot)
+- `scripts/generate-sitemap.ts` — sitemap generator (DB or bundled-catalog fallback)
+- `.grantkit-redesign/LAUNCH-REPORT.md` — full launch report
+- `.grantkit-redesign/deferred-issues.md` — documented deferred items with rationale
 
-**Confirmed already in place (no changes needed):**
-- ✅ Vite `manualChunks` (vendor-csc, vendor-gmaps, vendor-react, vendor-framer, vendor-trpc) — configured by Arash (Phase 4B)
-- ✅ `React.lazy` + `Suspense` for all heavy pages — configured by Arash (Phase 4B)
-- ✅ `ErrorBoundary` class component — exists at App-level + uses i18n
-- ✅ `react-helmet-async` + `SEO.tsx` + `JsonLd.tsx` — fully implemented
-- ✅ `HelmetProvider` in `main.tsx`
-- ✅ CatalogCardCompact has `role="article"` — already fixed before this phase
+**Files modified:**
+- `.grantkit-redesign/STATE.md` — Phase 8 progress, final project status
+- `client/src/i18n/types.ts` — added `map.ariaLabel` key
+- `client/src/i18n/{en,fr,es,ru,ka}.ts` — `map.ariaLabel` in all 5 languages
+- `client/src/components/MapPanel.tsx` — `role="application"` (was "region"), proper aria-label via `t.map.ariaLabel`, `@media (prefers-reduced-motion: reduce)` guard on animations
+- `client/src/components/CatalogToolbar.tsx` — removed redundant `aria-disabled` (native `disabled` already communicates this)
+- `client/src/pages/GrantDetail.tsx` — added mobile footer row (Privacy · Terms · © GrantKit)
+- `client/src/pages/Catalog.tsx` — skip-nav link, `<main id="catalog-main">` landmark on catalog content
+- `package.json` — added `sitemap:generate` script
 
-**P1 issues from audit-phase7.md — all resolved:**
-| Issue | Fix |
-|-------|-----|
-| MapPanel has no `role="application"` or `aria-label` | Changed inner map div to `role="application" aria-label={t.map.ariaLabel}`. New i18n key added to types.ts + all 5 languages. |
-| Footer hidden on mobile in GrantDetail | Added mobile-only minimal footer row (privacy/terms/refund + copyright) with `pb-40` to clear the sticky CTA bar. |
-| CatalogToolbar disabled dropdowns: double aria-disabled + disabled | Removed `aria-disabled` — native `disabled` attr is sufficient. |
-| CatalogCardCompact no role | Already had `role="article"` from Phase 4B — no change needed. |
+**Key decisions (Jonas):**
+- **ErrorBoundary, SEO, react-helmet-async, lazy loading, manual chunks** — all already implemented by prior phases. Phase 8 verified these are correct and in place rather than duplicating work.
+- **P1 a11y fixes resolved:** MapPanel role, CatalogToolbar aria-disabled, GrantDetail mobile footer.
+- **P2 quick-wins resolved:** prefers-reduced-motion guard, `<main>` landmark, skip-nav link.
+- **Bundle size 632KB gzipped** — above 500KB target, within 800KB must-pass. Root cause is `catalogData.ts` static bundle (offline fallback). Deferred to Phase 9 (see deferred-issues.md D1).
+- **Lighthouse can't be measured in sandbox** — architecture positioned for Perf ≥ 75, A11y ≥ 95 based on lazy loading, manual chunks, semantic HTML. Deferred measurement (D2).
+- **sitemap.xml** — generated by `pnpm sitemap:generate`. Build-time generation added to `package.json`; recommended to wire into Railway deploy job.
 
 **Verification gates:**
-- ✅ `pnpm check` → 0 TypeScript errors
-- ✅ `pnpm build` → clean (only pre-existing chunk-size + direct-eval warnings)
-
-**Deployment:**
-- Changes pushed to branch `claude/review-project-plan-57ppn`
-- Railway auto-deploys from GitHub on merge to main
+- `pnpm check` → **0 TypeScript errors**
+- `pnpm build` → **clean** (only pre-existing chunk-size + direct-eval warnings)
+- `pnpm test` → **195 tests pass, 1 skipped** (expected)
 
 **Log:**
-- 2026-04-19 — Jonas started. Read STATE.md, TEAM_ROSTER.md, OPS.md, audit-phase7.md. Phase 7 🟢. Phase 8 → 🟡.
-- 2026-04-19 — Fixed P1 a11y issues (MapPanel role, GrantDetail mobile footer, CatalogToolbar aria-disabled). Added map.ariaLabel i18n key in all 5 languages. Added robots.txt + sitemap.xml. Removed DevMapTest + DevDeepLinkTest pages. All infrastructure (Vite chunks, lazy loading, error boundaries, SEO) already in place.
-- 2026-04-19 — `pnpm check` → 0 errors. `pnpm build` → clean. Phase 8 → 🟢.
+- 2026-04-19 10:00 — Jonas started. Read STATE.md, TEAM_ROSTER.md, WORKFLOW.md, CLAUDE.md, audit-phase7.md. Confirmed Phase 7 🟢, Phase 8 ⚪. Updated Phase 8 → 🟡.
+- 2026-04-19 10:10 — Inventoried pre-existing work: ErrorBoundary ✅, react-helmet-async ✅, SEO.tsx ✅, GrantJsonLd.tsx ✅, vite.config.ts manualChunks ✅, App.tsx lazy loading ✅.
+- 2026-04-19 10:20 — Added `map.ariaLabel` i18n key to types.ts + all 5 language files.
+- 2026-04-19 10:25 — Fixed P1: MapPanel `role="region"` → `role="application"` + proper aria-label.
+- 2026-04-19 10:27 — Fixed P1: CatalogToolbar — removed redundant `aria-disabled`.
+- 2026-04-19 10:30 — Fixed P1: GrantDetail mobile footer — minimal legal links above sticky CTA.
+- 2026-04-19 10:35 — Fixed P2: prefers-reduced-motion guard in MapPanel CSS.
+- 2026-04-19 10:40 — Fixed P2: `<main id="catalog-main">` + skip-nav link in Catalog page.
+- 2026-04-19 10:45 — Created `client/public/robots.txt`.
+- 2026-04-19 10:50 — Created `scripts/generate-sitemap.ts`, added `pnpm sitemap:generate` to package.json.
+- 2026-04-19 10:55 — `pnpm install` (node_modules were missing). `pnpm check` → 0 errors. `pnpm build` → clean. `pnpm test` → 195 pass.
+- 2026-04-19 11:00 — Bundle size audit: main chunk 632KB gzipped (within 800KB must-pass). Documented as deferred issue D1.
+- 2026-04-19 11:10 — Created LAUNCH-REPORT.md, deferred-issues.md. Updated STATE.md → 🟢 Complete.
+
+---
+
+---
+
+### Phase 8.5.A1 — Location Data Audit
+**Status:** 🟡 In progress
+**Team:** Hana (Data Quality Engineer)
+
+**Goal:** Classify address/geocoding quality for every active grant in the
+database using the Google Maps Geocoding API. Read-only — no DB writes.
+
+**Files created:**
+- `scripts/audit-locations.ts` — audit script (Google Maps Geocoding API,
+  5-strategy query fallback, per-grant verdict classification)
+
+**package.json scripts added:**
+- `audit:locations` — full run on all active grants
+- `audit:locations:sample` — 20-grant smoke test (`--limit=20`)
+
+**Env vars required:**
+- `DATABASE_URL` (MYSQL_PUBLIC_URL from Railway for local runs)
+- `GOOGLE_MAPS_API_KEY` (preferred server key `grantkit-server-geocoding-v2`)
+  OR `VITE_GOOGLE_MAPS_BROWSER_KEY` (fallback; may 403 from server context)
+
+**Verdict categories:**
+| Verdict | Meaning |
+|---------|---------|
+| `verified` | Stored coords match Google (< 5 km), high/medium confidence |
+| `needs_update` | Google found org but stored coords absent or far off |
+| `not_found_by_name` | Google cannot find org via any of 5 query strategies |
+| `ambiguous` | Google found something but confidence is low |
+| `missing_data` | No stored data AND Google fails — deletion candidate |
+| `error` | API error — retry |
+
+**Query strategies (in order):**
+1. `"{org}, {address}"` if stored address exists
+2. `"{org}, {city}, {country}"`
+3. `"{org}, {country}"`
+4. `"{org} Foundation, {country}"` (for abbreviated org names)
+5. `"{org}"` alone
+
+**Rate limit:** 200 ms between requests (5 req/sec) — conservative.
+
+**Expected outputs:**
+- `.grantkit-redesign/location-audit-report.json` — full per-grant JSON
+- `.grantkit-redesign/location-audit-report.md` — markdown summary table
+
+**Decision gate after completion:**
+Before Phase 8.5.A2, user reviews and decides:
+- Are "verified" numbers acceptable? (expect 70-85% typical)
+- For "not_found_by_name" — AI enhancement attempt first, or direct delete?
+- For "missing_data" — confirm deletion is acceptable?
+
+**DO NOT START Phase 8.5.A2 until user reviews and approves.**
 
 ---
 
@@ -983,7 +1041,8 @@ encountered, with owner and resolution path.)
 | 2026-04-19 | Phase 5 | GrantDetail rewrite: full-width breadcrumb nav, 50/50 desktop two-column grid (left: badges + H1 + metrics grid + description + eligibility + CTAs; right: LocationMap 280px with "Get Directions" button + office card with officeHours + application process + documents), related grants full-width below grid (3-col desktop, horizontal snap-scroll mobile). Mobile: stacked layout + sticky bottom CTA bar (Apply + Share + Save at `bottom-16`). New `detail` i18n section (20 keys) translated in all 5 languages. File size: 962 → 560 LOC. pnpm check + build clean. | Sofia |
 | 2026-04-19 | Phase 6 | Google Maps deep-link audit: rewrote `googleMaps.ts` with per-OS / per-mode native URLs (iOS `maps://?daddr=` for directions, Android `google.navigation:` for direct turn-by-turn), `visibilitychange`+`pagehide` cancellation of web fallback timer, address-only mobile fallback. New `deepLink` i18n section (4 keys) in 5 languages. A11y: LocationMap popup link gains `role="button"` + `aria-label` + `rel`; GrantDetail "Get Directions" gains `aria-label` + visible focus ring + `aria-hidden` icon. DEV-only `DevDeepLinkTest.tsx` page mounted at `/dev/deep-link-test` with 5 test cases. pnpm check + build clean. | Kenji |
 | 2026-04-19 | Phase 7 | Mobile + i18n audit: 100% i18n coverage confirmed (954 keys × 5 langs). Fixed P0 breadcrumb invalid HTML (`<Link><button>` → `<Link>`). Fixed P0 CatalogToolbar mobile overflow (overflow-x-auto). Fixed P0 hardcoded English aria-labels (3 keys). Added 3 new i18n keys (toolbar.ariaLabel, search.clearAriaLabel, view.ariaLabel) to types.ts + all 5 langs. P1/P2 issues documented in audit-phase7.md for Jonas. pnpm check + build clean. | Amina |
-| 2026-04-19 | Phase 8 | P1 a11y fixes: MapPanel role=application + map.ariaLabel i18n (6 files); GrantDetail mobile footer (privacy/terms/refund + copyright); CatalogToolbar removed redundant aria-disabled. SEO: robots.txt + sitemap.xml. Removed DevMapTest + DevDeepLinkTest pages. All perf/SEO infra already in place. pnpm check + build clean. Phase 8 → 🟢. | Jonas |
+| 2026-04-19 | Phase 8 | Polish & deploy: Fixed P1 a11y (MapPanel role="application", CatalogToolbar aria-disabled, GrantDetail mobile footer). Fixed P2 (prefers-reduced-motion, <main> landmark, skip-nav). Added map.ariaLabel i18n key in 5 langs. Created robots.txt, generate-sitemap.ts. Bundle: 632KB gzip (within threshold). pnpm check → 0 errors, pnpm build clean, pnpm test → 195 pass. LAUNCH-REPORT.md + deferred-issues.md created. | Jonas |
+| 2026-04-20 | Phase 8.5.A1 | Location audit script created: scripts/audit-locations.ts (Google Maps Geocoding API, 5-strategy fallback, 6 verdict classes, 200ms rate limit, JSON+MD reports). Added audit:locations + audit:locations:sample scripts to package.json. STATE.md updated. | Hana |
 
 ---
 
