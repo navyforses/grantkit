@@ -78,6 +78,10 @@ export default function Catalog() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryValue>(initial.category);
   const [selectedType, setSelectedType] = useState<TypeValue>(initial.type);
   const [searchQuery, setSearchQuery] = useState(initial.search);
+  // Smart Search — AI-powered natural-language query that hits the full
+  // 640-grant DB (server expands multilingual → terms, then
+  // searchGrantsMultiTerm ranks across name/desc/eligibility).
+  const [smartQuery, setSmartQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortValue>(initial.sortBy);
   const [page, setPage] = useState(initial.page);
   const [fundingType, setFundingType] = useState(initial.fundingType);
@@ -164,6 +168,26 @@ export default function Catalog() {
     retry: false,
     placeholderData: (prev: any) => prev,
   });
+
+  // Smart Search — enabled once the user types >=2 chars. Server expands
+  // the query (multilingual → English terms) and ranks full-text matches
+  // across all 640 active grants, so location/category dropdowns are
+  // respected as a pre-filter but the query itself owns the ordering.
+  const smartQueryTrimmed = smartQuery.trim();
+  const smartEnabled = smartQueryTrimmed.length >= 2;
+  const { data: smartData, isLoading: smartLoading } = trpc.catalog.smartSearch.useQuery(
+    {
+      query: smartQueryTrimmed,
+      country: mapCountryCode || undefined,
+      category: selectedCategory !== "all" ? selectedCategory : undefined,
+      limit: 30,
+    },
+    {
+      enabled: smartEnabled,
+      retry: false,
+      staleTime: 60_000,
+    },
+  );
 
   // Phase 4A — toolbar data: regions & per-category counts (aggregated server-side).
   const { data: regionCounts } = trpc.catalog.regions.useQuery(undefined, { retry: false });
@@ -269,8 +293,41 @@ export default function Catalog() {
 
   const { toggleSave } = useSaveEntity();
 
+  // When Smart Search is active, map its results to CatalogItem and use
+  // them as the display + map source, bypassing the regular list query.
+  // Location/category filters still narrow the query server-side.
+  const smartItems: CatalogItem[] | null = useMemo(() => {
+    if (!smartEnabled || !smartData?.results) return null;
+    return smartData.results.map((r) => ({
+      id: r.id,
+      name: r.name,
+      organization: r.organization || "",
+      description: r.description || "",
+      category: r.category,
+      type: "grant" as const,
+      country: r.country,
+      eligibility: r.eligibility || "",
+      website: r.website || "",
+      phone: "",
+      email: "",
+      amount: r.amount || "",
+      status: "",
+      applicationProcess: "",
+      deadline: r.deadline || "",
+      fundingType: r.fundingType || "",
+      targetDiagnosis: "",
+      ageRange: "",
+      geographicScope: "",
+      documentsRequired: "",
+      b2VisaEligible: "",
+      state: r.state || "",
+      city: r.city || "",
+    }));
+  }, [smartEnabled, smartData]);
+
   // Map items to CatalogItem shape (used in Phase 4 for map markers)
   const displayItems: CatalogItem[] = useMemo(() => {
+    if (smartItems) return smartItems;
     if (catalogData?.grants) {
       return catalogData.grants.map((g) => {
         type GrantTranslation = { name?: string; description?: string; eligibility?: string };
@@ -330,6 +387,7 @@ export default function Catalog() {
     }
     return [];
   }, [
+    smartItems,
     catalogData, language, selectedCategory, selectedType,
     targetDiagnosis, fundingType, b2VisaEligible,
     hasDeadline, debouncedSearch, page,
@@ -343,6 +401,7 @@ export default function Catalog() {
   // displayItems is capped at 30/page; mapItems uses the full static catalog so every
   // matching grant appears on the map regardless of which page the user is on.
   const mapItems: CatalogItem[] = useMemo(() => {
+    if (smartItems) return smartItems;
     if (HAS_STATIC_DATA) {
       let filtered: any[] = STATIC_CATALOG;
       if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
@@ -387,6 +446,7 @@ export default function Catalog() {
     // No static data — fall back to current-page items
     return displayItems;
   }, [
+    smartItems,
     selectedCategory, selectedType, mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
     targetDiagnosis, fundingType, b2VisaEligible, hasDeadline, debouncedSearch,
     displayItems,
@@ -502,6 +562,8 @@ export default function Catalog() {
        * use that value to render the actual layout split.
        */}
       <CatalogToolbar
+        smartQuery={smartQuery}
+        onSmartQueryChange={(q) => { setSmartQuery(q); setPage(1); }}
         regionFilter={mapRegionCode || null}
         onRegionChange={(code) => {
           setMapRegionCode((code ?? "") as RegionCode);
