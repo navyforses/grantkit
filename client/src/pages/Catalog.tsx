@@ -547,7 +547,7 @@ export default function Catalog() {
       {/* Skip navigation — keyboard users can jump straight to the grant list/map */}
       <a
         href="#catalog-main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[#1D9E75] focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[color:var(--brand-green)] focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
       >
         Skip to catalog
       </a>
@@ -657,7 +657,7 @@ export default function Catalog() {
             emptyLabel={t.catalog.noResults}
           />
         ) : layoutMode === "list" ? (
-          <div className="flex h-full w-full bg-[#0F1419]">
+          <div className="flex h-full w-full bg-background">
             <CatalogSidebar
               categoryFilter={selectedCategory}
               onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}

@@ -46,11 +46,11 @@ export default function MobileCatalogView({
   };
 
   return (
-    <div className={cn("flex flex-col h-full w-full bg-[#0F1419]", className)}>
+    <div className={cn("flex flex-col h-full w-full bg-background", className)}>
       <div
         role="tablist"
         aria-label={t.mobileCatalog.ariaLabel}
-        className="flex border-b border-white/[0.06] shrink-0"
+        className="flex border-b border-border shrink-0"
       >
         <TabButton
           active={tab === "list"}
@@ -101,10 +101,10 @@ function TabButton({ active, onClick, icon, label }: TabButtonProps) {
       className={cn(
         "flex-1 h-11 inline-flex items-center justify-center gap-1.5",
         "text-[13px] font-medium transition-colors",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1D9E75]/60",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--brand-green)]/60",
         active
-          ? "text-[#5DCAA5] border-b-2 border-[#1D9E75]"
-          : "text-white/60 border-b-2 border-transparent hover:text-white/80",
+          ? "text-[color:var(--brand-green)] border-b-2 border-[var(--brand-green)]"
+          : "text-muted-foreground border-b-2 border-transparent hover:text-foreground/90",
       )}
     >
       {icon}

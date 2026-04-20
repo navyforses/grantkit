@@ -74,12 +74,12 @@ function CatalogCardCompactImpl({
       onMouseLeave={handleLeave}
       className={cn(
         "group relative w-full rounded-lg cursor-pointer",
-        "bg-[#12181D] border-l-4 px-3 py-2.5",
-        "border border-white/[0.06] transition-all duration-150",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
-        "hover:bg-white/[0.02] hover:border-[#1D9E75]/30",
+        "bg-card border-l-4 px-3 py-2.5",
+        "border border-border transition-all duration-150",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-green)]/60",
+        "hover:bg-muted/30 hover:border-[var(--brand-green)]/30",
         highlighted &&
-          "border-[#1D9E75]/60 bg-white/[0.03] shadow-[0_0_0_1px_rgba(29,158,117,0.35)]",
+          "border-[var(--brand-green)]/60 bg-muted/40 shadow-[0_0_0_1px_rgba(29,158,117,0.35)]",
         borderLeft,
       )}
       style={{ height: 92 }}
@@ -88,13 +88,13 @@ function CatalogCardCompactImpl({
       <span
         className={cn(
           "absolute top-2.5 right-3 inline-flex items-center gap-1 text-[10px] font-medium tabular-nums",
-          isOpen ? "text-[#5DCAA5]" : "text-white/40",
+          isOpen ? "text-[color:var(--brand-green)]" : "text-muted-foreground/70",
         )}
       >
         <span
           className={cn(
             "w-1.5 h-1.5 rounded-full",
-            isOpen ? "bg-[#1D9E75]" : "bg-white/30",
+            isOpen ? "bg-[color:var(--brand-green)]" : "bg-white/30",
           )}
           aria-hidden="true"
         />
@@ -103,25 +103,25 @@ function CatalogCardCompactImpl({
 
       {/* Title */}
       <div className="pr-16">
-        <h3 className="text-[13px] font-medium text-white/90 leading-tight line-clamp-1 group-hover:text-[#5DCAA5] transition-colors">
+        <h3 className="text-[13px] font-medium text-foreground leading-tight line-clamp-1 group-hover:text-[color:var(--brand-green)] transition-colors">
           {item.name}
         </h3>
         {item.organization && item.organization !== item.name && (
-          <p className="text-[11px] text-white/50 mt-0.5 line-clamp-1">
+          <p className="text-[11px] text-muted-foreground/80 mt-0.5 line-clamp-1">
             {item.organization}
           </p>
         )}
       </div>
 
       {/* Meta row */}
-      <div className="mt-1.5 flex items-center gap-3 text-[11px] text-white/60">
+      <div className="mt-1.5 flex items-center gap-3 text-[11px] text-muted-foreground">
         <span className="inline-flex items-center gap-1">
           <span aria-hidden="true">{countryFlag}</span>
-          <MapPin className="w-3 h-3 text-white/30" aria-hidden="true" />
+          <MapPin className="w-3 h-3 text-muted-foreground/50" aria-hidden="true" />
           <span className="truncate max-w-[140px]">{location}</span>
         </span>
         {item.amount && item.amount !== "Varies" && item.amount !== "" && (
-          <span className="text-[#5DCAA5] font-medium truncate max-w-[160px]">
+          <span className="text-[color:var(--brand-green)] font-medium truncate max-w-[160px]">
             {item.amount}
           </span>
         )}

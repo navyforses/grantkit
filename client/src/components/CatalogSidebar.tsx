@@ -57,14 +57,14 @@ export default function CatalogSidebar({
     <aside
       aria-label={t.toolbar.category.label}
       className={cn(
-        "w-[240px] shrink-0 h-full overflow-y-auto border-r border-white/[0.06] bg-[#0F1419]",
+        "w-[240px] shrink-0 h-full overflow-y-auto border-r border-border bg-background",
         "scrollbar-thin",
         className,
       )}
     >
       <div className="flex flex-col gap-6 p-4">
         <section>
-          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white/40">
+          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
             {t.toolbar.category.label}
           </h3>
           <ul className="flex flex-col gap-0.5">
@@ -77,10 +77,10 @@ export default function CatalogSidebar({
                     onClick={() => onCategoryChange(c.id as CategoryValue)}
                     className={cn(
                       "group flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-[13px] transition-colors",
-                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
+                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-green)]/60",
                       isActive
-                        ? "bg-[#1D9E75]/15 text-[#5DCAA5] font-medium"
-                        : "text-white/70 hover:bg-white/[0.04] hover:text-white/90",
+                        ? "bg-[color:var(--brand-green)]/15 text-[color:var(--brand-green)] font-medium"
+                        : "text-foreground/80 hover:bg-muted/60 hover:text-foreground",
                     )}
                   >
                     {c.icon && (
@@ -92,7 +92,7 @@ export default function CatalogSidebar({
                     <span
                       className={cn(
                         "text-[11px] tabular-nums",
-                        isActive ? "text-[#5DCAA5]" : "text-white/40",
+                        isActive ? "text-[color:var(--brand-green)]" : "text-muted-foreground/70",
                       )}
                     >
                       {c.count}
@@ -105,7 +105,7 @@ export default function CatalogSidebar({
         </section>
 
         <section>
-          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white/40">
+          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
             {t.filters.type}
           </h3>
           <div className="flex flex-wrap gap-1.5">
@@ -118,10 +118,10 @@ export default function CatalogSidebar({
                   onClick={() => onTypeChange(opt.value)}
                   className={cn(
                     "inline-flex items-center rounded-full border px-3 py-1 text-[12px] transition-colors",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
+                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-green)]/60",
                     isActive
-                      ? "bg-[#1D9E75]/15 text-[#5DCAA5] border-[#1D9E75]/30 font-medium"
-                      : "bg-transparent text-white/70 border-white/[0.08] hover:bg-white/[0.04] hover:text-white/90",
+                      ? "bg-[color:var(--brand-green)]/15 text-[color:var(--brand-green)] border-[var(--brand-green)]/30 font-medium"
+                      : "bg-transparent text-foreground/80 border-border hover:bg-muted/60 hover:text-foreground",
                   )}
                 >
                   {opt.label}

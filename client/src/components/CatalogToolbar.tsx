@@ -127,7 +127,7 @@ export default function CatalogToolbar({
     <div
       role="toolbar"
       aria-label={t.toolbar.ariaLabel}
-      className="h-12 px-2 sm:px-6 flex items-center gap-2 sm:gap-3 bg-[#0F1419] border-b border-white/[0.06] overflow-x-auto scrollbar-hide"
+      className="h-12 px-2 sm:px-6 flex items-center gap-2 sm:gap-3 bg-background border-b border-border overflow-x-auto scrollbar-hide"
     >
       {/* Region dropdown — top of the location cascade. */}
       <ToolbarDropdown
@@ -151,7 +151,7 @@ export default function CatalogToolbar({
             {r.flag ? <span className="mr-2">{r.flag}</span> : null}
             <span>{r.label}</span>
             {typeof r.count === "number" && (
-              <span className="ml-auto text-xs text-white/40">{r.count}</span>
+              <span className="ml-auto text-xs text-muted-foreground/70">{r.count}</span>
             )}
           </DropdownMenuItem>
         ))}
@@ -178,7 +178,7 @@ export default function CatalogToolbar({
           >
             <span>{c.label}</span>
             {typeof c.count === "number" && (
-              <span className="ml-auto text-xs text-white/40">{c.count}</span>
+              <span className="ml-auto text-xs text-muted-foreground/70">{c.count}</span>
             )}
           </DropdownMenuItem>
         ))}
@@ -208,7 +208,7 @@ export default function CatalogToolbar({
           >
             <span>{s.label}</span>
             {typeof s.count === "number" && (
-              <span className="ml-auto text-xs text-white/40">{s.count}</span>
+              <span className="ml-auto text-xs text-muted-foreground/70">{s.count}</span>
             )}
           </DropdownMenuItem>
         ))}
@@ -237,7 +237,7 @@ export default function CatalogToolbar({
           >
             <span>{c.label}</span>
             {typeof c.count === "number" && (
-              <span className="ml-auto text-xs text-white/40">{c.count}</span>
+              <span className="ml-auto text-xs text-muted-foreground/70">{c.count}</span>
             )}
           </DropdownMenuItem>
         ))}
@@ -246,7 +246,7 @@ export default function CatalogToolbar({
       {/* Smart Search — AI-powered search across all grants in the DB. */}
       <label className="relative flex-shrink-0 w-44 sm:w-64 md:w-80">
         <Sparkles
-          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#5DCAA5]"
+          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[color:var(--brand-green)]"
           aria-hidden="true"
         />
         <input
@@ -257,8 +257,8 @@ export default function CatalogToolbar({
           aria-label={t.smartSearch.tab}
           className={cn(
             "w-full h-8 pl-8 pr-7 rounded-md text-[13px]",
-            "bg-[#1D9E75]/[0.06] border border-[#1D9E75]/25 text-white/90 placeholder:text-white/40",
-            "focus:outline-none focus:border-[#1D9E75] focus:ring-2 focus:ring-[#1D9E75]/30",
+            "bg-[color:var(--brand-green)]/[0.06] border border-[var(--brand-green)]/25 text-foreground placeholder:text-muted-foreground/70",
+            "focus:outline-none focus:border-[var(--brand-green)] focus:ring-2 focus:ring-[var(--brand-green)]/30",
             "transition-colors",
           )}
         />
@@ -267,7 +267,7 @@ export default function CatalogToolbar({
             type="button"
             onClick={() => setLocalSmart("")}
             aria-label={t.filters.clearAll}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/70 hover:text-foreground/90"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -281,7 +281,7 @@ export default function CatalogToolbar({
       <div
         role="tablist"
         aria-label={t.toolbar.view.ariaLabel}
-        className="inline-flex items-center rounded-md bg-white/[0.04] border border-white/[0.08] p-0.5 gap-0.5 flex-shrink-0"
+        className="inline-flex items-center rounded-md bg-muted/60 border border-border p-0.5 gap-0.5 flex-shrink-0"
       >
         <ViewToggleButton
           active={viewMode === "split"}
@@ -337,18 +337,18 @@ function ToolbarDropdown({
           className={cn(
             "h-8 inline-flex items-center gap-1.5 px-3 rounded-md text-[13px] whitespace-nowrap flex-shrink-0",
             "border transition-colors",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-green)]/60",
             disabled
-              ? "bg-transparent text-white/25 border-white/[0.05] cursor-not-allowed"
+              ? "bg-transparent text-muted-foreground/40 border-border/60 cursor-not-allowed"
               : active
-                ? "bg-[#1D9E75]/15 text-[#5DCAA5] border-[#1D9E75]/30 font-medium"
-                : "bg-transparent text-[#9CA3AF] border-white/[0.08] hover:bg-white/[0.04] hover:text-white/80",
+                ? "bg-[color:var(--brand-green)]/15 text-[color:var(--brand-green)] border-[var(--brand-green)]/30 font-medium"
+                : "bg-transparent text-[#9CA3AF] border-border hover:bg-muted/60 hover:text-foreground/90",
           )}
         >
-          <span className={cn(disabled ? "text-white/20" : "text-white/40")}>{label}:</span>
+          <span className={cn(disabled ? "text-muted-foreground/30" : "text-muted-foreground/70")}>{label}:</span>
           <span
             className={cn(
-              disabled ? "text-white/30" : active ? "text-[#5DCAA5]" : "text-white/80",
+              disabled ? "text-muted-foreground/50" : active ? "text-[color:var(--brand-green)]" : "text-foreground/90",
             )}
           >
             {value}
@@ -362,7 +362,7 @@ function ToolbarDropdown({
       <DropdownMenuContent
         align="start"
         sideOffset={6}
-        className="min-w-[200px] max-h-[60vh] overflow-y-auto bg-[#0F1419] border border-white/[0.08] text-white/80"
+        className="min-w-[200px] max-h-[60vh] overflow-y-auto bg-background border border-border text-foreground/90"
       >
         {children}
       </DropdownMenuContent>
@@ -386,10 +386,10 @@ function ViewToggleButton({ active, onClick, label, icon }: ViewToggleButtonProp
       onClick={onClick}
       className={cn(
         "inline-flex items-center gap-1 h-7 px-2.5 rounded text-[12px] font-medium transition-colors",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-green)]/60",
         active
-          ? "bg-[#1D9E75]/15 text-[#5DCAA5]"
-          : "text-[#9CA3AF] hover:text-white/80",
+          ? "bg-[color:var(--brand-green)]/15 text-[color:var(--brand-green)]"
+          : "text-[#9CA3AF] hover:text-foreground/90",
       )}
     >
       {icon}
