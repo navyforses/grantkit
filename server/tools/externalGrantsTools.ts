@@ -13,7 +13,7 @@
  */
 
 import type Anthropic from "@anthropic-ai/sdk";
-import { searchExternalGrants } from "../externalGrants";
+import { searchExternalGrants, searchExternalFunders } from "../externalGrants";
 
 // Keep responses compact; the LLM only needs enough to recommend 2-3 options.
 const DEFAULT_LIMIT = 5;
@@ -89,6 +89,95 @@ export async function executeSearchSimilarGrants(params: SimilarGrantsParams) {
         : r.summary,
       applyUrl: r.applyUrl,
       matchReasons: r.matchReasons,
+    })),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// search_funders — US foundations index
+// ---------------------------------------------------------------------------
+
+const FUNDERS_DEFAULT_LIMIT = 5;
+const FUNDERS_MAX_LIMIT = 10;
+const MISSION_MAX_CHARS = 400;
+
+export const SEARCH_FUNDERS_TOOL: Anthropic.Tool = {
+  name: "search_funders",
+  description:
+    "Search the GrantedAI funders index (133 000+ US foundations) for " +
+    "organisations whose mission matches the user's cause. Use this when " +
+    "the user asks 'which foundations fund X?', 'who else supports this " +
+    "cause?', or names a condition / region and wants funders rather than " +
+    "individual grant programs. For actual open grant programs, prefer " +
+    "search_similar_grants.",
+  input_schema: {
+    type: "object",
+    properties: {
+      query: {
+        type: "string",
+        description:
+          "Free-text query describing the cause, population, or mission " +
+          "area (e.g. 'pediatric disability', 'immigrant legal aid').",
+      },
+      state: {
+        type: "string",
+        description:
+          "Optional US state abbreviation (e.g. 'CA') to narrow results " +
+          "to foundations headquartered there.",
+      },
+      limit: {
+        type: "number",
+        description: `Max results to return (default ${FUNDERS_DEFAULT_LIMIT}, max ${FUNDERS_MAX_LIMIT}).`,
+      },
+    },
+    required: ["query"],
+  },
+};
+
+interface FundersParams {
+  query?: unknown;
+  state?: unknown;
+  limit?: unknown;
+}
+
+function formatUsd(n: number): string {
+  if (!Number.isFinite(n) || n <= 0) return "";
+  if (n >= 1_000_000_000) return `$${(n / 1_000_000_000).toFixed(1)}B`;
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
+  return `$${n}`;
+}
+
+export async function executeSearchFunders(params: FundersParams) {
+  const query = typeof params.query === "string" ? params.query.trim() : "";
+  if (!query) {
+    return { error: "query is required" };
+  }
+
+  const state = typeof params.state === "string" && params.state.trim()
+    ? params.state.trim()
+    : undefined;
+
+  const rawLimit = Number(params.limit ?? FUNDERS_DEFAULT_LIMIT);
+  const limit = Math.max(
+    1,
+    Math.min(Number.isFinite(rawLimit) ? rawLimit : FUNDERS_DEFAULT_LIMIT, FUNDERS_MAX_LIMIT),
+  );
+
+  const results = await searchExternalFunders({ query, state, limit });
+
+  return {
+    query,
+    count: results.length,
+    results: results.map((f) => ({
+      name: f.name,
+      state: f.state,
+      totalAssets: formatUsd(f.totalAssets),
+      annualIncome: formatUsd(f.annualIncome),
+      nteeCategory: f.nteeCategory,
+      mission: f.mission.length > MISSION_MAX_CHARS
+        ? f.mission.slice(0, MISSION_MAX_CHARS) + "…"
+        : f.mission,
     })),
   };
 }
