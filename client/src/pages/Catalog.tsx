@@ -20,6 +20,7 @@ import CatalogSidebar from "@/components/CatalogSidebar";
 import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
 import { useIsMobile } from "@/hooks/useMobile";
 import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, type SortValue, REGIONS, CATEGORIES, EU_MEMBER_CODES } from "@/lib/constants";
+import { Country, City } from "country-state-city";
 import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -253,17 +254,35 @@ export default function Catalog() {
       .sort((a, b) => b.count - a.count);
   }, [categoryCounts, t.admin]);
 
-  // Country dropdown options. Try to localise via the existing `t.country`
-  // table; for ISO codes we don't translate (currently 16 of 29) fall back
-  // to the raw code so the user still sees something meaningful.
+  // Country dropdown options. When region === "EU" we intentionally show
+  // all 27 EU member states (even those with zero active grants) so the
+  // user can filter / flyTo any of them. Non-EU regions stay DB-driven.
+  // Labels come from t.country first, then country-state-city's name,
+  // then the raw ISO code.
   const availableCountries = useMemo(() => {
     const countryNames = t.country as Record<string, string | undefined>;
+    const dbCounts = new Map<string, number>();
+    (countryRows ?? []).forEach((r) => dbCounts.set(r.country, r.count));
+
+    const labelFor = (code: string): string => {
+      if (countryNames[code]) return countryNames[code] as string;
+      return Country.getCountryByCode(code)?.name ?? code;
+    };
+
+    if (mapRegionCode === "EU") {
+      return EU_MEMBER_CODES.map((code) => ({
+        code,
+        label: labelFor(code),
+        count: dbCounts.get(code) ?? 0,
+      })).sort((a, b) => a.label.localeCompare(b.label));
+    }
+
     return (countryRows ?? []).map((r) => ({
       code: r.country,
-      label: countryNames[r.country] ?? r.country,
+      label: labelFor(r.country),
       count: r.count,
     }));
-  }, [countryRows, t.country]);
+  }, [countryRows, t.country, mapRegionCode]);
 
   // State dropdown options — `state` strings come straight from the DB
   // (e.g. "California"). Pseudo-locations like "Nationwide"/"International"
@@ -276,14 +295,32 @@ export default function Catalog() {
     }));
   }, [stateRows]);
 
-  // City dropdown options — populated when a state is selected.
+  // City dropdown options.
+  //   • US: DB-driven, keyed on the selected state (existing flow).
+  //   • Non-US / EU: fall back to country-state-city so the user can pick
+  //     a city in a country with no DB grants yet. Capped at 50 alphabetic
+  //     results; the map's Google Maps Geocoder resolves the flyTo target.
   const availableCities = useMemo(() => {
-    return (cityRows ?? []).map((r) => ({
-      value: r.city,
-      label: r.city,
-      count: r.count,
-    }));
-  }, [cityRows]);
+    if (mapStateCode && (cityRows?.length ?? 0) > 0) {
+      return cityRows!.map((r) => ({ value: r.city, label: r.city, count: r.count }));
+    }
+    if (mapCountryCode && mapCountryCode !== "US") {
+      const all = City.getCitiesOfCountry(mapCountryCode) ?? [];
+      // De-duplicate by name (csc sometimes has repeated entries across regions),
+      // then sort alphabetically and cap to keep the dropdown usable.
+      const seen = new Set<string>();
+      const unique: { value: string; label: string; count: number }[] = [];
+      for (const c of all) {
+        if (!c.name || seen.has(c.name)) continue;
+        seen.add(c.name);
+        unique.push({ value: c.name, label: c.name, count: 0 });
+      }
+      return unique
+        .sort((a, b) => a.label.localeCompare(b.label))
+        .slice(0, 50);
+    }
+    return [];
+  }, [cityRows, mapStateCode, mapCountryCode]);
 
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
     enabled: isAuthenticated,
