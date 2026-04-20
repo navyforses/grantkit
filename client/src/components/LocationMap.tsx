@@ -1,5 +1,5 @@
 /*
- * LocationMap — single-pin Google Map for the GrantDetail page.
+ * LocationMap — single-pin Google Map for the EntityDetail page.
  *
  * Design (matches Image 3 in the redesign brief):
  *   - Dark vector map, single teal pin with pulsing ring.

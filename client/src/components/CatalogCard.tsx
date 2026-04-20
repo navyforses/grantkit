@@ -33,7 +33,9 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
     const translatedCategory = tCategory(legacyItem.category);
     const translatedCountry = tCountry(legacyItem.country);
     const countryFlag = legacyItem.country === "US" ? "🇺🇸" : "🌐";
-    const typeLabel = legacyItem.type === "grant" ? t.catalog.typeGrant : t.catalog.typeResource;
+    const isResource = legacyItem.type === "resource";
+    const typeLabel = isResource ? t.catalog.typeResource : t.catalog.typeGrant;
+    const saveLabel = isResource ? t.resourceDetail.saveThisOne : t.grantDetail.saveThisGrant;
     const primaryLink = legacyItem.website || "";
 
     return (
@@ -50,7 +52,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
             className={`absolute top-3 right-3 z-10 p-1.5 rounded-md transition-all ${
               isSaved ? "text-yellow-500 hover:bg-yellow-500/10" : "text-muted-foreground/40 hover:text-muted-foreground hover:bg-secondary opacity-0 group-hover:opacity-100"
             }`}
-            title={isSaved ? t.grantDetail.removeFromSaved : t.grantDetail.saveThisGrant}
+            title={isSaved ? t.grantDetail.removeFromSaved : saveLabel}
           >
             {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
           </button>

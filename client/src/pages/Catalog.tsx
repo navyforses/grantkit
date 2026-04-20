@@ -28,6 +28,7 @@ import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
 import MapPanel from "@/components/MapPanel";
 import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
+import { useSaveEntity } from "@/hooks/useSaveEntity";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
 const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
 import { useGoogleMapFlyTo } from "@/hooks/useGoogleMapFlyTo";
@@ -290,25 +291,7 @@ export default function Catalog() {
   });
   const savedSet = useMemo(() => new Set(savedData?.grantIds || []), [savedData]);
 
-  const utils = trpc.useUtils();
-  const toggleSave = trpc.grants.toggleSave.useMutation({
-    onMutate: async ({ grantId }) => {
-      await utils.grants.savedList.cancel();
-      const prev = utils.grants.savedList.getData();
-      utils.grants.savedList.setData(undefined, (old) => {
-        if (!old) return { grantIds: [grantId] };
-        const ids = old.grantIds.includes(grantId)
-          ? old.grantIds.filter((id) => id !== grantId)
-          : [...old.grantIds, grantId];
-        return { grantIds: ids };
-      });
-      return { prev };
-    },
-    onError: (_err: unknown, _vars: unknown, ctx: { prev?: { grantIds: string[] } } | undefined) => {
-      if (ctx?.prev) utils.grants.savedList.setData(undefined, ctx.prev);
-    },
-    onSettled: () => utils.grants.savedList.invalidate(),
-  });
+  const { toggleSave } = useSaveEntity();
 
   // When Smart Search is active, map its results to CatalogItem and use
   // them as the display + map source, bypassing the regular list query.
@@ -545,12 +528,10 @@ export default function Catalog() {
       null,
     [displayItems, mapItems, selectedItemId]
   );
-  const toggleSaveMutateRef = useRef(toggleSave.mutate);
-  toggleSaveMutateRef.current = toggleSave.mutate;
   const handleToggleSave = useCallback(() => {
     if (!selectedItemId || !isAuthenticated) return;
-    toggleSaveMutateRef.current({ grantId: selectedItemId });
-  }, [selectedItemId, isAuthenticated]);
+    toggleSave(selectedItemId);
+  }, [selectedItemId, isAuthenticated, toggleSave]);
   const handleClosePanel = useCallback(() => setSelectedItemId(null), []);
 
   // ── Render ──────────────────────────────────────────────────────────────────
