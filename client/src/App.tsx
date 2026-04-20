@@ -19,7 +19,7 @@ import { ONBOARDING_STATE_STORAGE_KEY } from "@/components/onboarding/Onboarding
 // and country-state-city (8.5 MB) are NOT included in the initial JS bundle.
 // They only download when the user navigates to the relevant route.
 const Catalog        = lazy(() => import("./pages/Catalog"));
-const GrantDetail    = lazy(() => import("./pages/GrantDetail"));
+const EntityDetail   = lazy(() => import("./pages/EntityDetail"));
 const Profile     = lazy(() => import("./pages/Profile"));
 const Dashboard   = lazy(() => import("./pages/Dashboard"));
 const Onboarding  = lazy(() => import("./pages/Onboarding"));
@@ -54,7 +54,7 @@ function Router() {
         <Route path="/reset-password" component={ResetPassword} />
         {/* Everything else is lazy */}
         <Route path="/catalog" component={Catalog} />
-        <Route path="/grant/:id" component={GrantDetail} />
+        <Route path="/grant/:id" component={EntityDetail} />
         <Route path="/profile" component={Profile} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/onboarding" component={Onboarding} />

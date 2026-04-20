@@ -1,14 +1,18 @@
 /*
- * GrantDetail — Phase 5 redesign (Sofia, Senior UX Engineer, ex-NYT)
+ * EntityDetail — unified detail page for grants and resources.
+ * (Previously GrantDetail.)
  *
  * Desktop (lg+): full-width breadcrumb + 50/50 two-column layout.
  *   Left  — badges, title, org, metrics grid, description, eligibility, CTAs.
  *   Right — LocationMap (280 px), office/contact card, application process,
  *           required documents.
- *   Below — related grants, full width, 3-col grid.
+ *   Below — related entities, full width, 3-col grid.
  *
  * Mobile (<lg): single-column stacked; sticky bottom CTA bar for Apply + Save
  *   (positioned bottom-16 to clear MobileBottomNav).
+ *
+ * Routed at /grant/:id. Renders differently based on item.type
+ * ("grant" vs "resource") — see conditional blocks below.
  */
 
 import { useMemo } from "react";
@@ -54,7 +58,7 @@ import { catalogItems } from "@/data/catalogData";
 import { useSaveEntity } from "@/hooks/useSaveEntity";
 import { pickLocalizedFields } from "@/lib/localizeEntity";
 
-export default function GrantDetail() {
+export default function EntityDetail() {
   const params = useParams<{ id: string }>();
   const [, _navigate] = useLocation();
   void _navigate;
