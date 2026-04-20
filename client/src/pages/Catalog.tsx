@@ -27,8 +27,6 @@ import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
 import MapPanel from "@/components/MapPanel";
 import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
-import { useResources, useResourcesRealtime, useCategories, useCountries } from "@/hooks/useResources";
-import type { ResourceType } from "@/types/resources";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
 const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"));
 import { useGoogleMapFlyTo } from "@/hooks/useGoogleMapFlyTo";
@@ -129,65 +127,6 @@ export default function Catalog() {
 
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
   const staticFilteredRef = useRef(STATIC_CATALOG.length);
-
-  // ── Supabase resource type switcher ─────────────────────────────────────────
-  // undefined means default grant view (existing data); SOCIAL/MEDICAL → Supabase
-  const [supabaseResourceType, setSupabaseResourceType] = useState<ResourceType | undefined>(undefined);
-  const isSupabaseView = supabaseResourceType === "SOCIAL" || supabaseResourceType === "MEDICAL";
-
-  const {
-    data: supabaseResources,
-    loading: supabaseLoading,
-    filters: supabaseFilters,
-    dispatch: supabaseDispatch,
-    refresh: supabaseRefresh,
-  } = useResources(isSupabaseView ? supabaseResourceType : undefined);
-
-  // Supabase categories/countries for the filter panel
-  const { data: supabaseCategories } = useCategories(isSupabaseView ? supabaseResourceType : undefined);
-  const { data: supabaseCountries } = useCountries();
-
-  // Phase 9 — live updates: when a resource is inserted/updated/deleted in
-  // Supabase while the Catalog page is open, silently re-fetch the current page.
-  useResourcesRealtime({
-    onInsert: supabaseRefresh,
-    onUpdate: supabaseRefresh,
-    onDelete: supabaseRefresh,
-  });
-
-  // Convert Supabase ResourceFull → CatalogItem-compatible shape for map markers
-  const supabaseMapItems: CatalogItem[] = useMemo(() => {
-    if (!isSupabaseView) return [];
-    return supabaseResources.map((r): CatalogItem => ({
-      id: r.id,
-      name: r.title,
-      organization: r.source_name ?? "",
-      description: r.description,
-      category: r.categories?.[0]?.id ?? "other",
-      type: "resource" as const,
-      country: r.locations?.[0]?.country_code ?? "",
-      eligibility: r.eligibility_details ?? "",
-      website: r.source_url ?? "",
-      phone: "",
-      email: "",
-      amount: r.amount_min != null ? `${r.amount_min}` : "",
-      status: r.status === "OPEN" ? "Open" : r.status,
-      applicationProcess: "",
-      deadline: r.deadline ?? "",
-      fundingType: "",
-      targetDiagnosis: "",
-      ageRange: "",
-      geographicScope: "",
-      documentsRequired: "",
-      b2VisaEligible: "",
-      state: r.locations?.[0]?.region_name ?? "",
-      city: "",
-      latitude: r.latitude,
-      longitude: r.longitude,
-      resourceSlug: r.slug,
-      resourceType: r.resource_type,
-    }));
-  }, [isSupabaseView, supabaseResources]);
 
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -519,8 +458,7 @@ export default function Catalog() {
 
   // Phase 5 — the currently-selected grant that powers GrantDetailPanel.
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  // When in Supabase view (SOCIAL/MEDICAL), show Supabase geo-tagged items on the map
-  const activeMapItems = isSupabaseView ? supabaseMapItems : mapItems;
+  const activeMapItems = mapItems;
 
   // MapPanel accepts items with direct lat/lng only. Items without coordinates
   // are simply skipped, matching the old useMapMarkers fallback behaviour for
@@ -542,9 +480,8 @@ export default function Catalog() {
     () =>
       displayItems.find((g) => g.id === selectedItemId) ??
       mapItems.find((g) => g.id === selectedItemId) ??
-      supabaseMapItems.find((g) => g.id === selectedItemId) ??
       null,
-    [displayItems, mapItems, supabaseMapItems, selectedItemId]
+    [displayItems, mapItems, selectedItemId]
   );
   const toggleSaveMutateRef = useRef(toggleSave.mutate);
   toggleSaveMutateRef.current = toggleSave.mutate;
@@ -669,7 +606,7 @@ export default function Catalog() {
        * Rendered on both mobile and desktop.
        */}
       <MapStatsBar
-        totalCount={isSupabaseView ? supabaseResources.length : mapItems.length}
+        totalCount={mapItems.length}
         countryCount={countryCount}
         filters={{
           searchQuery,
@@ -744,30 +681,9 @@ export default function Catalog() {
                 onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
                 selectedType={selectedType}
                 onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
-                totalItems={isSupabaseView ? supabaseResources.length : totalItems}
+                totalItems={totalItems}
                 onClearAll={resetFilters}
-                supabaseResourceType={supabaseResourceType}
-                supabaseCategories={supabaseCategories}
-                supabaseCountries={supabaseCountries}
-                selectedSupabaseCategories={supabaseFilters.categories}
-                onSupabaseCategoriesChange={(ids) => supabaseDispatch({ type: 'SET_CATEGORIES', payload: ids })}
-                selectedSupabaseCountries={supabaseFilters.countries}
-                onSupabaseCountriesChange={(codes) => supabaseDispatch({ type: 'SET_COUNTRIES', payload: codes })}
-                currentSort={supabaseFilters.sort}
-                onSortChange={(sort) => supabaseDispatch({ type: 'SET_SORT', payload: sort })}
                 searchQuery={searchQuery}
-                amountMin={supabaseFilters.amount_min}
-                amountMax={supabaseFilters.amount_max}
-                onAmountMinChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MIN', payload: v })}
-                onAmountMaxChange={(v) => supabaseDispatch({ type: 'SET_AMOUNT_MAX', payload: v })}
-                selectedEligibility={supabaseFilters.eligibility}
-                onEligibilityChange={(v) => supabaseDispatch({ type: 'SET_ELIGIBILITY', payload: v as import("@/types/resources").Eligibility | undefined })}
-                selectedTargetGroups={supabaseFilters.target_groups}
-                onTargetGroupsChange={(groups) => supabaseDispatch({ type: 'SET_TARGET_GROUPS', payload: groups })}
-                selectedClinicalPhase={supabaseFilters.clinical_phase}
-                onClinicalPhaseChange={(phase) => supabaseDispatch({ type: 'SET_CLINICAL_PHASE', payload: phase })}
-                selectedDiseaseAreas={supabaseFilters.disease_areas}
-                onDiseaseAreasChange={(areas) => supabaseDispatch({ type: 'SET_DISEASE_AREAS', payload: areas })}
               />
             </Suspense>
 

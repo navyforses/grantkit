@@ -4,7 +4,7 @@
  * Desktop: 3-column layout with sidebar
  */
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import {
@@ -21,7 +21,6 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -31,25 +30,8 @@ import { getLoginUrl } from "@/const";
 import { getCategoryStyle, getCategoryBorderColor } from "@/lib/constants";
 import SEO from "@/components/SEO";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { usePersonalizedResources } from "@/hooks/usePersonalizedResources";
 import { PURPOSE_OPTIONS, SUPPORTED_COUNTRIES, type UserProfile, type Purpose, type PurposeDetail, type Need, type NeedDetail } from "@shared/profileTypes";
 
-
-const PURPOSE_LABEL_KEY: Record<Purpose, "purposeEducation" | "purposeMedical" | "purposeBusiness"> = {
-  EDUCATION: "purposeEducation",
-  MEDICAL: "purposeMedical",
-  BUSINESS: "purposeBusiness",
-};
-
-const NEED_LABEL_KEY: Record<Need, "needVisa" | "needHousing" | "needFood" | "needTransport" | "needLegal" | "needLanguage" | "needBanking"> = {
-  VISA: "needVisa",
-  HOUSING: "needHousing",
-  FOOD: "needFood",
-  TRANSPORT: "needTransport",
-  LEGAL: "needLegal",
-  LANGUAGE: "needLanguage",
-  BANKING: "needBanking",
-};
 
 export default function Dashboard() {
   const { user, loading, isAuthenticated } = useAuth();
@@ -91,58 +73,6 @@ export default function Dashboard() {
       profileCompletedAt: profile.profileCompletedAt,
     };
   }, [profile]);
-
-  const { funding, needs: personalizedNeeds, loading: personalizedLoading } = usePersonalizedResources(normalizedProfile);
-  const [selectedPurposeTab, setSelectedPurposeTab] = useState<string>("all");
-  const [selectedNeedTab, setSelectedNeedTab] = useState<string>("all");
-  const filteredFundingItems = useMemo(
-    () => (selectedPurposeTab === "all" ? funding : funding.filter((item) => item.purpose_tags?.includes(selectedPurposeTab))),
-    [funding, selectedPurposeTab]
-  );
-  const filteredNeedItems = useMemo(
-    () => (selectedNeedTab === "all" ? personalizedNeeds : personalizedNeeds.filter((item) => item.need_tags?.includes(selectedNeedTab))),
-    [personalizedNeeds, selectedNeedTab]
-  );
-  const fundingContent = useMemo(() => {
-    if (personalizedLoading) {
-      return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
-    }
-    if (filteredFundingItems.length === 0) {
-      return <p className="text-sm text-muted-foreground">{t.profile.noFundingResults}</p>;
-    }
-    return (
-      <div className="space-y-2">
-        {filteredFundingItems.map((item) => (
-          <Link key={item.id} href={`/resources/${item.slug}`}>
-            <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
-              <p className="text-sm font-medium">{item.title}</p>
-              <p className="line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
-    );
-  }, [filteredFundingItems, personalizedLoading, t.profile.noFundingResults]);
-  const needsContent = useMemo(() => {
-    if (personalizedLoading) {
-      return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
-    }
-    if (filteredNeedItems.length === 0) {
-      return <p className="text-sm text-muted-foreground">{t.profile.noNeedsResults}</p>;
-    }
-    return (
-      <div className="space-y-2">
-        {filteredNeedItems.map((item) => (
-          <Link key={item.id} href={`/resources/${item.slug}`}>
-            <div className="cursor-pointer rounded-lg border border-border p-3 hover:bg-secondary/60">
-              <p className="text-sm font-medium">{item.title}</p>
-              <p className="line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
-    );
-  }, [filteredNeedItems, personalizedLoading, t.profile.noNeedsResults]);
 
   const savedItems = useMemo(() => {
     if (!catalogData?.grants || savedGrantIds.length === 0) return [];
@@ -319,32 +249,6 @@ export default function Dashboard() {
                     </div>
                     <Button variant="ghost" size="sm" onClick={() => navigate("/onboarding")}>{t.profile.editProfile}</Button>
                   </div>
-                </div>
-
-                <div className="rounded-xl border border-border bg-card p-4">
-                  <h3 className="mb-3 text-sm font-semibold text-foreground">{t.profile.fundingSection}</h3>
-                  <Tabs value={selectedPurposeTab} onValueChange={setSelectedPurposeTab}>
-                    <TabsList className="h-auto w-full flex-wrap">
-                      <TabsTrigger value="all">{t.filters.all}</TabsTrigger>
-                      {normalizedProfile.purposes.map((purpose) => (
-                        <TabsTrigger key={purpose} value={purpose}>{t.profile[PURPOSE_LABEL_KEY[purpose]]}</TabsTrigger>
-                      ))}
-                    </TabsList>
-                    <TabsContent value={selectedPurposeTab} className="mt-3">{fundingContent}</TabsContent>
-                  </Tabs>
-                </div>
-
-                <div className="rounded-xl border border-border bg-card p-4">
-                  <h3 className="mb-3 text-sm font-semibold text-foreground">{t.profile.needsSection}</h3>
-                  <Tabs value={selectedNeedTab} onValueChange={setSelectedNeedTab}>
-                    <TabsList className="h-auto w-full flex-wrap">
-                      <TabsTrigger value="all">{t.filters.all}</TabsTrigger>
-                      {normalizedProfile.needs.map((need) => (
-                        <TabsTrigger key={need} value={need}>{t.profile[NEED_LABEL_KEY[need]]}</TabsTrigger>
-                      ))}
-                    </TabsList>
-                    <TabsContent value={selectedNeedTab} className="mt-3">{needsContent}</TabsContent>
-                  </Tabs>
                 </div>
               </motion.div>
             )}

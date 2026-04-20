@@ -51,11 +51,9 @@ import {
   Globe,
   ExternalLink,
   PlusCircle,
-  Layers,
 } from "lucide-react";
 
 import type { Translations } from "@/i18n/types";
-import ResourcesTab from "@/components/admin/ResourcesTab";
 
 type AdminT = Translations["admin"];
 
@@ -799,7 +797,7 @@ export default function Admin() {
   const utils = trpc.useUtils();
 
   // Tab state
-  const [activeTab, setActiveTab] = useState<"users" | "grants" | "newsletter" | "external" | "resources">("users");
+  const [activeTab, setActiveTab] = useState<"users" | "grants" | "newsletter" | "external">("users");
 
   // External search state
   const [extQuery, setExtQuery] = useState("");
@@ -1248,7 +1246,6 @@ export default function Admin() {
             { key: "grants" as const, icon: Database, label: a.tabGrants },
             { key: "newsletter" as const, icon: Mail, label: a.tabNewsletter },
             { key: "external" as const, icon: Globe, label: (a as any).tabExternal || "External Search" },
-            { key: "resources" as const, icon: Layers, label: "Resources (Supabase)" },
           ]).map((tab) => (
             <button
               key={tab.key}
@@ -1897,7 +1894,6 @@ export default function Admin() {
         )}
 
         {/* ===== RESOURCES TAB (Supabase) ===== */}
-        {activeTab === "resources" && <ResourcesTab />}
       </div>
 
       {/* Modals */}
