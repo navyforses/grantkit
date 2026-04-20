@@ -22,25 +22,60 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { ENV } from "./_core/env";
 import { GRANT_TOOLS, callTool } from "./toolboxClient";
+import { fetchWebsiteMarkdown } from "./tools/webFetch";
 
 export type ConversationMessage = {
   role: "user" | "assistant";
   content: string;
 };
 
-// Dispatch surface that later phases will extend with fetch_org_website,
-// search_similar_grants, search_funders, etc. For A1 it just delegates
-// to the existing DB tool dispatcher.
 type ToolParams = Record<string, unknown>;
+
+// Phase A2: fetch_org_website — pulls the organisation's own website
+// through Jina Reader and returns clean markdown. Used when the DB
+// context does not contain the specific fact the user is asking about
+// (e.g. "what products does this org sell?", "what are their hours?").
+const FETCH_ORG_WEBSITE_TOOL: Anthropic.Tool = {
+  name: "fetch_org_website",
+  description:
+    "Fetch the organisation's own website and return its content as markdown. " +
+    "Use this when the user asks about the organisation's specific offerings, " +
+    "services, products, policies, opening hours, staff, or any detail that " +
+    "is NOT already in the grant context block and NOT available via the " +
+    "catalog search tools. Prefer the official website URL from the grant " +
+    "context. The response is truncated after ~8000 characters.",
+  input_schema: {
+    type: "object",
+    properties: {
+      url: {
+        type: "string",
+        description:
+          "Absolute http(s) URL of the organisation's website. Usually the " +
+          "`website` field from the grant context block.",
+      },
+    },
+    required: ["url"],
+  },
+};
+
+const GRANT_CHAT_TOOLS: Anthropic.Tool[] = [...GRANT_TOOLS, FETCH_ORG_WEBSITE_TOOL];
 
 async function callGrantChatTool(
   name: string,
   params: ToolParams,
 ): Promise<unknown> {
+  if (name === "fetch_org_website") {
+    const url = typeof params.url === "string" ? params.url : "";
+    const result = await fetchWebsiteMarkdown(url);
+    return {
+      url: result.url,
+      cached: result.cached,
+      truncated: result.truncated,
+      markdown: result.markdown,
+    };
+  }
   return callTool(name, params);
 }
-
-const GRANT_CHAT_TOOLS: Anthropic.Tool[] = [...GRANT_TOOLS];
 
 // ---------------------------------------------------------------------------
 // System prompt — per-grant context
@@ -53,8 +88,14 @@ Your job on this page:
 - Help the user understand eligibility, application process, fit for their situation, and how to get in touch.
 - When the user asks about "similar grants" or "other options", use the catalog tools to find matches (by keyword / country / category) and always include the grant's website URL as a clickable markdown link.
 
+Tool usage order (important):
+1. Answer from the grant context block if the fact is already there.
+2. If the user asks about the organisation's own offerings / services / policies / hours / staff and that info is NOT in the context, call \`fetch_org_website\` with the website URL from the context block. Cite the URL in your answer.
+3. If the user asks about similar grants or alternative funders, use the catalog tools (\`search_grants_by_keyword\`, \`list_grants_by_category\`, \`list_grants_by_country\`, \`get_grant_detail\`).
+4. Never call \`fetch_org_website\` on a URL that is not the organisation's official website.
+
 Rules:
-- Do NOT invent facts about the organisation. If the context block does not contain the answer and no tool returns it, say so honestly: suggest the user visit the official website (give the URL if known) or contact the organisation directly.
+- Do NOT invent facts about the organisation. If neither the context block nor any tool returns the answer, say so honestly and suggest the user visit the official website or contact the organisation directly.
 - When you cite facts from a tool, include the source as a markdown link.
 - Respond in the same language as the user's message. If the user writes in Georgian (ქართული), respond fully in Georgian using ONLY Georgian Unicode characters (U+10A0–U+10FF) and Latin script for proper nouns, URLs, and organisation names. Match Russian, French, Spanish, English the same way.
 - CRITICAL: Never mix scripts. Do NOT use Korean (한국어), Bengali (বাংলা), Japanese (日本語), Chinese (中文), or any other Asian script characters in your responses. Use only the script appropriate for the response language.
