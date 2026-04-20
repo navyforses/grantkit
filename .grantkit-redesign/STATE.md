@@ -113,7 +113,8 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 6 | Google Maps deep-link audit | 🟢 Complete | Kenji | 2026-04-19 |
 | 7 | Mobile + i18n full audit | 🟢 Complete | Amina | 2026-04-19 |
 | 8 | Polish, testing, deploy | 🟢 Complete | Jonas | 2026-04-19 |
-| 8.5.A1 | Location data audit | 🟡 In progress | Hana | — |
+| 8.5.A1 | Location data audit | 🟢 Complete | Hana | 2026-04-20 |
+| 8.5.A2 | AI-assisted location enhancement | 🟡 In progress | Hana | — |
 
 Legend: ⚪ Not started · 🟡 In progress · 🟢 Complete · 🔴 Blocked
 
@@ -967,7 +968,7 @@ for Google Maps marker pins.
 ---
 
 ### Phase 8.5.A1 — Location Data Audit
-**Status:** 🟡 In progress
+**Status:** 🟢 Complete (2026-04-20)
 **Team:** Hana (Data Quality Engineer)
 
 **Goal:** Classify address/geocoding quality for every active grant in the
@@ -1009,13 +1010,61 @@ database using the Google Maps Geocoding API. Read-only — no DB writes.
 - `.grantkit-redesign/location-audit-report.json` — full per-grant JSON
 - `.grantkit-redesign/location-audit-report.md` — markdown summary table
 
-**Decision gate after completion:**
-Before Phase 8.5.A2, user reviews and decides:
-- Are "verified" numbers acceptable? (expect 70-85% typical)
-- For "not_found_by_name" — AI enhancement attempt first, or direct delete?
-- For "missing_data" — confirm deletion is acceptable?
+**Actual audit results (643 active grants):**
+- ✅ verified: 518 (80.6%)
+- 🔄 needs_update: 10 (1.6%)
+- ❓ ambiguous: 98 (15.2%)
+- 📭 missing_data: 17 (2.6%)
+- 🔍 not_found_by_name: 0
+- ⚠️ errors: 0
 
-**DO NOT START Phase 8.5.A2 until user reviews and approves.**
+**Decision gate:** User chose **Option A — AI Enhancement Path** for the 125
+problem grants (needs_update + ambiguous + missing_data). Proceed to 8.5.A2.
+
+---
+
+### Phase 8.5.A2 — AI-Assisted Location Enhancement
+**Status:** 🟡 In progress
+**Team:** Hana (Data Quality Engineer)
+
+**Goal:** Repair the 125 grants flagged by Phase 8.5.A1 (needs_update,
+ambiguous, missing_data) using a two-step pipeline:
+
+1. **`needs_update`** grants — Google already returned a validated hit during
+   the audit. Apply its lat/lng/address directly (no AI call needed).
+2. **`ambiguous` + `missing_data`** grants — ask Claude Haiku to propose 3
+   alternative Places text-search queries based on org name + country, then
+   re-query Places API (New) and accept the first high/medium-confidence
+   non-centroid hit whose country matches the grant's stored country.
+
+**Files created:**
+- `scripts/enhance-locations.ts` — enhancement script (dry-run by default,
+  `--apply` writes DB)
+
+**package.json scripts added:**
+- `enhance:locations:dry` — preview changes, no DB writes
+- `enhance:locations` — apply to DB (passes `--apply`)
+- `enhance:locations:sample` — 10-grant smoke test
+
+**Env vars required:**
+- `DATABASE_URL` (MYSQL_PUBLIC_URL for local runs — also required in dry-run
+  to look up each grant's country for regionCode biasing)
+- `GOOGLE_MAPS_API_KEY` (server key `grantkit-server-geocoding-v2`)
+- `ANTHROPIC_API_KEY` (Claude Haiku — `claude-haiku-4-5-20251001`)
+
+**Validation rules (Places result accepted only if):**
+1. `primaryType` is NOT in CENTROID_TYPES (country/admin/locality/postal_code)
+2. `countryCode` matches the grant's stored 2-letter country code
+
+**DB fields updated on match:** `latitude`, `longitude`, `address`, `geocodedAt`
+
+**Expected outputs:**
+- `.grantkit-redesign/location-enhance-report.json` — per-grant before/after
+- `.grantkit-redesign/location-enhance-report.md` — summary + projection
+
+**Expected cost & runtime:** ~$1 (Claude Haiku + Places API), ~10 minutes.
+
+**Success target:** move projected "verified" rate from 80.6% → ≥ 90%.
 
 ---
 
@@ -1043,6 +1092,8 @@ encountered, with owner and resolution path.)
 | 2026-04-19 | Phase 7 | Mobile + i18n audit: 100% i18n coverage confirmed (954 keys × 5 langs). Fixed P0 breadcrumb invalid HTML (`<Link><button>` → `<Link>`). Fixed P0 CatalogToolbar mobile overflow (overflow-x-auto). Fixed P0 hardcoded English aria-labels (3 keys). Added 3 new i18n keys (toolbar.ariaLabel, search.clearAriaLabel, view.ariaLabel) to types.ts + all 5 langs. P1/P2 issues documented in audit-phase7.md for Jonas. pnpm check + build clean. | Amina |
 | 2026-04-19 | Phase 8 | Polish & deploy: Fixed P1 a11y (MapPanel role="application", CatalogToolbar aria-disabled, GrantDetail mobile footer). Fixed P2 (prefers-reduced-motion, <main> landmark, skip-nav). Added map.ariaLabel i18n key in 5 langs. Created robots.txt, generate-sitemap.ts. Bundle: 632KB gzip (within threshold). pnpm check → 0 errors, pnpm build clean, pnpm test → 195 pass. LAUNCH-REPORT.md + deferred-issues.md created. | Jonas |
 | 2026-04-20 | Phase 8.5.A1 | Location audit script created: scripts/audit-locations.ts (Google Maps Geocoding API, 5-strategy fallback, 6 verdict classes, 200ms rate limit, JSON+MD reports). Added audit:locations + audit:locations:sample scripts to package.json. STATE.md updated. | Hana |
+| 2026-04-20 | Phase 8.5.A1 | Audit executed on 643 active grants. Results: 518 verified (80.6%), 10 needs_update (1.6%), 98 ambiguous (15.2%), 17 missing_data (2.6%). Migrated audit to Places API (New) Text Search (browser key was rejected). | Hana |
+| 2026-04-20 | Phase 8.5.A2 | AI enhancement script created: scripts/enhance-locations.ts (Claude Haiku query suggestion + Places API re-query + centroid/country validation + DB update). Added enhance:locations:dry, enhance:locations, enhance:locations:sample to package.json. | Hana |
 
 ---
 
