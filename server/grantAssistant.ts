@@ -23,6 +23,10 @@ import Anthropic from "@anthropic-ai/sdk";
 import { ENV } from "./_core/env";
 import { GRANT_TOOLS, callTool } from "./toolboxClient";
 import { fetchWebsiteMarkdown } from "./tools/webFetch";
+import {
+  SEARCH_SIMILAR_GRANTS_TOOL,
+  executeSearchSimilarGrants,
+} from "./tools/externalGrantsTools";
 
 export type ConversationMessage = {
   role: "user" | "assistant";
@@ -58,7 +62,11 @@ const FETCH_ORG_WEBSITE_TOOL: Anthropic.Tool = {
   },
 };
 
-const GRANT_CHAT_TOOLS: Anthropic.Tool[] = [...GRANT_TOOLS, FETCH_ORG_WEBSITE_TOOL];
+const GRANT_CHAT_TOOLS: Anthropic.Tool[] = [
+  ...GRANT_TOOLS,
+  FETCH_ORG_WEBSITE_TOOL,
+  SEARCH_SIMILAR_GRANTS_TOOL,
+];
 
 async function callGrantChatTool(
   name: string,
@@ -73,6 +81,9 @@ async function callGrantChatTool(
       truncated: result.truncated,
       markdown: result.markdown,
     };
+  }
+  if (name === "search_similar_grants") {
+    return executeSearchSimilarGrants(params);
   }
   return callTool(name, params);
 }
@@ -91,8 +102,9 @@ Your job on this page:
 Tool usage order (important):
 1. Answer from the grant context block if the fact is already there.
 2. If the user asks about the organisation's own offerings / services / policies / hours / staff and that info is NOT in the context, call \`fetch_org_website\` with the website URL from the context block. Cite the URL in your answer.
-3. If the user asks about similar grants or alternative funders, use the catalog tools (\`search_grants_by_keyword\`, \`list_grants_by_category\`, \`list_grants_by_country\`, \`get_grant_detail\`).
-4. Never call \`fetch_org_website\` on a URL that is not the organisation's official website.
+3. If the user asks for similar grants or other options, first try the catalog tools (\`search_grants_by_keyword\`, \`list_grants_by_category\`, \`list_grants_by_country\`, \`get_grant_detail\`) — these search GrantKit's curated 640-grant DB.
+4. If the catalog tools return nothing useful, or the user explicitly asks for a wider search, call \`search_similar_grants\` — this queries an external 84 000-grant index (GrantedAI). Always include each result's applyUrl as a markdown link.
+5. Never call \`fetch_org_website\` on a URL that is not the organisation's official website.
 
 Rules:
 - Do NOT invent facts about the organisation. If neither the context block nor any tool returns the answer, say so honestly and suggest the user visit the official website or contact the organisation directly.
