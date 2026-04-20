@@ -169,6 +169,7 @@ export const ka: Translations = {
     eligibility: "შესაბამისობა:",
     searchPlaceholder: "მოძებნეთ სახელით, ორგანიზაციით ან მდგომარეობით...",
     visitWebsite: "ვებსაიტის ნახვა",
+    fullInfo: "სრული ინფორმაცია",
     loadMore: "მეტის ჩატვირთვა",
     remaining: "დარჩენილია",
     typeAll: "ყველა ტიპი",

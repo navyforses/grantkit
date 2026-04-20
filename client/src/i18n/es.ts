@@ -169,6 +169,7 @@ export const es: Translations = {
     eligibility: "Elegibilidad:",
     searchPlaceholder: "Buscar por nombre, organización o condición...",
     visitWebsite: "Visitar sitio web",
+    fullInfo: "Información completa",
     loadMore: "Cargar más",
     remaining: "restantes",
     typeAll: "Todos los tipos",
