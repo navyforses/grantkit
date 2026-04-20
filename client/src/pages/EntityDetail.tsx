@@ -1,14 +1,18 @@
 /*
- * GrantDetail — Phase 5 redesign (Sofia, Senior UX Engineer, ex-NYT)
+ * EntityDetail — unified detail page for grants and resources.
+ * (Previously GrantDetail.)
  *
  * Desktop (lg+): full-width breadcrumb + 50/50 two-column layout.
  *   Left  — badges, title, org, metrics grid, description, eligibility, CTAs.
  *   Right — LocationMap (280 px), office/contact card, application process,
  *           required documents.
- *   Below — related grants, full width, 3-col grid.
+ *   Below — related entities, full width, 3-col grid.
  *
  * Mobile (<lg): single-column stacked; sticky bottom CTA bar for Apply + Save
  *   (positioned bottom-16 to clear MobileBottomNav).
+ *
+ * Routed at /grant/:id. Renders differently based on item.type
+ * ("grant" vs "resource") — see conditional blocks below.
  */
 
 import { useMemo, useState } from "react";
@@ -53,10 +57,12 @@ import LocationMap from "@/components/LocationMap";
 import { useGeocodedAddress } from "@/hooks/useGeocodedAddress";
 import { openInGoogleMapsDirections } from "@/lib/googleMaps";
 import { catalogItems } from "@/data/catalogData";
+import { useSaveEntity } from "@/hooks/useSaveEntity";
+import { pickLocalizedFields } from "@/lib/localizeEntity";
 import GrantAiChat from "@/components/GrantAiChat";
 import type { ParsedGrant } from "@/components/GrantCard";
 
-export default function GrantDetail() {
+export default function EntityDetail() {
   const params = useParams<{ id: string }>();
   const [, _navigate] = useLocation();
   void _navigate;
@@ -85,27 +91,8 @@ export default function GrantDetail() {
   const savedSet = useMemo(() => new Set(savedData?.grantIds || []), [savedData]);
   const isSaved = grant ? savedSet.has(grant.id) : false;
 
-  const utils = trpc.useUtils();
-  const toggleSave = trpc.grants.toggleSave.useMutation({
-    onMutate: async ({ grantId }) => {
-      await utils.grants.savedList.cancel();
-      const prev = utils.grants.savedList.getData();
-      utils.grants.savedList.setData(undefined, (old) => {
-        if (!old) return { grantIds: [grantId] };
-        const ids = old.grantIds.includes(grantId)
-          ? old.grantIds.filter((id) => id !== grantId)
-          : [...old.grantIds, grantId];
-        return { grantIds: ids };
-      });
-      return { prev };
-    },
-    onError: (_err: unknown, _vars: unknown, ctx: { prev?: { grantIds: string[] } } | undefined) => {
-      if (ctx?.prev) utils.grants.savedList.setData(undefined, ctx.prev);
-      toast.error(t.grantDetail.failedToSave);
-    },
-    onSettled: () => {
-      utils.grants.savedList.invalidate();
-    },
+  const { toggleSave } = useSaveEntity({
+    errorMessage: grant?.type === "resource" ? t.resourceDetail.failedToSave : t.grantDetail.failedToSave,
   });
 
   if (isLoading && !grant) {
@@ -141,22 +128,33 @@ export default function GrantDetail() {
   const translations = detailData?.translations || {};
   const relatedItems = detailData?.related || [];
 
+  // Type-aware labels: resources get different strings for CTA, titles,
+  // "save this" button, etc. When item.type === "grant" (current default
+  // for all 643 entries) we use the legacy grantDetail copy, which is
+  // unchanged from before R3.
+  const isResource = item.type === "resource";
+  const labels = {
+    notFound: isResource ? t.resourceDetail.notFound : t.grantDetail.notFound,
+    notFoundDesc: isResource ? t.resourceDetail.notFoundDesc : t.grantDetail.notFoundDesc,
+    applyNow: isResource ? t.resourceDetail.applyNow : t.grantDetail.applyNow,
+    saveThisOne: isResource ? t.resourceDetail.saveThisOne : t.grantDetail.saveThisGrant,
+    failedToSave: isResource ? t.resourceDetail.failedToSave : t.grantDetail.failedToSave,
+    descriptionTitle: isResource ? t.resourceDetail.descriptionTitle : t.detail.descriptionTitle,
+    processTitle: isResource ? t.resourceDetail.processTitle : t.detail.processTitle,
+    relatedTitle: isResource ? t.resourceDetail.relatedTitle : t.detail.relatedTitle,
+  };
+
   const apiTrans = language !== "en" ? translations[language] : null;
   const staticTrans = language !== "en" && !apiTrans
     ? tCatalogContent(item.itemId || item.id, { name: item.name, description: item.description || "", eligibility: item.eligibility || "" })
     : null;
 
-  const content = {
-    name: apiTrans?.name || staticTrans?.name || item.name,
-    description: apiTrans?.description || staticTrans?.description || item.description,
-    eligibility: apiTrans?.eligibility || staticTrans?.eligibility || item.eligibility,
-    applicationProcess: apiTrans?.applicationProcess || item.applicationProcess,
-    deadline: apiTrans?.deadline || item.deadline,
-    targetDiagnosis: apiTrans?.targetDiagnosis || item.targetDiagnosis,
-    ageRange: apiTrans?.ageRange || item.ageRange,
-    geographicScope: apiTrans?.geographicScope || item.geographicScope,
-    documentsRequired: apiTrans?.documentsRequired || item.documentsRequired,
-  };
+  const content = pickLocalizedFields(
+    item,
+    ["name", "description", "eligibility", "applicationProcess", "deadline", "targetDiagnosis", "ageRange", "geographicScope", "documentsRequired"] as const,
+    apiTrans as Record<string, unknown> | null | undefined,
+    staticTrans as unknown as Record<string, unknown> | null | undefined,
+  );
 
   const translatedCategory = tCategory(item.category);
   const translatedCountry = tCountry(item.country);
@@ -480,7 +478,7 @@ export default function GrantDetail() {
             <div className={`bg-white/[0.03] border border-white/[0.08] rounded-xl p-5 ${borderColor} border-l-4`}>
               <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3 flex items-center gap-2">
                 <FileText className="w-3.5 h-3.5" />
-                {t.detail.descriptionTitle}
+                {labels.descriptionTitle}
               </h2>
               <p className="text-sm md:text-[15px] text-white/80 leading-relaxed whitespace-pre-line">
                 {content.description || "—"}
@@ -506,7 +504,7 @@ export default function GrantDetail() {
                 <a href={applyHref} target="_blank" rel="noopener noreferrer">
                   <Button className="w-full h-12 bg-[#1D9E75] hover:bg-[#1D9E75]/90 text-white font-semibold gap-2 rounded-xl text-[15px]">
                     <ArrowUpRight className="w-4 h-4" />
-                    {t.grantDetail.applyNow}
+                    {labels.applyNow}
                   </Button>
                 </a>
                 <div className="flex gap-3">
@@ -518,10 +516,10 @@ export default function GrantDetail() {
                           ? "border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 hover:text-yellow-300"
                           : "border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
                       }`}
-                      onClick={() => toggleSave.mutate({ grantId: item.id })}
+                      onClick={() => toggleSave(item.id)}
                     >
                       {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-                      {isSaved ? t.grantDetail.saved : t.grantDetail.saveThisGrant}
+                      {isSaved ? t.grantDetail.saved : labels.saveThisOne}
                     </Button>
                   )}
                   <Button
@@ -662,7 +660,7 @@ export default function GrantDetail() {
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5">
                 <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3 flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#5DCAA5]" />
-                  {t.detail.processTitle}
+                  {labels.processTitle}
                 </h2>
                 <p className="text-sm md:text-[15px] text-white/80 leading-relaxed whitespace-pre-line">
                   {content.applicationProcess}
@@ -697,7 +695,7 @@ export default function GrantDetail() {
         {relatedItems.length > 0 && (
           <div className="mt-8 pt-8 border-t border-white/[0.06]">
             <h2 className="text-base md:text-lg font-semibold text-white mb-4">
-              {t.detail.relatedTitle}
+              {labels.relatedTitle}
             </h2>
 
             {/* Mobile: horizontal scroll */}
@@ -778,7 +776,7 @@ export default function GrantDetail() {
             >
               <Button className="w-full h-12 bg-[#1D9E75] active:bg-[#1D9E75]/90 text-white font-semibold gap-2 rounded-xl">
                 <ArrowUpRight className="w-4 h-4" />
-                {t.grantDetail.applyNow}
+                {labels.applyNow}
               </Button>
             </a>
             <Button
@@ -795,8 +793,8 @@ export default function GrantDetail() {
                 className={`h-12 w-12 shrink-0 rounded-xl ${
                   isSaved ? "border-yellow-400/40 text-yellow-400" : "border-white/20 text-white/70"
                 }`}
-                onClick={() => toggleSave.mutate({ grantId: item.id })}
-                aria-label={isSaved ? t.grantDetail.saved : t.grantDetail.saveThisGrant}
+                onClick={() => toggleSave(item.id)}
+                aria-label={isSaved ? t.grantDetail.saved : labels.saveThisOne}
               >
                 {isSaved ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
               </Button>

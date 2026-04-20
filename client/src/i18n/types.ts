@@ -1092,6 +1092,27 @@ export interface Translations {
     relatedTitle: string;
   };
 
+  // Overrides used when item.type === 'resource' (see EntityDetail.tsx).
+  // Only the fields that actually differ from grantDetail / detail are listed;
+  // everything else falls back to the grant copy to avoid duplication.
+  resourceDetail: {
+    notFound: string;
+    notFoundDesc: string;
+    applyNow: string;              // CTA label — "Visit website"
+    saveThisOne: string;           // "Save this resource"
+    failedToSave: string;
+    descriptionTitle: string;      // "About this organization"
+    processTitle: string;          // "Services offered"
+    relatedTitle: string;          // "Similar resources"
+    servicesOffered: string;
+    targetAudience: string;
+    languages: string;
+    cost: string;
+    free: string;
+    paid: string;
+    subsidized: string;
+  };
+
   // Map (LocationMap + MapPanel + Google Maps deep-link)
   map: {
     ariaLabel: string;    // aria-label on the MapPanel container (role="application")

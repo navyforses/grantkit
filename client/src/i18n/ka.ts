@@ -1118,4 +1118,22 @@ export const ka: Translations = {
     metricConditions: "პირობები",
     relatedTitle: "მსგავსი გრანტები",
   },
+
+  resourceDetail: {
+    notFound: "რესურსი ვერ მოიძებნა",
+    notFoundDesc: "თქვენ მიერ ძებნილი რესურსი არ არსებობს.",
+    applyNow: "ვებსაიტზე გადასვლა",
+    saveThisOne: "რესურსის შენახვა",
+    failedToSave: "რესურსის შენახვა ვერ მოხერხდა",
+    descriptionTitle: "ამ ორგანიზაციის შესახებ",
+    processTitle: "შეთავაზებული სერვისები",
+    relatedTitle: "მსგავსი რესურსები",
+    servicesOffered: "შეთავაზებული სერვისები",
+    targetAudience: "ვისთვის",
+    languages: "მომსახურების ენები",
+    cost: "ღირებულება",
+    free: "უფასო",
+    paid: "ფასიანი",
+    subsidized: "სუბსიდირებული",
+  },
 };

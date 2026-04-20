@@ -1116,4 +1116,22 @@ export const fr: Translations = {
     metricConditions: "Conditions",
     relatedTitle: "Bourses similaires",
   },
+
+  resourceDetail: {
+    notFound: "Ressource introuvable",
+    notFoundDesc: "La ressource que vous cherchez n'existe pas.",
+    applyNow: "Visiter le site",
+    saveThisOne: "Enregistrer cette ressource",
+    failedToSave: "Échec de l'enregistrement",
+    descriptionTitle: "À propos de cette organisation",
+    processTitle: "Services proposés",
+    relatedTitle: "Ressources similaires",
+    servicesOffered: "Services proposés",
+    targetAudience: "Qui peut utiliser ceci",
+    languages: "Langues parlées",
+    cost: "Coût",
+    free: "Gratuit",
+    paid: "Payant",
+    subsidized: "Subventionné",
+  },
 };
