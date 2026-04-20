@@ -26,6 +26,8 @@ import { fetchWebsiteMarkdown } from "./tools/webFetch";
 import {
   SEARCH_SIMILAR_GRANTS_TOOL,
   executeSearchSimilarGrants,
+  SEARCH_FUNDERS_TOOL,
+  executeSearchFunders,
 } from "./tools/externalGrantsTools";
 
 export type ConversationMessage = {
@@ -66,6 +68,7 @@ const GRANT_CHAT_TOOLS: Anthropic.Tool[] = [
   ...GRANT_TOOLS,
   FETCH_ORG_WEBSITE_TOOL,
   SEARCH_SIMILAR_GRANTS_TOOL,
+  SEARCH_FUNDERS_TOOL,
 ];
 
 async function callGrantChatTool(
@@ -84,6 +87,9 @@ async function callGrantChatTool(
   }
   if (name === "search_similar_grants") {
     return executeSearchSimilarGrants(params);
+  }
+  if (name === "search_funders") {
+    return executeSearchFunders(params);
   }
   return callTool(name, params);
 }
@@ -104,7 +110,8 @@ Tool usage order (important):
 2. If the user asks about the organisation's own offerings / services / policies / hours / staff and that info is NOT in the context, call \`fetch_org_website\` with the website URL from the context block. Cite the URL in your answer.
 3. If the user asks for similar grants or other options, first try the catalog tools (\`search_grants_by_keyword\`, \`list_grants_by_category\`, \`list_grants_by_country\`, \`get_grant_detail\`) — these search GrantKit's curated 640-grant DB.
 4. If the catalog tools return nothing useful, or the user explicitly asks for a wider search, call \`search_similar_grants\` — this queries an external 84 000-grant index (GrantedAI). Always include each result's applyUrl as a markdown link.
-5. Never call \`fetch_org_website\` on a URL that is not the organisation's official website.
+5. If the user asks about **foundations** or **which organisations fund a cause** (rather than specific open grant programs), call \`search_funders\` — a 133 000-foundation index. Present each result with state, total assets, and mission; note that foundations typically require applicants to be non-profits unless the user is asking on behalf of one.
+6. Never call \`fetch_org_website\` on a URL that is not the organisation's official website.
 
 Rules:
 - Do NOT invent facts about the organisation. If neither the context block nor any tool returns the answer, say so honestly and suggest the user visit the official website or contact the organisation directly.
