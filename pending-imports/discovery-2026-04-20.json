@@ -1,0 +1,508 @@
+[
+  {
+    "name": "HealthWell Foundation Copay Program",
+    "category": "medical_treatment",
+    "country": "US",
+    "eligibility": "Individuals with specific diseases who meet income and insurance requirements",
+    "description": "The HealthWell Foundation provides financial assistance to individuals with chronic or life-altering diseases to cover their prescription drug copayments, deductibles, and health insurance premiums. This program helps patients afford the cost of their medications and treatments, ensuring access to necessary healthcare. Specific disease funds vary based on availability.",
+    "website": "https://www.healthwellfoundation.org/",
+    "organization": "HealthWell Foundation"
+  },
+  {
+    "name": "Cancer Research Institute - Clinic and Laboratory Integration Program (CLIP)",
+    "category": "medical_treatment",
+    "country": "US",
+    "eligibility": "Early career MDs or PhDs who are conducting translational research in cancer immunology.",
+    "description": "The CLIP grant supports clinical and laboratory research focused on cancer immunology. The goal is to improve cancer immunotherapies through clinical and lab work. Grant recipients receive funding to conduct the research.",
+    "website": "https://www.cancerresearch.org/scientists/apply-for-funding/clinic-and-laboratory-integration-program",
+    "organization": "Cancer Research Institute"
+  },
+  {
+    "name": "Leukemia & Lymphoma Society - Patient Aid",
+    "category": "medical_treatment",
+    "country": "US",
+    "eligibility": "Blood cancer patients",
+    "description": "The Leukemia & Lymphoma Society provides a variety of financial aid and co-pay assistance to blood cancer patients. The fund offers limited financial assistance to help offset costs of treatment, especially related to health insurance. Additional programs also exist to help patients with transportation and lodging costs related to treatment",
+    "website": "https://www.lls.org/",
+    "organization": "Leukemia & Lymphoma Society"
+  },
+  {
+    "name": "HealthWell Foundation Travel Fund",
+    "category": "medical_treatment",
+    "country": "US",
+    "eligibility": "Individuals with specific diseases who meet income and insurance requirements and need assistance with travel costs related to medical treatment.",
+    "description": "The HealthWell Foundation Travel Fund provides financial assistance to cover the costs of travel associated with medical treatment, such as transportation, lodging, and meals. This program helps patients access specialized care and treatment centers that might be located far from their homes. Specific disease funds vary.",
+    "website": "https://www.healthwellfoundation.org/",
+    "organization": "HealthWell Foundation"
+  },
+  {
+    "name": "Non-Insured Health Benefits (NIHB) Program",
+    "category": "medical_treatment",
+    "country": "Canada",
+    "eligibility": "Eligible First Nations and Inuit people",
+    "description": "The NIHB program provides coverage for a range of medically necessary health benefits to eligible First Nations and Inuit people. These benefits include prescription drugs, medical supplies and equipment, dental and vision care, mental health counseling, and transportation to medical services when not accessible locally. The aim is to ensure access to essential healthcare services.",
+    "website": "https://www.sac-isc.gc.ca/eng/1576774845988/1576774864551",
+    "organization": "Indigenous Services Canada"
+  },
+  {
+    "name": "Drug Coverage for Rare Diseases (DCRD)",
+    "category": "medical_treatment",
+    "country": "Canada",
+    "state": "British Columbia",
+    "eligibility": "BC residents with a diagnosed rare disease and who meet specific clinical criteria. Requires specialist application.",
+    "description": "The DCRD program assists eligible BC residents with the high cost of eligible drugs used to treat rare diseases. The program aims to ensure access to necessary medications that would otherwise be unaffordable. Coverage is determined on a case-by-case basis, requiring application through a specialist physician.",
+    "website": "https://www2.gov.bc.ca/gov/content/health/health-drug-coverage/pharmacare-for-bc-residents/what-is-covered/limited-coverage-drugs/drugs-for-rare-diseases",
+    "organization": "BC PharmaCare"
+  },
+  {
+    "name": "March of Dimes Canada - Assistive Devices Program",
+    "category": "medical_treatment",
+    "country": "Canada",
+    "eligibility": "People with physical disabilities requiring assistive devices.",
+    "description": "March of Dimes Canada offers assistance with the cost of assistive devices to eligible individuals with physical disabilities. The program helps provide access to equipment such as wheelchairs, walkers, and communication devices. This support contributes to increased independence and improved overall well-being.",
+    "website": "https://www.marchofdimes.ca/en-ca/programs/adp/Pages/AssistiveDevicesProgram.aspx",
+    "organization": "March of Dimes Canada"
+  },
+  {
+    "name": "ALS Society of Canada - Equipment Loan Program",
+    "category": "medical_treatment",
+    "country": "Canada",
+    "eligibility": "People living with ALS (Amyotrophic Lateral Sclerosis).",
+    "description": "The ALS Society of Canada provides an equipment loan program for people living with ALS. The program offers access to much-needed equipment such as wheelchairs, walkers, hospital beds, and communication devices -- allowing them to maintain independence and quality of life. Equipment is loaned free of charge, subject to availability.",
+    "website": "https://als.ca/how-we-help/equipment-program/",
+    "organization": "ALS Society of Canada"
+  },
+  {
+    "name": "Canadian Red Cross Health Equipment Loan Program (HELP)",
+    "category": "medical_treatment",
+    "country": "Canada",
+    "eligibility": "Individuals with short-term health needs or recovering from surgery or illness.",
+    "description": "The Canadian Red Cross HELP program provides short-term loans of health equipment to those in need. Individuals can borrow items like wheelchairs, walkers, crutches, and bath aids to support their recovery and independence. The program aims to improve quality of life during periods of illness or rehabilitation.",
+    "website": "https://www.redcross.ca/how-we-help/health-equipment-loan-program-(help)",
+    "organization": "Canadian Red Cross"
+  },
+  {
+    "name": "Bupa UK Foundation: Health Charity Grants",
+    "category": "medical_treatment",
+    "country": "UK",
+    "eligibility": "Registered health charities in the UK with an annual income of less than £1 million.",
+    "description": "The Bupa UK Foundation provides grants to registered health charities delivering projects which address health inequalities, provide direct medical support, or promote health in the UK. This program provides funding for a range of medical treatment initiatives delivered by smaller charities.",
+    "website": "https://www.bupaukfoundation.org/",
+    "organization": "Bupa UK Foundation"
+  },
+  {
+    "name": "Make Some Noise",
+    "category": "medical_treatment",
+    "country": "UK",
+    "eligibility": "Small charities working with disadvantaged children and young people in the UK.",
+    "description": "Make Some Noise supports small charities working with disadvantaged children and young people, including those with illnesses, disabilities, or facing challenging circumstances. Grants can be used to fund essential medical equipment, specialist therapies, or respite care facilitating improved treatment outcomes and quality of life. Registered UK charities can apply.",
+    "website": "https://www.makesomenoise.com/",
+    "organization": "Global's Make Some Noise"
+  },
+  {
+    "name": "Buttle UK - Chances for Children",
+    "category": "medical_treatment",
+    "country": "UK",
+    "eligibility": "Children & young people (under 20) living in the UK, who are experiencing disadvantage.",
+    "description": "Buttle UK provides small grants, known as 'Chances for Children', to vulnerable children and young people to help overcome hardship. These grants may be used for a range of items and services including medical equipment, therapies, and other essential support required as part of medical care plans. Applications must be submitted by a referrer.",
+    "website": "https://www.buttleuk.org/",
+    "organization": "Buttle UK"
+  },
+  {
+    "name": "The Henry Smith Charity - Improving Lives Grant Programme",
+    "category": "medical_treatment",
+    "country": "UK",
+    "eligibility": "Charities and not-for-profit organisations working with people in the UK who are experiencing disadvantage.",
+    "description": "The Henry Smith Charity's Improving Lives grant programme supports charities and not-for-profit organisations working with people experiencing disadvantage. Grants can be used to fund medical treatment, equipment, and support services that improve the health and wellbeing of vulnerable individuals and communities. Funding priority is given to organisations that address social exclusion.",
+    "website": "https://www.henrysmithcharity.org.uk/our-grants/improving-lives/",
+    "organization": "The Henry Smith Charity"
+  },
+  {
+    "name": "Florence Nightingale Aid in Sickness Trust",
+    "category": "medical_treatment",
+    "country": "UK",
+    "eligibility": "People of all ages residing in the UK that are in need of medical treatment.",
+    "description": "The Florence Nightingale Aid in Sickness Trust offers small assistance grants to persons of all ages residing in the UK that are in need of medical treatment. Grants usually assist with costs associated with treatment and provide financial aid in situations of medical need.",
+    "website": "https://www.fnaist.org.uk/",
+    "organization": "Florence Nightingale Aid in Sickness Trust"
+  },
+  {
+    "name": "Fonds de Solidarité pour le Logement (FSL)",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "Low-income individuals and families residing in France who are facing difficulties paying for housing-related expenses, including those exacerbated by medical needs.",
+    "description": "The FSL provides financial assistance to help individuals and families maintain or access housing. It can cover expenses such as rent arrears, security deposits, and utility bills, alleviating financial strain related to medical costs. The specific types of assistance and eligibility criteria vary by département (administrative region).",
+    "website": "https://www.service-public.fr/particuliers/vosdroits/F1721",
+    "organization": "Départemental Government"
+  },
+  {
+    "name": "Aide Médicale de l'État (AME)",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "Foreigners in an irregular situation (without legal residence permit) who have been residing in France for more than three months and have limited financial resources.",
+    "description": "AME provides access to healthcare for undocumented immigrants in France who meet residency and income requirements. It covers most medical expenses, including doctor visits, hospital care, and prescription medications, ensuring access to essential treatment. This allows vulnerable populations to receive medical attention regardless of their legal status.",
+    "website": "https://www.ameli.fr/assure/droits-demarches/soins-medicaux/etranger/aide-medicale-etat/aide-medicale-etat-conditions-demarche",
+    "organization": "French National Health Insurance (Assurance Maladie)"
+  },
+  {
+    "name": "Prestations de Compensation du Handicap (PCH)",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "People with disabilities residing in France who experience difficulties in their daily lives due to their disability.",
+    "description": "PCH offers financial assistance to cover expenses related to disability, including medical care, personal assistance, and equipment. It helps individuals with disabilities maintain their independence and improve their quality of life. The amount of assistance provided depends on the individual's specific needs and resources.",
+    "website": "https://www.service-public.fr/particuliers/vosdroits/F14202",
+    "organization": "MDPH (Maisons Départementales des Personnes Handicapées)"
+  },
+  {
+    "name": "Fonds Social de la Caisse Primaire d'Assurance Maladie (CPAM)",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "Individuals insured by the French national health insurance system (CPAM) who are facing financial difficulties in accessing healthcare.",
+    "description": "The CPAM's social fund provides financial aid to individuals struggling to afford healthcare expenses. This fund can help cover expenses not fully reimbursed by the national health insurance, such as deductibles, co-payments, or certain types of treatment. Eligibility and the amount of aid provided depend on the individual's financial situation and medical needs.",
+    "website": "https://www.ameli.fr/paris/assure/aides-financieres/autres-aides/fonds-social-caisse-primaire-assurance-maladie",
+    "organization": "Caisse Primaire d'Assurance Maladie (CPAM)"
+  },
+  {
+    "name": "La Ligue contre le cancer - Aide financière",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "Cancer patients and their families in France facing financial difficulties.",
+    "description": "La Ligue contre le cancer provides financial assistance to cancer patients and their families who are struggling with the costs associated with the disease. The aid can cover various expenses, such as transportation to treatment centers, accommodation near hospitals, and home care services. The organization aims to alleviate financial burden, enabling patients to focus on their treatment and recovery.",
+    "website": "https://www.ligue-cancer.net/vivre/",
+    "organization": "La Ligue contre le cancer"
+  },
+  {
+    "name": "Fondation de France - Soutien aux personnes vulnérables",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "Vulnerable individuals and families in France with health challenges.",
+    "description": "The Fondation de France supports projects that improve the lives of vulnerable individuals and families, including those facing health challenges. This organization provides funding to initiatives that promote access to healthcare, improve the quality of life for patients, and support caregivers. The specific eligibility criteria and funding priorities vary depending on the project.",
+    "website": "https://www.fondationdefrance.org/",
+    "organization": "Fondation de France"
+  },
+  {
+    "name": "APF France handicap - Aides ponctuelles",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "People with disabilities in France",
+    "description": "APF France handicap provides occasional financial assistance to people with disabilities facing difficult situations. These occasional grants can help cover unexpected medical expenses or other needs. They aim to assist individuals in managing their disabilities effectively.",
+    "website": "https://www.apf-francehandicap.org/",
+    "organization": "APF France handicap"
+  },
+  {
+    "name": "Mutuelle Solidaire",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "Individuals with low income in France who require supplemental health insurance coverage.",
+    "description": "The Mutuelle Solidaire provides affordable complementary health insurance coverage for low-income individuals. It helps cover medical expenses not fully reimbursed by the basic national health insurance. This enables access to healthcare that might otherwise be unaffordable.",
+    "website": "https://www.complementaire-sante-solidaire.gouv.fr/",
+    "organization": "French Government (managed by Assurance Maladie)"
+  },
+  {
+    "name": "ADMD - Association pour le Droit de Mourir dans la Dignité",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "Individuals who are facing serious or incurable illnesses in France.",
+    "description": "While not directly offering grants for medical treatment, ADMD provides support and advocacy for individuals facing serious illnesses, sometimes resulting in financial complications. This involves information related to one's rights and navigating end-of-life care, alleviating some of the burden during challenging times. This support includes advice related to claiming benefits and navigating the healthcare system.",
+    "website": "https://www.admd.net/",
+    "organization": "ADMD"
+  },
+  {
+    "name": "Caisse Nationale de Solidarité pour l'Autonomie (CNSA) - Aides techniques",
+    "category": "medical_treatment",
+    "country": "France",
+    "state": null,
+    "eligibility": "Elderly or disabled people in France who need technical medical aids to live independently",
+    "description": "CNSA provides grants for funding technical aids for elderly and disabled individuals. This includes motorized chairs, adjustable beds, or mobility equipment that improves independence at home. The goal is to allow patients to avoid institutional care.",
+    "website": "https://www.cnsa.fr/",
+    "organization": "Caisse Nationale de Solidarité pour l'Autonomie (CNSA)"
+  },
+  {
+    "name": "Deutsche Krebshilfe - Financial Aid for Cancer Patients",
+    "category": "medical_treatment",
+    "country": "Germany",
+    "eligibility": "Cancer patients in Germany facing financial hardship due to treatment costs.",
+    "description": "Deutsche Krebshilfe provides financial aid to cancer patients to cover costs associated with treatment, such as transportation, accommodation, and supportive therapies. The aid aims to alleviate the financial burden on patients and their families during the cancer treatment process, ensuring that patients can focus on their recovery without financial stress. Applications are reviewed on a case-by-case basis.",
+    "website": "https://www.krebshilfe.de/",
+    "organization": "Deutsche Krebshilfe"
+  },
+  {
+    "name": "Margot Werner Foundation - Support for Bone Marrow Transplantation",
+    "category": "medical_treatment",
+    "country": "Germany",
+    "eligibility": "Patients undergoing bone marrow transplantation in Germany.",
+    "description": "The Margot Werner Foundation offers support to patients undergoing bone marrow transplantation, primarily focusing on covering non-medical costs. This includes travel expenses for patients and their families, accommodation near the transplant center, and psychological support. The foundation works to improve the overall well-being and quality of life for patients during this challenging treatment.",
+    "website": "https://www.margot-werner-stiftung.de",
+    "organization": "Margot Werner Foundation"
+  },
+  {
+    "name": "José Carreras Leukämie-Stiftung - Grants for Leukemia Research and Patient Support",
+    "category": "medical_treatment",
+    "country": "Germany",
+    "eligibility": "Leukemia patients and their families in Germany; researchers investigating leukemia treatments.",
+    "description": "The José Carreras Leukemia Foundation provides grants for leukemia research and also supports patients and their families. Patient support includes financial aid, counseling, and access to information about leukemia treatment and care. This helps families cope with the burdens of the disease.",
+    "website": "https://www.carreras-stiftung.de/",
+    "organization": "José Carreras Leukämie-Stiftung"
+  },
+  {
+    "name": "Kindernachsorgeklinik Berlin-Brandenburg – Family-Oriented Rehabilitation",
+    "category": "medical_treatment",
+    "country": "Germany",
+    "eligibility": "Families with children up to 18 years of age who require follow-up care after serious illness, surgery, or cancer treatment.",
+    "description": "This clinic offers a family-oriented rehabilitation program for children following serious medical events. It provides medical, psychological, and pedagogical support to help the child and the family cope with the consequences of the illness and regain their quality of life. Funding is often available through health insurance or foundation grants.",
+    "website": "https://www.kindernachsorgeklinik.de",
+    "organization": "Kindernachsorgeklinik Berlin-Brandenburg"
+  },
+  {
+    "name": "Paulinchen – Initiative für brandverletzte Kinder e.V.",
+    "category": "medical_treatment",
+    "country": "Germany",
+    "eligibility": "Children with burn injuries and their families residing in Germany.",
+    "description": "Paulinchen is an initiative supporting children with burn injuries and their families. They provide assistance with medical costs, rehabilitation, psychological support, and family counseling. The organization aims to improve the lives of children affected by burn injuries and help them to fully integrate back into society, offering financial help, too.",
+    "website": "https://www.paulinchen.de/",
+    "organization": "Paulinchen e.V."
+  },
+  {
+    "name": "Bundesstiftung Mutter und Kind - Hilfe zum Mutterwerden (Federal Foundation Mother and Child)",
+    "category": "medical_treatment",
+    "country": "Germany",
+    "eligibility": "Pregnant women in financial need residing in Germany.",
+    "description": "This foundation provides financial aid to pregnant women in financial need for medical care and living expenses during pregnancy and after childbirth. The goal is to ensure that no woman has to face financial difficulties during this crucial time, allowing them to prioritize their and their child's health and the foundation can help with medical cossts.",
+    "website": "https://www.bundesstiftung-mutter-und-kind.de/",
+    "organization": "Bundesstiftung Mutter und Kind"
+  },
+  {
+    "name": "Deutsche Multiple Sklerose Gesellschaft (DMSG) - Hardship Fund",
+    "category": "medical_treatment",
+    "country": "Germany",
+    "eligibility": "Individuals in Germany diagnosed with Multiple Sclerosis (MS) facing financial hardship.",
+    "description": "The DMSG Hardship Fund offers financial assistance to individuals with MS who are experiencing financial difficulties due to their condition. This assistance helps cover expenses related to medical treatments, therapies, assistive devices, and home modifications. The fund supports eligible people to maintain their independence and quality of life.",
+    "website": "https://www.dmsg.de/",
+    "organization": "Deutsche Multiple Sklerose Gesellschaft (DMSG)"
+  },
+  {
+    "name": "Feeding America",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Individuals and families facing hunger through a network of local food banks.",
+    "description": "Feeding America is a nationwide network of food banks that provides food and resources to people facing hunger. They work with food manufacturers, retailers, and farmers to secure donations and distribute to food banks across the country to help individuals and families find meal assistance.",
+    "website": "https://www.feedingamerica.org/",
+    "organization": "Feeding America"
+  },
+  {
+    "name": "Meals on Wheels America",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Seniors who are homebound, disabled, or have limited mobility. Eligibility criteria may vary by local program.",
+    "description": "Meals on Wheels delivers nutritious meals to seniors in their homes, along with companionship and safety checks. This program ensures that elderly individuals receive adequate nutrition and reduces social isolation, supporting their overall well-being while living independently.",
+    "website": "https://www.mealsonwheelsamerica.org/",
+    "organization": "Meals on Wheels America"
+  },
+  {
+    "name": "WhyHunger",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Operates a hotline and provides an online database for individuals seeking food assistance and community organizations.",
+    "description": "WhyHunger connects individuals in need with food banks, pantries, and other local resources through its hotline and online database. This assists individuals in accessing emergency food assistance. It supports the development of long-term solutions to hunger and poverty.",
+    "website": "https://whyhunger.org/",
+    "organization": "WhyHunger"
+  },
+  {
+    "name": "World Central Kitchen",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Communities impacted by disaster or crisis. Also provides culinary job training. Often partners with local culinary schools and organizations.",
+    "description": "World Central Kitchen provides meals in communities impacted by disaster, both natural and man-made. This organization mobilizes quickly. They activate a global network of chefs to feed people impacted by emergencies, with a focus on nutritious meals and assisting local communities.",
+    "website": "https://wck.org/",
+    "organization": "World Central Kitchen"
+  },
+  {
+    "name": "Food Research and Action Center (FRAC)",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Low-income individuals, advocacy organizations, and policymakers.",
+    "description": "FRAC is a leading anti-hunger advocacy organization working to improve public policies and public-private partnerships in order to eradicate hunger and undernutrition in the United States. They work with a broad range of organizations at the federal, state, and local levels.",
+    "website": "https://frac.org/",
+    "organization": "Food Research and Action Center (FRAC)"
+  },
+  {
+    "name": "No Kid Hungry",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Schools, community organizations, and individuals working to end childhood hunger.",
+    "description": "No Kid Hungry is a national campaign focused on ending childhood hunger in America. They work to connect kids with nutritious meals, advocate for effective policies, and raise awareness about the issue of childhood hunger. Grants are provided to schools and community organizations to support feeding programs.",
+    "website": "https://www.nokidhungry.org/",
+    "organization": "Share Our Strength"
+  },
+  {
+    "name": "Backpack Program",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Children at risk of hunger, often in school settings.",
+    "description": "The Backpack Program provides backpacks filled with food for children to take home over the weekends and during school breaks. This helps to ensure that kids experiencing food insecurity have access to nutritious meals when school is not in session, reducing the risk of hunger.",
+    "website": "https://www.feedingamerica.org/our-work/child-hunger-programs/backpack-program",
+    "organization": "Feeding America (Local Food Banks)"
+  },
+  {
+    "name": "Senior Farmers' Market Nutrition Program (SFMNP)",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Low-income seniors.",
+    "description": "The SFMNP provides grants to states to distribute coupons or electronic benefits that low-income seniors can use to purchase eligible foods (fruits, vegetables, honey, and herbs) at farmers' markets, roadside stands, and community supported agriculture programs. The aim of the program is to support farmers and provide nutritious food to seniors.",
+    "website": "https://www.fns.usda.gov/sfmnp/senior-farmers-market-nutrition-program",
+    "organization": "United States Department of Agriculture (USDA)"
+  },
+  {
+    "name": "Community Supplemental Food Program (CSFP)",
+    "category": "food_basic_needs",
+    "country": "US",
+    "eligibility": "Low-income elderly persons at least 60 years of age.",
+    "description": "CSFP works to improve the health of low-income elderly persons at least 60 years of age by supplementing their diets with nutritious USDA foods. State agencies distribute commodity foods to public and private nonprofit organizations that directly serve eligible participants.",
+    "website": "https://www.fns.usda.gov/csfp/community-supplemental-food-program",
+    "organization": "United States Department of Agriculture (USDA)"
+  },
+  {
+    "name": "Breakfast Club of Canada - Grants",
+    "category": "food_basic_needs",
+    "country": "Canada",
+    "eligibility": "Schools and community organizations that wish to start or improve a breakfast program.",
+    "description": "The Breakfast Club of Canada provides funding, equipment, and training to support breakfast programs in schools and communities. Their grants aim to ensure that children have access to a nutritious breakfast, promoting better learning and health outcomes. Funding covers food costs, equipment purchase grants, and volunteer training.",
+    "website": "https://www.breakfastclubcanada.org/",
+    "organization": "Breakfast Club of Canada"
+  },
+  {
+    "name": "Agriculture and Agri-Food Canada - Local Food Infrastructure Fund",
+    "category": "food_basic_needs",
+    "country": "Canada",
+    "eligibility": "Not-for-profit organizations, Indigenous groups, and community groups.",
+    "description": "The Local Food Infrastructure Fund aims to strengthen local food systems by supporting projects that improve access to food for Canadians. Funding is available for infrastructure projects such as community kitchens, food banks, and community gardens. The goal is to reduce food insecurity and promote healthy, local food options.",
+    "website": "https://agriculture.canada.ca/en/agricultural-programs-and-services/local-food-infrastructure-fund",
+    "organization": "Agriculture and Agri-Food Canada"
+  },
+  {
+    "name": "Second Harvest - Food Rescue",
+    "category": "food_basic_needs",
+    "country": "Canada",
+    "eligibility": "Organizations that serve individuals facing food insecurity. Must be able to safely handle collected food.",
+    "description": "Second Harvest rescues surplus food from businesses and redistributes it to social service organizations. This program helps reduce food waste while providing nutritious food to individuals and families in need. They connect businesses with excess edible food to community organizations that serve vulnerable populations.",
+    "website": "https://secondharvest.ca/",
+    "organization": "Second Harvest"
+  },
+  {
+    "name": "Community Foundations of Canada - Investment Readiness Program",
+    "category": "food_basic_needs",
+    "country": "Canada",
+    "eligibility": "Social purpose organizations, including those addressing food security, that are seeking to access social finance.",
+    "description": "The Investment Readiness Program, delivered through Community Foundations of Canada, helps social purpose organizations become investment ready. While not exclusively for food initiatives, organizations addressing food security can utilize this to build capacity for attracting social investment. This can include programs improving food access in underserved communities.",
+    "website": "https://communityfoundations.ca/",
+    "organization": "Community Foundations of Canada"
+  },
+  {
+    "name": "Feed Opportunity",
+    "category": "food_basic_needs",
+    "country": "Canada",
+    "eligibility": "Must be an Indigenous-led organization.",
+    "description": "Feed Opportunity makes direct investments in Indigenous-led food and agriculture projects across Canada, supporting Indigenous communities in accessing and producing healthy, sustainable food. They prioritize Indigenous-owned and operated businesses that strengthen cultural food systems.",
+    "website": "https://feedopportunity.ca/",
+    "organization": "Raven Indigenous Capital Partners"
+  },
+  {
+    "name": "Leftovers Foundation",
+    "category": "food_basic_needs",
+    "country": "Canada",
+    "eligibility": "Businesses with edible surplus food that want to donate.",
+    "description": "The Leftovers Foundation is a food rescue charity that connects businesses with surplus food to local charities. They prevent food waste and redirect edible food to vulnerable populations. They focus on rescuing food from restaurants, grocery stores, and other businesses.",
+    "website": "https://www.leftoversfoundation.org/",
+    "organization": "Leftovers Foundation"
+  },
+  {
+    "name": "RBC Future Launch Community Challenge",
+    "category": "food_basic_needs",
+    "country": "Canada",
+    "eligibility": "Youth-led organizations and initiatives (ages 15-29) - Addressing local community needs.",
+    "description": "Although not specifically for food, youth-led initiatives addressing food security challenges in their communities can apply to the RBC Future Launch Community Challenge through their local community foundation. This can include projects focused on food access, education, or innovative solutions to reduce hunger.",
+    "website": "https://www.rbc.com/community-social-impact/community/future-launch/community-challenge.html",
+    "organization": "RBC / Community Foundations of Canada"
+  },
+  {
+    "name": "Farm to School Canada Grant Program",
+    "category": "food_basic_needs",
+    "country": "Canada",
+    "eligibility": "Canadian schools committed to bringing more local, healthy food into schools and providing food literacy opportunities for students.",
+    "description": "The Farm to School Canada Grant Program supports schools as they procure and serve more local food, and facilitate student education on food and agriculture. The program fosters connections between schools and local farms.",
+    "website": "https://farmtoschoolcanada.ca/grant-program/",
+    "organization": "Farm to School Canada"
+  },
+  {
+    "name": "Trussell Trust Food Banks",
+    "category": "food_basic_needs",
+    "country": "UK",
+    "eligibility": "Individuals and families in crisis referred by frontline professionals.",
+    "description": "The Trussell Trust supports a network of food banks across the UK, providing emergency food parcels to people facing hunger. Individuals need a referral from a professional such as a doctor, social worker, or support worker to access food bank services. The food parcels typically contain three days' worth of nutritionally balanced food.",
+    "website": "https://www.trusselltrust.org/",
+    "organization": "Trussell Trust"
+  },
+  {
+    "name": "FareShare",
+    "category": "food_basic_needs",
+    "country": "UK",
+    "eligibility": "Charities and community groups that provide food to vulnerable people.",
+    "description": "FareShare redistributes surplus edible food from the food industry to charities and community groups. These organizations then use the food to create meals for vulnerable people, including those experiencing food poverty, homelessness, and social isolation. FareShare does not directly provide food to individuals but works through its network of partner organizations.",
+    "website": "https://fareshare.org.uk/",
+    "organization": "FareShare"
+  },
+  {
+    "name": "The Bread and Butter Thing",
+    "category": "food_basic_needs",
+    "country": "UK",
+    "eligibility": "Low-income individuals and families in select communities.",
+    "description": "The Bread and Butter Thing provides affordable food to low-income individuals and families through a membership scheme. Members pay a small weekly fee to receive a large selection of surplus food items, helping them to stretch their budget and reduce food waste. Operates in specific locations, primarily in the North of England.",
+    "website": "https://www.breadandbutterthing.org/",
+    "organization": "The Bread and Butter Thing"
+  },
+  {
+    "name": "Magic Breakfast",
+    "category": "food_basic_needs",
+    "country": "UK",
+    "eligibility": "Schools with a high percentage of students eligible for free school meals",
+    "description": "Magic Breakfast provides healthy breakfasts to children in schools where a significant proportion of students face food poverty. They work with schools to ensure that children start their day with a nutritious meal, improving their concentration and learning outcomes. This supports programs already in place at the school level.",
+    "website": "https://www.magicbreakfast.com/",
+    "organization": "Magic Breakfast"
+  },
+  {
+    "name": "GroceryAid",
+    "category": "food_basic_needs",
+    "country": "UK",
+    "eligibility": "People working in the grocery industry (current or former).",
+    "description": "GroceryAid provides financial and emotional support to people working in the grocery industry. This includes financial assistance for food costs, debt advice, and mental health support. Eligibility extends to current and former employees of grocery retailers, wholesalers, manufacturers, and distributors.",
+    "website": "https://www.groceryaid.org.uk/",
+    "organization": "GroceryAid"
+  },
+  {
+    "name": "Turn2us Grants Search",
+    "category": "food_basic_needs",
+    "country": "UK",
+    "eligibility": "Varies depending on the grant; typically targets low-income individuals and families.",
+    "description": "Turn2us offers a search tool to locate grants and other financial assistance, including programs that can help with food costs. The website allows users to search for specific grants based on their individual circumstances and needs. It includes smaller, local programs that aren't nationally advertised which may provide food vouchers or assistance.",
+    "website": "https://www.turn2us.org.uk/",
+    "organization": "Turn2us"
+  },
+  {
+    "name": "NSPCC Emergency Support Fund",
+    "category": "food_basic_needs",
+    "country": "UK",
+    "eligibility": "Families with children in need of support.",
+    "description": "The NSPCC provides an emergency support fund that may assist with basic needs, including food, for vulnerable children and families. Referrals are generally made via NSPCC practitioners, ensuring direct assistance is given to those most at risk. This can supplement existing local provisions.",
+    "website": "https://www.nspcc.org.uk/",
+    "organization": "NSPCC"
+  }
+]
