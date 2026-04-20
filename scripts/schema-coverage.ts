@@ -6,9 +6,8 @@
  * Read-only — no DB writes.
  */
 
-import "dotenv/config";
-import { getDb } from "../server/db";
-import { grants } from "../drizzle/schema";
+import { getDb } from "../server/db.js";
+import { grants } from "../drizzle/schema.js";
 import { sql, count, isNotNull, and, eq } from "drizzle-orm";
 
 async function coverageCheck() {
