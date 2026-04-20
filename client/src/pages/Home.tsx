@@ -234,21 +234,21 @@ export default function Home() {
                   step: "01",
                   title: t.howItWorks.step1Title,
                   desc: t.howItWorks.step1Desc,
-                  color: "bg-blue-50 text-blue-600",
+                  color: "bg-[color:var(--brand-tint)] text-[color:var(--brand-green)]",
                 },
                 {
                   icon: Shield,
                   step: "02",
                   title: t.howItWorks.step2Title,
                   desc: t.howItWorks.step2Desc,
-                  color: "bg-green-50 text-green-600",
+                  color: "bg-[color:var(--color-accent-honey)]/20 text-[color:var(--color-accent-sand)]",
                 },
                 {
                   icon: Search,
                   step: "03",
                   title: t.howItWorks.step3Title,
                   desc: t.howItWorks.step3Desc,
-                  color: "bg-purple-50 text-purple-600",
+                  color: "bg-[color:var(--color-accent-peach)]/20 text-[color:var(--color-accent-peach)]",
                 },
               ].map((item, i) => (
                 <motion.div
@@ -300,8 +300,8 @@ export default function Home() {
                 transition={{ duration: 0.4, delay: i * 0.1 }}
                 className="bg-card border border-border rounded-xl p-5 md:p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
               >
-                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center mb-3 md:mb-4">
-                  <pain.icon className="w-5 h-5 text-red-500" />
+                <div className="w-10 h-10 bg-[color:var(--color-accent-terracotta)]/15 rounded-lg flex items-center justify-center mb-3 md:mb-4">
+                  <pain.icon className="w-5 h-5 text-[color:var(--color-accent-terracotta)]" />
                 </div>
                 <h3 className="font-semibold text-foreground mb-2">{pain.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{pain.desc}</p>
@@ -348,7 +348,7 @@ export default function Home() {
           </div>
 
           <motion.div {...fadeInUp} className="mt-8 md:mt-12 max-w-3xl mx-auto">
-            <div className="bg-brand-green/5 border border-green-200/60 rounded-xl p-5 md:p-6">
+            <div className="bg-brand-green/5 border border-[color:var(--brand-soft)]/40 rounded-xl p-5 md:p-6">
               <h3 className="font-semibold text-foreground mb-3">{t.whatYouGet.includesTitle}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {t.whatYouGet.includes.map((item) => (
@@ -455,7 +455,7 @@ export default function Home() {
                 >
                   <div className="flex gap-1 mb-3 md:mb-4">
                     {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-amber-400 text-amber-400" />
+                      <Star key={s} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-[color:var(--color-accent-honey)] text-[color:var(--color-accent-honey)]" />
                     ))}
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed mb-4 md:mb-5 italic">
@@ -634,7 +634,7 @@ export default function Home() {
               </form>
             )}
             {newsletterStatus === "error" && (
-              <p className="text-sm text-red-500 mt-3">{t.newsletter.error}</p>
+              <p className="text-sm text-[color:var(--color-accent-terracotta)] mt-3">{t.newsletter.error}</p>
             )}
           </motion.div>
         </div>

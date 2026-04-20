@@ -50,14 +50,24 @@
   --color-cat-pediatric: oklch(0.7 0.18 80);
   --color-cat-startup: oklch(0.55 0.17 165);
 
-  /* GrantKit brand — shared across themes */
-  /* emerald-500 (#10B981) range — less aggressive than green-500 */
-  --color-brand-green: oklch(0.696 0.17 162);
-  --color-brand-green-hover: oklch(0.636 0.18 162);
+  /* GrantKit brand — sage on light surfaces, emerald on dark.
+     The actual hex/oklch values live in the :root / .dark blocks so the
+     catalog + grant-detail dark surfaces keep their canonical emerald. */
+  --color-brand-green: var(--brand-green);
+  --color-brand-green-hover: var(--brand-green-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-tint: var(--brand-tint);
   --color-navy: oklch(0.28 0.05 255);
   --color-navy-light: oklch(0.35 0.06 255);
-  --color-cta-green: oklch(0.696 0.17 162);
-  --color-cta-green-hover: oklch(0.636 0.18 162);
+  --color-cta-green: var(--brand-green);
+  --color-cta-green-hover: var(--brand-green-hover);
+
+  /* Warm earth accents — used on light surfaces in place of
+     emerald / blue / purple / red tints. */
+  --color-accent-peach: #E8A87C;
+  --color-accent-honey: #F4C27A;
+  --color-accent-sand: #D4A574;
+  --color-accent-terracotta: #C17767;
 
   /* Hero section semantic tokens */
   --color-hero-bg: var(--hero-bg);
@@ -66,42 +76,51 @@
   --color-hero-overlay: var(--hero-overlay);
 }
 
-/* ☀️ SUN THEME (Light / Clean White) */
+/* ☀️ SUN THEME (Light / Warm Earth) — 2026-04-20 redesign
+   Replaces the previous clinical white + navy + emerald + violet palette
+   with a "sunlit earth" set: ivory backgrounds, sage brand, peach/honey
+   accents. Dark theme (.dark) is intentionally left untouched. */
 :root {
   --radius: 0.625rem;
 
-  /* Core surfaces — clean white, no warm beige tint */
-  --background: oklch(0.99 0 0);
-  --foreground: oklch(0.148 0.026 257);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.148 0.026 257);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.148 0.026 257);
+  /* Brand — sage green (replaces emerald on light surfaces) */
+  --brand-green: #3E8E7E;
+  --brand-green-hover: #2F7566;
+  --brand-soft: #7BAE8E;
+  --brand-tint: #E8F0EC;
 
-  /* Primary: deep navy */
-  --primary: oklch(0.28 0.05 255);
-  --primary-foreground: oklch(0.98 0 0);
+  /* Core surfaces — warm ivory / cream / sandy beige */
+  --background: #FBF8F3;          /* warm ivory — app shell */
+  --foreground: #2C2416;          /* warm espresso, not black */
+  --card: #FFFCF5;                /* off-white, barely tinted */
+  --card-foreground: #2C2416;
+  --popover: #FFFCF5;
+  --popover-foreground: #2C2416;
 
-  /* Secondary: very light gray */
-  --secondary: oklch(0.975 0 0);
-  --secondary-foreground: oklch(0.35 0.04 255);
+  /* Primary: sage green (was deep navy) */
+  --primary: #3E8E7E;
+  --primary-foreground: #FBF8F3;
 
-  /* Muted: soft neutral gray */
-  --muted: oklch(0.975 0 0);
-  --muted-foreground: oklch(0.522 0.014 255);
+  /* Secondary: soft cream — section backgrounds */
+  --secondary: #F5EFE6;
+  --secondary-foreground: #2C2416;
 
-  /* Accent: subtle tint */
-  --accent: oklch(0.97 0.004 255);
-  --accent-foreground: oklch(0.148 0.026 257);
+  /* Muted: sandy beige */
+  --muted: #FAF3E8;
+  --muted-foreground: #6B5D4F;     /* warm taupe */
 
-  /* Destructive */
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
+  /* Accent: soft sage tint — for hovered chips, badges */
+  --accent: #E8F0EC;
+  --accent-foreground: #2C2416;
 
-  /* Borders & inputs — gray-200 cool tone (#E5E7EB) */
-  --border: oklch(0.922 0.003 255);
-  --input: oklch(0.922 0.003 255);
-  --ring: oklch(0.55 0.15 255);
+  /* Destructive: terracotta (was aggressive red) */
+  --destructive: #C17767;
+  --destructive-foreground: #FBF8F3;
+
+  /* Borders & inputs — warm tan */
+  --border: #E8D4B8;
+  --input: #E8D4B8;
+  --ring: #D4A574;
 
   /* Charts */
   --chart-1: oklch(0.55 0.2 260);
@@ -111,24 +130,31 @@
   --chart-5: oklch(0.55 0.17 165);
 
   /* Sidebar */
-  --sidebar: oklch(0.98 0.003 90);
-  --sidebar-foreground: oklch(0.15 0.02 255);
-  --sidebar-accent: oklch(0.955 0.008 90);
-  --sidebar-accent-foreground: oklch(0.15 0.02 255);
-  --sidebar-border: oklch(0.915 0.008 90);
-  --sidebar-ring: oklch(0.55 0.15 255);
-  --sidebar-primary: oklch(0.28 0.05 255);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar: #F5EFE6;
+  --sidebar-foreground: #2C2416;
+  --sidebar-accent: #FAF3E8;
+  --sidebar-accent-foreground: #2C2416;
+  --sidebar-border: #E8D4B8;
+  --sidebar-ring: #D4A574;
+  --sidebar-primary: #3E8E7E;
+  --sidebar-primary-foreground: #FBF8F3;
 
-  /* Hero section — light: warm cream with subtle blue tint */
-  --hero-bg: oklch(0.96 0.008 250);
-  --hero-text: oklch(0.15 0.03 255);
-  --hero-muted: oklch(0.45 0.03 255);
-  --hero-overlay: oklch(0.97 0.005 250 / 0.92);
+  /* Hero section — warm gradient foundation */
+  --hero-bg: #FBF8F3;
+  --hero-text: #2C2416;
+  --hero-muted: #6B5D4F;
+  --hero-overlay: rgba(251, 248, 243, 0.92);
 }
 
 /* 🌙 MOON THEME (Dark / Deep Navy) */
 .dark {
+  /* Brand — keep canonical emerald on dark surfaces (catalog, grant detail).
+     The light-theme "warm earth" redesign only changes :root; .dark stays. */
+  --brand-green: oklch(0.696 0.17 162);
+  --brand-green-hover: oklch(0.636 0.18 162);
+  --brand-soft: oklch(0.72 0.08 162);
+  --brand-tint: oklch(0.25 0.03 162);
+
   /* Core surfaces */
   --background: oklch(17% .015 255);
   --foreground: oklch(93% .005 250);

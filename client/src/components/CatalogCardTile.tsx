@@ -17,22 +17,22 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 
 const CATEGORY_ACCENT: Record<string, string> = {
-  medical_treatment:    "bg-rose-500",
-  financial_assistance: "bg-emerald-500",
-  assistive_technology: "bg-violet-500",
-  social_services:      "bg-sky-500",
-  scholarships:         "bg-amber-500",
-  housing:              "bg-red-500",
-  travel_transport:     "bg-teal-500",
-  international:        "bg-indigo-500",
-  food_basic_needs:     "bg-orange-500",
-  startup:              "bg-fuchsia-500",
-  business_funding:     "bg-slate-500",
-  educational:          "bg-blue-500",
-  research:             "bg-cyan-500",
-  community:            "bg-yellow-500",
-  individual:           "bg-pink-500",
-  other:                "bg-gray-400",
+  medical_treatment:    "bg-[color:var(--color-accent-terracotta)]",
+  financial_assistance: "bg-[color:var(--brand-green)]",
+  assistive_technology: "bg-[color:var(--color-accent-peach)]",
+  social_services:      "bg-[color:var(--brand-soft)]",
+  scholarships:         "bg-[color:var(--color-accent-honey)]",
+  housing:              "bg-[color:var(--color-accent-peach)]",
+  travel_transport:     "bg-[color:var(--brand-soft)]",
+  international:        "bg-[color:var(--color-accent-sand)]",
+  food_basic_needs:     "bg-[color:var(--color-accent-honey)]",
+  startup:              "bg-[color:var(--color-accent-peach)]",
+  business_funding:     "bg-[color:var(--color-accent-sand)]",
+  educational:          "bg-[color:var(--brand-soft)]",
+  research:             "bg-[color:var(--brand-green)]",
+  community:            "bg-[color:var(--color-accent-honey)]",
+  individual:           "bg-[color:var(--color-accent-peach)]",
+  other:                "bg-[color:var(--color-accent-sand)]",
 };
 
 function accentFor(category: string): string {

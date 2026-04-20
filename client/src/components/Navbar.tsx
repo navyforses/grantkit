@@ -103,7 +103,7 @@ export default function Navbar() {
                   {user?.role === "admin" && (
                     <Link
                       href="/admin"
-                      className="inline-flex items-center gap-1 text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 bg-purple-50 dark:bg-purple-500/10 hover:bg-purple-100 dark:hover:bg-purple-500/20 px-2.5 py-1.5 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-[color:var(--brand-green)] dark:text-purple-400 hover:text-[color:var(--brand-green-hover)] dark:hover:text-purple-300 bg-[color:var(--brand-tint)] dark:bg-purple-500/10 hover:bg-[color:var(--color-accent-honey)]/30 dark:hover:bg-purple-500/20 px-2.5 py-1.5 rounded-lg transition-colors"
                     >
                       <Shield className="w-3.5 h-3.5" />
                       <span>{t.nav.admin}</span>
