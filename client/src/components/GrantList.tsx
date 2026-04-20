@@ -11,7 +11,7 @@
  *   · highlightedId — external signal (from the map) that scrolls the
  *     matching row into view and tints it.
  *
- * Row height is fixed (368 px: 360 px tile + 8 px inter-row margin) so
+ * Row height is fixed (208 px: 200 px tile + 8 px inter-row margin) so
  * react-window can fast-path the scroll offset math.
  */
 
@@ -27,7 +27,7 @@ import CatalogCardTile from "@/components/CatalogCardTile";
 import type { CatalogItem } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-const ROW_HEIGHT = 368; // 360 px tile + 8 px bottom margin
+const ROW_HEIGHT = 208; // 200 px tile + 8 px bottom margin
 const HOVER_DEBOUNCE_MS = 50;
 
 export interface GrantListProps {

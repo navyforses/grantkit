@@ -1,25 +1,16 @@
 /*
- * CatalogCardTile — rich card used in the full-page list (grid) view.
+ * CatalogCardTile — compact rich card used in the list grid, the split
+ * view's sidebar list, and the mobile list tab.
  *
- * Layout matches the screenshot shared 2026-04-20: a coloured top accent
- * bar driven by category, a circular brand icon, title + organisation,
- * a wrap of pill tags derived from the grant's metadata, a short
- * description (3-line clamp), and a meta stack with address / phone /
- * website. A chevron link at the bottom navigates to /grant/{id}.
- *
- * Only consumed by GrantGrid — the compact sidebar list (SplitView /
- * MobileCatalogView) keeps using CatalogCardCompact.
+ * Density target: ~200 px tall. Fits title, organisation, category + type +
+ * funding tags, a 2-line description, and the location / phone / website
+ * meta row without needing the user to open the detail page. Clicking the
+ * card routes to /grant/{id} for full info.
  */
 
 import { memo, useCallback } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
-import {
-  ChevronDown,
-  Globe,
-  Home,
-  MapPin,
-  Phone,
-} from "lucide-react";
+import { Globe, Home, MapPin, Phone } from "lucide-react";
 import type { CatalogItem } from "@/lib/constants";
 import { getCategoryStyle } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -161,26 +152,26 @@ function CatalogCardTileImpl({
       )}
     >
       {/* Top accent bar */}
-      <div className={cn("h-1.5 w-full", accent)} aria-hidden="true" />
+      <div className={cn("h-1 w-full shrink-0", accent)} aria-hidden="true" />
 
-      <div className="flex flex-col gap-3 p-4">
+      <div className="flex flex-1 flex-col gap-2 p-3 min-h-0">
         {/* Header: icon + title + organisation */}
-        <div className="flex items-start gap-3">
+        <div className="flex items-center gap-2.5">
           <span
             className={cn(
               "inline-flex shrink-0 items-center justify-center rounded-full",
-              "h-10 w-10 bg-white/[0.04] border border-white/[0.06]",
+              "h-8 w-8 bg-white/[0.04] border border-white/[0.06]",
             )}
             aria-hidden="true"
           >
-            <Home className="h-5 w-5 text-white/70" />
+            <Home className="h-4 w-4 text-white/70" />
           </span>
           <div className="min-w-0 flex-1">
-            <h3 className="text-[15px] font-semibold leading-snug text-white/90 line-clamp-2 group-hover:text-[#5DCAA5] transition-colors">
+            <h3 className="text-[14px] font-semibold leading-tight text-white/90 line-clamp-1 group-hover:text-[#5DCAA5] transition-colors">
               {content.name}
             </h3>
             {item.organization && item.organization !== content.name && (
-              <p className="mt-0.5 text-[12px] text-white/50 line-clamp-1">
+              <p className="text-[11px] text-white/50 line-clamp-1">
                 {item.organization}
               </p>
             )}
@@ -188,44 +179,44 @@ function CatalogCardTileImpl({
         </div>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1 overflow-hidden max-h-[24px]">
           {tags.map((tag, i) => (
             <span
               key={`${tag.label}-${i}`}
               className={cn(
-                "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium border",
+                "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-medium border whitespace-nowrap",
                 tag.tone === "category" && getCategoryStyle(item.category),
                 tag.tone === "neutral" && "bg-white/[0.04] text-white/70 border-white/[0.08]",
                 tag.tone === "accent"   && "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
               )}
             >
               {tag.icon && <span aria-hidden="true">{tag.icon}</span>}
-              <span className="truncate max-w-[160px]">{tag.label}</span>
+              <span className="truncate max-w-[140px]">{tag.label}</span>
             </span>
           ))}
         </div>
 
         {/* Description */}
         {content.description && (
-          <p className="text-[13px] leading-relaxed text-white/60 line-clamp-3">
+          <p className="text-[12.5px] leading-snug text-white/60 line-clamp-2">
             {content.description}
           </p>
         )}
 
-        {/* Meta rows */}
-        <div className="flex flex-col gap-1.5 text-[12.5px] text-white/60">
-          <span className="flex items-start gap-2">
-            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/30" aria-hidden="true" />
-            <span className="truncate">{location}</span>
+        {/* Meta — single inline row, wraps if needed */}
+        <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-white/60">
+          <span className="inline-flex items-center gap-1 min-w-0">
+            <MapPin className="h-3 w-3 shrink-0 text-white/30" aria-hidden="true" />
+            <span className="truncate max-w-[140px]">{location}</span>
           </span>
           {item.phone && (
             <a
               href={`tel:${item.phone}`}
               onClick={stop}
-              className="flex items-start gap-2 hover:text-white/90 transition-colors"
+              className="inline-flex items-center gap-1 min-w-0 hover:text-white/90 transition-colors"
             >
-              <Phone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/30" aria-hidden="true" />
-              <span className="truncate">{item.phone}</span>
+              <Phone className="h-3 w-3 shrink-0 text-white/30" aria-hidden="true" />
+              <span className="truncate max-w-[120px]">{item.phone}</span>
             </a>
           )}
           {websiteHref && (
@@ -234,20 +225,12 @@ function CatalogCardTileImpl({
               target="_blank"
               rel="noopener noreferrer"
               onClick={stop}
-              className="flex items-start gap-2 text-[#5DCAA5] hover:text-[#1D9E75] transition-colors"
+              className="inline-flex items-center gap-1 min-w-0 text-[#5DCAA5] hover:text-[#1D9E75] transition-colors"
             >
-              <Globe className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{websiteLabel}</span>
+              <Globe className="h-3 w-3 shrink-0" aria-hidden="true" />
+              <span className="truncate max-w-[140px]">{websiteLabel}</span>
             </a>
           )}
-        </div>
-
-        {/* Footer — full info link */}
-        <div className="mt-auto pt-1">
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium text-white/70 group-hover:text-[#5DCAA5] transition-colors">
-            {t.catalog.fullInfo}
-            <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
-          </span>
         </div>
       </div>
     </div>
