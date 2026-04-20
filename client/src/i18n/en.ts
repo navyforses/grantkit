@@ -1118,4 +1118,22 @@ export const en: Translations = {
     metricConditions: "Conditions",
     relatedTitle: "Similar Grants",
   },
+
+  resourceDetail: {
+    notFound: "Resource not found",
+    notFoundDesc: "The resource you're looking for doesn't exist.",
+    applyNow: "Visit website",
+    saveThisOne: "Save this resource",
+    failedToSave: "Failed to save resource",
+    descriptionTitle: "About this organization",
+    processTitle: "Services offered",
+    relatedTitle: "Similar resources",
+    servicesOffered: "Services offered",
+    targetAudience: "Who can use this",
+    languages: "Languages spoken",
+    cost: "Cost",
+    free: "Free",
+    paid: "Paid",
+    subsidized: "Subsidized",
+  },
 };

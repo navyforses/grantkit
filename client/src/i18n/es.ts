@@ -1116,4 +1116,22 @@ export const es: Translations = {
     metricConditions: "Condiciones",
     relatedTitle: "Becas similares",
   },
+
+  resourceDetail: {
+    notFound: "Recurso no encontrado",
+    notFoundDesc: "El recurso que buscas no existe.",
+    applyNow: "Visitar sitio web",
+    saveThisOne: "Guardar este recurso",
+    failedToSave: "Error al guardar el recurso",
+    descriptionTitle: "Sobre esta organización",
+    processTitle: "Servicios ofrecidos",
+    relatedTitle: "Recursos similares",
+    servicesOffered: "Servicios ofrecidos",
+    targetAudience: "Quién puede usarlo",
+    languages: "Idiomas hablados",
+    cost: "Coste",
+    free: "Gratis",
+    paid: "De pago",
+    subsidized: "Subvencionado",
+  },
 };

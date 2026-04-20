@@ -1116,4 +1116,22 @@ export const ru: Translations = {
     metricConditions: "Условия",
     relatedTitle: "Похожие гранты",
   },
+
+  resourceDetail: {
+    notFound: "Ресурс не найден",
+    notFoundDesc: "Запрашиваемый ресурс не существует.",
+    applyNow: "Перейти на сайт",
+    saveThisOne: "Сохранить этот ресурс",
+    failedToSave: "Не удалось сохранить ресурс",
+    descriptionTitle: "Об этой организации",
+    processTitle: "Предоставляемые услуги",
+    relatedTitle: "Похожие ресурсы",
+    servicesOffered: "Предоставляемые услуги",
+    targetAudience: "Кто может воспользоваться",
+    languages: "Языки обслуживания",
+    cost: "Стоимость",
+    free: "Бесплатно",
+    paid: "Платно",
+    subsidized: "Субсидируется",
+  },
 };
