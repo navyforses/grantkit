@@ -88,8 +88,8 @@ export default function Contact() {
               animate={{ opacity: 1, scale: 1 }}
               className="bg-card border border-border rounded-xl md:rounded-lg p-6 md:p-8 text-center"
             >
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <Send className="w-6 h-6 md:w-8 md:h-8 text-emerald-500" />
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-[color:var(--brand-tint)] rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                <Send className="w-6 h-6 md:w-8 md:h-8 text-[color:var(--brand-green)]" />
               </div>
               <h2 className="text-lg md:text-xl font-bold text-foreground mb-2">{t.contact.successTitle}</h2>
               <p className="text-sm text-muted-foreground mb-5 md:mb-6">
