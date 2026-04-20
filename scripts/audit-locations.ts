@@ -3,7 +3,8 @@
  * audit-locations.ts
  *
  * Queries every active grant and classifies its address/geocoding data quality
- * using the Google Maps Geocoding API.
+ * using the Google Places API (New) — Text Search endpoint.
+ * (Same API as geocode-grants.ts — proven to work with grantkit-server-geocoding-v2)
  *
  * Output (read-only — no DB writes):
  *   .grantkit-redesign/location-audit-report.json   full per-grant detail
@@ -11,8 +12,8 @@
  *
  * Env vars required:
  *   DATABASE_URL
- *   GOOGLE_MAPS_API_KEY  (preferred — server key, no referrer restrictions)
- *   VITE_GOOGLE_MAPS_BROWSER_KEY  (fallback; browser key may 403 from server)
+ *   GOOGLE_MAPS_API_KEY  (required — server key "grantkit-server-geocoding-v2")
+ *                        Browser key will NOT work (referrer restrictions).
  *
  * Usage:
  *   pnpm audit:locations:sample   # 20-grant smoke test
@@ -39,12 +40,26 @@ const args = process.argv.slice(2);
 const limitArg = args.find((a) => a.startsWith("--limit="));
 const LIMIT = limitArg ? parseInt(limitArg.split("=")[1], 10) : null;
 
-const DELAY_MS = 200; // 5 req/sec — well below Google's 50/sec free quota
+const DELAY_MS = 200; // 5 req/sec — well below Google's quota
 const REPORT_DIR = path.resolve(".grantkit-redesign");
 const JSON_REPORT = path.join(REPORT_DIR, "location-audit-report.json");
 const MD_REPORT = path.join(REPORT_DIR, "location-audit-report.md");
 
-const GEOCODE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
+// Places API (New) — Text Search. Same endpoint as geocode-grants.ts.
+const PLACES_URL = "https://places.googleapis.com/v1/places:searchText";
+const FIELD_MASK = "places.location,places.formattedAddress,places.displayName,places.primaryType,places.types,places.id";
+
+// primaryType values that indicate a centroid (country/city), not a real org
+const CENTROID_TYPES = new Set([
+  "country",
+  "administrative_area_level_1",
+  "administrative_area_level_2",
+  "administrative_area_level_3",
+  "locality",
+  "sublocality",
+  "postal_code",
+  "political",
+]);
 
 // ---------------------------------------------------------------------------
 // Types
@@ -256,71 +271,71 @@ function buildQueries(grant: any): string[] {
 }
 
 // ---------------------------------------------------------------------------
-// Google Maps Geocoding API
+// Google Places API (New) — Text Search
 // ---------------------------------------------------------------------------
 
 async function queryGoogleMaps(query: string): Promise<GeoResult> {
   try {
-    const url = `${GEOCODE_URL}?address=${encodeURIComponent(query)}&key=${GOOGLE_MAPS_API_KEY}`;
-    const response = await fetch(url);
+    const res = await fetch(PLACES_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY!,
+        "X-Goog-FieldMask": FIELD_MASK,
+      },
+      body: JSON.stringify({ textQuery: query, maxResultCount: 1 }),
+    });
+
+    // Rate limit — back off and retry once
+    if (res.status === 429) {
+      await sleep(5000);
+      return queryGoogleMaps(query);
+    }
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.warn(`[audit] Places API ${res.status} for "${query}": ${text.slice(0, 150)}`);
+      return { status: "error", formattedAddress: null, lat: null, lng: null, placeId: null, confidence: null };
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data: any = await response.json();
+    const data: any = await res.json();
+    const place = data.places?.[0];
 
-    if (data.status === "OK" && data.results.length > 0) {
-      const result = data.results[0];
-      const types: string[] = result.types ?? [];
+    if (!place?.location) {
+      return { status: "not_found", formattedAddress: null, lat: null, lng: null, placeId: null, confidence: null };
+    }
 
-      let confidence: "high" | "medium" | "low" = "low";
-      if (types.includes("establishment") || types.includes("point_of_interest")) {
-        confidence = "high";
-      } else if (
-        types.includes("street_address") ||
-        types.includes("premise") ||
-        types.includes("subpremise")
+    const primaryType: string = place.primaryType ?? "";
+    const types: string[] = place.types ?? [];
+
+    // Centroid result (country/city level) = low confidence
+    let confidence: "high" | "medium" | "low" = "low";
+    if (!CENTROID_TYPES.has(primaryType)) {
+      if (
+        types.includes("establishment") ||
+        types.includes("point_of_interest") ||
+        primaryType === "health" ||
+        primaryType === "hospital" ||
+        primaryType === "organization"
       ) {
+        confidence = "high";
+      } else {
         confidence = "medium";
       }
-
-      return {
-        status: "found",
-        formattedAddress: result.formatted_address,
-        lat: result.geometry.location.lat,
-        lng: result.geometry.location.lng,
-        placeId: result.place_id,
-        confidence,
-      };
     }
 
-    if (data.status === "ZERO_RESULTS") {
-      return {
-        status: "not_found",
-        formattedAddress: null,
-        lat: null,
-        lng: null,
-        placeId: null,
-        confidence: null,
-      };
-    }
-
-    console.warn(`[audit] API status "${data.status}" for query: "${query}"`);
     return {
-      status: "error",
-      formattedAddress: null,
-      lat: null,
-      lng: null,
-      placeId: null,
-      confidence: null,
+      status: "found",
+      formattedAddress: place.formattedAddress ?? null,
+      lat: place.location.latitude,
+      lng: place.location.longitude,
+      placeId: place.id ?? null,
+      confidence,
     };
   } catch (err) {
     console.error(`[audit] Fetch error for "${query}":`, err);
-    return {
-      status: "error",
-      formattedAddress: null,
-      lat: null,
-      lng: null,
-      placeId: null,
-      confidence: null,
-    };
+    return { status: "error", formattedAddress: null, lat: null, lng: null, placeId: null, confidence: null };
   }
 }
 
