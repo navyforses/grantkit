@@ -113,6 +113,7 @@ English (en), French (fr), Spanish (es), Russian (ru), Georgian (ka)
 | 6 | Google Maps deep-link audit | 🟢 Complete | Kenji | 2026-04-19 |
 | 7 | Mobile + i18n full audit | 🟢 Complete | Amina | 2026-04-19 |
 | 8 | Polish, testing, deploy | 🟢 Complete | Jonas | 2026-04-19 |
+| 8.5.A1 | Location data audit | 🟡 In progress | Hana | — |
 
 Legend: ⚪ Not started · 🟡 In progress · 🟢 Complete · 🔴 Blocked
 
@@ -963,6 +964,61 @@ for Google Maps marker pins.
 
 ---
 
+---
+
+### Phase 8.5.A1 — Location Data Audit
+**Status:** 🟡 In progress
+**Team:** Hana (Data Quality Engineer)
+
+**Goal:** Classify address/geocoding quality for every active grant in the
+database using the Google Maps Geocoding API. Read-only — no DB writes.
+
+**Files created:**
+- `scripts/audit-locations.ts` — audit script (Google Maps Geocoding API,
+  5-strategy query fallback, per-grant verdict classification)
+
+**package.json scripts added:**
+- `audit:locations` — full run on all active grants
+- `audit:locations:sample` — 20-grant smoke test (`--limit=20`)
+
+**Env vars required:**
+- `DATABASE_URL` (MYSQL_PUBLIC_URL from Railway for local runs)
+- `GOOGLE_MAPS_API_KEY` (preferred server key `grantkit-server-geocoding-v2`)
+  OR `VITE_GOOGLE_MAPS_BROWSER_KEY` (fallback; may 403 from server context)
+
+**Verdict categories:**
+| Verdict | Meaning |
+|---------|---------|
+| `verified` | Stored coords match Google (< 5 km), high/medium confidence |
+| `needs_update` | Google found org but stored coords absent or far off |
+| `not_found_by_name` | Google cannot find org via any of 5 query strategies |
+| `ambiguous` | Google found something but confidence is low |
+| `missing_data` | No stored data AND Google fails — deletion candidate |
+| `error` | API error — retry |
+
+**Query strategies (in order):**
+1. `"{org}, {address}"` if stored address exists
+2. `"{org}, {city}, {country}"`
+3. `"{org}, {country}"`
+4. `"{org} Foundation, {country}"` (for abbreviated org names)
+5. `"{org}"` alone
+
+**Rate limit:** 200 ms between requests (5 req/sec) — conservative.
+
+**Expected outputs:**
+- `.grantkit-redesign/location-audit-report.json` — full per-grant JSON
+- `.grantkit-redesign/location-audit-report.md` — markdown summary table
+
+**Decision gate after completion:**
+Before Phase 8.5.A2, user reviews and decides:
+- Are "verified" numbers acceptable? (expect 70-85% typical)
+- For "not_found_by_name" — AI enhancement attempt first, or direct delete?
+- For "missing_data" — confirm deletion is acceptable?
+
+**DO NOT START Phase 8.5.A2 until user reviews and approves.**
+
+---
+
 ## 🚨 Active Blockers
 
 (None currently. Blockers will be listed here by agents when
@@ -986,6 +1042,7 @@ encountered, with owner and resolution path.)
 | 2026-04-19 | Phase 6 | Google Maps deep-link audit: rewrote `googleMaps.ts` with per-OS / per-mode native URLs (iOS `maps://?daddr=` for directions, Android `google.navigation:` for direct turn-by-turn), `visibilitychange`+`pagehide` cancellation of web fallback timer, address-only mobile fallback. New `deepLink` i18n section (4 keys) in 5 languages. A11y: LocationMap popup link gains `role="button"` + `aria-label` + `rel`; GrantDetail "Get Directions" gains `aria-label` + visible focus ring + `aria-hidden` icon. DEV-only `DevDeepLinkTest.tsx` page mounted at `/dev/deep-link-test` with 5 test cases. pnpm check + build clean. | Kenji |
 | 2026-04-19 | Phase 7 | Mobile + i18n audit: 100% i18n coverage confirmed (954 keys × 5 langs). Fixed P0 breadcrumb invalid HTML (`<Link><button>` → `<Link>`). Fixed P0 CatalogToolbar mobile overflow (overflow-x-auto). Fixed P0 hardcoded English aria-labels (3 keys). Added 3 new i18n keys (toolbar.ariaLabel, search.clearAriaLabel, view.ariaLabel) to types.ts + all 5 langs. P1/P2 issues documented in audit-phase7.md for Jonas. pnpm check + build clean. | Amina |
 | 2026-04-19 | Phase 8 | Polish & deploy: Fixed P1 a11y (MapPanel role="application", CatalogToolbar aria-disabled, GrantDetail mobile footer). Fixed P2 (prefers-reduced-motion, <main> landmark, skip-nav). Added map.ariaLabel i18n key in 5 langs. Created robots.txt, generate-sitemap.ts. Bundle: 632KB gzip (within threshold). pnpm check → 0 errors, pnpm build clean, pnpm test → 195 pass. LAUNCH-REPORT.md + deferred-issues.md created. | Jonas |
+| 2026-04-20 | Phase 8.5.A1 | Location audit script created: scripts/audit-locations.ts (Google Maps Geocoding API, 5-strategy fallback, 6 verdict classes, 200ms rate limit, JSON+MD reports). Added audit:locations + audit:locations:sample scripts to package.json. STATE.md updated. | Hana |
 
 ---
 
