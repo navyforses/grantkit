@@ -12,19 +12,19 @@
  * non-empty value and unifies the boilerplate.
  */
 
-type StringRecord = Record<string, string | undefined>;
+type TranslationMap = Readonly<Record<string, unknown>>;
 
 export function pickLocalized<T extends Record<string, any>>(
   item: T,
   field: keyof T,
-  apiTranslations?: StringRecord | null,
-  staticTranslations?: StringRecord | null
+  apiTranslations?: TranslationMap | null,
+  staticTranslations?: TranslationMap | null
 ): string {
   const key = field as string;
   const apiValue = apiTranslations?.[key];
-  if (apiValue) return apiValue;
+  if (typeof apiValue === "string" && apiValue) return apiValue;
   const staticValue = staticTranslations?.[key];
-  if (staticValue) return staticValue;
+  if (typeof staticValue === "string" && staticValue) return staticValue;
   const raw = item[field];
   return typeof raw === "string" ? raw : raw == null ? "" : String(raw);
 }
@@ -39,8 +39,8 @@ export function pickLocalizedFields<
 >(
   item: T,
   fields: readonly K[],
-  apiTranslations?: StringRecord | null,
-  staticTranslations?: StringRecord | null
+  apiTranslations?: TranslationMap | null,
+  staticTranslations?: TranslationMap | null
 ): { [P in K]: string } {
   const out = {} as { [P in K]: string };
   for (const field of fields) {

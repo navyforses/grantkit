@@ -51,6 +51,8 @@ import LocationMap from "@/components/LocationMap";
 import { useGeocodedAddress } from "@/hooks/useGeocodedAddress";
 import { openInGoogleMapsDirections } from "@/lib/googleMaps";
 import { catalogItems } from "@/data/catalogData";
+import { useSaveEntity } from "@/hooks/useSaveEntity";
+import { pickLocalizedFields } from "@/lib/localizeEntity";
 
 export default function GrantDetail() {
   const params = useParams<{ id: string }>();
@@ -80,28 +82,7 @@ export default function GrantDetail() {
   const savedSet = useMemo(() => new Set(savedData?.grantIds || []), [savedData]);
   const isSaved = grant ? savedSet.has(grant.id) : false;
 
-  const utils = trpc.useUtils();
-  const toggleSave = trpc.grants.toggleSave.useMutation({
-    onMutate: async ({ grantId }) => {
-      await utils.grants.savedList.cancel();
-      const prev = utils.grants.savedList.getData();
-      utils.grants.savedList.setData(undefined, (old) => {
-        if (!old) return { grantIds: [grantId] };
-        const ids = old.grantIds.includes(grantId)
-          ? old.grantIds.filter((id) => id !== grantId)
-          : [...old.grantIds, grantId];
-        return { grantIds: ids };
-      });
-      return { prev };
-    },
-    onError: (_err: unknown, _vars: unknown, ctx: { prev?: { grantIds: string[] } } | undefined) => {
-      if (ctx?.prev) utils.grants.savedList.setData(undefined, ctx.prev);
-      toast.error(t.grantDetail.failedToSave);
-    },
-    onSettled: () => {
-      utils.grants.savedList.invalidate();
-    },
-  });
+  const { toggleSave } = useSaveEntity({ showErrorToast: true });
 
   if (isLoading && !grant) {
     return (
@@ -141,17 +122,12 @@ export default function GrantDetail() {
     ? tCatalogContent(item.itemId || item.id, { name: item.name, description: item.description || "", eligibility: item.eligibility || "" })
     : null;
 
-  const content = {
-    name: apiTrans?.name || staticTrans?.name || item.name,
-    description: apiTrans?.description || staticTrans?.description || item.description,
-    eligibility: apiTrans?.eligibility || staticTrans?.eligibility || item.eligibility,
-    applicationProcess: apiTrans?.applicationProcess || item.applicationProcess,
-    deadline: apiTrans?.deadline || item.deadline,
-    targetDiagnosis: apiTrans?.targetDiagnosis || item.targetDiagnosis,
-    ageRange: apiTrans?.ageRange || item.ageRange,
-    geographicScope: apiTrans?.geographicScope || item.geographicScope,
-    documentsRequired: apiTrans?.documentsRequired || item.documentsRequired,
-  };
+  const content = pickLocalizedFields(
+    item,
+    ["name", "description", "eligibility", "applicationProcess", "deadline", "targetDiagnosis", "ageRange", "geographicScope", "documentsRequired"] as const,
+    apiTrans as Record<string, unknown> | null | undefined,
+    staticTrans as unknown as Record<string, unknown> | null | undefined,
+  );
 
   const translatedCategory = tCategory(item.category);
   const translatedCountry = tCountry(item.country);
@@ -443,7 +419,7 @@ export default function GrantDetail() {
                           ? "border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 hover:text-yellow-300"
                           : "border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
                       }`}
-                      onClick={() => toggleSave.mutate({ grantId: item.id })}
+                      onClick={() => toggleSave(item.id)}
                     >
                       {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
                       {isSaved ? t.grantDetail.saved : t.grantDetail.saveThisGrant}
@@ -719,7 +695,7 @@ export default function GrantDetail() {
                 className={`h-12 w-12 shrink-0 rounded-xl ${
                   isSaved ? "border-yellow-400/40 text-yellow-400" : "border-white/20 text-white/70"
                 }`}
-                onClick={() => toggleSave.mutate({ grantId: item.id })}
+                onClick={() => toggleSave(item.id)}
                 aria-label={isSaved ? t.grantDetail.saved : t.grantDetail.saveThisGrant}
               >
                 {isSaved ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
