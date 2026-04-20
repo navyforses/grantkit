@@ -2,7 +2,6 @@
  * CatalogCard Component
  * Design: Structured Clarity — category color-coded left border, dense but scannable layout
  * Unified card for both grants and resources. Clickable to navigate to detail page.
- * Accepts either a legacy CatalogItem or a Supabase ResourceFull.
  */
 
 import { motion } from "framer-motion";
@@ -10,42 +9,21 @@ import { ArrowUpRight, Bookmark, BookmarkCheck, Clock, DollarSign, Globe, Mail, 
 import { Link } from "wouter";
 import { getCategoryStyle, getCategoryBorderColor, type CatalogItem } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
-import StatusBadge from "@/components/StatusBadge";
 import AmountRange from "@/components/AmountRange";
-import { localized, localizedDescription } from "@/lib/localize";
-import type { ResourceFull, ResourceStatus } from "@/types/resources";
 
 interface CatalogCardProps {
-  item: CatalogItem | ResourceFull;
+  item: CatalogItem;
   index: number;
   isSaved?: boolean;
   onToggleSave?: (grantId: string) => void;
   isAuthenticated?: boolean;
 }
 
-function isResourceFull(item: CatalogItem | ResourceFull): item is ResourceFull {
-  return "resource_type" in item && "slug" in item;
-}
-
-const RESOURCE_TYPE_BORDER: Record<string, string> = {
-  GRANT:   "border-l-emerald-500",
-  SOCIAL:  "border-l-blue-500",
-  MEDICAL: "border-l-purple-500",
-}
-
-const RESOURCE_TYPE_BADGE: Record<string, string> = {
-  GRANT:   "bg-emerald-50 text-emerald-600 border-emerald-200",
-  SOCIAL:  "bg-blue-50 text-blue-600 border-blue-200",
-  MEDICAL: "bg-purple-50 text-purple-600 border-purple-200",
-}
-
 export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuthenticated }: CatalogCardProps) {
   const { t, tCategory, tCountry, tCatalogContent, language } = useLanguage();
-  const isResource = isResourceFull(item);
 
-  // ── Legacy CatalogItem path ──────────────────────────────────────────────
-  if (!isResource) {
-    const legacyItem = item as CatalogItem;
+  {
+    const legacyItem = item;
     const borderColor = getCategoryBorderColor(legacyItem.category);
     const content = tCatalogContent(legacyItem.id, {
       name: legacyItem.name,
@@ -149,139 +127,4 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
       </motion.div>
     );
   }
-
-  // ── Supabase ResourceFull path ───────────────────────────────────────────
-  const resource = item as ResourceFull;
-  const borderClass = RESOURCE_TYPE_BORDER[resource.resource_type] ?? "border-l-gray-300";
-  const badgeClass = RESOURCE_TYPE_BADGE[resource.resource_type] ?? "bg-gray-50 text-gray-600 border-gray-200";
-
-  const title = localized(resource, language, 'title');
-  const description = localizedDescription(resource, language);
-  const primaryCat = resource.categories?.[0];
-  const primaryLoc = resource.locations?.[0];
-  const countryFlag = primaryLoc?.country_code === "US" ? "🇺🇸" : primaryLoc ? "🌐" : "🌍";
-  const primaryLink = resource.application_url || resource.source_url || "";
-
-  const typeLabel = resource.resource_type === 'GRANT'
-    ? t.resources.typeGrant
-    : resource.resource_type === 'SOCIAL'
-    ? t.resources.typeSocial
-    : t.resources.typeMedical;
-
-  // Deadline urgency
-  let deadlineDisplay: React.ReactNode = null;
-  if (resource.deadline) {
-    const daysLeft = Math.ceil((new Date(resource.deadline).getTime() - Date.now()) / 86400000);
-    const urgentClass = daysLeft <= 7 ? "text-red-600" : daysLeft <= 30 ? "text-amber-600" : "text-muted-foreground";
-    const label = daysLeft === 1 ? t.resources.dayLeft
-      : daysLeft <= 0 ? t.resources.statusClosed
-      : t.resources.daysLeft.replace("{count}", String(daysLeft));
-    deadlineDisplay = (
-      <span className={`flex items-center gap-1 ${urgentClass}`}>
-        <Clock className="w-3.5 h-3.5 opacity-60" />{label}
-      </span>
-    );
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.02, 0.4), ease: "easeOut" }}
-      className={`group bg-card border border-border rounded-lg ${borderClass} border-l-4 hover:shadow-md hover:border-foreground/20 transition-all duration-200 relative theme-transition`}
-    >
-      {isAuthenticated && onToggleSave && (
-        <button
-          type="button"
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleSave(resource.id); }}
-          className={`absolute top-3 right-3 z-10 p-1.5 rounded-md transition-all ${
-            isSaved ? "text-yellow-500 hover:bg-yellow-500/10" : "text-muted-foreground/40 hover:text-muted-foreground hover:bg-secondary opacity-0 group-hover:opacity-100"
-          }`}
-          title={isSaved ? t.grantDetail.removeFromSaved : t.grantDetail.saveThisGrant}
-        >
-          {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-        </button>
-      )}
-
-      <Link href={`/resources/${resource.slug}`}>
-        <div className="p-5 cursor-pointer">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div className="flex items-start gap-2.5 min-w-0">
-              <span className="text-xl mt-0.5 shrink-0">{countryFlag}</span>
-              <div className="min-w-0">
-                <h3 className="font-semibold text-foreground leading-snug text-[15px] group-hover:text-brand-green transition-colors">{title}</h3>
-                {resource.source_name && (
-                  <p className="text-sm text-muted-foreground mt-0.5 truncate">{resource.source_name}</p>
-                )}
-              </div>
-            </div>
-            <div className="flex flex-col items-end gap-1.5 shrink-0 pr-6">
-              {primaryCat && (
-                <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${badgeClass}`}>
-                  {primaryCat.icon ? `${primaryCat.icon} ` : ''}{localized(primaryCat, language)}
-                </span>
-              )}
-              <StatusBadge status={resource.status as ResourceStatus} />
-            </div>
-          </div>
-
-          {/* Description */}
-          {description && (
-            <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">{description}</p>
-          )}
-
-          {/* Meta row */}
-          <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-sm text-muted-foreground mb-3">
-            {primaryLoc && (
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-muted-foreground/60" />
-                {primaryLoc.region_name
-                  ? `${primaryLoc.region_name}, ${primaryLoc.country_code}`
-                  : primaryLoc.country_name}
-              </span>
-            )}
-            {(resource.amount_min != null || resource.amount_max != null) && (
-              <span className="flex items-center gap-1">
-                <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
-                <AmountRange min={resource.amount_min} max={resource.amount_max} currency={resource.currency} />
-              </span>
-            )}
-            {deadlineDisplay}
-          </div>
-
-          {/* Eligibility details */}
-          {resource.eligibility_details && (
-            <p className="text-xs text-muted-foreground leading-relaxed mb-4 line-clamp-2">
-              <span className="font-medium text-foreground/70">{t.catalog.eligibility}</span>{" "}{resource.eligibility_details}
-            </p>
-          )}
-
-          {/* Category tags */}
-          {resource.categories && resource.categories.length > 1 && (
-            <div className="flex flex-wrap gap-1 mb-3">
-              {resource.categories.slice(1, 4).map((cat) => (
-                <span key={cat.id} className="text-[11px] px-2 py-0.5 rounded bg-secondary text-muted-foreground">
-                  {localized(cat, language)}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Links */}
-          <div className="flex flex-wrap items-center gap-3">
-            {primaryLink && (
-              <span
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(primaryLink.startsWith("http") ? primaryLink : `https://${primaryLink}`, "_blank"); }}
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-brand-green transition-colors"
-              >
-                <Globe className="w-3.5 h-3.5" />{t.catalog.visitWebsite}<ArrowUpRight className="w-3.5 h-3.5" />
-              </span>
-            )}
-            <span className={`text-xs font-medium px-2 py-0.5 rounded border ${badgeClass}`}>{typeLabel}</span>
-          </div>
-        </div>
-      </Link>
-    </motion.div>
-  );
 }
