@@ -1034,6 +1034,7 @@ export const en: Translations = {
   },
 
   map: {
+    ariaLabel: "Grant locations map",
     openInGoogle: "Open in Google Maps",
     getDirections: "Get directions",
     zoomIn: "Zoom in",

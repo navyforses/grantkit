@@ -1032,6 +1032,7 @@ export const es: Translations = {
   },
 
   map: {
+    ariaLabel: "Mapa de ubicaciones de becas",
     openInGoogle: "Abrir en Google Maps",
     getDirections: "Cómo llegar",
     zoomIn: "Acercar",

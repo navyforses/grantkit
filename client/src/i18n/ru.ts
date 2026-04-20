@@ -1032,6 +1032,7 @@ export const ru: Translations = {
   },
 
   map: {
+    ariaLabel: "Карта расположения грантов",
     openInGoogle: "Открыть в Google Картах",
     getDirections: "Маршрут",
     zoomIn: "Увеличить",

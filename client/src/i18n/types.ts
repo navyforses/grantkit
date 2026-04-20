@@ -1092,6 +1092,7 @@ export interface Translations {
 
   // Map (LocationMap + MapPanel + Google Maps deep-link)
   map: {
+    ariaLabel: string;    // aria-label on the MapPanel container (role="application")
     openInGoogle: string;
     getDirections: string;
     zoomIn: string;
