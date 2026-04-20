@@ -1,7 +1,9 @@
 /*
- * GrantList — virtualized list of CatalogCardCompact rows (Phase 4B, Arash).
+ * GrantList — virtualized single-column list of CatalogCardTile rows.
  *
- * Uses react-window's <List> so 600+ grants render without frame drops.
+ * Used by SplitView (desktop list-beside-map) and MobileCatalogView.
+ * Standalone List layout (layoutMode === "list") uses GrantGrid instead.
+ *
  * Exposes two-way hover sync:
  *   · onHoverChange(id | null) — emits when a card is pointer-entered/left,
  *     debounced 50 ms to avoid thrashing the map's DOM when sliding the
@@ -9,7 +11,7 @@
  *   · highlightedId — external signal (from the map) that scrolls the
  *     matching row into view and tints it.
  *
- * Row height is fixed (96 px: 92 px card + 4 px inter-row margin) so
+ * Row height is fixed (368 px: 360 px tile + 8 px inter-row margin) so
  * react-window can fast-path the scroll offset math.
  */
 
@@ -21,11 +23,11 @@ import {
 } from "react";
 import type { CSSProperties } from "react";
 import { List, type ListImperativeAPI } from "react-window";
-import CatalogCardCompact from "@/components/CatalogCardCompact";
+import CatalogCardTile from "@/components/CatalogCardTile";
 import type { CatalogItem } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-const ROW_HEIGHT = 96; // 92 px card + 4 px bottom margin
+const ROW_HEIGHT = 368; // 360 px tile + 8 px bottom margin
 const HOVER_DEBOUNCE_MS = 50;
 
 export interface GrantListProps {
@@ -65,12 +67,13 @@ function Row({
   if (!item) return null;
   const isHi = item.id === highlightedId;
   return (
-    <div style={style} {...ariaAttributes} className="px-3 pb-1">
-      <CatalogCardCompact
+    <div style={style} {...ariaAttributes} className="px-3 pb-2">
+      <CatalogCardTile
         item={item}
         highlighted={isHi}
         onHoverChange={onHoverChange}
         onClick={onCardClick}
+        className="h-full"
       />
     </div>
   );
