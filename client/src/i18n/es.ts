@@ -461,6 +461,7 @@ export const es: Translations = {
     catHousing: "Vivienda",
     catTravelTransport: "Viaje y transporte",
     catInternational: "Internacional",
+    catBusinessFunding: "Financiación empresarial",
     catOther: "Otro",
 
     usersTitle: "Usuarios",

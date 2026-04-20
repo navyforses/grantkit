@@ -479,6 +479,7 @@ export interface Translations {
     catHousing: string;
     catTravelTransport: string;
     catInternational: string;
+    catBusinessFunding: string;
     catOther: string;
 
     // Users tab

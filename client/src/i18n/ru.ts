@@ -461,6 +461,7 @@ export const ru: Translations = {
     catHousing: "Жильё",
     catTravelTransport: "Путешествия и транспорт",
     catInternational: "Международные",
+    catBusinessFunding: "Финансирование бизнеса",
     catOther: "Другое",
 
     usersTitle: "Пользователи",

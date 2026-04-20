@@ -26,13 +26,6 @@ interface RegionOption {
   count?: number;
 }
 
-interface CategoryOption {
-  id: string;
-  label: string;
-  count: number;
-  icon?: string;
-}
-
 interface CountryOption {
   code: string;       // ISO code (US, GB, DE, …)
   label: string;      // localised country name
@@ -61,9 +54,6 @@ export interface CatalogToolbarProps {
   cityFilter: string | null;
   onCityChange: (c: string | null) => void;
 
-  categoryFilter: string | null;
-  onCategoryChange: (c: string | null) => void;
-
   viewMode: ToolbarViewMode;
   onViewChange: (m: ToolbarViewMode) => void;
 
@@ -71,7 +61,6 @@ export interface CatalogToolbarProps {
   availableCountries: CountryOption[];
   availableStates: PlaceOption[];
   availableCities: PlaceOption[];
-  availableCategories: CategoryOption[];
 }
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -87,15 +76,12 @@ export default function CatalogToolbar({
   onStateChange,
   cityFilter,
   onCityChange,
-  categoryFilter,
-  onCategoryChange,
   viewMode,
   onViewChange,
   availableRegions,
   availableCountries,
   availableStates,
   availableCities,
-  availableCategories,
 }: CatalogToolbarProps) {
   const { t } = useLanguage();
 
@@ -134,11 +120,6 @@ export default function CatalogToolbar({
     ? availableCities.find((c) => c.value === cityFilter)
     : null;
   const cityLabel = selectedCity?.label ?? t.toolbar.city.all;
-
-  const selectedCategory = categoryFilter
-    ? availableCategories.find((c) => c.id === categoryFilter)
-    : null;
-  const categoryLabel = selectedCategory?.label ?? t.toolbar.category.all;
 
   // Cascade gates: a child dropdown is only meaningful once its parent is set.
   const stateEnabled = !!countryFilter && availableStates.length > 0;
@@ -291,32 +272,6 @@ export default function CatalogToolbar({
             {typeof c.count === "number" && (
               <span className="ml-auto text-xs text-white/40">{c.count}</span>
             )}
-          </DropdownMenuItem>
-        ))}
-      </ToolbarDropdown>
-
-      {/* Category dropdown */}
-      <ToolbarDropdown
-        label={t.toolbar.category.label}
-        value={categoryLabel}
-        active={!!categoryFilter}
-        ariaLabel={t.toolbar.category.label}
-      >
-        <DropdownMenuItem
-          data-active={categoryFilter === null}
-          onSelect={() => onCategoryChange(null)}
-        >
-          {t.toolbar.category.all}
-        </DropdownMenuItem>
-        {availableCategories.map((c) => (
-          <DropdownMenuItem
-            key={c.id}
-            data-active={categoryFilter === c.id}
-            onSelect={() => onCategoryChange(c.id)}
-          >
-            {c.icon ? <span className="mr-2">{c.icon}</span> : null}
-            <span>{c.label}</span>
-            <span className="ml-auto text-xs text-white/40">{c.count}</span>
           </DropdownMenuItem>
         ))}
       </ToolbarDropdown>
