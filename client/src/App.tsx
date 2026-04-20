@@ -20,7 +20,6 @@ import { ONBOARDING_STATE_STORAGE_KEY } from "@/components/onboarding/Onboarding
 // They only download when the user navigates to the relevant route.
 const Catalog        = lazy(() => import("./pages/Catalog"));
 const GrantDetail    = lazy(() => import("./pages/GrantDetail"));
-const ResourceDetail = lazy(() => import("./pages/ResourceDetail"));
 const Profile     = lazy(() => import("./pages/Profile"));
 const Dashboard   = lazy(() => import("./pages/Dashboard"));
 const Onboarding  = lazy(() => import("./pages/Onboarding"));
@@ -56,7 +55,6 @@ function Router() {
         {/* Everything else is lazy */}
         <Route path="/catalog" component={Catalog} />
         <Route path="/grant/:id" component={GrantDetail} />
-        <Route path="/resources/:slug" component={ResourceDetail} />
         <Route path="/profile" component={Profile} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/onboarding" component={Onboarding} />

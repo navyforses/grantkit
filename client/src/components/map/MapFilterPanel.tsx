@@ -16,7 +16,7 @@
 
 import { useMemo, useState } from "react";
 import { State, City, Country } from "country-state-city";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X, ChevronRight } from "lucide-react";
 import { CATEGORIES, type CategoryValue, type TypeValue, REGIONS, EU_MEMBER_CODES, type RegionCode } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import SearchableSelect, { type SelectOption } from "./SearchableSelect";
