@@ -50,10 +50,21 @@ function accentFor(category: string): string {
 
 export interface CatalogCardTileProps {
   item: CatalogItem;
+  /** When true, renders a brighter border — used by SplitView to mirror the
+   *  map's hovered marker. Defaults to false. */
+  highlighted?: boolean;
+  onHoverChange?: (id: string | null) => void;
   onClick?: (item: CatalogItem) => void;
+  className?: string;
 }
 
-function CatalogCardTileImpl({ item, onClick }: CatalogCardTileProps) {
+function CatalogCardTileImpl({
+  item,
+  highlighted = false,
+  onHoverChange,
+  onClick,
+  className,
+}: CatalogCardTileProps) {
   const { t, tCategory, tCountry, tCatalogContent } = useLanguage();
 
   const content = tCatalogContent(item.id, {
@@ -124,20 +135,29 @@ function CatalogCardTileImpl({ item, onClick }: CatalogCardTileProps) {
     [item, onClick],
   );
 
+  const handleEnter = useCallback(() => onHoverChange?.(item.id), [item.id, onHoverChange]);
+  const handleLeave = useCallback(() => onHoverChange?.(null), [onHoverChange]);
+
   const stop = (e: MouseEvent) => e.stopPropagation();
 
   return (
     <div
       role="article"
       tabIndex={0}
+      data-grant-id={item.id}
+      data-highlighted={highlighted || undefined}
       aria-label={content.name}
       onClick={handleClick}
       onKeyDown={handleKey}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-xl cursor-pointer",
         "bg-[#12181D] border border-white/[0.06]",
         "transition-all duration-150 hover:border-[#1D9E75]/40 hover:shadow-lg hover:shadow-black/20",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
+        highlighted && "border-[#1D9E75]/60 shadow-[0_0_0_1px_rgba(29,158,117,0.45)]",
+        className,
       )}
     >
       {/* Top accent bar */}
