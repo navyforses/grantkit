@@ -10,7 +10,6 @@
  */
 
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Filter, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import SmartSearchPanel from "@/components/SmartSearchPanel";
 import CatalogToolbar, { type ToolbarViewMode } from "@/components/CatalogToolbar";
@@ -540,38 +539,6 @@ export default function Catalog() {
         availableStates={availableStates}
         availableCities={availableCities}
       />
-
-      {/* View mode toggle (Filters / Smart Search) — the resource-type
-          switcher lived here before Phase 4A but is now collapsed into
-          the CatalogToolbar's Type dropdown. */}
-      <div className="bg-background/95 backdrop-blur-sm border-b border-border px-3 py-1.5 flex items-center gap-2">
-        <div className="ml-auto flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => setViewMode("map")}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              viewMode === "map"
-                ? "bg-brand-green/10 text-brand-green"
-                : "text-muted-foreground hover:bg-secondary"
-            }`}
-          >
-            <Filter className="w-3.5 h-3.5" />
-            {t.smartSearch.tabFilters}
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("search")}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              viewMode === "search"
-                ? "bg-brand-green/10 text-brand-green"
-                : "text-muted-foreground hover:bg-secondary"
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            {t.smartSearch.tab}
-          </button>
-        </div>
-      </div>
 
       {/* Smart Search view — replaces map when "Smart Search" tab is active */}
       {viewMode === "search" && (
