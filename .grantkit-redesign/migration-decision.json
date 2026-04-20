@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-04-20T13:45:00Z",
+  "decision": "skip",
+  "reasoning": "MySQL is already more complete than Supabase — no migration needed.",
+  "evidence": {
+    "supabase": {
+      "total_resources": 643,
+      "all_resource_type": "GRANT",
+      "all_country_code": "US",
+      "resource_categories_count": 843,
+      "grant_medical_tagged": 200,
+      "note": "Data appears to be a stale snapshot copied from MySQL via scripts/migrate-to-supabase.ts"
+    },
+    "mysql": {
+      "us_grants_total": 702,
+      "us_grants_by_category": {
+        "medical_treatment": 295,
+        "financial_assistance": 113,
+        "social_services": 88,
+        "housing": 74,
+        "assistive_technology": 53,
+        "scholarships": 26,
+        "travel_transport": 23,
+        "legal_aid": 7,
+        "mental_health": 7,
+        "food_basic_needs": 7,
+        "international": 6,
+        "other": 3
+      },
+      "note": "Phase 3 enrichment achieved 100% category coverage across all grants."
+    },
+    "comparison": {
+      "supabase_medical": 200,
+      "mysql_medical": 295,
+      "conclusion": "MySQL has 95 MORE medical-categorized grants than Supabase has tagged. Supabase medical tags are a stale subset."
+    }
+  },
+  "actions_taken": [
+    "No MySQL data modified",
+    "No Supabase data modified",
+    "apply-medical-category.ts will NOT be run"
+  ],
+  "next_step": "Proceed to R2B: Supabase client disconnect."
+}
