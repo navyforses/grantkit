@@ -169,6 +169,7 @@ export const ru: Translations = {
     eligibility: "Критерии:",
     searchPlaceholder: "Поиск по названию, организации или заболеванию...",
     visitWebsite: "Посетить сайт",
+    fullInfo: "Полная информация",
     loadMore: "Загрузить ещё",
     remaining: "осталось",
     typeAll: "Все типы",

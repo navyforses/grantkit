@@ -16,6 +16,7 @@ import SmartSearchPanel from "@/components/SmartSearchPanel";
 import CatalogToolbar, { type ToolbarViewMode } from "@/components/CatalogToolbar";
 import SplitView from "@/components/SplitView";
 import GrantList from "@/components/GrantList";
+import GrantGrid from "@/components/GrantGrid";
 import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
 import { useIsMobile } from "@/hooks/useMobile";
 import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, type SortValue, REGIONS, CATEGORIES, EU_MEMBER_CODES } from "@/lib/constants";
@@ -650,7 +651,7 @@ export default function Catalog() {
           />
         ) : layoutMode === "list" ? (
           <div className="h-full w-full bg-[#0F1419]">
-            <GrantList
+            <GrantGrid
               grants={activeMapItems}
               onCardClick={handleCardNavigate}
               emptyLabel={t.catalog.noResults}

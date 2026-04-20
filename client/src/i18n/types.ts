@@ -168,6 +168,7 @@ export interface Translations {
     eligibility: string;
     searchPlaceholder: string;
     visitWebsite: string;
+    fullInfo: string;
     loadMore: string;
     remaining: string;
     typeAll: string;

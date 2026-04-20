@@ -1,0 +1,236 @@
+/*
+ * CatalogCardTile — rich card used in the full-page list (grid) view.
+ *
+ * Layout matches the screenshot shared 2026-04-20: a coloured top accent
+ * bar driven by category, a circular brand icon, title + organisation,
+ * a wrap of pill tags derived from the grant's metadata, a short
+ * description (3-line clamp), and a meta stack with address / phone /
+ * website. A chevron link at the bottom navigates to /grant/{id}.
+ *
+ * Only consumed by GrantGrid — the compact sidebar list (SplitView /
+ * MobileCatalogView) keeps using CatalogCardCompact.
+ */
+
+import { memo, useCallback } from "react";
+import type { KeyboardEvent, MouseEvent } from "react";
+import {
+  ChevronDown,
+  Globe,
+  Home,
+  MapPin,
+  Phone,
+} from "lucide-react";
+import type { CatalogItem } from "@/lib/constants";
+import { getCategoryStyle } from "@/lib/constants";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { cn } from "@/lib/utils";
+
+const CATEGORY_ACCENT: Record<string, string> = {
+  medical_treatment:    "bg-rose-500",
+  financial_assistance: "bg-emerald-500",
+  assistive_technology: "bg-violet-500",
+  social_services:      "bg-sky-500",
+  scholarships:         "bg-amber-500",
+  housing:              "bg-red-500",
+  travel_transport:     "bg-teal-500",
+  international:        "bg-indigo-500",
+  food_basic_needs:     "bg-orange-500",
+  startup:              "bg-fuchsia-500",
+  educational:          "bg-blue-500",
+  research:             "bg-cyan-500",
+  community:            "bg-yellow-500",
+  individual:           "bg-pink-500",
+  other:                "bg-gray-400",
+};
+
+function accentFor(category: string): string {
+  return CATEGORY_ACCENT[category] ?? CATEGORY_ACCENT.other;
+}
+
+export interface CatalogCardTileProps {
+  item: CatalogItem;
+  onClick?: (item: CatalogItem) => void;
+}
+
+function CatalogCardTileImpl({ item, onClick }: CatalogCardTileProps) {
+  const { t, tCategory, tCountry, tCatalogContent } = useLanguage();
+
+  const content = tCatalogContent(item.id, {
+    name: item.name,
+    description: item.description,
+    eligibility: item.eligibility || "",
+  });
+
+  const categoryLabel = tCategory(item.category);
+  const accent = accentFor(item.category);
+  const typeLabel = item.type === "grant" ? t.catalog.typeGrant : t.catalog.typeResource;
+
+  const fundingLabel = (() => {
+    const raw = (item.fundingType || "").trim();
+    if (!raw || raw.toLowerCase() === "all") return null;
+    return raw.replace(/_/g, " ");
+  })();
+
+  const diagnosisLabel = (() => {
+    const raw = (item.targetDiagnosis || "").trim();
+    if (!raw) return null;
+    if (raw.toLowerCase() === "general" || raw.toLowerCase() === "all") return null;
+    return raw;
+  })();
+
+  const ageLabel = (() => {
+    const raw = (item.ageRange || "").trim();
+    if (!raw || raw.toLowerCase() === "all ages" || raw.toLowerCase() === "all") return null;
+    return raw;
+  })();
+
+  const tags: { label: string; icon?: string; tone: "category" | "neutral" | "accent" }[] = [];
+  tags.push({ label: categoryLabel, tone: "category" });
+  tags.push({ label: typeLabel, tone: "neutral" });
+  if (fundingLabel) tags.push({ label: fundingLabel, icon: "💠", tone: "neutral" });
+  if (diagnosisLabel) tags.push({ label: diagnosisLabel, icon: "🩺", tone: "neutral" });
+  if (ageLabel) tags.push({ label: ageLabel, icon: "👤", tone: "neutral" });
+  if (item.b2VisaEligible === "yes") tags.push({ label: t.grantDetail.b2VisaOK, icon: "✈️", tone: "accent" });
+
+  const location = (() => {
+    const parts: string[] = [];
+    if (item.city) parts.push(item.city);
+    if (item.state && item.state !== "Nationwide" && item.state !== "International") {
+      parts.push(item.state);
+    }
+    if (parts.length === 0) return tCountry(item.country) || item.country || "—";
+    return parts.join(", ");
+  })();
+
+  const website = (item.website || "").trim();
+  const websiteHref = website ? (website.startsWith("http") ? website : `https://${website}`) : "";
+  const websiteLabel = website
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
+
+  const handleClick = useCallback(
+    (_e: MouseEvent<HTMLDivElement>) => onClick?.(item),
+    [item, onClick],
+  );
+
+  const handleKey = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onClick?.(item);
+      }
+    },
+    [item, onClick],
+  );
+
+  const stop = (e: MouseEvent) => e.stopPropagation();
+
+  return (
+    <div
+      role="article"
+      tabIndex={0}
+      aria-label={content.name}
+      onClick={handleClick}
+      onKeyDown={handleKey}
+      className={cn(
+        "group relative flex flex-col overflow-hidden rounded-xl cursor-pointer",
+        "bg-[#12181D] border border-white/[0.06]",
+        "transition-all duration-150 hover:border-[#1D9E75]/40 hover:shadow-lg hover:shadow-black/20",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
+      )}
+    >
+      {/* Top accent bar */}
+      <div className={cn("h-1.5 w-full", accent)} aria-hidden="true" />
+
+      <div className="flex flex-col gap-3 p-4">
+        {/* Header: icon + title + organisation */}
+        <div className="flex items-start gap-3">
+          <span
+            className={cn(
+              "inline-flex shrink-0 items-center justify-center rounded-full",
+              "h-10 w-10 bg-white/[0.04] border border-white/[0.06]",
+            )}
+            aria-hidden="true"
+          >
+            <Home className="h-5 w-5 text-white/70" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-[15px] font-semibold leading-snug text-white/90 line-clamp-2 group-hover:text-[#5DCAA5] transition-colors">
+              {content.name}
+            </h3>
+            {item.organization && item.organization !== content.name && (
+              <p className="mt-0.5 text-[12px] text-white/50 line-clamp-1">
+                {item.organization}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5">
+          {tags.map((tag, i) => (
+            <span
+              key={`${tag.label}-${i}`}
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium border",
+                tag.tone === "category" && getCategoryStyle(item.category),
+                tag.tone === "neutral" && "bg-white/[0.04] text-white/70 border-white/[0.08]",
+                tag.tone === "accent"   && "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
+              )}
+            >
+              {tag.icon && <span aria-hidden="true">{tag.icon}</span>}
+              <span className="truncate max-w-[160px]">{tag.label}</span>
+            </span>
+          ))}
+        </div>
+
+        {/* Description */}
+        {content.description && (
+          <p className="text-[13px] leading-relaxed text-white/60 line-clamp-3">
+            {content.description}
+          </p>
+        )}
+
+        {/* Meta rows */}
+        <div className="flex flex-col gap-1.5 text-[12.5px] text-white/60">
+          <span className="flex items-start gap-2">
+            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/30" aria-hidden="true" />
+            <span className="truncate">{location}</span>
+          </span>
+          {item.phone && (
+            <a
+              href={`tel:${item.phone}`}
+              onClick={stop}
+              className="flex items-start gap-2 hover:text-white/90 transition-colors"
+            >
+              <Phone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/30" aria-hidden="true" />
+              <span className="truncate">{item.phone}</span>
+            </a>
+          )}
+          {websiteHref && (
+            <a
+              href={websiteHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={stop}
+              className="flex items-start gap-2 text-[#5DCAA5] hover:text-[#1D9E75] transition-colors"
+            >
+              <Globe className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              <span className="truncate">{websiteLabel}</span>
+            </a>
+          )}
+        </div>
+
+        {/* Footer — full info link */}
+        <div className="mt-auto pt-1">
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium text-white/70 group-hover:text-[#5DCAA5] transition-colors">
+            {t.catalog.fullInfo}
+            <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default memo(CatalogCardTileImpl);

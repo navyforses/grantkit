@@ -169,6 +169,7 @@ export const fr: Translations = {
     eligibility: "Éligibilité :",
     searchPlaceholder: "Rechercher par nom, organisation ou condition...",
     visitWebsite: "Visiter le site",
+    fullInfo: "Informations complètes",
     loadMore: "Charger plus",
     remaining: "restants",
     typeAll: "Tous les types",
