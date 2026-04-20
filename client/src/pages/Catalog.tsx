@@ -735,7 +735,7 @@ export default function Catalog() {
                 onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
                 selectedType={selectedType}
                 onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
-                totalItems={totalItems}
+                totalItems={mapItems.length}
                 onClearAll={resetFilters}
                 searchQuery={searchQuery}
               />
