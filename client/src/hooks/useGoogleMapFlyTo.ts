@@ -80,6 +80,15 @@ export function useGoogleMapFlyTo(
       if (c) return go(c, CITY_ZOOM);
     }
 
+    // ── City without a state (non-US cascade: EU country → city direct) ──
+    if (countryCode && cityName && !stateCode) {
+      const city = City.getCitiesOfCountry(countryCode)?.find(
+        (c) => c.name === cityName,
+      );
+      const c = coords(city?.latitude, city?.longitude);
+      if (c) return go(c, CITY_ZOOM);
+    }
+
     // ── State ────────────────────────────────────────────────────────────
     if (countryCode && stateCode) {
       const state = State.getStateByCodeAndCountry(stateCode, countryCode);

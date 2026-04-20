@@ -121,7 +121,12 @@ export default function CatalogToolbar({
 
   // Cascade gates: a child dropdown is only meaningful once its parent is set.
   const stateEnabled = !!countryFilter && availableStates.length > 0;
-  const cityEnabled = !!stateFilter && availableCities.length > 0;
+  // City enables once a state is set (US flow) OR once a non-US country
+  // is picked (EU / other — we populate from country-state-city so the
+  // dropdown is usable before a DB grant exists for that country).
+  const cityEnabled = availableCities.length > 0 && (
+    !!stateFilter || (!!countryFilter && countryFilter !== "US")
+  );
 
   return (
     <div
