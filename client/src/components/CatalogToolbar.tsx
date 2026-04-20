@@ -6,8 +6,8 @@
  * request, 2026-04-20.
  */
 
-import { useState } from "react";
-import { ChevronDown, Columns, Map as MapIcon, List as ListIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronDown, Columns, Map as MapIcon, List as ListIcon, Sparkles, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +40,9 @@ interface PlaceOption {
 }
 
 export interface CatalogToolbarProps {
+  smartQuery: string;
+  onSmartQueryChange: (q: string) => void;
+
   regionFilter: string | null;
   onRegionChange: (r: string | null) => void;
 
@@ -61,7 +64,11 @@ export interface CatalogToolbarProps {
   availableCities: PlaceOption[];
 }
 
+const SMART_DEBOUNCE_MS = 600;
+
 export default function CatalogToolbar({
+  smartQuery,
+  onSmartQueryChange,
   regionFilter,
   onRegionChange,
   countryFilter,
@@ -78,6 +85,19 @@ export default function CatalogToolbar({
   availableCities,
 }: CatalogToolbarProps) {
   const { t } = useLanguage();
+
+  // Local mirror of the AI query so typing feels instant; parent only sees
+  // a debounced update, which gates the expensive smartSearch RPC call.
+  const [localSmart, setLocalSmart] = useState(smartQuery);
+  useEffect(() => {
+    setLocalSmart(smartQuery);
+  }, [smartQuery]);
+  useEffect(() => {
+    if (localSmart === smartQuery) return;
+    const timer = setTimeout(() => onSmartQueryChange(localSmart), SMART_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localSmart]);
 
   const selectedRegion = regionFilter
     ? availableRegions.find((r) => r.code === regionFilter)
@@ -222,6 +242,37 @@ export default function CatalogToolbar({
           </DropdownMenuItem>
         ))}
       </ToolbarDropdown>
+
+      {/* Smart Search — AI-powered search across all grants in the DB. */}
+      <label className="relative flex-shrink-0 w-44 sm:w-64 md:w-80">
+        <Sparkles
+          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#5DCAA5]"
+          aria-hidden="true"
+        />
+        <input
+          type="search"
+          value={localSmart}
+          onChange={(e) => setLocalSmart(e.target.value)}
+          placeholder={t.smartSearch.placeholder}
+          aria-label={t.smartSearch.tab}
+          className={cn(
+            "w-full h-8 pl-8 pr-7 rounded-md text-[13px]",
+            "bg-[#1D9E75]/[0.06] border border-[#1D9E75]/25 text-white/90 placeholder:text-white/40",
+            "focus:outline-none focus:border-[#1D9E75] focus:ring-2 focus:ring-[#1D9E75]/30",
+            "transition-colors",
+          )}
+        />
+        {localSmart && (
+          <button
+            type="button"
+            onClick={() => setLocalSmart("")}
+            aria-label={t.filters.clearAll}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </label>
 
       {/* Push view toggle to the right on large screens */}
       <div className="hidden sm:flex flex-1" />
