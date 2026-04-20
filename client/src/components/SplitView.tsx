@@ -50,7 +50,7 @@ export default function SplitView({
         className,
       )}
     >
-      <div className="relative h-full overflow-hidden border-r border-white/[0.06] bg-[#0F1419]">
+      <div className="relative h-full overflow-hidden border-r border-border bg-background">
         <GrantList
           grants={grants}
           highlightedId={hoveredId}

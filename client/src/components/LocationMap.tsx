@@ -29,7 +29,7 @@ import {
   loadMapsAndMarker,
 } from "@/lib/googleMapsLoader";
 
-const TEAL = "#1D9E75";
+const TEAL = "var(--brand-green)";
 
 interface LocationMapProps {
   latitude: number;

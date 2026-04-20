@@ -144,10 +144,10 @@ function CatalogCardTileImpl({
       onMouseLeave={handleLeave}
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-xl cursor-pointer",
-        "bg-[#12181D] border border-white/[0.06]",
-        "transition-all duration-150 hover:border-[#1D9E75]/40 hover:shadow-lg hover:shadow-black/20",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D9E75]/60",
-        highlighted && "border-[#1D9E75]/60 shadow-[0_0_0_1px_rgba(29,158,117,0.45)]",
+        "bg-card border border-border",
+        "transition-all duration-150 hover:border-[var(--brand-green)]/40 hover:shadow-lg hover:shadow-black/20",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-green)]/60",
+        highlighted && "border-[var(--brand-green)]/60 shadow-[0_0_0_1px_rgba(29,158,117,0.45)]",
         className,
       )}
     >
@@ -160,18 +160,18 @@ function CatalogCardTileImpl({
           <span
             className={cn(
               "inline-flex shrink-0 items-center justify-center rounded-full",
-              "h-8 w-8 bg-white/[0.04] border border-white/[0.06]",
+              "h-8 w-8 bg-muted/60 border border-border",
             )}
             aria-hidden="true"
           >
-            <Home className="h-4 w-4 text-white/70" />
+            <Home className="h-4 w-4 text-foreground/80" />
           </span>
           <div className="min-w-0 flex-1">
-            <h3 className="text-[14px] font-semibold leading-tight text-white/90 line-clamp-1 group-hover:text-[#5DCAA5] transition-colors">
+            <h3 className="text-[14px] font-semibold leading-tight text-foreground line-clamp-1 group-hover:text-[color:var(--brand-green)] transition-colors">
               {content.name}
             </h3>
             {item.organization && item.organization !== content.name && (
-              <p className="text-[11px] text-white/50 line-clamp-1">
+              <p className="text-[11px] text-muted-foreground/80 line-clamp-1">
                 {item.organization}
               </p>
             )}
@@ -186,7 +186,7 @@ function CatalogCardTileImpl({
               className={cn(
                 "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-medium border whitespace-nowrap",
                 tag.tone === "category" && getCategoryStyle(item.category),
-                tag.tone === "neutral" && "bg-white/[0.04] text-white/70 border-white/[0.08]",
+                tag.tone === "neutral" && "bg-muted/60 text-foreground/80 border-border",
                 tag.tone === "accent"   && "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
               )}
             >
@@ -198,24 +198,24 @@ function CatalogCardTileImpl({
 
         {/* Description */}
         {content.description && (
-          <p className="text-[12.5px] leading-snug text-white/60 line-clamp-2">
+          <p className="text-[12.5px] leading-snug text-muted-foreground line-clamp-2">
             {content.description}
           </p>
         )}
 
         {/* Meta — single inline row, wraps if needed */}
-        <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-white/60">
+        <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-muted-foreground">
           <span className="inline-flex items-center gap-1 min-w-0">
-            <MapPin className="h-3 w-3 shrink-0 text-white/30" aria-hidden="true" />
+            <MapPin className="h-3 w-3 shrink-0 text-muted-foreground/50" aria-hidden="true" />
             <span className="truncate max-w-[140px]">{location}</span>
           </span>
           {item.phone && (
             <a
               href={`tel:${item.phone}`}
               onClick={stop}
-              className="inline-flex items-center gap-1 min-w-0 hover:text-white/90 transition-colors"
+              className="inline-flex items-center gap-1 min-w-0 hover:text-foreground transition-colors"
             >
-              <Phone className="h-3 w-3 shrink-0 text-white/30" aria-hidden="true" />
+              <Phone className="h-3 w-3 shrink-0 text-muted-foreground/50" aria-hidden="true" />
               <span className="truncate max-w-[120px]">{item.phone}</span>
             </a>
           )}
@@ -225,7 +225,7 @@ function CatalogCardTileImpl({
               target="_blank"
               rel="noopener noreferrer"
               onClick={stop}
-              className="inline-flex items-center gap-1 min-w-0 text-[#5DCAA5] hover:text-[#1D9E75] transition-colors"
+              className="inline-flex items-center gap-1 min-w-0 text-[color:var(--brand-green)] hover:text-[color:var(--brand-green)] transition-colors"
             >
               <Globe className="h-3 w-3 shrink-0" aria-hidden="true" />
               <span className="truncate max-w-[140px]">{websiteLabel}</span>

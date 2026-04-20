@@ -110,7 +110,7 @@ export default function GrantDetail() {
 
   if (isLoading && !grant) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#0F1419]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Navbar />
         <GrantDetailSkeleton />
       </div>
@@ -119,14 +119,14 @@ export default function GrantDetail() {
 
   if (!grant) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#0F1419]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Navbar />
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="text-center">
             <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{t.grantDetail.notFound}</h2>
-            <p className="text-white/50 mb-6 text-sm">{t.grantDetail.notFoundDesc}</p>
+            <p className="text-muted-foreground/80 mb-6 text-sm">{t.grantDetail.notFoundDesc}</p>
             <Link href="/catalog">
-              <Button variant="outline" className="gap-2 border-white/20 text-white/70 hover:bg-white/10 hover:text-white">
+              <Button variant="outline" className="gap-2 border-border text-foreground/80 hover:bg-muted hover:text-foreground">
                 <ChevronRight className="w-4 h-4 rotate-180" />
                 {t.grantDetail.backToCatalog}
               </Button>
@@ -242,10 +242,10 @@ export default function GrantDetail() {
   type Metric = { icon: React.ReactNode; label: string; value: string; accent?: string };
   const metrics: Metric[] = [];
   if (item.amount) metrics.push({
-    icon: <DollarSign className="w-3.5 h-3.5 text-[#5DCAA5]" />,
+    icon: <DollarSign className="w-3.5 h-3.5 text-[color:var(--brand-green)]" />,
     label: t.detail.metricAmount,
     value: item.amount,
-    accent: "text-[#5DCAA5]",
+    accent: "text-[color:var(--brand-green)]",
   });
   if (content.deadline) metrics.push({
     icon: <Calendar className="w-3.5 h-3.5 text-blue-400" />,
@@ -253,20 +253,20 @@ export default function GrantDetail() {
     value: content.deadline,
   });
   if (item.state || translatedCountry) metrics.push({
-    icon: <MapPin className="w-3.5 h-3.5 text-white/50" />,
+    icon: <MapPin className="w-3.5 h-3.5 text-muted-foreground/80" />,
     label: t.detail.metricLocation,
     value: locationDisplay,
   });
   if (content.geographicScope) metrics.push({
-    icon: <Globe className="w-3.5 h-3.5 text-white/50" />,
+    icon: <Globe className="w-3.5 h-3.5 text-muted-foreground/80" />,
     label: t.detail.metricScope,
     value: content.geographicScope,
   });
   if (item.status) metrics.push({
-    icon: <CheckCircle2 className={`w-3.5 h-3.5 ${item.status === "Open" ? "text-[#5DCAA5]" : "text-white/50"}`} />,
+    icon: <CheckCircle2 className={`w-3.5 h-3.5 ${item.status === "Open" ? "text-[color:var(--brand-green)]" : "text-muted-foreground/80"}`} />,
     label: t.detail.metricStatus,
     value: item.status,
-    accent: item.status === "Open" ? "text-[#5DCAA5]" : undefined,
+    accent: item.status === "Open" ? "text-[color:var(--brand-green)]" : undefined,
   });
   if (item.fundingType && item.fundingType !== "unknown") metrics.push({
     icon: <Tag className="w-3.5 h-3.5 text-purple-400" />,
@@ -280,7 +280,7 @@ export default function GrantDetail() {
       ? `${t.grantDetail.adults} (18+)`
       : t.grantDetail.ages.replace("{range}", content.ageRange);
     metrics.push({
-      icon: <Users className="w-3.5 h-3.5 text-white/50" />,
+      icon: <Users className="w-3.5 h-3.5 text-muted-foreground/80" />,
       label: t.detail.metricAge,
       value: ageValue,
     });
@@ -289,14 +289,14 @@ export default function GrantDetail() {
     const parts = content.targetDiagnosis.split(",").map((d: string) => d.trim()).filter(Boolean);
     const value = parts.slice(0, 2).join(", ") + (parts.length > 2 ? ` +${parts.length - 2}` : "");
     metrics.push({
-      icon: <Stethoscope className="w-3.5 h-3.5 text-white/50" />,
+      icon: <Stethoscope className="w-3.5 h-3.5 text-muted-foreground/80" />,
       label: t.detail.metricConditions,
       value,
     });
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0F1419]">
+    <div className="min-h-screen flex flex-col bg-background">
       <SEO
         title={content.name}
         description={seoDescription}
@@ -320,26 +320,26 @@ export default function GrantDetail() {
       {/* Breadcrumb bar */}
       <nav
         aria-label="Breadcrumb"
-        className="border-b border-white/[0.06] bg-[#0F1419]"
+        className="border-b border-border bg-background"
       >
-        <div className="container px-4 py-2.5 flex items-center gap-1.5 text-[13px] text-white/50 overflow-hidden">
+        <div className="container px-4 py-2.5 flex items-center gap-1.5 text-[13px] text-muted-foreground/80 overflow-hidden">
           <Link
             href="/"
-            className="hover:text-white/80 transition-colors flex items-center gap-1 shrink-0"
+            className="hover:text-foreground/90 transition-colors flex items-center gap-1 shrink-0"
             aria-label={t.detail.breadcrumbHome}
           >
             <Home className="w-3.5 h-3.5" aria-hidden="true" />
             <span className="hidden sm:inline">{t.detail.breadcrumbHome}</span>
           </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-white/25 shrink-0" aria-hidden="true" />
+          <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" aria-hidden="true" />
           <Link
             href="/catalog"
-            className="hover:text-white/80 transition-colors shrink-0 truncate"
+            className="hover:text-foreground/90 transition-colors shrink-0 truncate"
           >
             {t.detail.breadcrumbCatalog}
           </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-white/25 shrink-0" aria-hidden="true" />
-          <span className="text-white/75 truncate font-medium" aria-current="page">{content.name}</span>
+          <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" aria-hidden="true" />
+          <span className="text-foreground/85 truncate font-medium" aria-current="page">{content.name}</span>
         </div>
       </nav>
 
@@ -347,7 +347,7 @@ export default function GrantDetail() {
       <div
         role="tablist"
         aria-label={content.name}
-        className="border-b border-white/[0.06] bg-[#0F1419]"
+        className="border-b border-border bg-background"
       >
         <div className="container px-4 flex items-center gap-1">
           <button
@@ -357,8 +357,8 @@ export default function GrantDetail() {
             onClick={() => setActiveTab("info")}
             className={`relative flex items-center gap-2 px-4 py-3 text-[13px] font-medium transition-colors ${
               activeTab === "info"
-                ? "text-[#5DCAA5]"
-                : "text-white/60 hover:text-white/80"
+                ? "text-[color:var(--brand-green)]"
+                : "text-muted-foreground hover:text-foreground/90"
             }`}
           >
             <Info className="w-3.5 h-3.5" aria-hidden="true" />
@@ -366,7 +366,7 @@ export default function GrantDetail() {
             {activeTab === "info" && (
               <span
                 aria-hidden="true"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1D9E75]"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[color:var(--brand-green)]"
               />
             )}
           </button>
@@ -377,8 +377,8 @@ export default function GrantDetail() {
             onClick={() => setActiveTab("ai")}
             className={`relative flex items-center gap-2 px-4 py-3 text-[13px] font-medium transition-colors ${
               activeTab === "ai"
-                ? "text-[#5DCAA5]"
-                : "text-white/60 hover:text-white/80"
+                ? "text-[color:var(--brand-green)]"
+                : "text-muted-foreground hover:text-foreground/90"
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
@@ -386,7 +386,7 @@ export default function GrantDetail() {
             {activeTab === "ai" && (
               <span
                 aria-hidden="true"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1D9E75]"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[color:var(--brand-green)]"
               />
             )}
           </button>
@@ -397,7 +397,7 @@ export default function GrantDetail() {
         <div className="container px-4 py-6 md:py-8 flex-1 pb-32 lg:pb-10">
           <div className="mx-auto max-w-4xl h-[calc(100dvh-16rem)] min-h-[520px]">
             <GrantAiChat
-              className="h-full border-white/[0.08] bg-white/[0.02]"
+              className="h-full border-border bg-muted/30"
               grantId={item.id}
               grant={{
                 name: content.name,
@@ -447,8 +447,8 @@ export default function GrantDetail() {
                 {content.name}
               </h1>
               {item.organization && item.organization !== item.name && (
-                <p className="text-white/60 mt-2 flex items-center gap-1.5 text-sm">
-                  <Building2 className="w-4 h-4 shrink-0 text-white/40" />
+                <p className="text-muted-foreground mt-2 flex items-center gap-1.5 text-sm">
+                  <Building2 className="w-4 h-4 shrink-0 text-muted-foreground/70" />
                   <span className="truncate">{item.organization}</span>
                 </p>
               )}
@@ -460,15 +460,15 @@ export default function GrantDetail() {
                 {metrics.map((m, i) => (
                   <div
                     key={i}
-                    className="bg-white/[0.04] border border-white/[0.07] rounded-lg px-3 py-2.5"
+                    className="bg-muted/60 border border-border rounded-lg px-3 py-2.5"
                   >
                     <div className="flex items-center gap-1.5 mb-0.5">
                       {m.icon}
-                      <span className="text-[10px] uppercase tracking-wider text-white/40 font-medium">
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-medium">
                         {m.label}
                       </span>
                     </div>
-                    <p className={`text-[13px] font-semibold ${m.accent || "text-white/90"} truncate`}>
+                    <p className={`text-[13px] font-semibold ${m.accent || "text-foreground"} truncate`}>
                       {m.value}
                     </p>
                   </div>
@@ -477,24 +477,24 @@ export default function GrantDetail() {
             )}
 
             {/* Description */}
-            <div className={`bg-white/[0.03] border border-white/[0.08] rounded-xl p-5 ${borderColor} border-l-4`}>
-              <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <div className={`bg-muted/40 border border-border rounded-xl p-5 ${borderColor} border-l-4`}>
+              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                 <FileText className="w-3.5 h-3.5" />
                 {t.detail.descriptionTitle}
               </h2>
-              <p className="text-sm md:text-[15px] text-white/80 leading-relaxed whitespace-pre-line">
+              <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
                 {content.description || "—"}
               </p>
             </div>
 
             {/* Eligibility */}
             {content.eligibility && (
-              <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5">
-                <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <div className="bg-muted/40 border border-border rounded-xl p-5">
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                   <Users className="w-3.5 h-3.5" />
                   {t.detail.eligibilityTitle}
                 </h2>
-                <p className="text-sm md:text-[15px] text-white/80 leading-relaxed whitespace-pre-line">
+                <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
                   {content.eligibility}
                 </p>
               </div>
@@ -504,7 +504,7 @@ export default function GrantDetail() {
             {primaryLink && (
               <div className="hidden lg:flex flex-col gap-3">
                 <a href={applyHref} target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full h-12 bg-[#1D9E75] hover:bg-[#1D9E75]/90 text-white font-semibold gap-2 rounded-xl text-[15px]">
+                  <Button className="w-full h-12 bg-[color:var(--brand-green)] hover:bg-[color:var(--brand-green)]/90 text-white font-semibold gap-2 rounded-xl text-[15px]">
                     <ArrowUpRight className="w-4 h-4" />
                     {t.grantDetail.applyNow}
                   </Button>
@@ -516,7 +516,7 @@ export default function GrantDetail() {
                       className={`flex-1 h-11 rounded-xl gap-2 ${
                         isSaved
                           ? "border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 hover:text-yellow-300"
-                          : "border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                          : "border-border text-foreground/80 hover:bg-muted hover:text-foreground"
                       }`}
                       onClick={() => toggleSave.mutate({ grantId: item.id })}
                     >
@@ -526,7 +526,7 @@ export default function GrantDetail() {
                   )}
                   <Button
                     variant="outline"
-                    className="h-11 px-4 rounded-xl border-white/20 text-white/70 hover:bg-white/10 hover:text-white gap-2"
+                    className="h-11 px-4 rounded-xl border-border text-foreground/80 hover:bg-muted hover:text-foreground gap-2"
                     onClick={handleShare}
                   >
                     <Share2 className="w-4 h-4" />
@@ -548,9 +548,9 @@ export default function GrantDetail() {
                 that resolves. Geocoder hard-failures hide the panel so we
                 don't ship a permanently-broken box. */}
             {showMapPanel && (
-              <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl overflow-hidden">
+              <div className="bg-muted/40 border border-border rounded-xl overflow-hidden">
                 <div className="px-4 pt-4 pb-3 flex items-center justify-between gap-2">
-                  <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider flex items-center gap-2">
+                  <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                     <MapPin className="w-3.5 h-3.5" />
                     {t.detail.locationTitle}
                   </h2>
@@ -559,7 +559,7 @@ export default function GrantDetail() {
                     onClick={handleDirections}
                     disabled={!hasResolvedCoords}
                     aria-label={`${t.deepLink.getDirections} — ${item.organization || mapAddress} (${t.deepLink.nativeAppHint})`}
-                    className="flex items-center gap-1.5 text-xs text-[#5DCAA5] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5DCAA5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1419] rounded px-1 py-0.5 transition-colors font-medium whitespace-nowrap disabled:text-white/30 disabled:cursor-not-allowed"
+                    className="flex items-center gap-1.5 text-xs text-[color:var(--brand-green)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-green)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1419] rounded px-1 py-0.5 transition-colors font-medium whitespace-nowrap disabled:text-muted-foreground/50 disabled:cursor-not-allowed"
                   >
                     <Navigation className="w-3.5 h-3.5" aria-hidden="true" />
                     {t.detail.getDirections}
@@ -581,10 +581,10 @@ export default function GrantDetail() {
                       aria-live="polite"
                       aria-label={t.map.loading}
                       style={{ height: 280 }}
-                      className="w-full rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center overflow-hidden relative"
+                      className="w-full rounded-xl bg-muted/40 border border-border/60 flex items-center justify-center overflow-hidden relative"
                     >
-                      <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-white/[0.02] via-[#1D9E75]/[0.05] to-white/[0.02]" />
-                      <span className="relative text-xs text-white/40">{t.map.loading}</span>
+                      <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-white/[0.02] via-[var(--brand-green)]/[0.05] to-white/[0.02]" />
+                      <span className="relative text-xs text-muted-foreground/70">{t.map.loading}</span>
                     </div>
                   )}
                 </div>
@@ -592,8 +592,8 @@ export default function GrantDetail() {
             )}
 
             {/* Office / Contact card */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5">
-              <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <div className="bg-muted/40 border border-border rounded-xl p-5">
+              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Building2 className="w-3.5 h-3.5" />
                 {t.detail.officeTitle}
               </h2>
@@ -603,14 +603,14 @@ export default function GrantDetail() {
                     href={applyHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm font-medium text-[#5DCAA5] hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-sm font-medium text-[color:var(--brand-green)] hover:text-foreground transition-colors"
                   >
                     <Globe className="w-4 h-4 shrink-0" />
                     <span className="truncate">{t.catalog.visitWebsite}</span>
                     <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
                   </a>
                 ) : (
-                  <p className="flex items-center gap-2 text-sm text-white/30">
+                  <p className="flex items-center gap-2 text-sm text-muted-foreground/50">
                     <Globe className="w-4 h-4 shrink-0" />
                     {t.grantDetail.noWebsite}
                   </p>
@@ -618,13 +618,13 @@ export default function GrantDetail() {
                 {item.phone ? (
                   <a
                     href={`tel:${item.phone}`}
-                    className="flex items-center gap-2 text-sm text-white/75 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors"
                   >
-                    <Phone className="w-4 h-4 shrink-0 text-white/40" />
+                    <Phone className="w-4 h-4 shrink-0 text-muted-foreground/70" />
                     <span className="truncate">{item.phone}</span>
                   </a>
                 ) : (
-                  <p className="flex items-center gap-2 text-sm text-white/30">
+                  <p className="flex items-center gap-2 text-sm text-muted-foreground/50">
                     <Phone className="w-4 h-4 shrink-0" />
                     {t.grantDetail.noPhone}
                   </p>
@@ -632,25 +632,25 @@ export default function GrantDetail() {
                 {item.email ? (
                   <a
                     href={`mailto:${item.email}`}
-                    className="flex items-center gap-2 text-sm text-white/75 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors"
                   >
-                    <Mail className="w-4 h-4 shrink-0 text-white/40" />
+                    <Mail className="w-4 h-4 shrink-0 text-muted-foreground/70" />
                     <span className="truncate">{item.email}</span>
                   </a>
                 ) : (
-                  <p className="flex items-center gap-2 text-sm text-white/30">
+                  <p className="flex items-center gap-2 text-sm text-muted-foreground/50">
                     <Mail className="w-4 h-4 shrink-0" />
                     {t.grantDetail.noEmail}
                   </p>
                 )}
                 {officeHours && (
                   <div className="flex items-start gap-2 pt-1">
-                    <Clock className="w-4 h-4 shrink-0 text-white/40 mt-0.5" />
+                    <Clock className="w-4 h-4 shrink-0 text-muted-foreground/70 mt-0.5" />
                     <div className="min-w-0">
-                      <span className="text-[10px] uppercase tracking-wider text-white/40 block">
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 block">
                         {t.detail.officeHours}
                       </span>
-                      <span className="text-sm text-white/75">{officeHours}</span>
+                      <span className="text-sm text-foreground/85">{officeHours}</span>
                     </div>
                   </div>
                 )}
@@ -659,12 +659,12 @@ export default function GrantDetail() {
 
             {/* Application process */}
             {content.applicationProcess && (
-              <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5">
-                <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#5DCAA5]" />
+              <div className="bg-muted/40 border border-border rounded-xl p-5">
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--brand-green)]" />
                   {t.detail.processTitle}
                 </h2>
-                <p className="text-sm md:text-[15px] text-white/80 leading-relaxed whitespace-pre-line">
+                <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
                   {content.applicationProcess}
                 </p>
               </div>
@@ -672,18 +672,18 @@ export default function GrantDetail() {
 
             {/* Required documents */}
             {content.documentsRequired && (
-              <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5">
-                <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <FileText className="w-3.5 h-3.5 text-white/50" />
+              <div className="bg-muted/40 border border-border rounded-xl p-5">
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <FileText className="w-3.5 h-3.5 text-muted-foreground/80" />
                   {t.detail.docsTitle}
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {content.documentsRequired.split(",").map((doc: string, i: number) => (
                     <span
                       key={i}
-                      className="inline-flex items-center gap-1 text-xs bg-white/[0.06] border border-white/[0.08] text-white/75 px-2.5 py-1 rounded-full"
+                      className="inline-flex items-center gap-1 text-xs bg-muted border border-border text-foreground/85 px-2.5 py-1 rounded-full"
                     >
-                      <CheckCircle2 className="w-3 h-3 text-[#5DCAA5]" />
+                      <CheckCircle2 className="w-3 h-3 text-[color:var(--brand-green)]" />
                       {doc.trim()}
                     </span>
                   ))}
@@ -695,7 +695,7 @@ export default function GrantDetail() {
 
         {/* Related grants — full width below 2-col grid */}
         {relatedItems.length > 0 && (
-          <div className="mt-8 pt-8 border-t border-white/[0.06]">
+          <div className="mt-8 pt-8 border-t border-border">
             <h2 className="text-base md:text-lg font-semibold text-white mb-4">
               {t.detail.relatedTitle}
             </h2>
@@ -711,16 +711,16 @@ export default function GrantDetail() {
                 const rFlag = related.country === "US" ? "🇺🇸" : "🌐";
                 return (
                   <Link key={related.id} href={`/grant/${related.id}`}>
-                    <div className={`w-56 flex-shrink-0 snap-start bg-white/[0.04] border border-white/[0.08] rounded-xl ${getCategoryBorderColor(related.category)} border-l-4 p-3.5 active:bg-white/[0.08] transition-colors`}>
+                    <div className={`w-56 flex-shrink-0 snap-start bg-muted/60 border border-border rounded-xl ${getCategoryBorderColor(related.category)} border-l-4 p-3.5 active:bg-muted transition-colors`}>
                       <div className="flex items-start gap-2 mb-1.5">
                         <span className="text-base shrink-0">{rFlag}</span>
                         <h3 className="font-medium text-white text-xs leading-snug line-clamp-2">
                           {rc.name}
                         </h3>
                       </div>
-                      <p className="text-[10px] text-white/50 line-clamp-2">{rc.description}</p>
+                      <p className="text-[10px] text-muted-foreground/80 line-clamp-2">{rc.description}</p>
                       {related.amount && (
-                        <p className="text-[10px] text-[#5DCAA5] font-medium mt-1.5 flex items-center gap-1">
+                        <p className="text-[10px] text-[color:var(--brand-green)] font-medium mt-1.5 flex items-center gap-1">
                           <DollarSign className="w-2.5 h-2.5" />
                           {related.amount}
                         </p>
@@ -742,16 +742,16 @@ export default function GrantDetail() {
                 const rFlag = related.country === "US" ? "🇺🇸" : "🌐";
                 return (
                   <Link key={related.id} href={`/grant/${related.id}`}>
-                    <div className={`bg-white/[0.04] border border-white/[0.08] rounded-xl ${getCategoryBorderColor(related.category)} border-l-4 p-4 hover:bg-white/[0.06] hover:border-white/[0.12] transition-colors cursor-pointer h-full`}>
+                    <div className={`bg-muted/60 border border-border rounded-xl ${getCategoryBorderColor(related.category)} border-l-4 p-4 hover:bg-muted hover:border-border transition-colors cursor-pointer h-full`}>
                       <div className="flex items-start gap-2 mb-2">
                         <span className="text-lg shrink-0">{rFlag}</span>
                         <h3 className="font-medium text-white text-sm leading-snug line-clamp-2">
                           {rc.name}
                         </h3>
                       </div>
-                      <p className="text-xs text-white/55 line-clamp-2">{rc.description}</p>
+                      <p className="text-xs text-muted-foreground/90 line-clamp-2">{rc.description}</p>
                       {related.amount && (
-                        <p className="text-xs text-[#5DCAA5] font-medium mt-2 flex items-center gap-1">
+                        <p className="text-xs text-[color:var(--brand-green)] font-medium mt-2 flex items-center gap-1">
                           <DollarSign className="w-3 h-3" />
                           {related.amount}
                         </p>
@@ -768,7 +768,7 @@ export default function GrantDetail() {
 
       {/* Mobile sticky bottom CTA — sits above MobileBottomNav (h ≈ 56 px) */}
       {primaryLink && (
-        <div className="lg:hidden fixed bottom-16 left-0 right-0 z-30 bg-[#0F1419]/95 backdrop-blur-sm border-t border-white/[0.08] px-4 py-3 safe-area-bottom">
+        <div className="lg:hidden fixed bottom-16 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-bottom">
           <div className="flex gap-2">
             <a
               href={applyHref}
@@ -776,14 +776,14 @@ export default function GrantDetail() {
               rel="noopener noreferrer"
               className="flex-1"
             >
-              <Button className="w-full h-12 bg-[#1D9E75] active:bg-[#1D9E75]/90 text-white font-semibold gap-2 rounded-xl">
+              <Button className="w-full h-12 bg-[color:var(--brand-green)] active:bg-[color:var(--brand-green)]/90 text-white font-semibold gap-2 rounded-xl">
                 <ArrowUpRight className="w-4 h-4" />
                 {t.grantDetail.applyNow}
               </Button>
             </a>
             <Button
               variant="outline"
-              className="h-12 w-12 shrink-0 rounded-xl border-white/20 text-white/70"
+              className="h-12 w-12 shrink-0 rounded-xl border-border text-foreground/80"
               onClick={handleShare}
               aria-label={t.grantDetail.share}
             >
@@ -793,7 +793,7 @@ export default function GrantDetail() {
               <Button
                 variant="outline"
                 className={`h-12 w-12 shrink-0 rounded-xl ${
-                  isSaved ? "border-yellow-400/40 text-yellow-400" : "border-white/20 text-white/70"
+                  isSaved ? "border-yellow-400/40 text-yellow-400" : "border-border text-foreground/80"
                 }`}
                 onClick={() => toggleSave.mutate({ grantId: item.id })}
                 aria-label={isSaved ? t.grantDetail.saved : t.grantDetail.saveThisGrant}
@@ -811,10 +811,10 @@ export default function GrantDetail() {
       </div>
 
       {/* Mobile footer — minimal legal links above sticky CTA / MobileBottomNav */}
-      <div className="lg:hidden px-4 pb-36 pt-4 border-t border-white/[0.04] flex items-center justify-center gap-4 text-[11px] text-white/30">
-        <Link href="/privacy" className="hover:text-white/60 transition-colors">{t.nav.legal}</Link>
+      <div className="lg:hidden px-4 pb-36 pt-4 border-t border-white/[0.04] flex items-center justify-center gap-4 text-[11px] text-muted-foreground/50">
+        <Link href="/privacy" className="hover:text-muted-foreground transition-colors">{t.nav.legal}</Link>
         <span aria-hidden="true">·</span>
-        <Link href="/terms" className="hover:text-white/60 transition-colors">Terms</Link>
+        <Link href="/terms" className="hover:text-muted-foreground transition-colors">Terms</Link>
         <span aria-hidden="true">·</span>
         <span>© {new Date().getFullYear()} GrantKit</span>
       </div>
