@@ -4,6 +4,7 @@ export const es: Translations = {
   nav: {
     home: "Inicio",
     catalog: "Subvenciones & Recursos",
+    organizations: "Organizaciones",
     subscribe: "Suscribirse",
     profile: "Perfil",
     dashboard: "Panel",
@@ -976,6 +977,30 @@ export const es: Translations = {
     example3: "asistencia de vivienda",
   },
 
+  organizations: {
+    title: "Organizaciones",
+    subtitle: "538 organizaciones verificadas que ofrecen subvenciones y servicios de apoyo en 29 países.",
+    searchPlaceholder: "Buscar organizaciones...",
+    filters: {
+      country: "País",
+      category: "Categoría",
+      hasLocation: "Con ubicación",
+    },
+    mapLegend: {
+      hq: "Sede central",
+      branch: "Sucursal",
+    },
+    detail: {
+      branches: "Sucursales",
+      relatedGrants: "Subvenciones relacionadas",
+      contact: "Contacto",
+      visitWebsite: "Visitar sitio web",
+      viewOnMap: "Ver detalles",
+    },
+    empty: "Ninguna organización coincide con tus filtros.",
+    loading: "Cargando organizaciones...",
+  },
+
   auth: {
     tabEmail: "Correo y contraseña",
     tabOAuth: "Inicio de sesión único",
@@ -1044,7 +1069,6 @@ export const es: Translations = {
     loading: "Cargando mapa…",
     error: "Mapa no disponible",
     noLocation: "Ubicación no publicada",
-    ariaLabel: "Mapa interactivo de subvenciones",
   },
 
   deepLink: {

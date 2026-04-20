@@ -184,3 +184,66 @@ export const notificationHistory = mysqlTable("notification_history", {
 
 export type NotificationHistory = typeof notificationHistory.$inferSelect;
 export type InsertNotificationHistory = typeof notificationHistory.$inferInsert;
+
+/**
+ * Organizations catalog — 538 aid/grant-providing orgs across 29 countries.
+ * Imported from data/organizations-2026-04-20.xlsx.
+ */
+export const organizations = mysqlTable("organizations", {
+  id: int("id").autoincrement().primaryKey(),
+  orgId: varchar("orgId", { length: 16 }).notNull().unique(),   // "ORG-0001"
+  name: text("name").notNull(),
+  description: text("description"),
+  country: varchar("country", { length: 8 }).notNull(),          // ISO alpha-2
+  state: varchar("state", { length: 128 }),
+  city: varchar("city", { length: 128 }),
+  hqAddress: varchar("hqAddress", { length: 500 }),
+  website: text("website"),
+  phone: varchar("phone", { length: 128 }),
+  email: varchar("email", { length: 320 }),
+  latitude: decimal("latitude", { precision: 10, scale: 7 }),
+  longitude: decimal("longitude", { precision: 10, scale: 7 }),
+  programsCount: int("programsCount").default(0).notNull(),
+  branchesCount: int("branchesCount").default(1).notNull(),
+  categories: text("categories"),                                 // comma-separated
+  serviceArea: varchar("serviceArea", { length: 255 }),
+  officeHours: varchar("officeHours", { length: 255 }),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => [
+  index("orgs_country_idx").on(table.country),
+  index("orgs_lat_lng_idx").on(table.latitude, table.longitude),
+]);
+
+export type Organization = typeof organizations.$inferSelect;
+export type InsertOrganization = typeof organizations.$inferInsert;
+
+/**
+ * Organization branches — 1 HQ row + 0..N Branch rows per organization.
+ * Populated from Google Places API (source = "Google Places") where available.
+ */
+export const organizationBranches = mysqlTable("organization_branches", {
+  id: int("id").autoincrement().primaryKey(),
+  branchId: varchar("branchId", { length: 24 }).notNull().unique(), // "ORG-0001-B02"
+  orgId: varchar("orgId", { length: 16 }).notNull(),                // FK → organizations.orgId
+  branchType: mysqlEnum("branchType", ["HQ", "Branch"]).notNull(),
+  country: varchar("country", { length: 8 }).notNull(),
+  state: varchar("state", { length: 128 }),
+  city: varchar("city", { length: 128 }),
+  address: varchar("address", { length: 500 }),
+  phone: varchar("phone", { length: 128 }),
+  email: varchar("email", { length: 320 }),
+  latitude: decimal("latitude", { precision: 10, scale: 7 }),
+  longitude: decimal("longitude", { precision: 10, scale: 7 }),
+  source: varchar("source", { length: 64 }),   // "Database" | "Google Places" | "Google Places (HQ)" | "Not found"
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  index("branches_org_idx").on(table.orgId),
+  index("branches_country_idx").on(table.country),
+  index("branches_lat_lng_idx").on(table.latitude, table.longitude),
+]);
+
+export type OrganizationBranch = typeof organizationBranches.$inferSelect;
+export type InsertOrganizationBranch = typeof organizationBranches.$inferInsert;

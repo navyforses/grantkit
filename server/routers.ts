@@ -22,6 +22,7 @@ import {
   getUserByResetToken, markEmailVerified, setVerificationToken,
   setResetPasswordToken, updatePasswordAndClearReset,
   incrementFailedLoginAttempts, resetFailedLoginAttempts,
+  listOrganizations, getOrganizationDetail, getOrganizationMapPoints,
 } from "./db";
 import {
   sendSubscriptionEmail, sendAdminNewSubscriberNotification,
@@ -1341,6 +1342,48 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         const reply = await runGrantChatAssistant(input.message, input.history ?? []);
         return { reply };
+      }),
+  }),
+
+  // ===== Organizations catalog (with branch map) =====
+  organizations: router({
+    list: publicProcedure
+      .input(z.object({
+        country: z.string().optional(),
+        search: z.string().optional(),
+        bounds: z.object({
+          swLat: z.number(),
+          swLng: z.number(),
+          neLat: z.number(),
+          neLng: z.number(),
+        }).optional(),
+        limit: z.number().min(1).max(500).default(100),
+        offset: z.number().min(0).default(0),
+      }).optional())
+      .query(async ({ input }) => {
+        return listOrganizations(input ?? {});
+      }),
+
+    detail: publicProcedure
+      .input(z.object({ orgId: z.string().min(1).max(32) }))
+      .query(async ({ input }) => {
+        return getOrganizationDetail(input.orgId);
+      }),
+
+    mapPoints: publicProcedure
+      .input(z.object({
+        bounds: z.object({
+          swLat: z.number(),
+          swLng: z.number(),
+          neLat: z.number(),
+          neLng: z.number(),
+        }).optional(),
+        country: z.string().optional(),
+        limit: z.number().min(1).max(5000).default(2000),
+      }).optional())
+      .query(async ({ input }) => {
+        const points = await getOrganizationMapPoints(input ?? {});
+        return { points };
       }),
   }),
 });

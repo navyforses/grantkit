@@ -4,6 +4,7 @@ export const ru: Translations = {
   nav: {
     home: "Главная",
     catalog: "Гранты & Ресурсы",
+    organizations: "Организации",
     subscribe: "Подписаться",
     profile: "Профиль",
     dashboard: "Панель",
@@ -976,6 +977,30 @@ export const ru: Translations = {
     example3: "помощь с жильём",
   },
 
+  organizations: {
+    title: "Организации",
+    subtitle: "538 проверенных организаций, предоставляющих гранты и услуги поддержки в 29 странах.",
+    searchPlaceholder: "Поиск организаций...",
+    filters: {
+      country: "Страна",
+      category: "Категория",
+      hasLocation: "С местоположением",
+    },
+    mapLegend: {
+      hq: "Штаб-квартира",
+      branch: "Филиал",
+    },
+    detail: {
+      branches: "Филиалы",
+      relatedGrants: "Связанные гранты",
+      contact: "Контакты",
+      visitWebsite: "Посетить сайт",
+      viewOnMap: "Подробнее",
+    },
+    empty: "Нет организаций, соответствующих фильтрам.",
+    loading: "Загрузка организаций...",
+  },
+
   auth: {
     tabEmail: "Email и пароль",
     tabOAuth: "Единый вход",
@@ -1044,7 +1069,6 @@ export const ru: Translations = {
     loading: "Загрузка карты…",
     error: "Карта недоступна",
     noLocation: "Адрес не указан публично",
-    ariaLabel: "Интерактивная карта грантов",
   },
 
   deepLink: {

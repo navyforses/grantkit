@@ -1,7 +1,7 @@
-import { eq, and, or, like, desc, asc, count, sql, inArray } from "drizzle-orm";
+import { eq, and, or, like, desc, asc, count, sql, inArray, gte, lte, isNotNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations, notificationHistory } from "../drizzle/schema";
-import type { Grant, InsertGrant, GrantTranslation } from "../drizzle/schema";
+import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations, notificationHistory, organizations, organizationBranches } from "../drizzle/schema";
+import type { Grant, InsertGrant, GrantTranslation, Organization, OrganizationBranch } from "../drizzle/schema";
 import * as crypto from "crypto";
 import { ENV } from './_core/env';
 
@@ -1315,4 +1315,184 @@ export async function getAllGrantItemIds(): Promise<Array<{ itemId: string; upda
     .orderBy(asc(grants.name));
 
   return result;
+}
+
+// ===== Organizations helpers =====
+
+export interface ListOrganizationsOptions {
+  country?: string;
+  search?: string;
+  bounds?: { swLat: number; swLng: number; neLat: number; neLng: number };
+  limit?: number;
+  offset?: number;
+}
+
+/** List organizations with optional filters. Returns lightweight rows for the catalog + map. */
+export async function listOrganizations(options?: ListOrganizationsOptions): Promise<{
+  organizations: Array<{
+    orgId: string;
+    name: string;
+    country: string;
+    city: string | null;
+    latitude: number | null;
+    longitude: number | null;
+    branchesCount: number;
+    categories: string | null;
+  }>;
+  total: number;
+}> {
+  const db = await getDb();
+  if (!db) return { organizations: [], total: 0 };
+
+  const { country, search, bounds, limit = 100, offset = 0 } = options || {};
+
+  const conditions: any[] = [eq(organizations.isActive, true)];
+  if (country && country !== "all") conditions.push(eq(organizations.country, country));
+  if (search) {
+    conditions.push(
+      or(
+        like(organizations.name, `%${search}%`),
+        like(organizations.description, `%${search}%`),
+      ),
+    );
+  }
+  if (bounds) {
+    conditions.push(
+      and(
+        gte(organizations.latitude, String(bounds.swLat)),
+        lte(organizations.latitude, String(bounds.neLat)),
+        gte(organizations.longitude, String(bounds.swLng)),
+        lte(organizations.longitude, String(bounds.neLng)),
+      ),
+    );
+  }
+
+  const safeLimit = Math.min(Math.max(Math.floor(limit), 1), 500);
+  const safeOffset = Math.max(Math.floor(offset), 0);
+  const limitLit: any = sql.raw(String(safeLimit));
+  const offsetLit: any = sql.raw(String(safeOffset));
+
+  const whereClause = and(...conditions);
+
+  const [rows, countResult] = await Promise.all([
+    db
+      .select({
+        orgId: organizations.orgId,
+        name: organizations.name,
+        country: organizations.country,
+        city: organizations.city,
+        latitude: organizations.latitude,
+        longitude: organizations.longitude,
+        branchesCount: organizations.branchesCount,
+        categories: organizations.categories,
+      })
+      .from(organizations)
+      .where(whereClause)
+      .orderBy(asc(organizations.name))
+      .limit(limitLit)
+      .offset(offsetLit),
+    db.select({ count: count() }).from(organizations).where(whereClause),
+  ]);
+
+  return {
+    organizations: rows.map((r) => ({
+      orgId: r.orgId,
+      name: String(r.name ?? ""),
+      country: r.country,
+      city: r.city,
+      latitude: r.latitude === null ? null : Number(r.latitude),
+      longitude: r.longitude === null ? null : Number(r.longitude),
+      branchesCount: r.branchesCount,
+      categories: r.categories,
+    })),
+    total: countResult[0]?.count ?? 0,
+  };
+}
+
+/** Get a single organization by orgId plus its branches. */
+export async function getOrganizationDetail(orgId: string): Promise<{
+  organization: Organization | null;
+  branches: OrganizationBranch[];
+}> {
+  const db = await getDb();
+  if (!db) return { organization: null, branches: [] };
+
+  const [orgRows, branchRows] = await Promise.all([
+    db.select().from(organizations).where(eq(organizations.orgId, orgId)).limit(1),
+    db
+      .select()
+      .from(organizationBranches)
+      .where(eq(organizationBranches.orgId, orgId))
+      .orderBy(asc(organizationBranches.branchType), asc(organizationBranches.city)),
+  ]);
+
+  return {
+    organization: orgRows[0] ?? null,
+    branches: branchRows,
+  };
+}
+
+/** Get branch coordinates for the map markers. Filters to rows with lat/lng. */
+export async function getOrganizationMapPoints(options: {
+  bounds?: { swLat: number; swLng: number; neLat: number; neLng: number };
+  country?: string;
+  limit?: number;
+}): Promise<Array<{
+  branchId: string;
+  orgId: string;
+  name: string;
+  branchType: "HQ" | "Branch";
+  country: string;
+  latitude: number;
+  longitude: number;
+}>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const { bounds, country, limit = 2000 } = options;
+  const conditions: any[] = [
+    isNotNull(organizationBranches.latitude),
+    isNotNull(organizationBranches.longitude),
+  ];
+  if (country && country !== "all") conditions.push(eq(organizationBranches.country, country));
+  if (bounds) {
+    conditions.push(
+      and(
+        gte(organizationBranches.latitude, String(bounds.swLat)),
+        lte(organizationBranches.latitude, String(bounds.neLat)),
+        gte(organizationBranches.longitude, String(bounds.swLng)),
+        lte(organizationBranches.longitude, String(bounds.neLng)),
+      ),
+    );
+  }
+
+  const safeLimit = Math.min(Math.max(Math.floor(limit), 1), 5000);
+  const limitLit: any = sql.raw(String(safeLimit));
+
+  const rows = await db
+    .select({
+      branchId: organizationBranches.branchId,
+      orgId: organizationBranches.orgId,
+      name: organizations.name,
+      branchType: organizationBranches.branchType,
+      country: organizationBranches.country,
+      latitude: organizationBranches.latitude,
+      longitude: organizationBranches.longitude,
+    })
+    .from(organizationBranches)
+    .innerJoin(organizations, eq(organizationBranches.orgId, organizations.orgId))
+    .where(and(...conditions, eq(organizations.isActive, true)))
+    .limit(limitLit);
+
+  return rows
+    .filter((r) => r.latitude !== null && r.longitude !== null)
+    .map((r) => ({
+      branchId: r.branchId,
+      orgId: r.orgId,
+      name: String(r.name ?? ""),
+      branchType: r.branchType as "HQ" | "Branch",
+      country: r.country,
+      latitude: Number(r.latitude),
+      longitude: Number(r.longitude),
+    }));
 }

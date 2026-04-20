@@ -4,6 +4,7 @@ export const ka: Translations = {
   nav: {
     home: "მთავარი",
     catalog: "გრანტები & რესურსები",
+    organizations: "ორგანიზაციები",
     subscribe: "გამოწერა",
     profile: "პროფილი",
     dashboard: "პანელი",
@@ -978,6 +979,30 @@ export const ka: Translations = {
     example3: "საცხოვრებელი დახმარება",
   },
 
+  organizations: {
+    title: "ორგანიზაციები",
+    subtitle: "538 დადასტურებული ორგანიზაცია გრანტებისა და დახმარების სერვისებით 29 ქვეყანაში.",
+    searchPlaceholder: "მოძებნე ორგანიზაციები...",
+    filters: {
+      country: "ქვეყანა",
+      category: "კატეგორია",
+      hasLocation: "მდებარეობით",
+    },
+    mapLegend: {
+      hq: "მთავარი ოფისი",
+      branch: "ფილიალი",
+    },
+    detail: {
+      branches: "ფილიალები",
+      relatedGrants: "დაკავშირებული გრანტები",
+      contact: "კონტაქტი",
+      visitWebsite: "ვებსაიტი",
+      viewOnMap: "დეტალების ნახვა",
+    },
+    empty: "ფილტრების მიხედვით ორგანიზაცია ვერ მოიძებნა.",
+    loading: "ორგანიზაციები იტვირთება...",
+  },
+
   auth: {
     tabEmail: "ელფოსტა და პაროლი",
     tabOAuth: "ერთიანი ავტორიზაცია",
@@ -1046,7 +1071,6 @@ export const ka: Translations = {
     loading: "რუკის ჩატვირთვა…",
     error: "რუკა მიუწვდომელია",
     noLocation: "ადგილმდებარეობა არ არის მითითებული",
-    ariaLabel: "გრანტების ინტერაქტიური რუკა",
   },
 
   deepLink: {

@@ -4,6 +4,7 @@ export const fr: Translations = {
   nav: {
     home: "Accueil",
     catalog: "Subventions & Ressources",
+    organizations: "Organisations",
     subscribe: "S'abonner",
     profile: "Profil",
     dashboard: "Tableau de bord",
@@ -976,6 +977,30 @@ export const fr: Translations = {
     example3: "aide au logement",
   },
 
+  organizations: {
+    title: "Organisations",
+    subtitle: "538 organisations vérifiées offrant des subventions et des services de soutien dans 29 pays.",
+    searchPlaceholder: "Rechercher des organisations...",
+    filters: {
+      country: "Pays",
+      category: "Catégorie",
+      hasLocation: "Avec localisation",
+    },
+    mapLegend: {
+      hq: "Siège social",
+      branch: "Filiale",
+    },
+    detail: {
+      branches: "Filiales",
+      relatedGrants: "Subventions associées",
+      contact: "Contact",
+      visitWebsite: "Visiter le site",
+      viewOnMap: "Voir les détails",
+    },
+    empty: "Aucune organisation ne correspond à vos filtres.",
+    loading: "Chargement des organisations...",
+  },
+
   auth: {
     tabEmail: "E-mail et mot de passe",
     tabOAuth: "Authentification unique",
@@ -1044,7 +1069,6 @@ export const fr: Translations = {
     loading: "Chargement de la carte…",
     error: "Carte indisponible",
     noLocation: "Adresse non communiquée publiquement",
-    ariaLabel: "Carte interactive des subventions",
   },
 
   deepLink: {
