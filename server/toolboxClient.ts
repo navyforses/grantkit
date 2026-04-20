@@ -17,7 +17,7 @@ import { listGrants, getGrantByItemId } from "./db";
 
 type ToolParams = Record<string, unknown>;
 
-async function callTool(name: string, params: ToolParams): Promise<unknown> {
+export async function callTool(name: string, params: ToolParams): Promise<unknown> {
   switch (name) {
     case "search_grants_by_keyword": {
       const result = await listGrants({
@@ -136,7 +136,7 @@ async function callTool(name: string, params: ToolParams): Promise<unknown> {
 // Anthropic-format tool definitions
 // ---------------------------------------------------------------------------
 
-const GRANT_TOOLS: Anthropic.Tool[] = [
+export const GRANT_TOOLS: Anthropic.Tool[] = [
   {
     name: "search_grants_by_keyword",
     description:

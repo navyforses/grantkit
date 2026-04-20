@@ -34,7 +34,7 @@ import {
   searchExternalGrants, getExternalGrantDetail, searchExternalFunders,
   mapExternalGrantToLocal,
 } from "./externalGrants";
-import { runGrantAssistant } from "./toolboxClient";
+import { runGrantChatAssistant } from "./grantAssistant";
 import { expandQuery } from "./queryExpander";
 import { searchGrantsMultiTerm } from "./smartSearch";
 import { z } from "zod";
@@ -1339,7 +1339,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const reply = await runGrantAssistant(input.message, input.history ?? []);
+        const reply = await runGrantChatAssistant(input.message, input.history ?? []);
         return { reply };
       }),
   }),
