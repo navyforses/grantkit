@@ -1,12 +1,13 @@
 /*
  * CatalogToolbar — horizontal filter bar above the catalog map / list
  * (Phase 4A, Priya). Replaces FilterBar. Pixel-aligned to the dark
- * catalog split-view reference. Internally debounces the search input
- * so remote queries fire 300 ms after the user stops typing.
+ * catalog split-view reference. Location cascade (region / country /
+ * state / city) + layout switch — free-text search removed per user
+ * request, 2026-04-20.
  */
 
-import { useEffect, useState } from "react";
-import { ChevronDown, Columns, Map as MapIcon, List as ListIcon, Search, X } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Columns, Map as MapIcon, List as ListIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,9 +40,6 @@ interface PlaceOption {
 }
 
 export interface CatalogToolbarProps {
-  searchQuery: string;
-  onSearchChange: (q: string) => void;
-
   regionFilter: string | null;
   onRegionChange: (r: string | null) => void;
 
@@ -63,11 +61,7 @@ export interface CatalogToolbarProps {
   availableCities: PlaceOption[];
 }
 
-const SEARCH_DEBOUNCE_MS = 300;
-
 export default function CatalogToolbar({
-  searchQuery,
-  onSearchChange,
   regionFilter,
   onRegionChange,
   countryFilter,
@@ -84,22 +78,6 @@ export default function CatalogToolbar({
   availableCities,
 }: CatalogToolbarProps) {
   const { t } = useLanguage();
-
-  // Local mirror of the search query so typing is instant and the parent
-  // only sees a debounced update. If the parent clears the query
-  // (e.g. from another control), keep local in sync.
-  const [localSearch, setLocalSearch] = useState(searchQuery);
-  useEffect(() => {
-    setLocalSearch(searchQuery);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    if (localSearch === searchQuery) return;
-    const timer = setTimeout(() => onSearchChange(localSearch), SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-    // onSearchChange is treated as stable; parent memoises filter state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localSearch]);
 
   const selectedRegion = regionFilter
     ? availableRegions.find((r) => r.code === regionFilter)
@@ -131,37 +109,6 @@ export default function CatalogToolbar({
       aria-label={t.toolbar.ariaLabel}
       className="h-12 px-2 sm:px-6 flex items-center gap-2 sm:gap-3 bg-[#0F1419] border-b border-white/[0.06] overflow-x-auto scrollbar-hide"
     >
-      {/* Search input */}
-      <label className="relative flex-shrink-0 w-36 sm:flex-1 sm:w-auto sm:max-w-[480px]">
-        <Search
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"
-          aria-hidden="true"
-        />
-        <input
-          type="search"
-          value={localSearch}
-          onChange={(e) => setLocalSearch(e.target.value)}
-          placeholder={t.toolbar.search.placeholder}
-          aria-label={t.toolbar.search.placeholder}
-          className={cn(
-            "w-full h-8 pl-9 pr-8 rounded-md text-[13px]",
-            "bg-white/[0.04] border border-white/[0.08] text-white/90 placeholder:text-white/40",
-            "focus:outline-none focus:border-[#1D9E75] focus:ring-2 focus:ring-[#1D9E75]/30",
-            "transition-colors",
-          )}
-        />
-        {localSearch && (
-          <button
-            type="button"
-            onClick={() => setLocalSearch("")}
-            aria-label={t.toolbar.search.clearAriaLabel}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        )}
-      </label>
-
       {/* Region dropdown — top of the location cascade. */}
       <ToolbarDropdown
         label={t.toolbar.region.label}

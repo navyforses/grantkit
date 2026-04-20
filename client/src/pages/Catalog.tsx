@@ -521,8 +521,6 @@ export default function Catalog() {
        * use that value to render the actual layout split.
        */}
       <CatalogToolbar
-        searchQuery={searchQuery}
-        onSearchChange={(q) => { setSearchQuery(q); setPage(1); }}
         regionFilter={mapRegionCode || null}
         onRegionChange={(code) => {
           setMapRegionCode((code ?? "") as RegionCode);
