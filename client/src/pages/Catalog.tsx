@@ -17,6 +17,7 @@ import CatalogToolbar, { type ToolbarViewMode } from "@/components/CatalogToolba
 import SplitView from "@/components/SplitView";
 import GrantList from "@/components/GrantList";
 import GrantGrid from "@/components/GrantGrid";
+import CatalogSidebar from "@/components/CatalogSidebar";
 import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
 import { useIsMobile } from "@/hooks/useMobile";
 import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, type SortValue, REGIONS, CATEGORIES, EU_MEMBER_CODES } from "@/lib/constants";
@@ -210,6 +211,7 @@ export default function Catalog() {
         housing:               "catHousing",
         travel_transport:      "catTravelTransport",
         international:         "catInternational",
+        business_funding:      "catBusinessFunding",
         other:                 "catOther",
       };
       const key = adminKey[value];
@@ -550,15 +552,12 @@ export default function Catalog() {
           setMapCityName(value ?? "");
           setPage(1);
         }}
-        categoryFilter={selectedCategory === "all" ? null : selectedCategory}
-        onCategoryChange={(c) => { setSelectedCategory((c ?? "all") as CategoryValue); setPage(1); }}
         viewMode={layoutMode}
         onViewChange={setLayoutMode}
         availableRegions={availableRegions}
         availableCountries={availableCountries}
         availableStates={availableStates}
         availableCities={availableCities}
-        availableCategories={availableCategories}
       />
 
       {/* View mode toggle (Filters / Smart Search) — the resource-type
@@ -650,11 +649,20 @@ export default function Catalog() {
             emptyLabel={t.catalog.noResults}
           />
         ) : layoutMode === "list" ? (
-          <div className="h-full w-full bg-[#0F1419]">
+          <div className="flex h-full w-full bg-[#0F1419]">
+            <CatalogSidebar
+              categoryFilter={selectedCategory}
+              onCategoryChange={(c) => { setSelectedCategory(c); setPage(1); }}
+              typeFilter={selectedType}
+              onTypeChange={(t) => { setSelectedType(t); setPage(1); }}
+              availableCategories={availableCategories}
+              totalCount={availableCategories.reduce((acc, c) => acc + c.count, 0)}
+            />
             <GrantGrid
               grants={activeMapItems}
               onCardClick={handleCardNavigate}
               emptyLabel={t.catalog.noResults}
+              className="flex-1"
             />
           </div>
         ) : (

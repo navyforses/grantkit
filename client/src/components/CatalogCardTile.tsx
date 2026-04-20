@@ -36,6 +36,7 @@ const CATEGORY_ACCENT: Record<string, string> = {
   international:        "bg-indigo-500",
   food_basic_needs:     "bg-orange-500",
   startup:              "bg-fuchsia-500",
+  business_funding:     "bg-slate-500",
   educational:          "bg-blue-500",
   research:             "bg-cyan-500",
   community:            "bg-yellow-500",

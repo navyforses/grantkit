@@ -463,6 +463,7 @@ export const en: Translations = {
     catHousing: "Housing",
     catTravelTransport: "Travel & Transport",
     catInternational: "International",
+    catBusinessFunding: "Business Funding",
     catOther: "Other",
 
     usersTitle: "Users",

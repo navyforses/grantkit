@@ -463,6 +463,7 @@ export const ka: Translations = {
     catHousing: "საცხოვრებელი",
     catTravelTransport: "მგზავრობა და ტრანსპორტი",
     catInternational: "საერთაშორისო",
+    catBusinessFunding: "ბიზნეს დაფინანსება",
     catOther: "სხვა",
 
     usersTitle: "მომხმარებლები",

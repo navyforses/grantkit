@@ -54,6 +54,7 @@ export type CategoryValue =
   | "international"
   | "food_basic_needs"
   | "startup"
+  | "business_funding"
   | "educational"
   | "research"
   | "community"
@@ -72,6 +73,7 @@ export const CATEGORIES: { value: CategoryValue; icon: string }[] = [
   { value: "international", icon: "🌍" },
   { value: "food_basic_needs", icon: "🍽️" },
   { value: "startup", icon: "🚀" },
+  { value: "business_funding", icon: "💼" },
   { value: "educational", icon: "📚" },
   { value: "research", icon: "🔬" },
   { value: "community", icon: "🏘️" },
@@ -185,6 +187,12 @@ const CATEGORY_STYLES: Record<string, { bg: string; text: string; border: string
     text: "text-fuchsia-700 dark:text-fuchsia-400",
     border: "border-fuchsia-200 dark:border-fuchsia-800",
     borderLeft: "border-l-fuchsia-500",
+  },
+  business_funding: {
+    bg: "bg-slate-50 dark:bg-slate-900/20",
+    text: "text-slate-700 dark:text-slate-300",
+    border: "border-slate-200 dark:border-slate-800",
+    borderLeft: "border-l-slate-500",
   },
   educational: {
     bg: "bg-sky-50 dark:bg-sky-900/20",

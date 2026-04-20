@@ -47,6 +47,7 @@ const CATEGORY_LABELS: Record<string, Record<Language, string>> = {
   international: { en: "International", fr: "International", es: "Internacional", ru: "Международные", ka: "საერთაშორისო" },
   food_basic_needs: { en: "Food & Basic Needs", fr: "Alimentation & Besoins essentiels", es: "Alimentación & Necesidades básicas", ru: "Питание и базовые потребности", ka: "საკვები & ძირითადი საჭიროებები" },
   startup: { en: "Startup & Business", fr: "Startup & Entreprise", es: "Startup & Negocio", ru: "Стартапы и бизнес", ka: "სტარტაპი & ბიზნესი" },
+  business_funding: { en: "Business Funding", fr: "Financement d'entreprise", es: "Financiación empresarial", ru: "Финансирование бизнеса", ka: "ბიზნეს დაფინანსება" },
   educational: { en: "Educational", fr: "Éducatif", es: "Educativo", ru: "Образовательные", ka: "საგანმანათლებლო" },
   research: { en: "Research", fr: "Recherche", es: "Investigación", ru: "Исследования", ka: "კვლევა" },
   community: { en: "Community Development", fr: "Développement communautaire", es: "Desarrollo comunitario", ru: "Развитие сообщества", ka: "საზოგადოების განვითარება" },

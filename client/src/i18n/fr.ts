@@ -461,6 +461,7 @@ export const fr: Translations = {
     catHousing: "Logement",
     catTravelTransport: "Voyage et transport",
     catInternational: "International",
+    catBusinessFunding: "Financement d'entreprise",
     catOther: "Autre",
 
     usersTitle: "Utilisateurs",
