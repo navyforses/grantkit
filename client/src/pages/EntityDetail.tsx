@@ -15,7 +15,7 @@
  * ("grant" vs "resource") — see conditional blocks below.
  */
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useParams, useLocation } from "wouter";
 import {
   ArrowUpRight,
@@ -30,12 +30,14 @@ import {
   FileText,
   Globe,
   Home,
+  Info,
   Mail,
   MapPin,
   Navigation,
   Phone,
   Plane,
   Share2,
+  Sparkles,
   Stethoscope,
   Tag,
   Users,
@@ -57,6 +59,8 @@ import { openInGoogleMapsDirections } from "@/lib/googleMaps";
 import { catalogItems } from "@/data/catalogData";
 import { useSaveEntity } from "@/hooks/useSaveEntity";
 import { pickLocalizedFields } from "@/lib/localizeEntity";
+import GrantAiChat from "@/components/GrantAiChat";
+import type { ParsedGrant } from "@/components/GrantCard";
 
 export default function EntityDetail() {
   const params = useParams<{ id: string }>();
@@ -64,6 +68,7 @@ export default function EntityDetail() {
   void _navigate;
   const { t, tCategory, tCountry, tCatalogContent, language } = useLanguage();
   const { isAuthenticated } = useAuth();
+  const [activeTab, setActiveTab] = useState<"info" | "ai">("info");
 
   const itemId = params.id || "";
   const { data: detailData, isLoading } = trpc.catalog.detail.useQuery(
@@ -336,7 +341,77 @@ export default function EntityDetail() {
         </div>
       </nav>
 
+      {/* Info / AI chat tab switcher */}
+      <div
+        role="tablist"
+        aria-label={content.name}
+        className="border-b border-white/[0.06] bg-[#0F1419]"
+      >
+        <div className="container px-4 flex items-center gap-1">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "info"}
+            onClick={() => setActiveTab("info")}
+            className={`relative flex items-center gap-2 px-4 py-3 text-[13px] font-medium transition-colors ${
+              activeTab === "info"
+                ? "text-[#5DCAA5]"
+                : "text-white/60 hover:text-white/80"
+            }`}
+          >
+            <Info className="w-3.5 h-3.5" aria-hidden="true" />
+            {t.aiAssistant.fullInfo}
+            {activeTab === "info" && (
+              <span
+                aria-hidden="true"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1D9E75]"
+              />
+            )}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "ai"}
+            onClick={() => setActiveTab("ai")}
+            className={`relative flex items-center gap-2 px-4 py-3 text-[13px] font-medium transition-colors ${
+              activeTab === "ai"
+                ? "text-[#5DCAA5]"
+                : "text-white/60 hover:text-white/80"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+            {t.aiAssistant.chatTab}
+            {activeTab === "ai" && (
+              <span
+                aria-hidden="true"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1D9E75]"
+              />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {activeTab === "ai" && (
+        <div className="container px-4 py-6 md:py-8 flex-1 pb-32 lg:pb-10">
+          <div className="mx-auto max-w-4xl h-[calc(100dvh-16rem)] min-h-[520px]">
+            <GrantAiChat
+              className="h-full border-white/[0.08] bg-white/[0.02]"
+              grantId={item.id}
+              grant={{
+                name: content.name,
+                organization: item.organization || undefined,
+                country: translatedCountry || undefined,
+                amount: item.amount || undefined,
+                deadline: content.deadline || undefined,
+                website: item.website || undefined,
+              } satisfies ParsedGrant}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Main content */}
+      {activeTab === "info" && (
       <div className="container px-4 py-6 md:py-8 flex-1 pb-32 lg:pb-10">
         <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-12">
 
@@ -687,6 +762,7 @@ export default function EntityDetail() {
           </div>
         )}
       </div>
+      )}
 
       {/* Mobile sticky bottom CTA — sits above MobileBottomNav (h ≈ 56 px) */}
       {primaryLink && (
