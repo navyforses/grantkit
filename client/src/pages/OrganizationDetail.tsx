@@ -375,7 +375,7 @@ export default function OrganizationDetail() {
                 transition={{ duration: 0.22 }}
                 className="container py-6 flex-1 pb-32 lg:pb-10"
               >
-                <div className="mx-auto max-w-4xl h-[calc(100dvh-16rem)] min-h-[520px]">
+                <div className="mx-auto max-w-6xl h-[calc(100dvh-16rem)] min-h-[520px]">
                   <OrgAiChat
                     className="h-full border-border bg-muted/30"
                     orgId={orgId}
