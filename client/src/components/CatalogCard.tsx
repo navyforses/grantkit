@@ -57,7 +57,7 @@ export default function CatalogCard({ item, index, isSaved, onToggleSave, isAuth
             {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
           </button>
         )}
-        <Link href={`/grant/${legacyItem.id}`}>
+        <Link href={legacyItem.orgId ? `/organizations/${legacyItem.orgId}` : `/grant/${legacyItem.id}`}>
           <div className="p-5 cursor-pointer">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div className="flex items-start gap-2.5 min-w-0">

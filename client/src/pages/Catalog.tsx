@@ -341,6 +341,7 @@ export default function Catalog() {
         .filter(Boolean)[0] || "other";
       return {
         id: r.orgId,
+        orgId: r.orgId,
         name: r.name,
         organization: r.name,
         description: r.description || "",
@@ -383,6 +384,7 @@ export default function Catalog() {
           .filter(Boolean)[0] || "other";
         return {
           id: o.orgId,
+          orgId: o.orgId,
           name: o.name,
           organization: o.name,
           description: o.description || "",
@@ -443,6 +445,7 @@ export default function Catalog() {
     if (mapPointsData?.points) {
       return mapPointsData.points.map((p: any) => ({
         id: p.branchId,
+        orgId: p.orgId,
         name: p.name,
         organization: p.name,
         description: "",
@@ -534,8 +537,12 @@ export default function Catalog() {
   );
 
   // Phase 4B — split/list/mobile click handlers. Full-item navigation.
+  // Items sourced from the organizations table carry an `orgId`; route those
+  // clicks to the /organizations/:orgId detail page (with animation + org-scoped
+  // AI chat). Legacy grant rows without orgId keep the old /grant/:id route.
   const handleCardNavigate = useCallback(
-    (item: CatalogItem) => navigate(`/grant/${item.id}`),
+    (item: CatalogItem) =>
+      navigate(item.orgId ? `/organizations/${item.orgId}` : `/grant/${item.id}`),
     [navigate],
   );
 
@@ -724,7 +731,8 @@ export default function Catalog() {
               />
             </Suspense>
 
-            {/* Phase 5 — grant detail slide-in panel (map-only; split/list navigate to /grant/{id}) */}
+            {/* Phase 5 — detail slide-in panel for map markers. Card clicks (split/list) navigate
+                to /organizations/:orgId when the row carries orgId, falling back to /grant/:id. */}
             <Suspense fallback={null}>
               <GrantDetailPanel
                 item={selectedItem}
