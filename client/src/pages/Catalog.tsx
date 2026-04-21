@@ -9,19 +9,17 @@
  *   Mobile:        MobileHeader from App.tsx (h-14) + map fills remaining viewport
  */
 
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
 import SmartSearchPanel from "@/components/SmartSearchPanel";
 import CatalogToolbar, { type ToolbarViewMode } from "@/components/CatalogToolbar";
 import SplitView from "@/components/SplitView";
-import GrantList from "@/components/GrantList";
 import GrantGrid from "@/components/GrantGrid";
 import CatalogSidebar from "@/components/CatalogSidebar";
 import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
 import { useIsMobile } from "@/hooks/useMobile";
 import { type CatalogItem, type CategoryValue, type TypeValue, type RegionCode, type SortValue, REGIONS, CATEGORIES, EU_MEMBER_CODES } from "@/lib/constants";
 import { Country, City } from "country-state-city";
-import { catalogItems } from "@/data/catalogData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -37,9 +35,6 @@ import { useGoogleMapFlyTo } from "@/hooks/useGoogleMapFlyTo";
 const PAGE_SIZE = 30;
 const PREVIEW_ITEMS = 3;
 const SEARCH_DEBOUNCE_MS = 300;
-
-const STATIC_CATALOG = catalogItems;
-const HAS_STATIC_DATA = STATIC_CATALOG.length > 0;
 
 function readFiltersFromURL(search: string) {
   const params = new URLSearchParams(search);
@@ -96,7 +91,7 @@ export default function Catalog() {
   const [mapStateCode, setMapStateCode] = useState(initial.mapStateCode);
   const [mapCityName, setMapCityName] = useState(initial.mapCityName);
 
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
 
   // View mode: map (default) or smart search
@@ -133,50 +128,54 @@ export default function Catalog() {
   ]);
 
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
-  const staticFilteredRef = useRef(STATIC_CATALOG.length);
 
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
   });
 
-  const catalogInput = useMemo(
+  // Catalog now sources from the organizations tables — the toolbar
+  // (region / country / state / city / category / smart search / sort)
+  // drives both the list and the map off this single query.
+  const orgSortBy = useMemo(() => {
+    switch (sortBy) {
+      case "name_desc": return "name-desc";
+      case "name_asc":  return "name-asc";
+      default:          return "name-asc";
+    }
+  }, [sortBy]);
+
+  const orgInput = useMemo(
     () => ({
-      search: debouncedSearch || undefined,
-      language: debouncedSearch ? language : undefined,
+      search:   debouncedSearch || undefined,
       category: selectedCategory !== "all" ? selectedCategory : undefined,
-      country: mapCountryCode || undefined,
-      state:   mapStateCode   || undefined,
-      city:    mapCityName    || undefined,
-      type: selectedType !== "all" ? selectedType : undefined,
-      sortBy,
-      fundingType: fundingType !== "all" ? fundingType : undefined,
-      targetDiagnosis: targetDiagnosis !== "all" ? targetDiagnosis : undefined,
-      b2VisaEligible: b2VisaEligible !== "all" ? b2VisaEligible : undefined,
-      hasDeadline: hasDeadline || undefined,
-      page: (subStatus?.isActive || HAS_STATIC_DATA) ? page : 1,
-      pageSize: (subStatus?.isActive || HAS_STATIC_DATA) ? PAGE_SIZE : PREVIEW_ITEMS,
+      region:   mapRegionCode || undefined,
+      country:  mapCountryCode || undefined,
+      state:    mapStateCode || undefined,
+      city:     mapCityName || undefined,
+      sortBy:   orgSortBy,
+      page:     subStatus?.isActive ? page : 1,
+      pageSize: subStatus?.isActive ? PAGE_SIZE : PREVIEW_ITEMS,
     }),
     [
-      debouncedSearch, language, selectedCategory, selectedType,
-      sortBy, fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
+      debouncedSearch, selectedCategory, orgSortBy,
       page, subStatus?.isActive,
-      mapCountryCode, mapStateCode, mapCityName,
+      mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
     ]
   );
 
-  const { data: catalogData } = trpc.catalog.list.useQuery(catalogInput, {
+  const { data: catalogData } = trpc.organizations.list.useQuery(orgInput, {
     retry: false,
     placeholderData: (prev: any) => prev,
   });
 
   // Smart Search — enabled once the user types >=2 chars. Server expands
   // the query (multilingual → English terms) and ranks full-text matches
-  // across all 640 active grants, so location/category dropdowns are
+  // across all 538 active organizations, so location/category dropdowns are
   // respected as a pre-filter but the query itself owns the ordering.
   const smartQueryTrimmed = smartQuery.trim();
   const smartEnabled = smartQueryTrimmed.length >= 2;
-  const { data: smartData, isLoading: smartLoading } = trpc.catalog.smartSearch.useQuery(
+  const { data: smartData } = trpc.organizations.smartSearch.useQuery(
     {
       query: smartQueryTrimmed,
       country: mapCountryCode || undefined,
@@ -191,22 +190,22 @@ export default function Catalog() {
   );
 
   // Phase 4A — toolbar data: regions & per-category counts (aggregated server-side).
-  const { data: regionCounts } = trpc.catalog.regions.useQuery(undefined, { retry: false });
-  const { data: categoryCounts } = trpc.catalog.categoryCounts.useQuery(undefined, { retry: false });
+  const { data: regionCounts } = trpc.organizations.regions.useQuery(undefined, { retry: false });
+  const { data: categoryCounts } = trpc.organizations.categoryCounts.useQuery(undefined, { retry: false });
 
   // Cascading location dropdowns:
   //   Region → Country → State → City. Each query is keyed on the parent
   //   value so options auto-narrow whenever the user picks a higher level.
   //   `enabled` flags skip the network round-trip for empty parents.
-  const { data: countryRows } = trpc.catalog.countries.useQuery(
+  const { data: countryRows } = trpc.organizations.countries.useQuery(
     { region: mapRegionCode || undefined },
     { retry: false },
   );
-  const { data: stateRows } = trpc.catalog.states.useQuery(
+  const { data: stateRows } = trpc.organizations.states.useQuery(
     { country: mapCountryCode || undefined },
     { retry: false, enabled: !!mapCountryCode },
   );
-  const { data: cityRows } = trpc.catalog.cities.useQuery(
+  const { data: cityRows } = trpc.organizations.cities.useQuery(
     { state: mapStateCode || "" },
     { retry: false, enabled: !!mapStateCode },
   );
@@ -335,159 +334,143 @@ export default function Catalog() {
   // Location/category filters still narrow the query server-side.
   const smartItems: CatalogItem[] | null = useMemo(() => {
     if (!smartEnabled || !smartData?.results) return null;
-    return smartData.results.map((r) => ({
-      id: r.id,
-      name: r.name,
-      organization: r.organization || "",
-      description: r.description || "",
-      category: r.category,
-      type: "grant" as const,
-      country: r.country,
-      eligibility: r.eligibility || "",
-      website: r.website || "",
-      phone: "",
-      email: "",
-      amount: r.amount || "",
-      status: "",
-      applicationProcess: "",
-      deadline: r.deadline || "",
-      fundingType: r.fundingType || "",
-      targetDiagnosis: "",
-      ageRange: "",
-      geographicScope: "",
-      documentsRequired: "",
-      b2VisaEligible: "",
-      state: r.state || "",
-      city: r.city || "",
-    }));
+    return smartData.results.map((r) => {
+      const firstCategory = (r.categories ?? "")
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean)[0] || "other";
+      return {
+        id: r.orgId,
+        name: r.name,
+        organization: r.name,
+        description: r.description || "",
+        category: firstCategory,
+        type: "grant" as const,
+        country: r.country,
+        eligibility: "",
+        website: r.website || "",
+        phone: "",
+        email: "",
+        amount: "",
+        status: "",
+        applicationProcess: "",
+        deadline: "",
+        fundingType: "",
+        targetDiagnosis: "",
+        ageRange: "",
+        geographicScope: "",
+        documentsRequired: "",
+        b2VisaEligible: "",
+        state: r.state || "",
+        city: r.city || "",
+        latitude: r.latitude ?? undefined,
+        longitude: r.longitude ?? undefined,
+      };
+    });
   }, [smartEnabled, smartData]);
 
-  // Map items to CatalogItem shape (used in Phase 4 for map markers)
+  // Adapt organizations rows to CatalogItem. Every catalog card + map
+  // marker + detail panel reads from this array, so the shape must match
+  // the old grant-based contract even when the underlying data doesn't
+  // have deadlines/eligibility/etc. (those stay empty strings).
   const displayItems: CatalogItem[] = useMemo(() => {
     if (smartItems) return smartItems;
-    if (catalogData?.grants) {
-      return catalogData.grants.map((g) => {
-        type GrantTranslation = { name?: string; description?: string; eligibility?: string };
-        const trans = (g.translations as Record<string, GrantTranslation> | undefined)?.[language];
+    if (catalogData?.organizations) {
+      return catalogData.organizations.map((o) => {
+        const firstCategory = (o.categories ?? "")
+          .split(",")
+          .map((c) => c.trim())
+          .filter(Boolean)[0] || "other";
         return {
-          id: g.id,
-          name: trans?.name || g.name,
-          organization: g.organization,
-          description: trans?.description || g.description,
-          category: g.category,
-          type: g.type as "grant" | "resource",
-          country: g.country,
-          eligibility: trans?.eligibility || g.eligibility,
-          website: g.website,
-          phone: g.phone,
-          email: g.email,
-          amount: g.amount,
-          status: g.status,
-          applicationProcess: g.applicationProcess,
-          deadline: g.deadline,
-          fundingType: g.fundingType,
-          targetDiagnosis: g.targetDiagnosis,
-          ageRange: g.ageRange,
-          geographicScope: g.geographicScope,
-          documentsRequired: g.documentsRequired,
-          b2VisaEligible: g.b2VisaEligible,
-          state: g.state,
-          city: g.city,
+          id: o.orgId,
+          name: o.name,
+          organization: o.name,
+          description: o.description || "",
+          category: firstCategory,
+          type: "grant" as const,
+          country: o.country,
+          eligibility: "",
+          website: o.website || "",
+          phone: o.phone || "",
+          email: o.email || "",
+          amount: "",
+          status: "",
+          applicationProcess: "",
+          deadline: "",
+          fundingType: "",
+          targetDiagnosis: "",
+          ageRange: "",
+          geographicScope: o.serviceArea || "",
+          documentsRequired: "",
+          b2VisaEligible: "",
+          state: o.state || "",
+          city: o.city || "",
+          latitude: o.latitude ?? undefined,
+          longitude: o.longitude ?? undefined,
         };
       });
-    }
-    if (STATIC_CATALOG) {
-      let filtered: any[] = STATIC_CATALOG;
-      if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
-      if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
-      if (mapCountryCode) filtered = filtered.filter((g: any) => g.country === mapCountryCode);
-      if (mapStateCode) filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
-      if (mapCityName) filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
-      if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
-      if (fundingType !== "all") filtered = filtered.filter((g: any) => g.fundingType === fundingType);
-      if (b2VisaEligible !== "all") filtered = filtered.filter((g: any) => g.b2VisaEligible === b2VisaEligible);
-      if (hasDeadline) filtered = filtered.filter((g: any) => g.deadline && g.deadline !== "");
-      if (debouncedSearch) {
-        const q = debouncedSearch.toLowerCase();
-        filtered = filtered.filter((g: any) =>
-          (g.name || "").toLowerCase().includes(q) ||
-          (g.organization || "").toLowerCase().includes(q) ||
-          (g.description || "").toLowerCase().includes(q)
-        );
-      }
-      staticFilteredRef.current = filtered.length;
-      const start = (page - 1) * PAGE_SIZE;
-      return filtered.slice(start, start + PAGE_SIZE).map((g: any) => ({
-        ...g,
-        type: g.type as "grant" | "resource",
-      }));
     }
     return [];
-  }, [
-    smartItems,
-    catalogData, language, selectedCategory, selectedType,
-    targetDiagnosis, fundingType, b2VisaEligible,
-    hasDeadline, debouncedSearch, page,
-    mapCountryCode, mapStateCode, mapCityName,
-  ]);
+  }, [smartItems, catalogData]);
 
-  const usingStatic = !catalogData?.grants && HAS_STATIC_DATA;
-  const totalItems = catalogData?.total || (usingStatic ? staticFilteredRef.current : 0);
+  // Map markers — fetch ALL matching branches (HQ + Branch rows) from the
+  // dedicated mapPoints endpoint so the map stays in sync with the list
+  // even when pagination caps displayItems at 30/page.
+  const mapPointsInput = useMemo(
+    () => ({
+      search:   debouncedSearch || undefined,
+      category: selectedCategory !== "all" ? selectedCategory : undefined,
+      region:   mapRegionCode || undefined,
+      country:  mapCountryCode || undefined,
+      state:    mapStateCode || undefined,
+      city:     mapCityName || undefined,
+      limit: 3000,
+    }),
+    [
+      debouncedSearch, selectedCategory,
+      mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
+    ]
+  );
+  const { data: mapPointsData } = trpc.organizations.mapPoints.useQuery(
+    smartEnabled ? undefined : mapPointsInput,
+    { retry: false, enabled: !smartEnabled, placeholderData: (prev: any) => prev },
+  );
 
-  // Map items — ALL filtered items for markers (no pagination).
-  // displayItems is capped at 30/page; mapItems uses the full static catalog so every
-  // matching grant appears on the map regardless of which page the user is on.
   const mapItems: CatalogItem[] = useMemo(() => {
+    // Smart search: show only ranked results on the map.
     if (smartItems) return smartItems;
-    if (HAS_STATIC_DATA) {
-      let filtered: any[] = STATIC_CATALOG;
-      if (selectedCategory !== "all") filtered = filtered.filter((g: any) => g.category === selectedCategory);
-      if (selectedType !== "all") filtered = filtered.filter((g: any) => g.type === selectedType);
-      // Region filter: EU = any of 27 member countries; US/GB = exact match; empty = all
-      if (mapRegionCode === "EU" && !mapCountryCode) {
-        filtered = filtered.filter((g: any) => EU_MEMBER_CODES.includes(g.country));
-      } else if (mapCountryCode) {
-        filtered = filtered.filter((g: any) => g.country === mapCountryCode);
-      } else if (mapRegionCode === "US") {
-        filtered = filtered.filter((g: any) => g.country === "US");
-      } else if (mapRegionCode === "GB") {
-        filtered = filtered.filter((g: any) => g.country === "GB");
-      }
-      if (mapStateCode) filtered = filtered.filter((g: any) => !g.state || g.state === "Nationwide" || g.state === mapStateCode);
-      if (mapCityName) filtered = filtered.filter((g: any) => !g.city || g.city.toLowerCase() === mapCityName.toLowerCase());
-      if (targetDiagnosis !== "all") filtered = filtered.filter((g: any) => g.targetDiagnosis === targetDiagnosis || g.targetDiagnosis === "General");
-      if (fundingType !== "all") filtered = filtered.filter((g: any) => g.fundingType === fundingType);
-      if (b2VisaEligible !== "all") filtered = filtered.filter((g: any) => g.b2VisaEligible === b2VisaEligible);
-      if (hasDeadline) filtered = filtered.filter((g: any) => g.deadline && g.deadline !== "");
-      if (debouncedSearch) {
-        const q = debouncedSearch.toLowerCase();
-        filtered = filtered.filter((g: any) =>
-          (g.name || "").toLowerCase().includes(q) ||
-          (g.organization || "").toLowerCase().includes(q) ||
-          (g.description || "").toLowerCase().includes(q)
-        );
-      }
-      // Snap "Nationwide" items to the selected state/city so their markers appear
-      // near the chosen location rather than at the country centre (which would be
-      // off-screen after flyTo zooms into the selected state/city).
-      return filtered.map((g: any) => {
-        const isNationwide = !g.state || /^(nationwide|national)/i.test(g.state.trim());
-        return {
-          ...g,
-          type: g.type as "grant" | "resource",
-          state: isNationwide && mapStateCode ? mapStateCode : g.state,
-          city:  isNationwide && mapCityName && mapStateCode ? mapCityName : g.city,
-        };
-      });
+    // Default: every matching branch, each as its own marker.
+    if (mapPointsData?.points) {
+      return mapPointsData.points.map((p: any) => ({
+        id: p.branchId,
+        name: p.name,
+        organization: p.name,
+        description: "",
+        category: "other",
+        type: "grant" as const,
+        country: p.country,
+        eligibility: "",
+        website: "",
+        phone: "",
+        email: "",
+        amount: "",
+        status: "",
+        applicationProcess: "",
+        deadline: "",
+        fundingType: "",
+        targetDiagnosis: "",
+        ageRange: "",
+        geographicScope: "",
+        documentsRequired: "",
+        b2VisaEligible: "",
+        state: "",
+        city: "",
+        latitude: p.latitude,
+        longitude: p.longitude,
+      }));
     }
-    // No static data — fall back to current-page items
     return displayItems;
-  }, [
-    smartItems,
-    selectedCategory, selectedType, mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
-    targetDiagnosis, fundingType, b2VisaEligible, hasDeadline, debouncedSearch,
-    displayItems,
-  ]);
+  }, [smartItems, mapPointsData, displayItems]);
 
   // Stats bar — number of unique countries in the current result set
   const countryCount = useMemo(

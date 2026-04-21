@@ -30,7 +30,6 @@ const Refund      = lazy(() => import("./pages/Refund"));
 const Admin       = lazy(() => import("./pages/Admin"));
 const Analytics   = lazy(() => import("./pages/Analytics"));
 const AiAssistant = lazy(() => import("./pages/AiAssistant"));
-const Organizations       = lazy(() => import("./pages/Organizations"));
 const OrganizationDetail  = lazy(() => import("./pages/OrganizationDetail"));
 const Register        = lazy(() => import("./pages/Register"));
 const VerifyEmail     = lazy(() => import("./pages/VerifyEmail"));
@@ -67,7 +66,6 @@ function Router() {
         <Route path="/admin" component={Admin} />
         <Route path="/analytics" component={Analytics} />
         <Route path="/ai-assistant" component={AiAssistant} />
-        <Route path="/organizations" component={Organizations} />
         <Route path="/organizations/:orgId" component={OrganizationDetail} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
