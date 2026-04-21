@@ -256,17 +256,24 @@ export function AIChatBox({
                       </div>
                     )}
 
-                    <div className={cn("flex flex-col max-w-[80%]", message.role === "user" ? "items-end" : "items-start")}>
+                    <div
+                      className={cn(
+                        "flex flex-col",
+                        message.role === "user"
+                          ? "items-end max-w-[80%]"
+                          : "items-start max-w-[95%] flex-1 min-w-0"
+                      )}
+                    >
                       <div
                         className={cn(
                           "rounded-lg px-4 py-2.5",
                           message.role === "user"
                             ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-foreground"
+                            : "bg-muted text-foreground w-full"
                         )}
                       >
                         {message.role === "assistant" ? (
-                          <div className="prose prose-base dark:prose-invert max-w-none text-[15px]">
+                          <div className="prose prose-base dark:prose-invert max-w-none text-[15px] leading-relaxed prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-li:leading-snug prose-headings:mt-4 prose-headings:mb-2 prose-headings:leading-tight prose-hr:my-3 prose-blockquote:my-2">
                             <Streamdown components={streamdownComponents}>{cleanNonGeorgianText(message.content)}</Streamdown>
                           </div>
                         ) : (
