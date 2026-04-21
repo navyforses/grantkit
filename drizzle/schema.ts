@@ -194,7 +194,7 @@ export const organizations = mysqlTable("organizations", {
   orgId: varchar("orgId", { length: 16 }).notNull().unique(),   // "ORG-0001"
   name: text("name").notNull(),
   description: text("description"),
-  country: varchar("country", { length: 8 }).notNull(),          // ISO alpha-2
+  country: varchar("country", { length: 64 }).notNull(),         // ISO alpha-2 ან scope label ("International")
   state: varchar("state", { length: 128 }),
   city: varchar("city", { length: 128 }),
   hqAddress: varchar("hqAddress", { length: 500 }),
@@ -228,7 +228,7 @@ export const organizationBranches = mysqlTable("organization_branches", {
   branchId: varchar("branchId", { length: 24 }).notNull().unique(), // "ORG-0001-B02"
   orgId: varchar("orgId", { length: 16 }).notNull(),                // FK → organizations.orgId
   branchType: mysqlEnum("branchType", ["HQ", "Branch"]).notNull(),
-  country: varchar("country", { length: 8 }).notNull(),
+  country: varchar("country", { length: 64 }).notNull(),
   state: varchar("state", { length: 128 }),
   city: varchar("city", { length: 128 }),
   address: varchar("address", { length: 500 }),
