@@ -39,6 +39,10 @@ export interface CatalogItem {
   resourceSlug?: string;
   // Optional: Supabase resource type for map marker coloring
   resourceType?: 'GRANT' | 'SOCIAL' | 'MEDICAL';
+  // Optional: organisation id when this CatalogItem is sourced from
+  // the organizations table (HQ row or a branch row). Card and marker
+  // click handlers route to /organizations/:orgId when present.
+  orgId?: string;
 }
 
 // ===== Categories =====
