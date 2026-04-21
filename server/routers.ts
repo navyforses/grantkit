@@ -23,6 +23,8 @@ import {
   setResetPasswordToken, updatePasswordAndClearReset,
   incrementFailedLoginAttempts, resetFailedLoginAttempts,
   listOrganizations, getOrganizationDetail, getOrganizationMapPoints,
+  getOrgDistinctCountries, getOrgDistinctStates, getOrgDistinctCities,
+  getOrgCategoryCounts, searchOrganizationsMultiTerm,
 } from "./db";
 import {
   sendSubscriptionEmail, sendAdminNewSubscriberNotification,
@@ -1346,44 +1348,175 @@ export const appRouter = router({
   }),
 
   // ===== Organizations catalog (with branch map) =====
+  //
+  // This router mirrors `catalog.*` so the /catalog page can drive its
+  // toolbar (region / country / state / city / category / smart search /
+  // sort) off the organizations tables. Kept parallel in shape so the
+  // frontend adapter stays trivial.
   organizations: router({
+    /** Paginated list with all toolbar filters. Mirror of catalog.list. */
     list: publicProcedure
       .input(z.object({
-        country: z.string().optional(),
         search: z.string().optional(),
+        category: z.string().optional(),
+        region: z.string().optional(),
+        country: z.string().optional(),
+        state: z.string().optional(),
+        city: z.string().optional(),
+        sortBy: z.string().optional(),
         bounds: z.object({
           swLat: z.number(),
           swLng: z.number(),
           neLat: z.number(),
           neLng: z.number(),
         }).optional(),
-        limit: z.number().min(1).max(500).default(100),
-        offset: z.number().min(0).default(0),
+        page: z.number().min(1).default(1),
+        pageSize: z.number().min(1).max(100).default(20),
       }).optional())
       .query(async ({ input }) => {
-        return listOrganizations(input ?? {});
+        const {
+          search, category, region, country, state, city, sortBy, bounds,
+          page = 1, pageSize = 20,
+        } = input || {};
+        const result = await listOrganizations({
+          search, category, region, country, state, city, sortBy, bounds,
+          limit: pageSize,
+          offset: (page - 1) * pageSize,
+        });
+        return {
+          organizations: result.organizations,
+          total: result.total,
+          page,
+          pageSize,
+          totalPages: Math.ceil(result.total / pageSize),
+        };
       }),
 
+    /** Single organization + its branches. */
     detail: publicProcedure
       .input(z.object({ orgId: z.string().min(1).max(32) }))
       .query(async ({ input }) => {
         return getOrganizationDetail(input.orgId);
       }),
 
+    /** Total active organizations count — used for the header stats bar. */
+    count: publicProcedure.query(async () => {
+      const result = await listOrganizations({ limit: 1, offset: 0 });
+      return { total: result.total };
+    }),
+
+    /** Branch coordinates for the map. Honors all toolbar filters so
+     *  markers stay in sync with the list. */
     mapPoints: publicProcedure
       .input(z.object({
+        search: z.string().optional(),
+        category: z.string().optional(),
+        region: z.string().optional(),
+        country: z.string().optional(),
+        state: z.string().optional(),
+        city: z.string().optional(),
         bounds: z.object({
           swLat: z.number(),
           swLng: z.number(),
           neLat: z.number(),
           neLng: z.number(),
         }).optional(),
-        country: z.string().optional(),
         limit: z.number().min(1).max(5000).default(2000),
       }).optional())
       .query(async ({ input }) => {
         const points = await getOrganizationMapPoints(input ?? {});
         return { points };
+      }),
+
+    /** Distinct states for the toolbar — narrowed by country when selected. */
+    states: publicProcedure
+      .input(z.object({ country: z.string().optional() }).optional())
+      .query(async ({ input }) => {
+        return getOrgDistinctStates(input?.country || undefined);
+      }),
+
+    /** Distinct countries for the toolbar — narrowed by region. */
+    countries: publicProcedure
+      .input(z.object({ region: z.string().optional() }).optional())
+      .query(async ({ input }) => {
+        return getOrgDistinctCountries(input?.region || undefined);
+      }),
+
+    /** Cascading city dropdown — requires a state. */
+    cities: publicProcedure
+      .input(z.object({ state: z.string() }))
+      .query(async ({ input }) => {
+        return getOrgDistinctCities(input.state);
+      }),
+
+    /** Region buckets (US / EU / GB) with org totals. */
+    regions: publicProcedure.query(async () => {
+      const rows = await getOrgDistinctCountries();
+      const EU = new Set([
+        "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU",
+        "IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE",
+      ]);
+      const totals = new Map<string, number>();
+      for (const r of rows) totals.set(r.country, r.count);
+
+      const us = totals.get("US") ?? 0;
+      const gb = totals.get("GB") ?? 0;
+      let eu = 0;
+      totals.forEach((c, code) => { if (EU.has(code)) eu += c; });
+
+      const regions: Array<{ code: string; count: number }> = [];
+      if (us > 0) regions.push({ code: "US", count: us });
+      if (eu > 0) regions.push({ code: "EU", count: eu });
+      if (gb > 0) regions.push({ code: "GB", count: gb });
+      return regions;
+    }),
+
+    /** Category counts parsed from comma-separated `categories` column. */
+    categoryCounts: publicProcedure.query(async () => {
+      return getOrgCategoryCounts();
+    }),
+
+    /** AI-powered multilingual smart search — reuses `expandQuery` from the
+     *  grants path so Georgian/French/Russian queries translate to the
+     *  same term set. */
+    smartSearch: publicProcedure
+      .input(z.object({
+        query: z.string().min(2).max(200),
+        country: z.string().optional(),
+        category: z.string().optional(),
+        limit: z.number().min(1).max(50).default(20),
+      }))
+      .query(async ({ input }) => {
+        try {
+          const expanded = await expandQuery(input.query);
+          const results = await searchOrganizationsMultiTerm(expanded.terms, {
+            country: input.country,
+            category: input.category,
+            limit: input.limit,
+          });
+          return {
+            results,
+            meta: {
+              originalQuery: expanded.original,
+              detectedLanguage: expanded.detectedLanguage,
+              englishQuery: expanded.englishQuery,
+              resultCount: results.length,
+              termsUsed: expanded.terms.length,
+            },
+          };
+        } catch (err) {
+          console.error("[organizations.smartSearch] Error:", err);
+          return {
+            results: [],
+            meta: {
+              originalQuery: input.query,
+              detectedLanguage: "en",
+              englishQuery: input.query,
+              resultCount: 0,
+              termsUsed: 0,
+            },
+          };
+        }
       }),
   }),
 });

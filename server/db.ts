@@ -1319,43 +1319,77 @@ export async function getAllGrantItemIds(): Promise<Array<{ itemId: string; upda
 
 // ===== Organizations helpers =====
 
+/**
+ * EU country codes — used by `region: "EU"` filter to expand into 27 concrete
+ * country codes. Kept in sync with `getDistinctCountries`'s EU_CODES constant.
+ */
+const ORG_EU_CODES = [
+  "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU",
+  "IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE",
+] as const;
+
 export interface ListOrganizationsOptions {
   country?: string;
+  region?: string;            // "US" | "EU" | "GB" — narrows country set
+  state?: string;
+  city?: string;
+  category?: string;          // matched against comma-separated `categories` column
   search?: string;
+  sortBy?: string;            // "name-asc" | "name-desc" | "branches-desc" | "programs-desc"
   bounds?: { swLat: number; swLng: number; neLat: number; neLng: number };
   limit?: number;
   offset?: number;
 }
 
-/** List organizations with optional filters. Returns lightweight rows for the catalog + map. */
-export async function listOrganizations(options?: ListOrganizationsOptions): Promise<{
-  organizations: Array<{
-    orgId: string;
-    name: string;
-    country: string;
-    city: string | null;
-    latitude: number | null;
-    longitude: number | null;
-    branchesCount: number;
-    categories: string | null;
-  }>;
-  total: number;
-}> {
-  const db = await getDb();
-  if (!db) return { organizations: [], total: 0 };
-
-  const { country, search, bounds, limit = 100, offset = 0 } = options || {};
-
+/**
+ * Build the shared WHERE-clause conditions for organization queries.
+ * Extracted so that `listOrganizations`, `getOrgDistinctCountries`, etc. can
+ * reuse the same filter logic and stay in sync.
+ */
+function buildOrgConditions(options: ListOrganizationsOptions): any[] {
+  const { country, region, state, city, category, search, bounds } = options;
   const conditions: any[] = [eq(organizations.isActive, true)];
-  if (country && country !== "all") conditions.push(eq(organizations.country, country));
+
+  if (country && country !== "all") {
+    conditions.push(eq(organizations.country, country));
+  } else if (region === "US") {
+    conditions.push(eq(organizations.country, "US"));
+  } else if (region === "GB") {
+    conditions.push(eq(organizations.country, "GB"));
+  } else if (region === "EU") {
+    conditions.push(
+      sql`${organizations.country} IN (${sql.join(ORG_EU_CODES.map((c) => sql`${c}`), sql`, `)})`,
+    );
+  }
+
+  if (state && state !== "all") conditions.push(eq(organizations.state, state));
+  if (city && city !== "all") conditions.push(eq(organizations.city, city));
+
+  if (category && category !== "all") {
+    // `categories` is a comma-separated text column — match the token with
+    // boundary LIKE patterns so "medical" does not match "medical_equipment".
+    conditions.push(
+      or(
+        eq(organizations.categories, category),
+        like(organizations.categories, `${category},%`),
+        like(organizations.categories, `%,${category},%`),
+        like(organizations.categories, `%,${category}`),
+      ),
+    );
+  }
+
   if (search) {
     conditions.push(
       or(
         like(organizations.name, `%${search}%`),
         like(organizations.description, `%${search}%`),
+        like(organizations.city, `%${search}%`),
+        like(organizations.state, `%${search}%`),
+        like(organizations.categories, `%${search}%`),
       ),
     );
   }
+
   if (bounds) {
     conditions.push(
       and(
@@ -1367,28 +1401,67 @@ export async function listOrganizations(options?: ListOrganizationsOptions): Pro
     );
   }
 
+  return conditions;
+}
+
+/** List organizations with catalog-parity filters. Returns full rows so the
+ *  catalog cards can render without a follow-up fetch. */
+export async function listOrganizations(options?: ListOrganizationsOptions): Promise<{
+  organizations: Array<{
+    orgId: string;
+    name: string;
+    description: string | null;
+    country: string;
+    state: string | null;
+    city: string | null;
+    hqAddress: string | null;
+    website: string | null;
+    phone: string | null;
+    email: string | null;
+    latitude: number | null;
+    longitude: number | null;
+    programsCount: number;
+    branchesCount: number;
+    categories: string | null;
+    serviceArea: string | null;
+    officeHours: string | null;
+  }>;
+  total: number;
+}> {
+  const db = await getDb();
+  if (!db) return { organizations: [], total: 0 };
+
+  const { limit = 100, offset = 0, sortBy = "name-asc" } = options || {};
+  const conditions = buildOrgConditions(options || {});
+  const whereClause = and(...conditions);
+
   const safeLimit = Math.min(Math.max(Math.floor(limit), 1), 500);
   const safeOffset = Math.max(Math.floor(offset), 0);
   const limitLit: any = sql.raw(String(safeLimit));
   const offsetLit: any = sql.raw(String(safeOffset));
 
-  const whereClause = and(...conditions);
+  let orderClause: any;
+  switch (sortBy) {
+    case "name-desc":
+      orderClause = desc(organizations.name);
+      break;
+    case "branches-desc":
+      orderClause = desc(organizations.branchesCount);
+      break;
+    case "programs-desc":
+      orderClause = desc(organizations.programsCount);
+      break;
+    case "name-asc":
+    default:
+      orderClause = asc(organizations.name);
+  }
 
   const [rows, countResult] = await Promise.all([
     db
-      .select({
-        orgId: organizations.orgId,
-        name: organizations.name,
-        country: organizations.country,
-        city: organizations.city,
-        latitude: organizations.latitude,
-        longitude: organizations.longitude,
-        branchesCount: organizations.branchesCount,
-        categories: organizations.categories,
-      })
+      .select()
       .from(organizations)
       .where(whereClause)
-      .orderBy(asc(organizations.name))
+      .orderBy(orderClause)
       .limit(limitLit)
       .offset(offsetLit),
     db.select({ count: count() }).from(organizations).where(whereClause),
@@ -1398,15 +1471,225 @@ export async function listOrganizations(options?: ListOrganizationsOptions): Pro
     organizations: rows.map((r) => ({
       orgId: r.orgId,
       name: String(r.name ?? ""),
+      description: r.description ?? null,
       country: r.country,
-      city: r.city,
+      state: r.state ?? null,
+      city: r.city ?? null,
+      hqAddress: r.hqAddress ?? null,
+      website: r.website ?? null,
+      phone: r.phone ?? null,
+      email: r.email ?? null,
       latitude: r.latitude === null ? null : Number(r.latitude),
       longitude: r.longitude === null ? null : Number(r.longitude),
+      programsCount: r.programsCount,
       branchesCount: r.branchesCount,
-      categories: r.categories,
+      categories: r.categories ?? null,
+      serviceArea: r.serviceArea ?? null,
+      officeHours: r.officeHours ?? null,
     })),
     total: countResult[0]?.count ?? 0,
   };
+}
+
+/** Distinct country codes for the organizations toolbar — optionally narrowed
+ *  to a region bucket (US / EU / GB). Mirror of `getDistinctCountries`. */
+export async function getOrgDistinctCountries(region?: string): Promise<Array<{ country: string; count: number }>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const conditions: any[] = [
+    eq(organizations.isActive, true),
+    sql`${organizations.country} IS NOT NULL AND ${organizations.country} != ''`,
+  ];
+
+  if (region === "US") {
+    conditions.push(eq(organizations.country, "US"));
+  } else if (region === "GB") {
+    conditions.push(eq(organizations.country, "GB"));
+  } else if (region === "EU") {
+    conditions.push(
+      sql`${organizations.country} IN (${sql.join(ORG_EU_CODES.map((c) => sql`${c}`), sql`, `)})`,
+    );
+  }
+
+  const result = await db
+    .select({ country: organizations.country, count: count() })
+    .from(organizations)
+    .where(and(...conditions))
+    .groupBy(organizations.country)
+    .orderBy(desc(count()));
+
+  return result.map((r) => ({ country: r.country as string, count: Number(r.count) }));
+}
+
+/** Distinct states with org counts — optionally narrowed to a country.
+ *  Pseudo-locations (`International`) are filtered out. */
+export async function getOrgDistinctStates(countryCode?: string): Promise<Array<{ state: string; count: number }>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const conditions: any[] = [
+    eq(organizations.isActive, true),
+    sql`${organizations.state} IS NOT NULL AND ${organizations.state} != ''`,
+    sql`${organizations.state} NOT IN ('Nationwide', 'International')`,
+  ];
+  if (countryCode && countryCode !== "all") conditions.push(eq(organizations.country, countryCode));
+
+  const result = await db
+    .select({ state: organizations.state, count: count() })
+    .from(organizations)
+    .where(and(...conditions))
+    .groupBy(organizations.state)
+    .orderBy(desc(count()));
+
+  return result.map((r) => ({ state: r.state as string, count: Number(r.count) }));
+}
+
+/** Distinct cities with org counts for a given state (cascading filter). */
+export async function getOrgDistinctCities(stateName: string): Promise<Array<{ city: string; count: number }>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ city: organizations.city, count: count() })
+    .from(organizations)
+    .where(
+      and(
+        eq(organizations.isActive, true),
+        eq(organizations.state, stateName),
+        sql`${organizations.city} IS NOT NULL AND ${organizations.city} != ''`,
+      ),
+    )
+    .groupBy(organizations.city)
+    .orderBy(asc(organizations.city));
+
+  return result.map((r) => ({ city: r.city as string, count: Number(r.count) }));
+}
+
+/** Tally categories across all active organizations.
+ *  `categories` is a comma-separated text column — we parse in application code
+ *  rather than push a GROUP BY on a normalized token list.
+ *
+ *  Returns counts of organizations that list each category (multi-category
+ *  orgs contribute to each bucket they mention). */
+export async function getOrgCategoryCounts(): Promise<Array<{ category: string; count: number }>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const rows = await db
+    .select({ categories: organizations.categories })
+    .from(organizations)
+    .where(
+      and(
+        eq(organizations.isActive, true),
+        sql`${organizations.categories} IS NOT NULL AND ${organizations.categories} != ''`,
+      ),
+    );
+
+  const tally = new Map<string, number>();
+  for (const r of rows) {
+    if (!r.categories) continue;
+    const tokens = r.categories
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    const seen = new Set<string>();
+    for (const tok of tokens) {
+      if (seen.has(tok)) continue;
+      seen.add(tok);
+      tally.set(tok, (tally.get(tok) ?? 0) + 1);
+    }
+  }
+
+  return Array.from(tally.entries())
+    .map(([category, c]) => ({ category, count: c }))
+    .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * Multi-term smart search over organizations — matches any of the given
+ * terms in name, description, city, state, or categories. Mirror of
+ * `searchGrantsMultiTerm` but scoped to organizations.
+ */
+export async function searchOrganizationsMultiTerm(
+  terms: string[],
+  options?: { country?: string; category?: string; limit?: number },
+): Promise<Array<{
+  orgId: string;
+  name: string;
+  description: string | null;
+  country: string;
+  state: string | null;
+  city: string | null;
+  website: string | null;
+  categories: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  branchesCount: number;
+}>> {
+  const db = await getDb();
+  if (!db) return [];
+  if (terms.length === 0) return [];
+
+  const { country, category, limit = 20 } = options || {};
+  const safeLimit = Math.min(Math.max(Math.floor(limit), 1), 50);
+  const limitLit: any = sql.raw(String(safeLimit));
+
+  const termConditions = terms.map((term) =>
+    or(
+      like(organizations.name, `%${term}%`),
+      like(organizations.description, `%${term}%`),
+      like(organizations.city, `%${term}%`),
+      like(organizations.state, `%${term}%`),
+      like(organizations.categories, `%${term}%`),
+    ),
+  );
+
+  const conditions: any[] = [eq(organizations.isActive, true), or(...termConditions)];
+  if (country && country !== "all") conditions.push(eq(organizations.country, country));
+  if (category && category !== "all") {
+    conditions.push(
+      or(
+        eq(organizations.categories, category),
+        like(organizations.categories, `${category},%`),
+        like(organizations.categories, `%,${category},%`),
+        like(organizations.categories, `%,${category}`),
+      ),
+    );
+  }
+
+  const rows = await db
+    .select({
+      orgId: organizations.orgId,
+      name: organizations.name,
+      description: organizations.description,
+      country: organizations.country,
+      state: organizations.state,
+      city: organizations.city,
+      website: organizations.website,
+      categories: organizations.categories,
+      latitude: organizations.latitude,
+      longitude: organizations.longitude,
+      branchesCount: organizations.branchesCount,
+    })
+    .from(organizations)
+    .where(and(...conditions))
+    .orderBy(asc(organizations.name))
+    .limit(limitLit);
+
+  return rows.map((r) => ({
+    orgId: r.orgId,
+    name: String(r.name ?? ""),
+    description: r.description ?? null,
+    country: r.country,
+    state: r.state ?? null,
+    city: r.city ?? null,
+    website: r.website ?? null,
+    categories: r.categories ?? null,
+    latitude: r.latitude === null ? null : Number(r.latitude),
+    longitude: r.longitude === null ? null : Number(r.longitude),
+    branchesCount: r.branchesCount,
+  }));
 }
 
 /** Get a single organization by orgId plus its branches. */
@@ -1432,10 +1715,23 @@ export async function getOrganizationDetail(orgId: string): Promise<{
   };
 }
 
-/** Get branch coordinates for the map markers. Filters to rows with lat/lng. */
+/**
+ * Get branch coordinates for the catalog map markers.
+ *
+ * Filters to branches that belong to *organizations matching the toolbar*.
+ * That is: region/country/state/city/category/search narrow the org set, and
+ * we return every branch of those orgs with valid lat/lng. This lets the map
+ * markers stay 1:1 in sync with the catalog list even when a branch's own
+ * country differs from its HQ's country (e.g. a US org with a branch in CA).
+ */
 export async function getOrganizationMapPoints(options: {
   bounds?: { swLat: number; swLng: number; neLat: number; neLng: number };
   country?: string;
+  region?: string;
+  state?: string;
+  city?: string;
+  category?: string;
+  search?: string;
   limit?: number;
 }): Promise<Array<{
   branchId: string;
@@ -1449,14 +1745,25 @@ export async function getOrganizationMapPoints(options: {
   const db = await getDb();
   if (!db) return [];
 
-  const { bounds, country, limit = 2000 } = options;
-  const conditions: any[] = [
+  const { bounds, limit = 2000 } = options;
+
+  // Filter organizations using the same conditions as `listOrganizations`.
+  // Note that bounds is NOT applied to orgs here — it's applied to branches.
+  const orgConditions = buildOrgConditions({
+    country: options.country,
+    region: options.region,
+    state: options.state,
+    city: options.city,
+    category: options.category,
+    search: options.search,
+  });
+
+  const branchConditions: any[] = [
     isNotNull(organizationBranches.latitude),
     isNotNull(organizationBranches.longitude),
   ];
-  if (country && country !== "all") conditions.push(eq(organizationBranches.country, country));
   if (bounds) {
-    conditions.push(
+    branchConditions.push(
       and(
         gte(organizationBranches.latitude, String(bounds.swLat)),
         lte(organizationBranches.latitude, String(bounds.neLat)),
@@ -1481,7 +1788,7 @@ export async function getOrganizationMapPoints(options: {
     })
     .from(organizationBranches)
     .innerJoin(organizations, eq(organizationBranches.orgId, organizations.orgId))
-    .where(and(...conditions, eq(organizations.isActive, true)))
+    .where(and(...orgConditions, ...branchConditions))
     .limit(limitLit);
 
   return rows
