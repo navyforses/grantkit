@@ -233,6 +233,21 @@ export const organizations = mysqlTable("organizations", {
   missionStatement: text("missionStatement"),
   socialMedia: text("socialMedia"),                               // JSON: {facebook, linkedin, twitter, instagram, youtube}
 
+  // ── Contact provenance (Phase A — anti-hallucination tracking) ────────
+  // Every phone/email we store must have a source and a verification
+  // timestamp. UI badges show source on hover; scheduled re-verification
+  // can target rows where `phoneVerifiedAt` is stale. Values mirror the
+  // sources the scraper supports — free-form VARCHAR keeps us flexible
+  // to add new sources without a migration.
+  phoneSource: varchar("phoneSource", { length: 32 }),            // "google_places" | "website" | "manual" | "imported"
+  phoneVerifiedAt: timestamp("phoneVerifiedAt"),
+  emailSource: varchar("emailSource", { length: 32 }),
+  emailVerifiedAt: timestamp("emailVerifiedAt"),
+  contactFormUrl: varchar("contactFormUrl", { length: 500 }),     // fallback when org has no public email but a form
+  contactEnrichmentBatch: varchar("contactEnrichmentBatch", { length: 32 }),  // "2026-04-23-001"
+  contactEnrichmentStatus: mysqlEnum("contactEnrichmentStatus",
+    ["pending", "enriched", "no_data", "failed"]).default("pending").notNull(),
+
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -241,6 +256,8 @@ export const organizations = mysqlTable("organizations", {
   index("orgs_lat_lng_idx").on(table.latitude, table.longitude),
   index("orgs_accepts_undocumented_idx").on(table.acceptsUndocumented),
   index("orgs_service_cost_idx").on(table.serviceCost),
+  index("orgs_contact_batch_idx").on(table.contactEnrichmentBatch),
+  index("orgs_contact_status_idx").on(table.contactEnrichmentStatus),
 ]);
 
 export type Organization = typeof organizations.$inferSelect;
