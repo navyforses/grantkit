@@ -208,16 +208,69 @@ export const organizations = mysqlTable("organizations", {
   categories: text("categories"),                                 // comma-separated
   serviceArea: varchar("serviceArea", { length: 255 }),
   officeHours: varchar("officeHours", { length: 255 }),
+
+  // ── Enrichment fields (v2 — user-approved set of 7 visible signals) ──
+  // All nullable or default to "unknown" so existing rows remain valid and
+  // the migration needs no backfill. UI renders every field conditionally.
+
+  // Accessibility (the five "can I use this?" questions newcomers care about)
+  languages: text("orgLanguages"),                                // CSV ISO codes: "en,ka,ru,es"
+  acceptsUndocumented: mysqlEnum("acceptsUndocumented",
+    ["yes", "no", "case_by_case", "unknown"]).default("unknown").notNull(),
+  acceptsUninsured: mysqlEnum("acceptsUninsured",
+    ["yes", "no", "unknown"]).default("unknown").notNull(),
+  serviceCost: mysqlEnum("serviceCost",
+    ["free", "sliding_scale", "paid", "insurance", "mixed", "unknown"]).default("unknown").notNull(),
+  appointmentPolicy: mysqlEnum("appointmentPolicy",
+    ["required", "walk_in", "both", "unknown"]).default("unknown").notNull(),
+
+  // Google trust signals
+  googleRating: decimal("googleRating", { precision: 2, scale: 1 }),
+  googleReviewCount: int("googleReviewCount"),
+  googlePlaceId: varchar("googlePlaceId", { length: 128 }),       // for targeted refresh
+
+  // Content
+  missionStatement: text("missionStatement"),
+  socialMedia: text("socialMedia"),                               // JSON: {facebook, linkedin, twitter, instagram, youtube}
+
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => [
   index("orgs_country_idx").on(table.country),
   index("orgs_lat_lng_idx").on(table.latitude, table.longitude),
+  index("orgs_accepts_undocumented_idx").on(table.acceptsUndocumented),
+  index("orgs_service_cost_idx").on(table.serviceCost),
 ]);
 
 export type Organization = typeof organizations.$inferSelect;
 export type InsertOrganization = typeof organizations.$inferInsert;
+
+/**
+ * Organization translations — per-language overrides for free-text fields.
+ * Structured enum values (cost, status, appointment) are translated client-side
+ * via i18n keys; this table only stores prose (name / description /
+ * missionStatement). Mirrors the grant_translations pattern.
+ *
+ * Populated by a future translation pipeline (AI auto-translate with admin
+ * override); unique (orgId, language) enforces one row per language.
+ */
+export const organizationTranslations = mysqlTable("organization_translations", {
+  id: int("id").autoincrement().primaryKey(),
+  orgId: varchar("orgId", { length: 16 }).notNull(),              // FK → organizations.orgId
+  language: varchar("language", { length: 10 }).notNull(),
+  name: text("name"),
+  description: text("description"),
+  missionStatement: text("missionStatement"),
+  translatedAt: timestamp("translatedAt").defaultNow().notNull(),
+  source: varchar("source", { length: 32 }),                      // "ai" | "manual" | "imported"
+}, (table) => [
+  uniqueIndex("org_lang_idx").on(table.orgId, table.language),
+  index("org_translations_lang_idx").on(table.language),
+]);
+
+export type OrganizationTranslation = typeof organizationTranslations.$inferSelect;
+export type InsertOrganizationTranslation = typeof organizationTranslations.$inferInsert;
 
 /**
  * Organization branches — 1 HQ row + 0..N Branch rows per organization.
