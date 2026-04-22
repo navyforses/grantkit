@@ -41,6 +41,19 @@ import SEO from "@/components/SEO";
 import OrganizationsMap, { type OrgMapPoint } from "@/components/OrganizationsMap";
 import OrgAiChat from "@/components/OrgAiChat";
 import GrantDetailHeader from "@/components/grant/GrantDetailHeader";
+import TrustPanel from "@/components/org/TrustPanel";
+import WhoWeHelpCard from "@/components/org/WhoWeHelpCard";
+import WhatToBringCard from "@/components/org/WhatToBringCard";
+import SocialMediaRow from "@/components/org/SocialMediaRow";
+import {
+  parseRequiredDocuments,
+  parseSocialMedia,
+  type AcceptsUndocumented,
+  type AcceptsUninsured,
+  type AppointmentPolicy,
+  type OrgType,
+  type ServiceCost,
+} from "@/lib/orgEnrichment";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
@@ -137,6 +150,36 @@ export default function OrganizationDetail() {
   const websiteHref = website
     ? website.startsWith("http") ? website : `https://${website}`
     : "";
+
+  // ── Enrichment fields ────────────────────────────────────────────────
+  // Columns land via drizzle/0015_org_enrichment migration. Casts here
+  // guard the UI against older row shapes where the migration hasn't
+  // run yet (preview / staging) — missing columns fall back to
+  // "unknown" / null and the cards degrade gracefully.
+  const anyOrg = org as any;
+  const acceptsUndocumented: AcceptsUndocumented = anyOrg.acceptsUndocumented ?? "unknown";
+  const acceptsUninsured: AcceptsUninsured = anyOrg.acceptsUninsured ?? "unknown";
+  const serviceCost: ServiceCost = anyOrg.serviceCost ?? "unknown";
+  const appointmentPolicy: AppointmentPolicy = anyOrg.appointmentPolicy ?? "unknown";
+  const orgType: OrgType | null = anyOrg.orgType ?? null;
+  const emergencyHotline: string | null = anyOrg.emergencyHotline ?? null;
+  const foundedYear: number | null = anyOrg.foundedYear ?? null;
+  const googleRating: number | null =
+    anyOrg.googleRating != null ? Number(anyOrg.googleRating) : null;
+  const googleReviewCount: number | null = anyOrg.googleReviewCount ?? null;
+  const verifiedAt: Date | null = anyOrg.verifiedAt
+    ? new Date(anyOrg.verifiedAt)
+    : null;
+  const languagesRaw: string | null = anyOrg.languages ?? null;
+  const socialMedia = parseSocialMedia(anyOrg.socialMedia ?? null);
+  const requiredDocuments = parseRequiredDocuments(anyOrg.requiredDocuments ?? null);
+  const missionStatement: string | null = anyOrg.missionStatement ?? null;
+
+  // Show the "Who we help" and "What to bring" cards whenever the org
+  // has a website — even if the enrichment columns are still null —
+  // so the user can see the layout the admin panel will eventually
+  // fill. The cards render greyed placeholders for missing fields.
+  const showEnrichmentSections = Boolean(org);
 
   // ── 3-card stat strip — always 3 values for orgs (unlike grants where
   //    several are DATA_GAPS). Matches the grant page's pattern visually.
@@ -276,17 +319,53 @@ export default function OrganizationDetail() {
               </div>
             )}
 
+            {/* Verification & Trust — built from orgType, foundedYear,
+                googleRating + verifiedAt. Hides itself when none of
+                these signals are present. */}
+            <TrustPanel
+              orgType={orgType}
+              foundedYear={foundedYear}
+              googleRating={googleRating}
+              googleReviewCount={googleReviewCount}
+              verifiedAt={verifiedAt}
+            />
+
             {/* Description */}
-            {orgDescription && (
+            {(orgDescription || missionStatement) && (
               <div className="bg-muted/40 border border-border rounded-xl p-5 border-l-4 border-l-[color:var(--brand-green)]">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                   <FileText className="w-3.5 h-3.5" />
                   {t.resourceDetail.descriptionTitle}
                 </h2>
-                <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
-                  {orgDescription}
-                </p>
+                {missionStatement && (
+                  <p className="text-sm md:text-[15px] italic text-[color:var(--brand-green)]/90 mb-2.5">
+                    "{missionStatement}"
+                  </p>
+                )}
+                {orgDescription && (
+                  <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
+                    {orgDescription}
+                  </p>
+                )}
               </div>
+            )}
+
+            {/* Who we help — the card that answers the five "can I use
+                this?" questions newcomers / immigrants care about most. */}
+            {showEnrichmentSections && (
+              <WhoWeHelpCard
+                languages={languagesRaw}
+                acceptsUndocumented={acceptsUndocumented}
+                acceptsUninsured={acceptsUninsured}
+                serviceCost={serviceCost}
+                appointmentPolicy={appointmentPolicy}
+                emergencyHotline={emergencyHotline}
+              />
+            )}
+
+            {/* What to bring — required documents as animated chips */}
+            {showEnrichmentSections && (
+              <WhatToBringCard documents={requiredDocuments} />
             )}
 
             {/* Service area */}
@@ -398,6 +477,10 @@ export default function OrganizationDetail() {
                 )}
               </div>
             </div>
+
+            {/* Social media links — small chips, hides when socialMedia
+                JSON is empty so the layout stays tight. */}
+            <SocialMediaRow links={socialMedia} />
 
             {/* Branches — the feature that makes the org page different
                 from the grant page. Keeps the verified HQ + Google Places
