@@ -17,6 +17,25 @@
 
 ---
 
+## ⚠️ LEGACY — ფაილები რომლებიც არ გაფართოვდება
+
+ეს ფაილები **ცოცხალი არის კოდში** (build-ი მიდის, route-ი ქმნის) მაგრამ **მომხმარებელი მათ აღარ ხედავს** Phase 5 redesign-ის შემდეგ. **ახალი ფიჩერი არ დაამატო** მათში — სანაცვლოდ დაამატე OrganizationDetail.tsx-ში.
+
+**ფაილები (ნუ შეეხო გარდა ყოვლისმომცველი cleanup PR-ისა):**
+
+- `client/src/pages/EntityDetail.tsx` — `/grant/:id` route (legacy grant detail)
+- `client/src/components/GrantAiChat.tsx` — grant-scoped AI chat (only EntityDetail uses)
+- `client/src/components/GrantDetailSkeleton.tsx` — loading skeleton for EntityDetail
+- `client/src/components/grant/MatchSummary.tsx` — personalized match card (only EntityDetail)
+- `client/src/lib/computeMatch.ts` — matching logic
+- `client/src/lib/parseList.ts` — bullets/steps parser
+
+**რატომ არ წაიშალა?** ზოგიერთი item DB-ში შეიძლება `orgId` არ ჰქონდეს; `CatalogCard.tsx` ფოლბეკად იყენებს `/grant/:id`-ს. როცა ყველა row-ს ექნება `orgId`, ეს ბლოკი შეიძლება უსაფრთხოდ წაიშალოს.
+
+**მთავარი detail გვერდი:** `OrganizationDetail.tsx` (`/organizations/:orgId`).
+
+---
+
 ## Deployment — ყველაზე მნიშვნელოვანი
 
 **Railway** — ერთი სერვისი, ერთი URL:

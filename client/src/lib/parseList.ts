@@ -1,4 +1,7 @@
 /*
+ * ⚠️ LEGACY — only consumed by EntityDetail.tsx (/grant/:id fallback).
+ * See CLAUDE.md → LEGACY for the full list + removal plan.
+ *
  * parseList — turn free-text `eligibility` / `applicationProcess` strings
  * into arrays of bullet points or numbered steps for structured rendering.
  *

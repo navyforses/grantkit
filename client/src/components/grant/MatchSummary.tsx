@@ -1,4 +1,7 @@
 /*
+ * ⚠️ LEGACY — only rendered by EntityDetail.tsx (/grant/:id fallback).
+ * See CLAUDE.md → LEGACY for the full list + removal plan.
+ *
  * MatchSummary — "Your Match: N/M" card with per-criterion checklist.
  *
  * Renders the result of computeMatch() as a green-bordered panel. Each
