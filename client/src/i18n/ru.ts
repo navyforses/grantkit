@@ -1187,4 +1187,61 @@ export const ru: Translations = {
     paid: "Платно",
     subsidized: "Субсидируется",
   },
+
+  orgEnrichment: {
+    trustTitle: "Верификация и доверие",
+    whoWeHelpTitle: "Кому помогаем",
+    whatToBringTitle: "Что взять с собой",
+    howToApplyTitle: "Как обратиться",
+    socialTitle: "Подписаться",
+
+    languagesLabel: "Языки",
+    statusLabel: "Миграционный статус",
+    insuranceLabel: "Страховка",
+    costLabel: "Стоимость",
+    appointmentLabel: "Визит",
+    emergencyLabel: "Экстренная линия",
+
+    foundedIn: "Основана в {year}",
+    googleRating: "Рейтинг Google",
+    reviewsCount: "{count} отзывов",
+    verified: "Подтверждено GrantKit",
+    placeholderTbd: "Требует подтверждения",
+
+    status: {
+      yes: "Принимают всех, независимо от статуса",
+      no: "Только легальным резидентам",
+      case_by_case: "Рассматривается индивидуально",
+      unknown: "Политика по статусу не подтверждена",
+    },
+    insurance: {
+      yes: "Принимают без страховки",
+      no: "Страховка обязательна",
+      unknown: "Политика по страховке не подтверждена",
+    },
+    cost: {
+      free: "Бесплатно",
+      sliding_scale: "Плавающая шкала",
+      paid: "Платно",
+      insurance: "По страховке",
+      mixed: "Смешанно",
+      unknown: "Стоимость не подтверждена",
+    },
+    appointment: {
+      required: "По записи",
+      walk_in: "Без записи",
+      both: "Без записи и по записи",
+      unknown: "Политика визитов не подтверждена",
+    },
+    orgType: {
+      nonprofit: "Благотворительная",
+      ngo: "НКО",
+      government: "Государственная",
+      religious: "Религиозная",
+      private: "Частная",
+      hospital: "Больница",
+      university: "Университет",
+      other: "Другое",
+    },
+  },
 };

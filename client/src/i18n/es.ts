@@ -1187,4 +1187,61 @@ export const es: Translations = {
     paid: "De pago",
     subsidized: "Subvencionado",
   },
+
+  orgEnrichment: {
+    trustTitle: "Verificación y Confianza",
+    whoWeHelpTitle: "A quién ayudamos",
+    whatToBringTitle: "Qué traer",
+    howToApplyTitle: "Cómo solicitar",
+    socialTitle: "Seguir",
+
+    languagesLabel: "Idiomas",
+    statusLabel: "Estatus migratorio",
+    insuranceLabel: "Seguro",
+    costLabel: "Coste",
+    appointmentLabel: "Visitas",
+    emergencyLabel: "Línea de emergencia",
+
+    foundedIn: "Fundada en {year}",
+    googleRating: "Valoración Google",
+    reviewsCount: "{count} reseñas",
+    verified: "Verificada por GrantKit",
+    placeholderTbd: "Por confirmar",
+
+    status: {
+      yes: "Acepta a todos, sin importar estatus",
+      no: "Solo residentes legales",
+      case_by_case: "Evaluado caso por caso",
+      unknown: "Política migratoria por confirmar",
+    },
+    insurance: {
+      yes: "Acepta sin seguro",
+      no: "Seguro obligatorio",
+      unknown: "Política de seguro por confirmar",
+    },
+    cost: {
+      free: "Gratis",
+      sliding_scale: "Tarifa ajustable",
+      paid: "De pago",
+      insurance: "Por seguro",
+      mixed: "Mixto",
+      unknown: "Coste por confirmar",
+    },
+    appointment: {
+      required: "Cita requerida",
+      walk_in: "Sin cita",
+      both: "Sin cita y con cita",
+      unknown: "Política de visita por confirmar",
+    },
+    orgType: {
+      nonprofit: "Sin ánimo de lucro",
+      ngo: "ONG",
+      government: "Pública",
+      religious: "Religiosa",
+      private: "Privada",
+      hospital: "Hospital",
+      university: "Universidad",
+      other: "Otro",
+    },
+  },
 };
