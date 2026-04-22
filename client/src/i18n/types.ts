@@ -1090,7 +1090,38 @@ export interface Translations {
     metricFunding: string;
     metricAge: string;
     metricConditions: string;
+    metricSuccess: string;
     relatedTitle: string;
+
+    // Header actions (top bar)
+    back: string;
+    close: string;
+    aiShort: string;
+
+    // Match summary card
+    matchTitle: string;
+    matchCountry: string;
+    matchDiagnosis: string;
+    matchAge: string;
+    matchIncome: string;
+    matchToConfirm: string;
+    matchNotInProfile: string;
+    matchAnyCountry: string;
+    matchInternational: string;
+
+    // Footer meta (founded / processing time)
+    foundedSince: string;        // "Founded since {year}"
+    processingTime: string;      // "Processing time: {time}"
+
+    // Deadline formatting
+    deadlineDays: string;        // "{days} days left"
+    deadlineRolling: string;
+    deadlineExpired: string;
+    deadlineToday: string;
+
+    // CTAs
+    downloadPdf: string;
+    applyCta: string;            // "Apply now →" (primary, lg)
   };
 
   // Overrides used when item.type === 'resource' (see EntityDetail.tsx).

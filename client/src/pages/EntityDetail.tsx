@@ -22,15 +22,12 @@ import {
   Bookmark,
   BookmarkCheck,
   Building2,
-  Calendar,
   CheckCircle2,
   ChevronRight,
   Clock,
   DollarSign,
   FileText,
   Globe,
-  Home,
-  Info,
   Mail,
   MapPin,
   Navigation,
@@ -38,12 +35,10 @@ import {
   Plane,
   Share2,
   Sparkles,
-  Stethoscope,
-  Tag,
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Navbar from "@/components/Navbar";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import Footer from "@/components/Footer";
 import { getCategoryStyle, getCategoryBorderColor } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -60,15 +55,18 @@ import { catalogItems } from "@/data/catalogData";
 import { useSaveEntity } from "@/hooks/useSaveEntity";
 import { pickLocalizedFields } from "@/lib/localizeEntity";
 import GrantAiChat from "@/components/GrantAiChat";
-import type { ParsedGrant } from "@/components/GrantCard";
+import GrantDetailHeader from "@/components/grant/GrantDetailHeader";
+import MatchSummary from "@/components/grant/MatchSummary";
+import { parseToBullets, parseToSteps } from "@/lib/parseList";
+import { computeMatch } from "@/lib/computeMatch";
 
 export default function EntityDetail() {
   const params = useParams<{ id: string }>();
   const [, _navigate] = useLocation();
   void _navigate;
   const { t, tCategory, tCountry, tCatalogContent, language } = useLanguage();
-  const { isAuthenticated } = useAuth();
-  const [activeTab, setActiveTab] = useState<"info" | "ai">("info");
+  const { isAuthenticated, user } = useAuth();
+  const [aiOpen, setAiOpen] = useState(false);
 
   const itemId = params.id || "";
   const { data: detailData, isLoading } = trpc.catalog.detail.useQuery(
@@ -98,7 +96,6 @@ export default function EntityDetail() {
   if (isLoading && !grant) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <Navbar />
         <GrantDetailSkeleton />
       </div>
     );
@@ -107,8 +104,7 @@ export default function EntityDetail() {
   if (!grant) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center px-4">
+        <div className="flex-1 flex items-center justify-center px-4 py-24">
           <div className="text-center">
             <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{t.grantDetail.notFound}</h2>
             <p className="text-muted-foreground/80 mb-6 text-sm">{t.grantDetail.notFoundDesc}</p>
@@ -190,14 +186,6 @@ export default function EntityDetail() {
   const showMapPanel = Boolean(mapAddress) && !geo.error;
   const officeHours = (item as any).officeHours as string | undefined;
 
-  const fundingTypeLabels: Record<string, string> = {
-    one_time: t.filters.oneTime,
-    recurring: t.filters.recurring,
-    reimbursement: t.filters.reimbursement,
-    varies: t.filters.varies,
-    unknown: "—",
-  };
-
   const handleShare = () => {
     const url = window.location.href;
     if (navigator.share) {
@@ -206,6 +194,13 @@ export default function EntityDetail() {
       navigator.clipboard.writeText(url);
       toast.success(t.grantDetail.linkCopied);
     }
+  };
+
+  // PDF "download" = browser print dialog. Users pick "Save as PDF" from
+  // the OS print menu. Print stylesheet lives globally; no dedicated
+  // dependency required. Tracked under DATA_GAPS.md as a future improvement.
+  const handlePrint = () => {
+    if (typeof window !== "undefined") window.print();
   };
 
   const handleDirections = () => {
@@ -236,62 +231,68 @@ export default function EntityDetail() {
     ? { label: t.filters.contactToConfirm, color: "bg-amber-500/20 text-amber-300 border-amber-500/30" }
     : null;
 
-  // Metrics grid — only render cells that have data.
-  type Metric = { icon: React.ReactNode; label: string; value: string; accent?: string };
-  const metrics: Metric[] = [];
-  if (item.amount) metrics.push({
-    icon: <DollarSign className="w-3.5 h-3.5 text-[color:var(--brand-green)]" />,
+  // 3-card stat strip — only render cards we have real data for.
+  // successRate is in DATA_GAPS.md (column does not exist yet) → skipped.
+  const deadlineDisplay = formatDeadline(content.deadline, t);
+  const statCards: Array<{ label: string; value: string; tone: "green" | "amber" | "blue" | "muted"; icon: React.ReactNode }> = [];
+  if (item.amount) statCards.push({
     label: t.detail.metricAmount,
     value: item.amount,
-    accent: "text-[color:var(--brand-green)]",
+    tone: "green",
+    icon: <DollarSign className="w-3.5 h-3.5" />,
   });
-  if (content.deadline) metrics.push({
-    icon: <Calendar className="w-3.5 h-3.5 text-blue-400" />,
+  if (deadlineDisplay) statCards.push({
     label: t.detail.metricDeadline,
-    value: content.deadline,
+    value: deadlineDisplay,
+    tone: "amber",
+    icon: <Clock className="w-3.5 h-3.5" />,
   });
-  if (item.state || translatedCountry) metrics.push({
-    icon: <MapPin className="w-3.5 h-3.5 text-muted-foreground/80" />,
-    label: t.detail.metricLocation,
-    value: locationDisplay,
+  // successRate placeholder (see DATA_GAPS.md) — reveals automatically once backfilled.
+  const successRate = (item as any).successRate as string | undefined;
+  if (successRate) statCards.push({
+    label: t.detail.metricSuccess,
+    value: successRate,
+    tone: "blue",
+    icon: <CheckCircle2 className="w-3.5 h-3.5" />,
   });
-  if (content.geographicScope) metrics.push({
-    icon: <Globe className="w-3.5 h-3.5 text-muted-foreground/80" />,
-    label: t.detail.metricScope,
-    value: content.geographicScope,
-  });
-  if (item.status) metrics.push({
-    icon: <CheckCircle2 className={`w-3.5 h-3.5 ${item.status === "Open" ? "text-[color:var(--brand-green)]" : "text-muted-foreground/80"}`} />,
-    label: t.detail.metricStatus,
-    value: item.status,
-    accent: item.status === "Open" ? "text-[color:var(--brand-green)]" : undefined,
-  });
-  if (item.fundingType && item.fundingType !== "unknown") metrics.push({
-    icon: <Tag className="w-3.5 h-3.5 text-purple-400" />,
-    label: t.detail.metricFunding,
-    value: fundingTypeLabels[item.fundingType] || item.fundingType,
-  });
-  if (content.ageRange && content.ageRange !== "0-100") {
-    const ageValue = content.ageRange === "0-18"
-      ? `${t.grantDetail.children} (0–18)`
-      : content.ageRange === "18-100"
-      ? `${t.grantDetail.adults} (18+)`
-      : t.grantDetail.ages.replace("{range}", content.ageRange);
-    metrics.push({
-      icon: <Users className="w-3.5 h-3.5 text-muted-foreground/80" />,
-      label: t.detail.metricAge,
-      value: ageValue,
-    });
-  }
-  if (content.targetDiagnosis && content.targetDiagnosis !== "General") {
-    const parts = content.targetDiagnosis.split(",").map((d: string) => d.trim()).filter(Boolean);
-    const value = parts.slice(0, 2).join(", ") + (parts.length > 2 ? ` +${parts.length - 2}` : "");
-    metrics.push({
-      icon: <Stethoscope className="w-3.5 h-3.5 text-muted-foreground/80" />,
-      label: t.detail.metricConditions,
-      value,
-    });
-  }
+
+  // Structured content — free-text → arrays for <ul> / <ol> rendering.
+  const eligibilityBullets = parseToBullets(content.eligibility);
+  const processSteps = parseToSteps(content.applicationProcess);
+
+  // Personalized match card — only for authenticated users whose profile
+  // gives us at least one scorable criterion (country / diagnosis / age).
+  const matchResult = useMemo(() => {
+    if (!isAuthenticated || !user) return null;
+    return computeMatch(
+      {
+        targetCountry: user.targetCountry,
+        purposes: user.purposes,
+        purposeDetails: user.purposeDetails,
+        needs: user.needs,
+        needDetails: user.needDetails,
+      },
+      {
+        country: translatedCountry,
+        targetDiagnosis: content.targetDiagnosis,
+        ageRange: content.ageRange,
+      },
+      {
+        country: t.detail.matchCountry,
+        diagnosis: t.detail.matchDiagnosis,
+        age: t.detail.matchAge,
+        income: t.detail.matchIncome,
+        toConfirm: t.detail.matchToConfirm,
+        notProvided: t.detail.matchNotInProfile,
+        anyCountry: t.detail.matchAnyCountry,
+        international: t.detail.matchInternational,
+      },
+    );
+  }, [isAuthenticated, user, translatedCountry, content.targetDiagnosis, content.ageRange, t]);
+
+  // Footer meta — foundedYear / processingTime live in DATA_GAPS.md for now.
+  const foundedYear = (item as any).foundedYear as number | string | undefined;
+  const processingTime = (item as any).processingTime as string | undefined;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -313,165 +314,101 @@ export default function EntityDetail() {
         website={item.website}
         url={window.location.href}
       />
-      <Navbar />
-
-      {/* Breadcrumb bar */}
-      <nav
-        aria-label="Breadcrumb"
-        className="border-b border-border bg-background"
-      >
-        <div className="container px-4 py-2.5 flex items-center gap-1.5 text-[13px] text-muted-foreground/80 overflow-hidden">
-          <Link
-            href="/"
-            className="hover:text-foreground/90 transition-colors flex items-center gap-1 shrink-0"
-            aria-label={t.detail.breadcrumbHome}
-          >
-            <Home className="w-3.5 h-3.5" aria-hidden="true" />
-            <span className="hidden sm:inline">{t.detail.breadcrumbHome}</span>
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" aria-hidden="true" />
-          <Link
-            href="/catalog"
-            className="hover:text-foreground/90 transition-colors shrink-0 truncate"
-          >
-            {t.detail.breadcrumbCatalog}
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" aria-hidden="true" />
-          <span className="text-foreground/85 truncate font-medium" aria-current="page">{content.name}</span>
-        </div>
-      </nav>
-
-      {/* Info / AI chat tab switcher */}
-      <div
-        role="tablist"
-        aria-label={content.name}
-        className="border-b border-border bg-background"
-      >
-        <div className="container px-4 flex items-center gap-1">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === "info"}
-            onClick={() => setActiveTab("info")}
-            className={`relative flex items-center gap-2 px-4 py-3 text-[13px] font-medium transition-colors ${
-              activeTab === "info"
-                ? "text-[color:var(--brand-green)]"
-                : "text-muted-foreground hover:text-foreground/90"
-            }`}
-          >
-            <Info className="w-3.5 h-3.5" aria-hidden="true" />
-            {t.aiAssistant.fullInfo}
-            {activeTab === "info" && (
-              <span
-                aria-hidden="true"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[color:var(--brand-green)]"
-              />
-            )}
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === "ai"}
-            onClick={() => setActiveTab("ai")}
-            className={`relative flex items-center gap-2 px-4 py-3 text-[13px] font-medium transition-colors ${
-              activeTab === "ai"
-                ? "text-[color:var(--brand-green)]"
-                : "text-muted-foreground hover:text-foreground/90"
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-            {t.aiAssistant.chatTab}
-            {activeTab === "ai" && (
-              <span
-                aria-hidden="true"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[color:var(--brand-green)]"
-              />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {activeTab === "ai" && (
-        <div className="container px-4 py-6 md:py-8 flex-1 pb-32 lg:pb-10">
-          <div className="mx-auto max-w-4xl h-[calc(100dvh-16rem)] min-h-[520px]">
-            <GrantAiChat
-              className="h-full border-border bg-muted/30"
-              grantId={item.id}
-              grant={{
-                name: content.name,
-                organization: item.organization || undefined,
-                country: translatedCountry || undefined,
-                amount: item.amount || undefined,
-                deadline: content.deadline || undefined,
-                website: item.website || undefined,
-              } satisfies ParsedGrant}
-            />
-          </div>
-        </div>
-      )}
+      <GrantDetailHeader
+        breadcrumb={[
+          { label: t.detail.breadcrumbHome, href: "/" },
+          { label: t.detail.breadcrumbCatalog, href: "/catalog" },
+          { label: content.name },
+        ]}
+        isAuthenticated={isAuthenticated}
+        isSaved={isSaved}
+        saveLabel={labels.saveThisOne}
+        savedLabel={t.grantDetail.saved}
+        shareLabel={t.grantDetail.share}
+        aiLabel={t.detail.aiShort}
+        closeLabel={t.detail.close}
+        backLabel={t.detail.back}
+        onToggleSave={isAuthenticated ? () => toggleSave(item.id) : undefined}
+        onShare={handleShare}
+        onOpenAi={() => setAiOpen(true)}
+      />
 
       {/* Main content */}
-      {activeTab === "info" && (
       <div className="container px-4 py-6 md:py-8 flex-1 pb-32 lg:pb-10">
-        <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-12">
+        <div className="lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-8 xl:gap-10">
 
           {/* ═════ LEFT COLUMN ═════ */}
-          <div className="space-y-5">
+          <div className="space-y-5 min-w-0">
 
-            {/* Badges */}
+            {/* Badges: status · category · type */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xl leading-none">{countryFlag}</span>
-              <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full border ${getCategoryStyle(item.category)}`}>
+              {item.status === "Open" && (
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" aria-hidden />
+                  {item.status.toUpperCase()}
+                </span>
+              )}
+              <span className="text-lg leading-none" aria-hidden>{countryFlag}</span>
+              <span className={`inline-flex items-center text-[11px] font-medium px-2.5 py-1 rounded-full border ${getCategoryStyle(item.category)}`}>
                 {translatedCategory}
               </span>
-              <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
+              <span className={`inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded ${
                 item.type === "grant"
-                  ? "bg-emerald-500/20 text-emerald-300"
-                  : "bg-blue-500/20 text-blue-300"
+                  ? "bg-emerald-500/15 text-emerald-300"
+                  : "bg-blue-500/15 text-blue-300"
               }`}>
                 {typeLabel}
               </span>
-              {b2Badge && (
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border flex items-center gap-1 ${b2Badge.color}`}>
-                  <Plane className="w-2.5 h-2.5" />
-                  {b2Badge.label}
-                </span>
-              )}
             </div>
 
-            {/* Title */}
+            {/* Title + subtitle line (organization · location) */}
             <div>
-              <h1 className="text-xl md:text-2xl lg:text-[28px] font-bold text-white leading-tight tracking-tight">
+              <h1 className="text-2xl md:text-3xl lg:text-[32px] font-bold text-white leading-tight tracking-tight">
                 {content.name}
               </h1>
-              {item.organization && item.organization !== item.name && (
-                <p className="text-muted-foreground mt-2 flex items-center gap-1.5 text-sm">
-                  <Building2 className="w-4 h-4 shrink-0 text-muted-foreground/70" />
-                  <span className="truncate">{item.organization}</span>
+              {(item.organization || locationDisplay) && (
+                <p className="text-muted-foreground mt-2 text-sm md:text-[15px]">
+                  {[item.organization, locationDisplay].filter(Boolean).join(" · ")}
                 </p>
               )}
             </div>
 
-            {/* Metrics grid */}
-            {metrics.length > 0 && (
-              <div className="grid grid-cols-2 gap-2">
-                {metrics.map((m, i) => (
-                  <div
-                    key={i}
-                    className="bg-muted/60 border border-border rounded-lg px-3 py-2.5"
-                  >
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      {m.icon}
-                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-medium">
-                        {m.label}
-                      </span>
+            {/* 3-card stat strip — Amount / Deadline / Success rate (if present) */}
+            {statCards.length > 0 && (
+              <div className={`grid gap-3 ${statCards.length === 1 ? "grid-cols-1" : statCards.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
+                {statCards.map((card, i) => {
+                  const tone =
+                    card.tone === "green"
+                      ? "border-emerald-500/25 bg-emerald-500/[0.06] text-emerald-300"
+                      : card.tone === "amber"
+                      ? "border-amber-500/25 bg-amber-500/[0.06] text-amber-300"
+                      : card.tone === "blue"
+                      ? "border-blue-500/25 bg-blue-500/[0.06] text-blue-300"
+                      : "border-border bg-muted/40 text-foreground";
+                  return (
+                    <div key={i} className={`rounded-xl border ${tone} px-4 py-3`}>
+                      <div className="flex items-center gap-1.5 mb-1 text-muted-foreground/80">
+                        {card.icon}
+                        <span className="text-[10px] uppercase tracking-wider font-medium">
+                          {card.label}
+                        </span>
+                      </div>
+                      <p className="text-xl md:text-2xl font-bold leading-tight truncate">
+                        {card.value}
+                      </p>
                     </div>
-                    <p className={`text-[13px] font-semibold ${m.accent || "text-foreground"} truncate`}>
-                      {m.value}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
+            )}
+
+            {/* Personalized match card (authenticated users only) */}
+            {isAuthenticated && matchResult && (
+              <MatchSummary
+                result={matchResult}
+                title={t.detail.matchTitle}
+                matchFormat={(n, m) => `${n}/${m}`}
+              />
             )}
 
             {/* Description */}
@@ -485,52 +422,65 @@ export default function EntityDetail() {
               </p>
             </div>
 
-            {/* Eligibility */}
-            {content.eligibility && (
+            {/* Eligibility — structured as bullets when splitting yields ≥2 items */}
+            {eligibilityBullets.length > 0 && (
               <div className="bg-muted/40 border border-border rounded-xl p-5">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                   <Users className="w-3.5 h-3.5" />
                   {t.detail.eligibilityTitle}
                 </h2>
-                <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
-                  {content.eligibility}
-                </p>
+                {eligibilityBullets.length > 1 ? (
+                  <ul className="space-y-2">
+                    {eligibilityBullets.map((b, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-sm md:text-[15px] text-foreground/90">
+                        <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-[color:var(--brand-green)] mt-2" aria-hidden />
+                        <span className="leading-relaxed">{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
+                    {eligibilityBullets[0]}
+                  </p>
+                )}
               </div>
             )}
 
-            {/* Desktop CTAs — hidden on mobile (uses sticky bottom bar instead) */}
+            {/* Tags: B-2 visa + International */}
+            {(b2Badge || item.country === "International") && (
+              <div className="flex flex-wrap gap-2">
+                {b2Badge && (
+                  <span className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border ${b2Badge.color}`}>
+                    <Plane className="w-3 h-3" />
+                    {b2Badge.label}
+                  </span>
+                )}
+                {item.country === "International" && (
+                  <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-300">
+                    <Globe className="w-3 h-3" />
+                    {t.detail.matchInternational}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Desktop CTAs — Apply (primary) + PDF (print). Save/Share live in header. */}
             {primaryLink && (
-              <div className="hidden lg:flex flex-col gap-3">
-                <a href={applyHref} target="_blank" rel="noopener noreferrer">
+              <div className="hidden lg:flex gap-3">
+                <a href={applyHref} target="_blank" rel="noopener noreferrer" className="flex-1">
                   <Button className="w-full h-12 bg-[color:var(--brand-green)] hover:bg-[color:var(--brand-green)]/90 text-white font-semibold gap-2 rounded-xl text-[15px]">
                     <ArrowUpRight className="w-4 h-4" />
-                    {labels.applyNow}
+                    {t.detail.applyCta}
                   </Button>
                 </a>
-                <div className="flex gap-3">
-                  {isAuthenticated && (
-                    <Button
-                      variant="outline"
-                      className={`flex-1 h-11 rounded-xl gap-2 ${
-                        isSaved
-                          ? "border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 hover:text-yellow-300"
-                          : "border-border text-foreground/80 hover:bg-muted hover:text-foreground"
-                      }`}
-                      onClick={() => toggleSave(item.id)}
-                    >
-                      {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-                      {isSaved ? t.grantDetail.saved : labels.saveThisOne}
-                    </Button>
-                  )}
-                  <Button
-                    variant="outline"
-                    className="h-11 px-4 rounded-xl border-border text-foreground/80 hover:bg-muted hover:text-foreground gap-2"
-                    onClick={handleShare}
-                  >
-                    <Share2 className="w-4 h-4" />
-                    {t.grantDetail.share}
-                  </Button>
-                </div>
+                <Button
+                  variant="outline"
+                  onClick={handlePrint}
+                  className="h-12 px-5 rounded-xl border-border text-foreground/80 hover:bg-muted hover:text-foreground gap-2"
+                >
+                  <FileText className="w-4 h-4" />
+                  {t.detail.downloadPdf}
+                </Button>
               </div>
             )}
           </div>
@@ -571,14 +521,14 @@ export default function EntityDetail() {
                       address={mapAddress}
                       organization={item.organization || ""}
                       serviceArea={content.geographicScope || undefined}
-                      height={280}
+                      height={220}
                     />
                   ) : (
                     <div
                       role="status"
                       aria-live="polite"
                       aria-label={t.map.loading}
-                      style={{ height: 280 }}
+                      style={{ height: 220 }}
                       className="w-full rounded-xl bg-muted/40 border border-border/60 flex items-center justify-center overflow-hidden relative"
                     >
                       <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-white/[0.02] via-[var(--brand-green)]/[0.05] to-white/[0.02]" />
@@ -589,82 +539,80 @@ export default function EntityDetail() {
               </div>
             )}
 
-            {/* Office / Contact card */}
+            {/* Office / Contact card — address banner + 2-col grid */}
             <div className="bg-muted/40 border border-border rounded-xl p-5">
               <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Building2 className="w-3.5 h-3.5" />
                 {t.detail.officeTitle}
               </h2>
-              <div className="space-y-3">
-                {primaryLink ? (
+              {mapAddress && (
+                <div className="mb-4 pb-4 border-b border-border/60 flex items-start gap-2">
+                  <MapPin className="w-4 h-4 shrink-0 text-muted-foreground/70 mt-0.5" />
+                  <p className="text-sm text-foreground/85 leading-relaxed">{mapAddress}</p>
+                </div>
+              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
+                {primaryLink && (
                   <a
                     href={applyHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm font-medium text-[color:var(--brand-green)] hover:text-foreground transition-colors"
+                    className="flex items-center gap-2 text-sm font-medium text-[color:var(--brand-green)] hover:text-foreground transition-colors min-w-0"
                   >
                     <Globe className="w-4 h-4 shrink-0" />
                     <span className="truncate">{t.catalog.visitWebsite}</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
                   </a>
-                ) : (
-                  <p className="flex items-center gap-2 text-sm text-muted-foreground/50">
-                    <Globe className="w-4 h-4 shrink-0" />
-                    {t.grantDetail.noWebsite}
-                  </p>
                 )}
-                {item.phone ? (
+                {item.phone && (
                   <a
                     href={`tel:${item.phone}`}
-                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors"
+                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
                   >
-                    <Phone className="w-4 h-4 shrink-0 text-muted-foreground/70" />
+                    <Phone className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
                     <span className="truncate">{item.phone}</span>
                   </a>
-                ) : (
-                  <p className="flex items-center gap-2 text-sm text-muted-foreground/50">
-                    <Phone className="w-4 h-4 shrink-0" />
-                    {t.grantDetail.noPhone}
-                  </p>
                 )}
-                {item.email ? (
+                {item.email && (
                   <a
                     href={`mailto:${item.email}`}
-                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors"
+                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
                   >
-                    <Mail className="w-4 h-4 shrink-0 text-muted-foreground/70" />
+                    <Mail className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
                     <span className="truncate">{item.email}</span>
                   </a>
-                ) : (
-                  <p className="flex items-center gap-2 text-sm text-muted-foreground/50">
-                    <Mail className="w-4 h-4 shrink-0" />
-                    {t.grantDetail.noEmail}
-                  </p>
                 )}
                 {officeHours && (
-                  <div className="flex items-start gap-2 pt-1">
-                    <Clock className="w-4 h-4 shrink-0 text-muted-foreground/70 mt-0.5" />
-                    <div className="min-w-0">
-                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 block">
-                        {t.detail.officeHours}
-                      </span>
-                      <span className="text-sm text-foreground/85">{officeHours}</span>
-                    </div>
+                  <div className="flex items-center gap-2 text-sm text-foreground/85 min-w-0">
+                    <Clock className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
+                    <span className="truncate" title={officeHours}>{officeHours}</span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Application process */}
-            {content.applicationProcess && (
+            {/* Application process — numbered list when splitting yields ≥2 steps */}
+            {processSteps.length > 0 && (
               <div className="bg-muted/40 border border-border rounded-xl p-5">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--brand-green)]" />
                   {labels.processTitle}
                 </h2>
-                <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
-                  {content.applicationProcess}
-                </p>
+                {processSteps.length > 1 ? (
+                  <ol className="space-y-2.5">
+                    {processSteps.map((step, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm md:text-[15px] text-foreground/90">
+                        <span className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-[color:var(--brand-green)]/15 text-[color:var(--brand-green)] text-xs font-semibold mt-0.5">
+                          {i + 1}
+                        </span>
+                        <span className="leading-relaxed pt-0.5">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
+                    {processSteps[0]}
+                  </p>
+                )}
               </div>
             )}
 
@@ -687,6 +635,21 @@ export default function EntityDetail() {
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Footer meta — founded year + processing time.
+                Both fields live in DATA_GAPS.md today; the line renders
+                automatically once the columns are backfilled. */}
+            {(foundedYear || processingTime) && (
+              <p className="text-[11px] text-muted-foreground/70 px-1 flex flex-wrap gap-x-2 gap-y-1">
+                {processingTime && (
+                  <span>{t.detail.processingTime.replace("{time}", processingTime)}</span>
+                )}
+                {processingTime && foundedYear && <span aria-hidden>·</span>}
+                {foundedYear && (
+                  <span>{t.detail.foundedSince.replace("{year}", String(foundedYear))}</span>
+                )}
+              </p>
             )}
           </div>
         </div>
@@ -762,7 +725,50 @@ export default function EntityDetail() {
           </div>
         )}
       </div>
-      )}
+
+      {/* AI chat — opens from the header. Full grant context is passed to
+          the assistant so it can answer questions about the organization,
+          eligibility, process, contact methods, etc. without extra tool
+          calls. */}
+      <Sheet open={aiOpen} onOpenChange={setAiOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-xl p-0 flex flex-col gap-0">
+          <SheetHeader className="px-5 py-4 border-b border-border">
+            <SheetTitle className="flex items-center gap-2 text-sm">
+              <Sparkles className="w-4 h-4 text-[color:var(--brand-green)]" aria-hidden="true" />
+              <span>{t.aiAssistant.chatTab}</span>
+              <span className="text-muted-foreground/70 font-normal truncate">· {content.name}</span>
+            </SheetTitle>
+          </SheetHeader>
+          <div className="flex-1 min-h-0">
+            <GrantAiChat
+              className="h-full border-0 rounded-none bg-background"
+              grantId={item.id}
+              grant={{
+                name: content.name,
+                organization: item.organization || undefined,
+                country: translatedCountry || undefined,
+                amount: item.amount || undefined,
+                deadline: content.deadline || undefined,
+                website: item.website || undefined,
+                category: translatedCategory,
+                eligibility: content.eligibility || undefined,
+                applicationProcess: content.applicationProcess || undefined,
+                targetDiagnosis: content.targetDiagnosis || undefined,
+                ageRange: content.ageRange || undefined,
+                geographicScope: content.geographicScope || undefined,
+                documentsRequired: content.documentsRequired || undefined,
+                phone: item.phone || undefined,
+                email: item.email || undefined,
+                address: mapAddress || undefined,
+                officeHours: officeHours || undefined,
+                status: item.status || undefined,
+                fundingType: item.fundingType || undefined,
+                b2VisaEligible: item.b2VisaEligible || undefined,
+              }}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Mobile sticky bottom CTA — sits above MobileBottomNav (h ≈ 56 px) */}
       {primaryLink && (
@@ -825,4 +831,40 @@ function toFiniteNumber(v: unknown): number | null {
   if (v == null) return null;
   const n = typeof v === "number" ? v : Number(v);
   return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * Convert a free-text deadline into a UI-friendly string.
+ *
+ * DB stores `deadline` as localized free text: "March 15, 2026", "Rolling",
+ * "Contact organization", etc. We try to parse it as a date and compute
+ * days-remaining. On failure we fall back to keyword detection ("rolling",
+ * "ongoing") or return the original text verbatim. Tracked in
+ * DATA_GAPS.md — a dedicated `deadlineDate` DATE column would let us
+ * skip this heuristic.
+ */
+function formatDeadline(raw: string | null | undefined, t: any): string | null {
+  if (!raw) return null;
+  const text = String(raw).trim();
+  if (!text) return null;
+
+  // Heuristic: contains at least one digit → try Date.parse
+  if (/\d/.test(text)) {
+    const ms = Date.parse(text);
+    if (!Number.isNaN(ms)) {
+      const diffDays = Math.ceil((ms - Date.now()) / 86_400_000);
+      if (diffDays < 0) return t.detail.deadlineExpired;
+      if (diffDays === 0) return t.detail.deadlineToday;
+      if (diffDays <= 365) return t.detail.deadlineDays.replace("{days}", String(diffDays));
+    }
+  }
+
+  if (/\b(rolling|ongoing|continuous|permanent|any\s*time)\b/i.test(text)) {
+    return t.detail.deadlineRolling;
+  }
+  if (/\b(expired|closed|passed)\b/i.test(text)) {
+    return t.detail.deadlineExpired;
+  }
+
+  return text;
 }

@@ -1140,7 +1140,33 @@ export const en: Translations = {
     metricFunding: "Funding",
     metricAge: "Age Range",
     metricConditions: "Conditions",
+    metricSuccess: "Success rate",
     relatedTitle: "Similar Grants",
+
+    back: "Back",
+    close: "Close",
+    aiShort: "AI",
+
+    matchTitle: "Your Match",
+    matchCountry: "Country",
+    matchDiagnosis: "Diagnosis",
+    matchAge: "Age",
+    matchIncome: "Income",
+    matchToConfirm: "To be confirmed",
+    matchNotInProfile: "Not in your profile",
+    matchAnyCountry: "Any country",
+    matchInternational: "International",
+
+    foundedSince: "Founded since {year}",
+    processingTime: "Processing time: {time}",
+
+    deadlineDays: "{days} days left",
+    deadlineRolling: "Rolling",
+    deadlineExpired: "Expired",
+    deadlineToday: "Today",
+
+    downloadPdf: "PDF",
+    applyCta: "Apply for grant",
   },
 
   resourceDetail: {
