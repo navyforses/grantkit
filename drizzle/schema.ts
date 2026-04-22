@@ -208,82 +208,16 @@ export const organizations = mysqlTable("organizations", {
   categories: text("categories"),                                 // comma-separated
   serviceArea: varchar("serviceArea", { length: 255 }),
   officeHours: varchar("officeHours", { length: 255 }),
-
-  // ── Enrichment fields (Step 1: schema prep) ──────────────────────────
-  // Every column below is nullable (or has a safe "unknown" default) so
-  // existing rows stay valid. UI renders each field conditionally —
-  // missing data = hidden section.
-
-  // The five "can I use this?" signals for newcomers / immigrants.
-  languages: text("orgLanguages"),                                // CSV ISO codes: "en,ka,ru,es"
-  acceptsUndocumented: mysqlEnum("acceptsUndocumented",
-    ["yes", "no", "case_by_case", "unknown"]).default("unknown").notNull(),
-  acceptsUninsured: mysqlEnum("acceptsUninsured",
-    ["yes", "no", "unknown"]).default("unknown").notNull(),
-  serviceCost: mysqlEnum("serviceCost",
-    ["free", "sliding_scale", "paid", "insurance", "mixed", "unknown"]).default("unknown").notNull(),
-  appointmentPolicy: mysqlEnum("appointmentPolicy",
-    ["required", "walk_in", "both", "unknown"]).default("unknown").notNull(),
-  emergencyHotline: varchar("emergencyHotline", { length: 64 }),
-
-  // Trust signals
-  foundedYear: int("foundedYear"),
-  orgType: mysqlEnum("orgType",
-    ["nonprofit", "ngo", "government", "religious", "private", "hospital", "university", "other"]),
-  googleRating: decimal("googleRating", { precision: 2, scale: 1 }),
-  googleReviewCount: int("googleReviewCount"),
-  googlePlaceId: varchar("googlePlaceId", { length: 128 }),        // for targeted refresh
-
-  // Content
-  logoUrl: text("logoUrl"),
-  missionStatement: text("missionStatement"),
-  socialMedia: text("socialMedia"),                                // JSON: {facebook, linkedin, twitter, instagram}
-  requiredDocuments: text("requiredDocuments"),                    // JSON array: ["passport", "proof_of_address", ...]
-
-  // Curation workflow
-  verifiedAt: timestamp("verifiedAt"),
-  verifiedBy: int("verifiedBy"),                                   // admin user id
-  enrichmentStatus: mysqlEnum("enrichmentStatus",
-    ["pending", "in_progress", "complete", "needs_review"]).default("pending").notNull(),
-
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => [
   index("orgs_country_idx").on(table.country),
   index("orgs_lat_lng_idx").on(table.latitude, table.longitude),
-  index("orgs_enrichment_status_idx").on(table.enrichmentStatus),
-  index("orgs_accepts_undocumented_idx").on(table.acceptsUndocumented),
-  index("orgs_service_cost_idx").on(table.serviceCost),
 ]);
 
 export type Organization = typeof organizations.$inferSelect;
 export type InsertOrganization = typeof organizations.$inferInsert;
-
-/**
- * Organization translations — per-language overrides for free-text fields.
- * Structured values (enums, numbers) are translated client-side via i18n
- * keys; this table only stores prose (name / description / missionStatement).
- *
- * Populated by `scripts/translate-orgs.ts` (AI pass) with admin override via
- * the admin panel when a translation needs correction.
- */
-export const organizationTranslations = mysqlTable("organization_translations", {
-  id: int("id").autoincrement().primaryKey(),
-  orgId: varchar("orgId", { length: 16 }).notNull(),               // FK → organizations.orgId
-  language: varchar("language", { length: 10 }).notNull(),
-  name: text("name"),
-  description: text("description"),
-  missionStatement: text("missionStatement"),
-  translatedAt: timestamp("translatedAt").defaultNow().notNull(),
-  source: varchar("source", { length: 32 }),                       // "ai" | "manual" | "imported"
-}, (table) => [
-  uniqueIndex("org_lang_idx").on(table.orgId, table.language),
-  index("org_translations_lang_idx").on(table.language),
-]);
-
-export type OrganizationTranslation = typeof organizationTranslations.$inferSelect;
-export type InsertOrganizationTranslation = typeof organizationTranslations.$inferInsert;
 
 /**
  * Organization branches — 1 HQ row + 0..N Branch rows per organization.
