@@ -1189,4 +1189,46 @@ export const ka: Translations = {
     paid: "ფასიანი",
     subsidized: "სუბსიდირებული",
   },
+
+  orgEnrichment: {
+    trustTitle: "Google რეიტინგი და ნდობა",
+    whoWeHelpTitle: "ვის ვეხმარებით",
+    socialTitle: "სოციალური ქსელები",
+
+    languagesLabel: "ენები",
+    statusLabel: "იმიგრაციული სტატუსი",
+    insuranceLabel: "დაზღვევა",
+    costLabel: "ფასი",
+    appointmentLabel: "ვიზიტი",
+
+    googleRating: "Google რეიტინგი",
+    reviewsCount: "{count} მიმოხილვა",
+    placeholderTbd: "ჯერ არ არის შეყვანილი",
+
+    status: {
+      yes: "ყველას იღებენ, სტატუსის მიუხედავად",
+      no: "მხოლოდ ლეგალური რეზიდენტებისთვის",
+      case_by_case: "ცალ-ცალკე განიხილება",
+      unknown: "სტატუსის წესი დასადასტურებელია",
+    },
+    insurance: {
+      yes: "დაზღვევის გარეშეც იღებენ",
+      no: "დაზღვევა აუცილებელია",
+      unknown: "დაზღვევის წესი დასადასტურებელია",
+    },
+    cost: {
+      free: "უფასო",
+      sliding_scale: "მოქნილი ტარიფი",
+      paid: "ფასიანი",
+      insurance: "დაზღვევით",
+      mixed: "შერეული",
+      unknown: "ფასი დასადასტურებელია",
+    },
+    appointment: {
+      required: "წინასწარი ჩაწერა",
+      walk_in: "მისვლა ნებისმიერ დროს",
+      both: "ორივე ვარიანტი",
+      unknown: "ვიზიტის წესი დასადასტურებელია",
+    },
+  },
 };
