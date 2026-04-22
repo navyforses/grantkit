@@ -1,4 +1,15 @@
 /*
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║ ⚠️  LEGACY — prefer OrganizationDetail.tsx                         ║
+ * ║                                                                  ║
+ * ║ This page backs /grant/:id, kept only as a fallback for catalog  ║
+ * ║ items that lack `orgId`. The primary detail page is              ║
+ * ║ OrganizationDetail.tsx (/organizations/:orgId). Do NOT add new   ║
+ * ║ features here — extend OrganizationDetail.tsx instead.           ║
+ * ║                                                                  ║
+ * ║ See CLAUDE.md → "⚠️ LEGACY" for the full list + removal plan.    ║
+ * ╚══════════════════════════════════════════════════════════════════╝
+ *
  * EntityDetail — unified detail page for grants and resources.
  * (Previously GrantDetail.)
  *

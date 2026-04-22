@@ -1,4 +1,7 @@
 /*
+ * ⚠️ LEGACY — only consumed by EntityDetail.tsx (/grant/:id fallback).
+ * See CLAUDE.md → LEGACY for the full list + removal plan.
+ *
  * computeMatch — user ↔ grant eligibility scoring for the "Your Match N/M"
  * card on the grant detail page.
  *

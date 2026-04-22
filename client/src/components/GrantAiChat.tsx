@@ -1,4 +1,7 @@
 /*
+ * ⚠️ LEGACY — only imported by EntityDetail.tsx (/grant/:id fallback).
+ * New AI-chat work should target OrgAiChat.tsx. See CLAUDE.md → LEGACY.
+ *
  * GrantAiChat — Claude-style chat panel scoped to a single grant.
  *
  * Wraps AIChatBox and trpc.ai.grantChat with the grant's details baked

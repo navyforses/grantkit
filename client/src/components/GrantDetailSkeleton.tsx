@@ -1,4 +1,7 @@
 /**
+ * ⚠️ LEGACY — only used by EntityDetail.tsx (/grant/:id fallback).
+ * See CLAUDE.md → LEGACY for the full list + removal plan.
+ *
  * GrantDetailSkeleton — loading placeholder that mirrors the GrantDetail page layout.
  * Mobile: compact header + single-column cards.  Desktop: header + 3-col grid with sidebar.
  */
