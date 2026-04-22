@@ -1189,6 +1189,9 @@ export interface Translations {
       contact: string;
       visitWebsite: string;
       viewOnMap: string;
+      statBranches: string;
+      statPrograms: string;
+      statCategories: string;
     };
     empty: string;
     loading: string;
