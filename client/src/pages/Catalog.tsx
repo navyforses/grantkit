@@ -1,4 +1,17 @@
 /*
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║ 🚫 DO NOT TOUCH — FROZEN FILE                                     ║
+ * ║                                                                  ║
+ * ║ This file has been explicitly frozen by the project owner.       ║
+ * ║ Do NOT modify it — not for refactoring, style cleanup, unused    ║
+ * ║ imports, rename cascades, or any other "incidental" reason.      ║
+ * ║                                                                  ║
+ * ║ If a change is genuinely required (e.g. an upstream API break),  ║
+ * ║ ASK THE USER FIRST for explicit permission.                      ║
+ * ║                                                                  ║
+ * ║ See CLAUDE.md → "🚫 DO NOT TOUCH" for the full freeze list.      ║
+ * ╚══════════════════════════════════════════════════════════════════╝
+ *
  * Catalog Page — Interactive World Map View (Phase 5)
  * Replaces the card grid with a full-screen Mapbox GL world map.
  * Filter state & data fetching are preserved here for use in later phases
