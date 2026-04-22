@@ -1187,4 +1187,61 @@ export const fr: Translations = {
     paid: "Payant",
     subsidized: "Subventionné",
   },
+
+  orgEnrichment: {
+    trustTitle: "Vérification & Confiance",
+    whoWeHelpTitle: "Qui nous aidons",
+    whatToBringTitle: "À apporter",
+    howToApplyTitle: "Comment postuler",
+    socialTitle: "Suivre",
+
+    languagesLabel: "Langues",
+    statusLabel: "Statut migratoire",
+    insuranceLabel: "Assurance",
+    costLabel: "Coût",
+    appointmentLabel: "Visites",
+    emergencyLabel: "Ligne d'urgence",
+
+    foundedIn: "Fondée en {year}",
+    googleRating: "Note Google",
+    reviewsCount: "{count} avis",
+    verified: "Vérifiée par GrantKit",
+    placeholderTbd: "À confirmer",
+
+    status: {
+      yes: "Accueille tous, sans distinction de statut",
+      no: "Résidents légaux uniquement",
+      case_by_case: "Évalué au cas par cas",
+      unknown: "Politique migratoire à confirmer",
+    },
+    insurance: {
+      yes: "Accepte les non-assurés",
+      no: "Assurance obligatoire",
+      unknown: "Politique d'assurance à confirmer",
+    },
+    cost: {
+      free: "Gratuit",
+      sliding_scale: "Tarif dégressif",
+      paid: "Payant",
+      insurance: "Via assurance",
+      mixed: "Mixte",
+      unknown: "Coût à confirmer",
+    },
+    appointment: {
+      required: "Rendez-vous requis",
+      walk_in: "Visites libres",
+      both: "Visites libres & rendez-vous",
+      unknown: "Politique de visite à confirmer",
+    },
+    orgType: {
+      nonprofit: "Association",
+      ngo: "ONG",
+      government: "Public",
+      religious: "Confessionnel",
+      private: "Privé",
+      hospital: "Hôpital",
+      university: "Université",
+      other: "Autre",
+    },
+  },
 };

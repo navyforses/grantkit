@@ -1262,4 +1262,70 @@ export interface Translations {
     errEmailUnverified: string;
     errLocked: string;
   };
+
+  // Organization enrichment sections (Phase 6 — Sofia)
+  //
+  // New cards on the org detail page that surface the accessibility
+  // signals newcomers / immigrants actually need before calling:
+  // "Do they speak my language? Do I need documents? How much?"
+  //
+  // Structured enum values live inside this namespace so the helper in
+  // client/src/lib/orgEnrichment.ts can look them up by
+  // `t.orgEnrichment.cost[value]` without extra plumbing.
+  orgEnrichment: {
+    trustTitle: string;
+    whoWeHelpTitle: string;
+    whatToBringTitle: string;
+    howToApplyTitle: string;
+    socialTitle: string;
+
+    languagesLabel: string;
+    statusLabel: string;
+    insuranceLabel: string;
+    costLabel: string;
+    appointmentLabel: string;
+    emergencyLabel: string;
+
+    foundedIn: string;
+    googleRating: string;
+    reviewsCount: string;
+    verified: string;
+    placeholderTbd: string;
+
+    status: {
+      yes: string;
+      no: string;
+      case_by_case: string;
+      unknown: string;
+    };
+    insurance: {
+      yes: string;
+      no: string;
+      unknown: string;
+    };
+    cost: {
+      free: string;
+      sliding_scale: string;
+      paid: string;
+      insurance: string;
+      mixed: string;
+      unknown: string;
+    };
+    appointment: {
+      required: string;
+      walk_in: string;
+      both: string;
+      unknown: string;
+    };
+    orgType: {
+      nonprofit: string;
+      ngo: string;
+      government: string;
+      religious: string;
+      private: string;
+      hospital: string;
+      university: string;
+      other: string;
+    };
+  };
 }
