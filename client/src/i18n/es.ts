@@ -1138,7 +1138,33 @@ export const es: Translations = {
     metricFunding: "Financiación",
     metricAge: "Rango de edad",
     metricConditions: "Condiciones",
+    metricSuccess: "Tasa de éxito",
     relatedTitle: "Becas similares",
+
+    back: "Atrás",
+    close: "Cerrar",
+    aiShort: "IA",
+
+    matchTitle: "Tu coincidencia",
+    matchCountry: "País",
+    matchDiagnosis: "Diagnóstico",
+    matchAge: "Edad",
+    matchIncome: "Ingresos",
+    matchToConfirm: "Por confirmar",
+    matchNotInProfile: "No está en tu perfil",
+    matchAnyCountry: "Cualquier país",
+    matchInternational: "Internacional",
+
+    foundedSince: "Fundada desde {year}",
+    processingTime: "Tiempo de procesamiento: {time}",
+
+    deadlineDays: "{days} días restantes",
+    deadlineRolling: "Permanente",
+    deadlineExpired: "Expirado",
+    deadlineToday: "Hoy",
+
+    downloadPdf: "PDF",
+    applyCta: "Enviar solicitud",
   },
 
   resourceDetail: {

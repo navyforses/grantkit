@@ -1138,7 +1138,33 @@ export const fr: Translations = {
     metricFunding: "Financement",
     metricAge: "Tranche d'âge",
     metricConditions: "Conditions",
+    metricSuccess: "Taux de réussite",
     relatedTitle: "Bourses similaires",
+
+    back: "Retour",
+    close: "Fermer",
+    aiShort: "IA",
+
+    matchTitle: "Votre Match",
+    matchCountry: "Pays",
+    matchDiagnosis: "Diagnostic",
+    matchAge: "Âge",
+    matchIncome: "Revenu",
+    matchToConfirm: "À confirmer",
+    matchNotInProfile: "Absent de votre profil",
+    matchAnyCountry: "Tout pays",
+    matchInternational: "International",
+
+    foundedSince: "Fondé depuis {year}",
+    processingTime: "Délai de traitement : {time}",
+
+    deadlineDays: "{days} j. restants",
+    deadlineRolling: "Permanent",
+    deadlineExpired: "Expiré",
+    deadlineToday: "Aujourd'hui",
+
+    downloadPdf: "PDF",
+    applyCta: "Soumettre une demande",
   },
 
   resourceDetail: {

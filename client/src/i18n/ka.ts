@@ -1140,7 +1140,33 @@ export const ka: Translations = {
     metricFunding: "დაფინანსება",
     metricAge: "ასაკი",
     metricConditions: "პირობები",
+    metricSuccess: "წარმატება",
     relatedTitle: "მსგავსი გრანტები",
+
+    back: "უკან",
+    close: "დახურვა",
+    aiShort: "AI",
+
+    matchTitle: "თქვენი Match",
+    matchCountry: "ქვეყანა",
+    matchDiagnosis: "დიაგნოზი",
+    matchAge: "ასაკი",
+    matchIncome: "შემოსავლის ლიმიტი",
+    matchToConfirm: "დასადასტურებელი",
+    matchNotInProfile: "პროფილში არ არის",
+    matchAnyCountry: "ნებისმიერი ქვეყანა",
+    matchInternational: "საერთაშორისო",
+
+    foundedSince: "ფონდირებულია {year}-იდან",
+    processingTime: "დამუშავების ვადა: {time}",
+
+    deadlineDays: "{days} დღე",
+    deadlineRolling: "მუდმივი",
+    deadlineExpired: "ვადა გასულია",
+    deadlineToday: "დღეს",
+
+    downloadPdf: "PDF",
+    applyCta: "განაცხადის შევსება",
   },
 
   resourceDetail: {

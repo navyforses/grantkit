@@ -1138,7 +1138,33 @@ export const ru: Translations = {
     metricFunding: "Финансирование",
     metricAge: "Возраст",
     metricConditions: "Условия",
+    metricSuccess: "Успешность",
     relatedTitle: "Похожие гранты",
+
+    back: "Назад",
+    close: "Закрыть",
+    aiShort: "AI",
+
+    matchTitle: "Ваше соответствие",
+    matchCountry: "Страна",
+    matchDiagnosis: "Диагноз",
+    matchAge: "Возраст",
+    matchIncome: "Доход",
+    matchToConfirm: "Требует подтверждения",
+    matchNotInProfile: "Не указано в профиле",
+    matchAnyCountry: "Любая страна",
+    matchInternational: "Международный",
+
+    foundedSince: "Основан(а) в {year}",
+    processingTime: "Срок обработки: {time}",
+
+    deadlineDays: "осталось {days} дн.",
+    deadlineRolling: "Постоянно",
+    deadlineExpired: "Истёк",
+    deadlineToday: "Сегодня",
+
+    downloadPdf: "PDF",
+    applyCta: "Подать заявку",
   },
 
   resourceDetail: {

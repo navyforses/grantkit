@@ -10,16 +10,18 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AIChatBox, type Message } from "@/components/AIChatBox";
-import type { ParsedGrant } from "@/components/GrantCard";
 import { trpc } from "@/lib/trpc";
-import { buildGrantFocusContext } from "@/lib/grantFocusContext";
+import { buildGrantFocusContext, type FocusedGrantContext } from "@/lib/grantFocusContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export interface GrantAiChatProps {
   /** Stable identifier — used to reset the chat when the caller swaps grants. */
   grantId: string;
-  /** Minimal grant details that get prepended to every request. */
-  grant: ParsedGrant;
+  /**
+   * Grant details prepended to every request. Pass as many fields as you
+   * have — the context builder ignores missing ones.
+   */
+  grant: FocusedGrantContext;
   className?: string;
   /** When false the AIChatBox keeps its own header. Defaults to true (embedded). */
   hideHeader?: boolean;

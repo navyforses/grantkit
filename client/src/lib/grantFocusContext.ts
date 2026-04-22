@@ -9,6 +9,30 @@
 
 import type { ParsedGrant } from "@/components/GrantCard";
 
+/**
+ * Extended grant shape accepted by the focus context. Every field beyond
+ * `ParsedGrant` is optional so callers can pass the minimum they have.
+ * When present, extra fields (phone/email/eligibility/process/…) flow
+ * into the system prompt so the assistant can answer questions about the
+ * organization's services and contact details without extra tool calls.
+ */
+export interface FocusedGrantContext extends ParsedGrant {
+  category?: string;
+  eligibility?: string;
+  applicationProcess?: string;
+  targetDiagnosis?: string;
+  ageRange?: string;
+  geographicScope?: string;
+  documentsRequired?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  officeHours?: string;
+  status?: string;
+  fundingType?: string;
+  b2VisaEligible?: string;
+}
+
 // ── Per-language prompt templates ────────────────────────────────────────────
 
 interface PromptTemplate {
@@ -18,6 +42,20 @@ interface PromptTemplate {
   amount: string;
   deadline: string;
   website: string;
+  category: string;
+  eligibility: string;
+  process: string;
+  diagnosis: string;
+  age: string;
+  scope: string;
+  documents: string;
+  phone: string;
+  email: string;
+  address: string;
+  hours: string;
+  status: string;
+  funding: string;
+  visa: string;
   instruction: string;
 }
 
@@ -29,8 +67,22 @@ const TEMPLATES: Record<string, PromptTemplate> = {
     amount: "Amount",
     deadline: "Deadline",
     website: "Website",
+    category: "Category",
+    eligibility: "Who can apply",
+    process: "Application process",
+    diagnosis: "Target conditions",
+    age: "Age range",
+    scope: "Geographic scope",
+    documents: "Required documents",
+    phone: "Phone",
+    email: "Email",
+    address: "Address",
+    hours: "Office hours",
+    status: "Status",
+    funding: "Funding type",
+    visa: "Visa eligibility",
     instruction:
-      "You are a GrantKit AI assistant. The user is currently reading about a specific grant/organization:\n\n{details}\n\nAnswer the user's question only in the context of this grant/organization. If the user asks about something unrelated, politely remind them that the focus is on this grant and suggest removing the focus for a general search.\n\n{message}",
+      "You are the GrantKit AI assistant. The user is reading about one specific grant / organization. All of the organization's public details are given below — use them as your primary source before falling back on general knowledge. Be concrete and answer in 1–3 short paragraphs or bullet points. If the user asks about services, contact methods, eligibility or process, quote the relevant fact verbatim. Reply in the same language as the user question.\n\n{details}\n\nUser question: {message}",
   },
   ka: {
     grant: "გრანტი",
@@ -39,8 +91,22 @@ const TEMPLATES: Record<string, PromptTemplate> = {
     amount: "თანხა",
     deadline: "ვადა",
     website: "ვებსაიტი",
+    category: "კატეგორია",
+    eligibility: "ვინ შეიძლება მიმართოს",
+    process: "განაცხადის პროცესი",
+    diagnosis: "სამიზნე მდგომარეობები",
+    age: "ასაკის დიაპაზონი",
+    scope: "გეოგრაფიული დაფარვა",
+    documents: "საჭირო დოკუმენტები",
+    phone: "ტელეფონი",
+    email: "ელფოსტა",
+    address: "მისამართი",
+    hours: "სამუშაო საათები",
+    status: "სტატუსი",
+    funding: "დაფინანსების ტიპი",
+    visa: "ვიზის დასაშვებობა",
     instruction:
-      "შენ ხარ GrantKit AI ასისტენტი. მომხმარებელი ამჟამად კითხულობს კონკრეტული გრანტის/ორგანიზაციის შესახებ:\n\n{details}\n\nუპასუხე მომხმარებლის შეკითხვას მხოლოდ ამ გრანტის/ორგანიზაციის კონტექსტში. თუ მომხმარებელი ისეთ რამეს ეკითხება, რაც ამ გრანტს არ ეხება, თავაზიანად შეახსენე რომ ფოკუსი ამ გრანტზეა და შესთავაზე ფოკუსის მოხსნა ზოგადი ძებნისთვის.\n\n{message}",
+      "შენ ხარ GrantKit-ის AI ასისტენტი. მომხმარებელი კითხულობს კონკრეტული გრანტის/ორგანიზაციის შესახებ. ქვემოთ მოცემულია ყველა საჯარო ინფორმაცია ამ ორგანიზაციაზე — გამოიყენე ჯერ ეს წყარო და მხოლოდ მერე საერთო ცოდნა. უპასუხე 1-3 მოკლე აბზაცით ან bullet-ებით. თუ მომხმარებელი იკითხავს სერვისების, კონტაქტის, დასაშვებობის ან პროცესის შესახებ — ციტირებულად მოიტანე ფაქტი. უპასუხე იმ ენაზე, რომელზეც შეკითხვა მოვიდა.\n\n{details}\n\nმომხმარებლის შეკითხვა: {message}",
   },
   fr: {
     grant: "Subvention",
@@ -49,8 +115,22 @@ const TEMPLATES: Record<string, PromptTemplate> = {
     amount: "Montant",
     deadline: "Date limite",
     website: "Site web",
+    category: "Catégorie",
+    eligibility: "Qui peut postuler",
+    process: "Processus de candidature",
+    diagnosis: "Pathologies ciblées",
+    age: "Tranche d'âge",
+    scope: "Couverture géographique",
+    documents: "Documents requis",
+    phone: "Téléphone",
+    email: "E-mail",
+    address: "Adresse",
+    hours: "Heures d'ouverture",
+    status: "Statut",
+    funding: "Type de financement",
+    visa: "Éligibilité visa",
     instruction:
-      "Vous êtes un assistant IA GrantKit. L'utilisateur consulte actuellement une subvention/organisation spécifique :\n\n{details}\n\nRépondez à la question de l'utilisateur uniquement dans le contexte de cette subvention/organisation. Si l'utilisateur pose une question sans rapport, rappelez-lui poliment que le focus est sur cette subvention et suggérez de retirer le focus pour une recherche générale.\n\n{message}",
+      "Vous êtes l'assistant IA de GrantKit. L'utilisateur consulte une subvention/organisation précise. Toutes les informations publiques sont ci-dessous — utilisez-les en priorité avant tout savoir général. Répondez en 1 à 3 courts paragraphes ou puces. Si la question porte sur les services, contacts, éligibilité ou processus, citez l'information verbatim. Répondez dans la langue de la question.\n\n{details}\n\nQuestion : {message}",
   },
   es: {
     grant: "Subvención",
@@ -59,8 +139,22 @@ const TEMPLATES: Record<string, PromptTemplate> = {
     amount: "Monto",
     deadline: "Fecha límite",
     website: "Sitio web",
+    category: "Categoría",
+    eligibility: "Quién puede solicitar",
+    process: "Proceso de solicitud",
+    diagnosis: "Condiciones objetivo",
+    age: "Rango de edad",
+    scope: "Alcance geográfico",
+    documents: "Documentos requeridos",
+    phone: "Teléfono",
+    email: "Correo",
+    address: "Dirección",
+    hours: "Horario",
+    status: "Estado",
+    funding: "Tipo de financiación",
+    visa: "Elegibilidad de visa",
     instruction:
-      "Eres un asistente de IA de GrantKit. El usuario está leyendo sobre una subvención/organización específica:\n\n{details}\n\nResponde a la pregunta del usuario solo en el contexto de esta subvención/organización. Si el usuario pregunta algo no relacionado, recuérdale amablemente que el enfoque está en esta subvención y sugiere quitar el enfoque para una búsqueda general.\n\n{message}",
+      "Eres el asistente de IA de GrantKit. El usuario está leyendo sobre una subvención/organización específica. Toda la información pública está abajo — úsala como fuente principal antes del conocimiento general. Responde en 1–3 párrafos cortos o viñetas. Si preguntan por servicios, contacto, elegibilidad o proceso, cita la información verbatim. Responde en el idioma de la pregunta.\n\n{details}\n\nPregunta: {message}",
   },
   ru: {
     grant: "Грант",
@@ -69,8 +163,22 @@ const TEMPLATES: Record<string, PromptTemplate> = {
     amount: "Сумма",
     deadline: "Срок",
     website: "Веб-сайт",
+    category: "Категория",
+    eligibility: "Кто может подать",
+    process: "Процесс подачи",
+    diagnosis: "Целевые состояния",
+    age: "Возрастной диапазон",
+    scope: "География",
+    documents: "Необходимые документы",
+    phone: "Телефон",
+    email: "Email",
+    address: "Адрес",
+    hours: "Часы работы",
+    status: "Статус",
+    funding: "Тип финансирования",
+    visa: "Право по визе",
     instruction:
-      "Вы — AI-ассистент GrantKit. Пользователь сейчас читает о конкретном гранте/организации:\n\n{details}\n\nОтвечайте на вопрос пользователя только в контексте этого гранта/организации. Если пользователь спрашивает о чём-то не связанном, вежливо напомните, что фокус на этом гранте, и предложите снять фокус для общего поиска.\n\n{message}",
+      "Ты — AI-ассистент GrantKit. Пользователь читает о конкретном гранте/организации. Ниже — вся публичная информация о ней: используй её как основной источник, прежде чем опираться на общие знания. Отвечай 1–3 короткими абзацами или пунктами списка. Если спрашивают об услугах, контактах, праве на подачу или процессе — цитируй дословно. Отвечай на языке вопроса.\n\n{details}\n\nВопрос: {message}",
   },
 };
 
@@ -78,18 +186,35 @@ const TEMPLATES: Record<string, PromptTemplate> = {
 
 export function buildGrantFocusContext(
   userMessage: string,
-  grant: ParsedGrant,
+  grant: FocusedGrantContext,
   language = "en",
 ): string {
   const t = TEMPLATES[language] ?? TEMPLATES.en;
 
+  const line = (emoji: string, label: string, value?: string | null) =>
+    value && value.trim() ? `${emoji} ${label}: ${value.trim()}` : null;
+
   const details = [
-    `📋 ${t.grant}: ${grant.name}`,
-    grant.organization ? `🏢 ${t.organization}: ${grant.organization}` : null,
-    grant.country ? `📍 ${t.location}: ${grant.country}` : null,
-    grant.amount ? `💰 ${t.amount}: ${grant.amount}` : null,
-    grant.deadline ? `📅 ${t.deadline}: ${grant.deadline}` : null,
-    grant.website ? `🌐 ${t.website}: ${grant.website}` : null,
+    line("📋", t.grant, grant.name),
+    line("🏢", t.organization, grant.organization),
+    line("🏷️", t.category, grant.category),
+    line("🚦", t.status, grant.status),
+    line("📍", t.location, grant.country),
+    line("🌐", t.scope, grant.geographicScope),
+    line("🏠", t.address, grant.address),
+    line("💰", t.amount, grant.amount),
+    line("💼", t.funding, grant.fundingType),
+    line("📅", t.deadline, grant.deadline),
+    line("🎯", t.diagnosis, grant.targetDiagnosis),
+    line("👥", t.age, grant.ageRange),
+    line("🛂", t.visa, grant.b2VisaEligible),
+    line("✅", t.eligibility, grant.eligibility),
+    line("📝", t.process, grant.applicationProcess),
+    line("📎", t.documents, grant.documentsRequired),
+    line("☎️", t.phone, grant.phone),
+    line("✉️", t.email, grant.email),
+    line("🕒", t.hours, grant.officeHours),
+    line("🔗", t.website, grant.website),
   ]
     .filter(Boolean)
     .join("\n");
