@@ -17,6 +17,33 @@
 
 ---
 
+## 🗄️ DB Migration-ების ოქროს წესი — ჯერ ბაზა, მერე კოდი
+
+**არასდროს გააერთიანო (merge) PR, რომელიც `drizzle/schema.ts`-ს ცვლის, სანამ მისი migration SQL Railway-ის MySQL-ზე არ გაიშვა.**
+
+2026-04-22-ზე ამ წესის დარღვევამ production გააჩერა (PR #145) — კოდი ცდილობდა SELECT-ის ახალი სვეტებიდან, ბაზას არ ჰქონდა და ყველა გვერდი გატყდა.
+
+### სწორი რიგი
+
+1. **PR გახსენი** schema + migration SQL + apply script-ით (ერთ PR-ში ყოველთვის)
+2. **CI გაიაროს** TypeScript + build ✓
+3. **Migration გაიშვას Railway-ზე:** `DATABASE_URL="..." node scripts/apply-migration-XXXX.mjs`
+4. **შემოწმდეს რომ სვეტები დაემატა:** `SELECT <new-column> FROM <table> LIMIT 1`
+5. **მხოლოდ ამის შემდეგ merge-ი main-ში**
+6. **Railway auto-deploy-ს დაელოდე** (~2-3 წუთი) + შეამოწმე ცოცხალ URL-ზე
+
+### თუ აგრესიული refactor/რი-ცვლილება შემოდის კოდში schema-სთან ერთად
+
+- **შექმენი ცალკე PR** მხოლოდ schema-სთვის (migration-ითურთ)
+- გააერთიანე ჯერ ის + გაუშვი migration
+- **შემდეგ** PR კოდის ცვლილებისთვის — ის უკვე უსაფრთხოა
+
+### Drizzle-ის `db.select()` — რატომ საშიში
+
+Drizzle გენერირებს SQL-ს schema.ts-ის კოლონების მიხედვით. თუ schema-ში დაამატე ახალი სვეტი, მაგრამ DB-ში არ არის — `db.select().from(table)` **მარცხდება** MySQL "Unknown column" შეცდომით. ეს აფუჭებს ყველა query-ს ამ ცხრილზე.
+
+---
+
 ## Deployment — ყველაზე მნიშვნელოვანი
 
 **Railway** — ერთი სერვისი, ერთი URL:
