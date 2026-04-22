@@ -1187,4 +1187,46 @@ export const es: Translations = {
     paid: "De pago",
     subsidized: "Subvencionado",
   },
+
+  orgEnrichment: {
+    trustTitle: "Valoración Google y Confianza",
+    whoWeHelpTitle: "A quién ayudamos",
+    socialTitle: "Seguir",
+
+    languagesLabel: "Idiomas",
+    statusLabel: "Estatus migratorio",
+    insuranceLabel: "Seguro",
+    costLabel: "Coste",
+    appointmentLabel: "Visitas",
+
+    googleRating: "Valoración Google",
+    reviewsCount: "{count} reseñas",
+    placeholderTbd: "Por confirmar",
+
+    status: {
+      yes: "Acepta a todos, sin importar estatus",
+      no: "Solo residentes legales",
+      case_by_case: "Evaluado caso por caso",
+      unknown: "Política migratoria por confirmar",
+    },
+    insurance: {
+      yes: "Acepta sin seguro",
+      no: "Seguro obligatorio",
+      unknown: "Política de seguro por confirmar",
+    },
+    cost: {
+      free: "Gratis",
+      sliding_scale: "Tarifa ajustable",
+      paid: "De pago",
+      insurance: "Por seguro",
+      mixed: "Mixto",
+      unknown: "Coste por confirmar",
+    },
+    appointment: {
+      required: "Cita requerida",
+      walk_in: "Sin cita",
+      both: "Sin cita y con cita",
+      unknown: "Política de visita por confirmar",
+    },
+  },
 };

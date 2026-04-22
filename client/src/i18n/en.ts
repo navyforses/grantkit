@@ -1189,4 +1189,46 @@ export const en: Translations = {
     paid: "Paid",
     subsidized: "Subsidized",
   },
+
+  orgEnrichment: {
+    trustTitle: "Google rating & Trust",
+    whoWeHelpTitle: "Who we help",
+    socialTitle: "Follow",
+
+    languagesLabel: "Languages",
+    statusLabel: "Immigration status",
+    insuranceLabel: "Insurance",
+    costLabel: "Cost",
+    appointmentLabel: "Visits",
+
+    googleRating: "Google rating",
+    reviewsCount: "{count} reviews",
+    placeholderTbd: "To be confirmed",
+
+    status: {
+      yes: "Accepts all, regardless of status",
+      no: "Legal residents only",
+      case_by_case: "Evaluated case by case",
+      unknown: "Immigration policy unconfirmed",
+    },
+    insurance: {
+      yes: "Accepts uninsured",
+      no: "Insurance required",
+      unknown: "Insurance policy unconfirmed",
+    },
+    cost: {
+      free: "Free",
+      sliding_scale: "Sliding scale",
+      paid: "Paid",
+      insurance: "Insurance",
+      mixed: "Mixed",
+      unknown: "Cost unconfirmed",
+    },
+    appointment: {
+      required: "Appointment required",
+      walk_in: "Walk-ins welcome",
+      both: "Walk-ins & appointments",
+      unknown: "Visit policy unconfirmed",
+    },
+  },
 };

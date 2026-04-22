@@ -41,6 +41,16 @@ import SEO from "@/components/SEO";
 import OrganizationsMap, { type OrgMapPoint } from "@/components/OrganizationsMap";
 import OrgAiChat from "@/components/OrgAiChat";
 import GrantDetailHeader from "@/components/grant/GrantDetailHeader";
+import TrustPanel from "@/components/org/TrustPanel";
+import WhoWeHelpCard from "@/components/org/WhoWeHelpCard";
+import SocialMediaRow from "@/components/org/SocialMediaRow";
+import {
+  parseSocialMedia,
+  type AcceptsUndocumented,
+  type AcceptsUninsured,
+  type AppointmentPolicy,
+  type ServiceCost,
+} from "@/lib/orgEnrichment";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
@@ -137,6 +147,23 @@ export default function OrganizationDetail() {
   const websiteHref = website
     ? website.startsWith("http") ? website : `https://${website}`
     : "";
+
+  // ── Enrichment fields (v2 — 7 user-approved signals) ─────────────────
+  // Read with safe defaults so the cards degrade gracefully when a row
+  // hasn't been enriched yet. `as any` cast handles the interim window
+  // between the migration running and the schema types being in sync
+  // across the app.
+  const anyOrg = org as any;
+  const acceptsUndocumented: AcceptsUndocumented = anyOrg.acceptsUndocumented ?? "unknown";
+  const acceptsUninsured: AcceptsUninsured = anyOrg.acceptsUninsured ?? "unknown";
+  const serviceCost: ServiceCost = anyOrg.serviceCost ?? "unknown";
+  const appointmentPolicy: AppointmentPolicy = anyOrg.appointmentPolicy ?? "unknown";
+  const googleRating: number | null =
+    anyOrg.googleRating != null ? Number(anyOrg.googleRating) : null;
+  const googleReviewCount: number | null = anyOrg.googleReviewCount ?? null;
+  const missionStatement: string | null = anyOrg.missionStatement ?? null;
+  const languagesRaw: string | null = anyOrg.orgLanguages ?? anyOrg.languages ?? null;
+  const socialMedia = parseSocialMedia(anyOrg.socialMedia ?? null);
 
   // ── 3-card stat strip — always 3 values for orgs (unlike grants where
   //    several are DATA_GAPS). Matches the grant page's pattern visually.
@@ -276,18 +303,40 @@ export default function OrganizationDetail() {
               </div>
             )}
 
-            {/* Description */}
-            {orgDescription && (
+            {/* Google rating & Trust — only renders when we have a rating */}
+            <TrustPanel
+              googleRating={googleRating}
+              googleReviewCount={googleReviewCount}
+            />
+
+            {/* Description + optional mission statement banner */}
+            {(orgDescription || missionStatement) && (
               <div className="bg-muted/40 border border-border rounded-xl p-5 border-l-4 border-l-[color:var(--brand-green)]">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                   <FileText className="w-3.5 h-3.5" />
                   {t.resourceDetail.descriptionTitle}
                 </h2>
-                <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
-                  {orgDescription}
-                </p>
+                {missionStatement && (
+                  <p className="text-sm md:text-[15px] italic text-[color:var(--brand-green)]/90 mb-2.5 leading-relaxed">
+                    "{missionStatement}"
+                  </p>
+                )}
+                {orgDescription && (
+                  <p className="text-sm md:text-[15px] text-foreground/90 leading-relaxed whitespace-pre-line">
+                    {orgDescription}
+                  </p>
+                )}
               </div>
             )}
+
+            {/* Who we help — always renders, greyed rows signal "data missing" */}
+            <WhoWeHelpCard
+              languages={languagesRaw}
+              acceptsUndocumented={acceptsUndocumented}
+              acceptsUninsured={acceptsUninsured}
+              serviceCost={serviceCost}
+              appointmentPolicy={appointmentPolicy}
+            />
 
             {/* Service area */}
             {org.serviceArea && (
@@ -398,6 +447,9 @@ export default function OrganizationDetail() {
                 )}
               </div>
             </div>
+
+            {/* Social media links — compact chips, hides when empty */}
+            <SocialMediaRow links={socialMedia} />
 
             {/* Branches — the feature that makes the org page different
                 from the grant page. Keeps the verified HQ + Google Places
