@@ -90,6 +90,13 @@ export const grants = mysqlTable("grants", {
   itemId: varchar("itemId", { length: 64 }).notNull().unique(),
   name: text("name").notNull(),
   organization: text("organization"),
+  // ── Org-centric migration (Wave 1 / PR#1, 2026-04-23) ────────────────
+  // Foreign key → organizations.orgId. NULL-able in PR#1 so the
+  // deployment is non-breaking; PR#2 backfills values via fuzzy match
+  // on `organization` + `country`, PR#3 flips to NOT NULL and drops
+  // the duplicate columns (phone, email, hqAddress, latitude,
+  // longitude, address). See .grantkit-redesign/EXECUTION-PLAN.md §3.
+  orgId: varchar("orgId", { length: 16 }),
   description: text("description"),
   category: varchar("category", { length: 64 }).notNull(),
   type: mysqlEnum("grantType", ["grant", "resource"]).default("grant").notNull(),
@@ -133,6 +140,7 @@ export const grants = mysqlTable("grants", {
   index("grants_state_idx").on(table.state),
   index("grants_lat_lng_idx").on(table.latitude, table.longitude),
   index("grants_service_area_idx").on(table.serviceArea),
+  index("grants_orgid_idx").on(table.orgId),
 ]);
 
 export type Grant = typeof grants.$inferSelect;
