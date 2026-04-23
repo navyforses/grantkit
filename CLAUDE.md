@@ -4,6 +4,24 @@
 
 ---
 
+## 🛑 READ THIS FIRST — `.grantkit-redesign/PROJECT_MAP.md`
+
+**ყოველი სესიის პირველი მოქმედება:** გახსენი და სრულად წაიკითხე
+
+👉 **[`.grantkit-redesign/PROJECT_MAP.md`](.grantkit-redesign/PROJECT_MAP.md)**
+
+ეს არის პროექტის ცოცხალი რუკა — ყველა route, DB ცხრილი, API, ინფრასტრუქტურა, მიმდინარე სტატუსი, frozen / legacy ფაილების სია. ყველაფერი ერთ ადგილას.
+
+**წესი:**
+- სანამ setup/API key/env var-ს ითხოვ მომხმარებლისგან → PROJECT_MAP.md + OPS.md grep უნდა გააკეთო
+- სანამ schema.ts-ს შეეხები → PROJECT_MAP.md-ში „Migration golden rule"
+- სანამ PR გახსნი → PROJECT_MAP.md-ის „Constraints" სექცია
+- სანამ ფაილს შეცვლი → PROJECT_MAP.md-ის „Frozen / Legacy" სია
+
+**თუ PROJECT_MAP.md არ წავიკითხე ამ სესიის დასაწყისში — ცდის არცერთი მოქმედება არ არის სანდო.**
+
+---
+
 ## 🚫 DO NOT TOUCH — ფაილები რომლებსაც არ შეეხო
 
 შემდეგი ფაილები / გვერდები **გაყინულია** და **არ უნდა შეიცვალოს** — ხელის შეხებაც კი აკრძალულია, თუნდაც რეფაქტორინგისთვის, style cleanup-ისთვის ან unused import-ების წასაშლელად:
