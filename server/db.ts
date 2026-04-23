@@ -1701,7 +1701,11 @@ export async function getOrganizationDetail(orgId: string): Promise<{
   if (!db) return { organization: null, branches: [] };
 
   const [orgRows, branchRows] = await Promise.all([
-    db.select().from(organizations).where(eq(organizations.orgId, orgId)).limit(1),
+    db
+      .select()
+      .from(organizations)
+      .where(and(eq(organizations.orgId, orgId), eq(organizations.isActive, true)))
+      .limit(1),
     db
       .select()
       .from(organizationBranches)
