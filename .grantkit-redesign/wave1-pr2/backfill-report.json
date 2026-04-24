@@ -1,0 +1,13 @@
+{
+  "stats": {
+    "total": 731,
+    "noOrg": 102,
+    "t1": 605,
+    "t2": 0,
+    "t3": 6,
+    "unmatched": 18
+  },
+  "matched": 611,
+  "mode": "live",
+  "durationSec": 2
+}

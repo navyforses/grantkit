@@ -1,0 +1,128 @@
+[
+  {
+    "id": 31,
+    "itemId": "item_0031",
+    "organization": "Ava Johnson 🇺🇸",
+    "country": "US",
+    "normalised": "ava johnson"
+  },
+  {
+    "id": 38,
+    "itemId": "item_0038",
+    "organization": "Blessed Gates",
+    "country": "US",
+    "normalised": "blessed gates"
+  },
+  {
+    "id": 39,
+    "itemId": "item_0039",
+    "organization": "Blessed Gates (PLEASE CHECK THIS ONE THE FORM ESPECIALLY)",
+    "country": "US",
+    "normalised": "blessed gates"
+  },
+  {
+    "id": 111,
+    "itemId": "item_0111",
+    "organization": "Gavin Pigott 🇺🇸",
+    "country": "US",
+    "normalised": "gavin pigott"
+  },
+  {
+    "id": 162,
+    "itemId": "item_0162",
+    "organization": "Luca Lisson",
+    "country": "US",
+    "normalised": "luca lisson"
+  },
+  {
+    "id": 168,
+    "itemId": "item_0168",
+    "organization": "Matthew Pecor 🇺🇸",
+    "country": "US",
+    "normalised": "matthew pecor"
+  },
+  {
+    "id": 275,
+    "itemId": "item_0275",
+    "organization": "WolfPups On Wheels, Inc.",
+    "country": "US",
+    "normalised": "wolfpups on wheels, inc"
+  },
+  {
+    "id": 277,
+    "itemId": "item_0282",
+    "organization": "გადაუდებელობა/urgency (ასაკი <3–5 იდეალური; მოსალოდნელი ფანჯარა/ვადა)",
+    "country": "US",
+    "normalised": "გადაუდებელობა/urgency"
+  },
+  {
+    "id": 280,
+    "itemId": "item_0285",
+    "organization": "დეტალები",
+    "country": "US",
+    "normalised": "დეტალები"
+  },
+  {
+    "id": 281,
+    "itemId": "item_0286",
+    "organization": "თანამიმდევრულობით, დოკუმენტ. შემთხვევებიდან",
+    "country": "US",
+    "normalised": "თანამიმდევრულობით, დოკუმენტ. შემთხვევებიდან"
+  },
+  {
+    "id": 282,
+    "itemId": "item_0287",
+    "organization": "მგზავრობა",
+    "country": "US",
+    "normalised": "მგზავრობა"
+  },
+  {
+    "id": 283,
+    "itemId": "item_0288",
+    "organization": "საქართველოს მთავრობა — რეფერალური სერვისის პროგრამა",
+    "country": "US",
+    "normalised": "საქართველოს მთავრობა - რეფერალური სერვისის პროგრამა"
+  },
+  {
+    "id": 287,
+    "itemId": "item_0292",
+    "organization": "ქართული მართლმადიდებლური სამრევლოები 🆕",
+    "country": "US",
+    "normalised": "ქართული მართლმადიდებლური სამრევლოები"
+  },
+  {
+    "id": 318,
+    "itemId": "item_0326",
+    "organization": "Dollar For Organization",
+    "country": "US",
+    "normalised": "dollar for organization"
+  },
+  {
+    "id": 384,
+    "itemId": "item_0392",
+    "organization": "Holton’s Hero’s",
+    "country": "US",
+    "normalised": "holton’s hero’s"
+  },
+  {
+    "id": 434,
+    "itemId": "item_0443",
+    "organization": "WolfPups On Wheels, Inc.",
+    "country": "US",
+    "normalised": "wolfpups on wheels, inc"
+  },
+  {
+    "id": 627,
+    "itemId": "item_0641",
+    "organization": "დეტალური აღწერა",
+    "country": "US",
+    "normalised": "დეტალური აღწერა"
+  },
+  {
+    "id": 629,
+    "itemId": "item_0643",
+    "organization": "რაოდენობა",
+    "country": "US",
+    "normalised": "რაოდენობა"
+  }
+]
