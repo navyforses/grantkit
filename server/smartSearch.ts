@@ -5,8 +5,28 @@
  */
 
 import { getDb } from "./db";
-import { grants, grantTranslations } from "../drizzle/schema";
+import { grants, grantTranslations, organizations } from "../drizzle/schema";
 import { eq, or, like, and, sql } from "drizzle-orm";
+
+/**
+ * Column map for SELECTs that preserve the pre-PR#3a payload shape.
+ * Org-scoped fields are aliased from the joined `organizations` table.
+ */
+const grantWithOrgColumns = {
+  itemId: grants.itemId,
+  name: grants.name,
+  description: grants.description,
+  category: grants.category,
+  country: grants.country,
+  amount: grants.amount,
+  deadline: grants.deadline,
+  eligibility: grants.eligibility,
+  fundingType: grants.fundingType,
+  organization: organizations.name,
+  website: organizations.website,
+  state: organizations.state,
+  city: organizations.city,
+};
 
 interface SmartSearchResult {
   itemId: string;
@@ -42,13 +62,14 @@ export async function searchGrantsMultiTerm(
   const validTerms = terms.filter((t) => t.trim().length >= 2);
   if (validTerms.length === 0) return [];
 
-  // Build LIKE conditions for each term against grants table
+  // Build LIKE conditions for each term against grants + organizations.
+  // Post-PR#3a: organization.name lives on organizations table (JOINed below).
   const grantMatchConditions = validTerms.map((term) => {
     const pattern = `%${term}%`;
     return or(
       like(grants.name, pattern),
       like(grants.description, pattern),
-      like(grants.organization, pattern),
+      like(organizations.name, pattern),
       like(grants.eligibility, pattern)
     );
   });
@@ -63,22 +84,9 @@ export async function searchGrantsMultiTerm(
   const anyTermMatches = or(...grantMatchConditions);
 
   const grantResults = await db
-    .select({
-      itemId: grants.itemId,
-      name: grants.name,
-      organization: grants.organization,
-      description: grants.description,
-      category: grants.category,
-      country: grants.country,
-      amount: grants.amount,
-      deadline: grants.deadline,
-      website: grants.website,
-      eligibility: grants.eligibility,
-      fundingType: grants.fundingType,
-      state: grants.state,
-      city: grants.city,
-    })
+    .select(grantWithOrgColumns)
     .from(grants)
+    .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
     .where(and(...baseConditions, anyTermMatches!))
     .limit(limit * 3); // fetch extra to allow re-ranking
 
@@ -133,26 +141,14 @@ export async function searchGrantsMultiTerm(
     });
   }
 
-  // For translation-only matches, fetch the grant data
+  // For translation-only matches, fetch the grant data with org-join so the
+  // payload shape matches the main SELECT above.
   const missingItemIds = translationItemIds.filter((id) => !resultMap.has(id));
   if (missingItemIds.length > 0) {
     const missingGrants = await db
-      .select({
-        itemId: grants.itemId,
-        name: grants.name,
-        organization: grants.organization,
-        description: grants.description,
-        category: grants.category,
-        country: grants.country,
-        amount: grants.amount,
-        deadline: grants.deadline,
-        website: grants.website,
-        eligibility: grants.eligibility,
-        fundingType: grants.fundingType,
-        state: grants.state,
-        city: grants.city,
-      })
+      .select(grantWithOrgColumns)
       .from(grants)
+      .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
       .where(
         and(
           eq(grants.isActive, true),
