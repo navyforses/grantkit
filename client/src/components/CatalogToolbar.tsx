@@ -7,7 +7,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { ChevronDown, Columns, Map as MapIcon, List as ListIcon, Sparkles, X } from "lucide-react";
+import { ChevronDown, Map as MapIcon, List as ListIcon, Sparkles, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 
 export type ToolbarTypeValue = "all" | "grant" | "resource";
-export type ToolbarViewMode = "split" | "map" | "list";
+export type ToolbarViewMode = "map" | "list";
 
 interface RegionOption {
   code: string;
@@ -288,12 +288,6 @@ export default function CatalogToolbar({
         aria-label={t.toolbar.view.ariaLabel}
         className="inline-flex items-center rounded-md bg-muted/60 border border-border p-0.5 gap-0.5 flex-shrink-0"
       >
-        <ViewToggleButton
-          active={viewMode === "split"}
-          onClick={() => onViewChange("split")}
-          label={t.toolbar.view.split}
-          icon={<Columns className="w-3.5 h-3.5" aria-hidden="true" />}
-        />
         <ViewToggleButton
           active={viewMode === "map"}
           onClick={() => onViewChange("map")}

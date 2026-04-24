@@ -1,7 +1,7 @@
 /*
  * GrantList — virtualized single-column list of CatalogCardTile rows.
  *
- * Used by SplitView (desktop list-beside-map) and MobileCatalogView.
+ * Used by MobileCatalogView.
  * Standalone List layout (layoutMode === "list") uses GrantGrid instead.
  *
  * Exposes two-way hover sync:

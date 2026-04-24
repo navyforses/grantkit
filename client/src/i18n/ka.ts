@@ -1111,7 +1111,6 @@ export const ka: Translations = {
     },
     view: {
       ariaLabel: "ხედვის რეჟიმი",
-      split: "ორმაგი",
       map: "რუკა",
       list: "სია",
     },

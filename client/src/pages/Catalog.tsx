@@ -26,7 +26,6 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react
 import Navbar from "@/components/Navbar";
 import SmartSearchPanel from "@/components/SmartSearchPanel";
 import CatalogToolbar, { type ToolbarViewMode } from "@/components/CatalogToolbar";
-import SplitView from "@/components/SplitView";
 import GrantGrid from "@/components/GrantGrid";
 import CatalogSidebar from "@/components/CatalogSidebar";
 import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
@@ -111,7 +110,7 @@ export default function Catalog() {
   const [viewMode, setViewMode] = useState<"map" | "search">("map");
 
   // Phase 4A — toolbar-driven layout mode (consumed by Phase 4B renderers).
-  const [layoutMode, setLayoutMode] = useState<ToolbarViewMode>("split");
+  const [layoutMode, setLayoutMode] = useState<ToolbarViewMode>("map");
   // Phase 4B — mobile tab switcher state (list | map). Only used below 768 px.
   const [mobileTab, setMobileTab] = useState<MobileCatalogTab>("list");
   const isMobile = useIsMobile();
@@ -695,7 +694,7 @@ export default function Catalog() {
        * Phase 4B — layoutMode branching. The outer div owns the height so every
        * layout variant fills the same viewport footprint below the top bars.
        * Mobile always gets the MobileCatalogView tab switcher regardless of
-       * layoutMode (split-view doesn't fit below 768 px).
+       * layoutMode.
        */}
       <main id="catalog-main" className="relative h-[calc(100dvh-12.25rem)] md:h-[calc(100dvh-8.75rem)]">
         {isMobile ? (
@@ -706,14 +705,6 @@ export default function Catalog() {
             onCardClick={handleCardNavigate}
             onMarkerClick={handleCardNavigate}
             onMapReady={handleMapReady}
-          />
-        ) : layoutMode === "split" ? (
-          <SplitView
-            grants={activeMapItems}
-            onCardClick={handleCardNavigate}
-            onMarkerClick={handleCardNavigate}
-            onMapReady={handleMapReady}
-            emptyLabel={t.catalog.noResults}
           />
         ) : layoutMode === "list" ? (
           <div className="flex h-full w-full bg-background">
@@ -742,7 +733,7 @@ export default function Catalog() {
               onMapReady={handleMapReady}
             />
 
-            {/* Phase 2 — cascading filter panel overlay (map-only; split/list rely on the toolbar) */}
+            {/* Phase 2 — cascading filter panel overlay (map-only; list view relies on the toolbar) */}
             <Suspense fallback={null}>
               <MapFilterPanel
                 regionCode={mapRegionCode}
@@ -763,7 +754,7 @@ export default function Catalog() {
               />
             </Suspense>
 
-            {/* Phase 5 — detail slide-in panel for map markers. Card clicks (split/list) navigate
+            {/* Phase 5 — detail slide-in panel for map markers. List view card clicks navigate
                 to /organizations/:orgId when the row carries orgId, falling back to /grant/:id. */}
             <Suspense fallback={null}>
               <GrantDetailPanel

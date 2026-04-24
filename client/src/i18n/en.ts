@@ -1111,7 +1111,6 @@ export const en: Translations = {
     },
     view: {
       ariaLabel: "View mode",
-      split: "Split",
       map: "Map",
       list: "List",
     },

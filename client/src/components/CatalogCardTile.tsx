@@ -41,8 +41,8 @@ function accentFor(category: string): string {
 
 export interface CatalogCardTileProps {
   item: CatalogItem;
-  /** When true, renders a brighter border — used by SplitView to mirror the
-   *  map's hovered marker. Defaults to false. */
+  /** When true, renders a brighter border to mirror the map's hovered
+   *  marker. Defaults to false. */
   highlighted?: boolean;
   onHoverChange?: (id: string | null) => void;
   onClick?: (item: CatalogItem) => void;
