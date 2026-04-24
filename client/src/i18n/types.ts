@@ -1055,8 +1055,7 @@ export interface Translations {
       all: string;
     };
     view: {
-      ariaLabel: string;       // aria-label on the Split/Map/List tablist
-      split: string;
+      ariaLabel: string;       // aria-label on the Map/List tablist
       map: string;
       list: string;
     };

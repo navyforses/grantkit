@@ -1109,7 +1109,6 @@ export const fr: Translations = {
     },
     view: {
       ariaLabel: "Mode d'affichage",
-      split: "Mixte",
       map: "Carte",
       list: "Liste",
     },

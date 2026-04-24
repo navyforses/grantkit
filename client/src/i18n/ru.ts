@@ -1109,7 +1109,6 @@ export const ru: Translations = {
     },
     view: {
       ariaLabel: "Режим просмотра",
-      split: "Смешанный",
       map: "Карта",
       list: "Список",
     },
