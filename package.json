@@ -38,8 +38,9 @@
     "enhance:locations:sample": "tsx scripts/enhance-locations.ts --limit=10",
     "import:organizations": "tsx scripts/import-organizations.ts",
     "import:organizations:dry": "tsx scripts/import-organizations.ts --dry-run",
-    "backfill:orgid": "tsx scripts/backfill-grants-orgid.ts",
-    "backfill:orgid:dry": "tsx scripts/backfill-grants-orgid.ts --dry-run"
+    "enrich:contacts": "tsx scripts/enrich-org-contacts.ts",
+    "enrich:contacts:dry": "tsx scripts/enrich-org-contacts.ts --dry-run",
+    "enrich:contacts:limit10": "tsx scripts/enrich-org-contacts.ts --limit=10 --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
