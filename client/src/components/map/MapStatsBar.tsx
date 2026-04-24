@@ -2,7 +2,7 @@
  * MapStatsBar — Thin info bar rendered between the Navbar and the map.
  *
  * Shows:
- *   Left  — total grant count + unique country count
+ *   Left  — organizations / grants / locations / countries counts
  *   Middle — active filter chips (each removable with ×)
  *   Right  — "Clear all" button when any filter is active
  *
@@ -32,10 +32,19 @@ export interface StatsBarFilters {
 export type FilterKey = keyof StatsBarFilters;
 
 interface Props {
-  /** Total grants currently visible on the map */
+  /**
+   * Locations currently visible on the map (one marker per geocoded branch).
+   * Historically named `totalCount`; semantically this is the LOCATION count,
+   * not grants — a single organization can have several branches pinned in
+   * different cities.
+   */
   totalCount: number;
   /** Number of unique countries in the result set */
   countryCount: number;
+  /** Distinct organizations represented on the map (derived from unique orgIds). */
+  organizationCount?: number;
+  /** Total active grants + resources in the catalog (all records, unfiltered global count). */
+  grantCount?: number;
   filters: StatsBarFilters;
   /** Called with the filter key to clear; parent resets that filter to its default */
   onClearFilter: (key: FilterKey) => void;
@@ -65,11 +74,16 @@ function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
 export default function MapStatsBar({
   totalCount,
   countryCount,
+  organizationCount,
+  grantCount,
   filters,
   onClearFilter,
   onClearAll,
 }: Props) {
   const { t, tCategory } = useLanguage();
+
+  // Cheap pluralization helpers — matches existing hardcoded "grant/grants" style
+  const plur = (n: number, s: string, p: string) => (n === 1 ? s : p);
 
   const hasAnyFilter =
     !!filters.searchQuery ||
@@ -98,29 +112,66 @@ export default function MapStatsBar({
   return (
     <div className="h-10 bg-background/95 backdrop-blur-sm border-b border-border flex items-center px-3 gap-2 overflow-hidden flex-shrink-0">
 
-      {/* ── Left: stats ── */}
+      {/* Left: stats — organizations / grants / locations / countries.
+          totalCount is the location count (one marker per geocoded branch).
+          organizationCount / grantCount are optional — when not provided we
+          fall back to the legacy single-count display (kept for any caller
+          that has not been updated yet). */}
       <div className="flex-shrink-0 flex items-center gap-1.5 text-sm select-none">
-        <span className="font-semibold text-foreground tabular-nums">
-          {totalCount.toLocaleString()}
-        </span>
-        <span className="text-muted-foreground hidden sm:inline">
-          {totalCount === 1 ? "grant" : "grants"}
-        </span>
+        {typeof organizationCount === "number" ? (
+          <>
+            <span className="font-semibold text-foreground tabular-nums">
+              {organizationCount.toLocaleString()}
+            </span>
+            <span className="text-muted-foreground hidden sm:inline">
+              {plur(organizationCount, "organization", "organizations")}
+            </span>
+            {typeof grantCount === "number" && (
+              <>
+                <span className="text-border mx-0.5">·</span>
+                <span className="font-semibold text-foreground tabular-nums">
+                  {grantCount.toLocaleString()}
+                </span>
+                <span className="text-muted-foreground hidden sm:inline">
+                  {plur(grantCount, "grant", "grants")}
+                </span>
+              </>
+            )}
+            <span className="text-border mx-0.5">·</span>
+            <span className="font-semibold text-foreground tabular-nums">
+              {totalCount.toLocaleString()}
+            </span>
+            <span className="text-muted-foreground hidden md:inline">
+              {plur(totalCount, "location", "locations")}
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="font-semibold text-foreground tabular-nums">
+              {totalCount.toLocaleString()}
+            </span>
+            <span className="text-muted-foreground hidden sm:inline">
+              {plur(totalCount, "grant", "grants")}
+            </span>
+          </>
+        )}
         {countryCount > 1 && (
           <>
             <span className="text-border mx-0.5">·</span>
             <span className="font-semibold text-foreground tabular-nums">{countryCount}</span>
-            <span className="text-muted-foreground hidden sm:inline">countries</span>
+            <span className="text-muted-foreground hidden sm:inline">
+              {plur(countryCount, "country", "countries")}
+            </span>
           </>
         )}
       </div>
 
-      {/* ── Divider ── */}
+      {/* Divider */}
       {hasAnyFilter && (
         <div className="w-px h-4 bg-border flex-shrink-0" />
       )}
 
-      {/* ── Middle: active filter chips (horizontally scrollable) ── */}
+      {/* Middle: active filter chips (horizontally scrollable) */}
       <div className="flex-1 flex items-center gap-1.5 overflow-x-auto min-w-0 py-1"
            style={{ scrollbarWidth: "none" }}>
         {filters.searchQuery && (
@@ -185,7 +236,7 @@ export default function MapStatsBar({
         )}
       </div>
 
-      {/* ── Right: clear all ── */}
+      {/* Right: clear all */}
       {hasAnyFilter && (
         <button
           type="button"

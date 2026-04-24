@@ -557,6 +557,62 @@ export async function getSubscriptionStats() {
 
 // ===== Grant CRUD helpers =====
 
+/**
+ * Explicit column map for `grants` + LEFT JOIN `organizations`.
+ *
+ * PR#3a (2026-04-23) consolidates 11 duplicate columns (organization, phone,
+ * grantEmail, state, city, address, latitude, longitude, serviceArea,
+ * officeHours, website) out of the grants table into organizations. The SQL
+ * aliases below preserve the pre-PR#3a payload shape — every caller of
+ * listGrants / getGrantByItemId / getDiversePreviewGrants / getRelatedGrants
+ * keeps receiving `organization`, `phone`, `email`, `website`, `state`,
+ * `city`, `address`, `latitude`, `longitude`, `serviceArea`, `officeHours`
+ * as before. This matters because `client/src/pages/Catalog.tsx` is frozen
+ * per CLAUDE.md and several other pages assume the flat Grant shape.
+ *
+ * Used with: `.from(grants).leftJoin(organizations, eq(grants.orgId, organizations.orgId))`
+ * LEFT (not INNER) because some legacy grants may still have NULL orgId
+ * until Step 3b flips the column to NOT NULL.
+ */
+const grantWithOrgColumns = {
+  // Native grants columns (kept on the table)
+  id: grants.id,
+  itemId: grants.itemId,
+  name: grants.name,
+  orgId: grants.orgId,
+  description: grants.description,
+  category: grants.category,
+  type: grants.type,
+  country: grants.country,
+  eligibility: grants.eligibility,
+  amount: grants.amount,
+  status: grants.status,
+  applicationProcess: grants.applicationProcess,
+  deadline: grants.deadline,
+  fundingType: grants.fundingType,
+  targetDiagnosis: grants.targetDiagnosis,
+  ageRange: grants.ageRange,
+  geographicScope: grants.geographicScope,
+  documentsRequired: grants.documentsRequired,
+  b2VisaEligible: grants.b2VisaEligible,
+  geocodedAt: grants.geocodedAt,
+  isActive: grants.isActive,
+  createdAt: grants.createdAt,
+  updatedAt: grants.updatedAt,
+  // Aliased from organizations (consolidated in PR#3a)
+  organization: organizations.name,
+  phone: organizations.phone,
+  email: organizations.email,
+  website: organizations.website,
+  state: organizations.state,
+  city: organizations.city,
+  address: organizations.hqAddress,
+  latitude: organizations.latitude,
+  longitude: organizations.longitude,
+  serviceArea: organizations.serviceArea,
+  officeHours: organizations.officeHours,
+};
+
 /** List grants with search, filter, sort, and pagination.
  *  When `search` + `language` are provided, also searches grant_translations. */
 export async function listGrants(options?: {
@@ -643,10 +699,10 @@ export async function listGrants(options?: {
       conditions.push(sql`${grants.deadline} IS NOT NULL AND ${grants.deadline} != '' AND ${grants.deadline} != 'Rolling/Open'`);
     }
     if (state && state !== "all") {
-      conditions.push(eq(grants.state, state));
+      conditions.push(eq(organizations.state, state));
     }
     if (city && city !== "all") {
-      conditions.push(eq(grants.city, city));
+      conditions.push(eq(organizations.city, city));
     }
   };
 
@@ -674,7 +730,7 @@ export async function listGrants(options?: {
 
     const searchConditions = [
       like(grants.name, `%${search}%`),
-      like(grants.organization, `%${search}%`),
+      like(organizations.name, `%${search}%`),
       like(grants.description, `%${search}%`),
     ];
     if (translationItemIds.length > 0) {
@@ -691,8 +747,19 @@ export async function listGrants(options?: {
     const orderByClause = getOrderByClause(sortBy);
 
     const [grantList, countResult] = await Promise.all([
-      db.select().from(grants).where(whereClause).orderBy(orderByClause).limit(limitLit).offset(offsetLit),
-      db.select({ count: count() }).from(grants).where(whereClause),
+      db
+        .select(grantWithOrgColumns)
+        .from(grants)
+        .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
+        .where(whereClause)
+        .orderBy(orderByClause)
+        .limit(limitLit)
+        .offset(offsetLit),
+      db
+        .select({ count: count() })
+        .from(grants)
+        .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
+        .where(whereClause),
     ]);
 
     return { grants: grantList, total: countResult[0]?.count ?? 0 };
@@ -709,7 +776,7 @@ export async function listGrants(options?: {
     conditions.push(
       or(
         like(grants.name, `%${search}%`),
-        like(grants.organization, `%${search}%`),
+        like(organizations.name, `%${search}%`),
         like(grants.description, `%${search}%`)
       )
     );
@@ -734,8 +801,9 @@ export async function listGrants(options?: {
 
   const [grantList, countResult] = await Promise.all([
     db
-      .select()
+      .select(grantWithOrgColumns)
       .from(grants)
+      .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
       .where(whereClause)
       .orderBy(orderByClause)
       .limit(limitLit)
@@ -743,6 +811,7 @@ export async function listGrants(options?: {
     db
       .select({ count: count() })
       .from(grants)
+      .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
       .where(whereClause),
   ]);
 
@@ -767,8 +836,9 @@ export async function getDiversePreviewGrants(limit: number = 5) {
   for (const cat of targetCategories) {
     if (results.length >= limit) break;
     const [row] = await db
-      .select()
+      .select(grantWithOrgColumns)
       .from(grants)
+      .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
       .where(and(
         eq(grants.isActive, true),
         eq(grants.category, cat),
@@ -783,7 +853,8 @@ export async function getDiversePreviewGrants(limit: number = 5) {
   return results;
 }
 
-/** Helper to get sort order clause */
+/** Helper to get sort order clause.
+ *  Note: `state` sort pulls from organizations.state (post-PR#3a JOIN). */
 function getOrderByClause(sortBy?: string) {
   switch (sortBy) {
     case "name_desc":
@@ -795,7 +866,7 @@ function getOrderByClause(sortBy?: string) {
     case "newest":
       return desc(grants.createdAt);
     case "state":
-      return asc(grants.state);
+      return asc(organizations.state);
     case "name_asc":
     default:
       return asc(grants.name);
@@ -814,7 +885,12 @@ export async function getGrantByItemId(itemId: string) {
       return allGrants.find((g: any) => g.id === itemId || g.itemId === itemId) || null;
     } catch { return null; }
   }
-  const result = await db.select().from(grants).where(eq(grants.itemId, itemId)).limit(1);
+  const result = await db
+    .select(grantWithOrgColumns)
+    .from(grants)
+    .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
+    .where(eq(grants.itemId, itemId))
+    .limit(1);
   return result.length > 0 ? result[0] : null;
 }
 
@@ -895,18 +971,24 @@ export async function getBulkGrantTranslations(itemIds: string[]) {
   return translations;
 }
 
-/** Create a new grant */
+/** Create a new grant.
+ *
+ *  Post-PR#3a: org-scoped fields (organization/website/phone/email) are silently
+ *  ignored — they now live on the organizations table and will be DROPped from
+ *  grants in Step 3b. PR#3b will replace the admin form with an org-dropdown
+ *  so the caller provides `orgId` instead. Until then, admin-created grants
+ *  land with `orgId = NULL` and render without contact details. */
 export async function createGrant(data: {
   name: string;
-  organization?: string;
+  organization?: string;   // ignored post-PR#3a
   description?: string;
   category: string;
   type: "grant" | "resource";
   country: string;
   eligibility?: string;
-  website?: string;
-  phone?: string;
-  email?: string;
+  website?: string;        // ignored post-PR#3a
+  phone?: string;          // ignored post-PR#3a
+  email?: string;          // ignored post-PR#3a
   amount?: string;
   status?: string;
 }) {
@@ -921,15 +1003,11 @@ export async function createGrant(data: {
   await db.insert(grants).values({
     itemId,
     name: data.name,
-    organization: data.organization || "",
     description: data.description || "",
     category: data.category,
     type: data.type,
     country: data.country,
     eligibility: data.eligibility || "",
-    website: data.website || "",
-    phone: data.phone || "",
-    email: data.email || "",
     amount: data.amount || "",
     status: data.status || "",
     isActive: true,
@@ -938,18 +1016,22 @@ export async function createGrant(data: {
   return { itemId };
 }
 
-/** Update an existing grant */
+/** Update an existing grant.
+ *
+ *  Post-PR#3a: org-scoped fields (organization/website/phone/email) are silently
+ *  ignored — they now live on the organizations table. PR#3b will add an admin
+ *  flow to edit organizations directly via `organizations` router. */
 export async function updateGrant(itemId: string, data: {
   name?: string;
-  organization?: string;
+  organization?: string;   // ignored post-PR#3a
   description?: string;
   category?: string;
   type?: "grant" | "resource";
   country?: string;
   eligibility?: string;
-  website?: string;
-  phone?: string;
-  email?: string;
+  website?: string;        // ignored post-PR#3a
+  phone?: string;          // ignored post-PR#3a
+  email?: string;          // ignored post-PR#3a
   amount?: string;
   status?: string;
   isActive?: boolean;
@@ -959,15 +1041,11 @@ export async function updateGrant(itemId: string, data: {
 
   const updateSet: Record<string, unknown> = {};
   if (data.name !== undefined) updateSet.name = data.name;
-  if (data.organization !== undefined) updateSet.organization = data.organization;
   if (data.description !== undefined) updateSet.description = data.description;
   if (data.category !== undefined) updateSet.category = data.category;
   if (data.type !== undefined) updateSet.grantType = data.type;
   if (data.country !== undefined) updateSet.country = data.country;
   if (data.eligibility !== undefined) updateSet.eligibility = data.eligibility;
-  if (data.website !== undefined) updateSet.website = data.website;
-  if (data.phone !== undefined) updateSet.phone = data.phone;
-  if (data.email !== undefined) updateSet.grantEmail = data.email;
   if (data.amount !== undefined) updateSet.amount = data.amount;
   if (data.status !== undefined) updateSet.status = data.status;
   if (data.isActive !== undefined) updateSet.isActive = data.isActive;
@@ -1016,19 +1094,26 @@ export async function upsertGrantTranslations(itemId: string, translations: Reco
   }
 }
 
-/** Bulk import grants with upsert support */
+/** Bulk import grants with upsert support.
+ *
+ *  Post-PR#3a: org-scoped fields (organization/website/phone/email) are
+ *  accepted in the input for backward compat but NOT written to `grants` —
+ *  they'll be DROPped in Step 3b. Org attribution happens via `orgId`,
+ *  which this legacy path does not yet set. PR#3b will replace this import
+ *  flow with an org-aware pipeline that looks up / creates organizations
+ *  first, then attaches grants via `orgId`. */
 export async function bulkImportGrants(grantsData: Array<{
   itemId?: string;
   name: string;
-  organization: string;
+  organization: string;   // ignored post-PR#3a
   description: string;
   category: string;
   type: "grant" | "resource";
   country: string;
   eligibility: string;
-  website: string;
-  phone: string;
-  email: string;
+  website: string;        // ignored post-PR#3a
+  phone: string;          // ignored post-PR#3a
+  email: string;          // ignored post-PR#3a
   amount: string;
   status: string;
   translations: Record<string, { name: string; description: string; eligibility: string }>;
@@ -1052,15 +1137,11 @@ export async function bulkImportGrants(grantsData: Array<{
           // Update existing
           await db.update(grants).set({
             name: g.name,
-            organization: g.organization,
             description: g.description,
             category: g.category,
             type: g.type,
             country: g.country,
             eligibility: g.eligibility,
-            website: g.website,
-            phone: g.phone,
-            email: g.email,
             amount: g.amount,
             status: g.status,
             isActive: true,
@@ -1071,15 +1152,11 @@ export async function bulkImportGrants(grantsData: Array<{
           await db.insert(grants).values({
             itemId,
             name: g.name,
-            organization: g.organization,
             description: g.description,
             category: g.category,
             type: g.type,
             country: g.country,
             eligibility: g.eligibility,
-            website: g.website,
-            phone: g.phone,
-            email: g.email,
             amount: g.amount,
             status: g.status,
             isActive: true,
@@ -1095,15 +1172,11 @@ export async function bulkImportGrants(grantsData: Array<{
         await db.insert(grants).values({
           itemId,
           name: g.name,
-          organization: g.organization,
           description: g.description,
           category: g.category,
           type: g.type,
           country: g.country,
           eligibility: g.eligibility,
-          website: g.website,
-          phone: g.phone,
-          email: g.email,
           amount: g.amount,
           status: g.status,
           isActive: true,
@@ -1147,47 +1220,51 @@ export async function getGrantStats() {
 }
 
 /** Get distinct states with grant counts for filter dropdown.
- *  Optionally filter to a specific country. */
+ *  Optionally filter to a specific country.
+ *  Post-PR#3a: state/city live on organizations table — JOIN through orgId. */
 export async function getDistinctStates(countryCode?: string) {
   const db = await getDb();
   if (!db) return [];
 
   const conditions = [
     eq(grants.isActive, true),
-    sql`${grants.state} IS NOT NULL AND ${grants.state} != ''`,
+    sql`${organizations.state} IS NOT NULL AND ${organizations.state} != ''`,
     // Hide pseudo-locations from the cascade dropdown — they are not
     // real geographic units and would just clutter the picker.
-    sql`${grants.state} NOT IN ('Nationwide', 'International')`,
+    sql`${organizations.state} NOT IN ('Nationwide', 'International')`,
   ];
   if (countryCode) conditions.push(eq(grants.country, countryCode));
 
   const result = await db
-    .select({ state: grants.state, count: count() })
+    .select({ state: organizations.state, count: count() })
     .from(grants)
+    .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
     .where(and(...conditions))
-    .groupBy(grants.state)
+    .groupBy(organizations.state)
     .orderBy(desc(count()));
 
   return result.map(r => ({ state: r.state as string, count: Number(r.count) }));
 }
 
-/** Get distinct cities for a given state with grant counts for filter dropdown */
+/** Get distinct cities for a given state with grant counts for filter dropdown.
+ *  Post-PR#3a: state/city live on organizations table — JOIN through orgId. */
 export async function getDistinctCities(stateName: string) {
   const db = await getDb();
   if (!db) return [];
 
   const result = await db
-    .select({ city: grants.city, count: count() })
+    .select({ city: organizations.city, count: count() })
     .from(grants)
+    .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
     .where(
       and(
         eq(grants.isActive, true),
-        eq(grants.state, stateName),
-        sql`${grants.city} IS NOT NULL AND ${grants.city} != ''`
+        eq(organizations.state, stateName),
+        sql`${organizations.city} IS NOT NULL AND ${organizations.city} != ''`
       )
     )
-    .groupBy(grants.city)
-    .orderBy(asc(grants.city));
+    .groupBy(organizations.city)
+    .orderBy(asc(organizations.city));
 
   return result.map(r => ({ city: r.city as string, count: Number(r.count) }));
 }
@@ -1268,9 +1345,13 @@ export async function exportAllGrants(options?: {
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
+  // Post-PR#3a: JOIN organizations so exported rows keep the pre-migration
+  // shape (organization/website/phone/email/state/city/address/etc.) via
+  // `grantWithOrgColumns` aliases.
   const allGrants = await db
-    .select()
+    .select(grantWithOrgColumns)
     .from(grants)
+    .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
     .where(whereClause)
     .orderBy(asc(grants.name));
 
@@ -1291,8 +1372,9 @@ export async function getRelatedGrants(itemId: string, category: string, limit =
   if (!db) return [];
 
   const result = await db
-    .select()
+    .select(grantWithOrgColumns)
     .from(grants)
+    .leftJoin(organizations, eq(grants.orgId, organizations.orgId))
     .where(and(
       eq(grants.category, category),
       eq(grants.isActive, true),

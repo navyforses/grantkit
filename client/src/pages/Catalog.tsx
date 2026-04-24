@@ -494,6 +494,23 @@ export default function Catalog() {
     [mapItems],
   );
 
+  // Stats bar — distinct organizations represented on the map.
+  // Map markers are branches (one org can have several branches) so we
+  // deduplicate by orgId to avoid double-counting.
+  const organizationCount = useMemo(
+    () => new Set(mapItems.map((g) => (g as any).orgId).filter(Boolean)).size,
+    [mapItems],
+  );
+
+  // Stats bar — total active grants + resources in the catalog (global, unfiltered).
+  // Surfaces the headline "how many grants are in GrantKit" number that users
+  // expect to see alongside organization / location counts.
+  const { data: grantStatsData } = trpc.catalog.count.useQuery(undefined, {
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+  });
+  const grantCount = grantStatsData?.total;
+
   const resetFilters = useCallback(() => {
     setSelectedCategory("all");
     setSelectedType("all");
@@ -656,6 +673,8 @@ export default function Catalog() {
       <MapStatsBar
         totalCount={mapItems.length}
         countryCount={countryCount}
+        organizationCount={organizationCount}
+        grantCount={grantCount}
         filters={{
           searchQuery,
           category: selectedCategory,

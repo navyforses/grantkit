@@ -138,3 +138,15 @@ _archive/
 
 # Generated audit reports (scripts/)
 scripts/*.json
+
+# Ephemeral dev artifacts (Wave 1)
+recon-*.mjs
+test-*.mjs
+scripts/_tmp-*.mjs
+final-enrichment-*.csv
+smoke-test-*.csv
+geocode-failed.json
+geocode-report.json
+index.lock
+.migration-*/
+_package.json*

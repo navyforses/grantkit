@@ -1,0 +1,307 @@
+[
+  {
+    "name": "Emergency Food and Shelter Program (EFSP)",
+    "category": "social_services",
+    "country": "US",
+    "eligibility": "Non-profit, faith-based, and governmental organizations",
+    "description": "The EFSP supplements and expands the work of local social service agencies, both nonprofit and governmental, to provide shelter, food, and supportive services to individuals and families experiencing economic emergencies. It aims to help people with non-disaster related emergencies.",
+    "website": "https://www.efsp.unitedway.org/",
+    "organization": "FEMA / United Way"
+  },
+  {
+    "name": "Community Services Block Grant (CSBG)",
+    "category": "social_services",
+    "country": "US",
+    "eligibility": "States, territories, and federally-recognized tribes",
+    "description": "The CSBG provides flexible funding to states and territories, which in turn distribute funds to local Community Action Agencies (CAAs). These agencies offer a range of services aimed at reducing poverty, addressing basic needs, and promoting self-sufficiency.",
+    "website": "https://administrationforchildrenfamilies.acf.hhs.gov/ocs/programs/csbg",
+    "organization": "U.S. Department of Health and Human Services"
+  },
+  {
+    "name": "Second Chance Act Grant Programs",
+    "category": "social_services",
+    "country": "US",
+    "eligibility": "State, local, and tribal governments; community- and faith-based organizations; and nonprofits.",
+    "description": "The Second Chance Act supports a variety of programs designed to improve outcomes for individuals reentering communities after incarceration. These programs address areas such as reentry services, job training, substance abuse treatment, and housing assistance.",
+    "website": "https://www.ojp.gov/funding/explore/second-chance-act",
+    "organization": "U.S. Department of Justice"
+  },
+  {
+    "name": "Substance Abuse and Mental Health Services Administration (SAMHSA) Grants",
+    "category": "social_services",
+    "country": "US",
+    "eligibility": "States, local and tribal governments, community-based organizations, and non-profits.",
+    "description": "SAMHSA offers a variety of grant programs focused on improving access to and quality of substance abuse and mental health services. These grants support initiatives ranging from prevention and treatment to recovery support and workforce development.",
+    "website": "https://www.samhsa.gov/grants",
+    "organization": "Substance Abuse and Mental Health Services Administration"
+  },
+  {
+    "name": "Robert Wood Johnson Foundation - Healthy Eating Research",
+    "category": "social_services",
+    "country": "US",
+    "eligibility": "Nonprofit organizations, government entities",
+    "description": "Healthy Eating Research is a national program of the Robert Wood Johnson Foundation. It supports research to promote healthy eating among children to prevent childhood obesity, especially among lower-income populations and racial and ethnic groups at highest risk.",
+    "website": "https://healthyeatingresearch.org/funding/",
+    "organization": "Robert Wood Johnson Foundation"
+  },
+  {
+    "name": "AmeriCorps",
+    "category": "social_services",
+    "country": "US",
+    "eligibility": "Nonprofits, schools, government agencies, faith-based and community organizations",
+    "description": "AmeriCorps provides grants to organizations to engage individuals in intensive service to address critical community needs, including education, public safety, health, and the environment. Members serve full-time or part-time and earn a living allowance and an education award upon completion of their service.",
+    "website": "https://americorps.gov/",
+    "organization": "AmeriCorps"
+  },
+  {
+    "name": "Annie E. Casey Foundation Grants",
+    "category": "social_services",
+    "country": "US",
+    "eligibility": "Nonprofit organizations, government entities",
+    "description": "The Annie E. Casey Foundation supports programs and initiatives aimed at improving the lives of disadvantaged children and families. They focus on areas such as early childhood development, education, family economic success, and juvenile justice reform.",
+    "website": "https://www.aecf.org/",
+    "organization": "Annie E. Casey Foundation"
+  },
+  {
+    "name": "Corporation for National and Community Service (CNCS)",
+    "category": "social_services",
+    "country": "US",
+    "eligibility": "State and local governments, tribal organizations, non-profits",
+    "description": "CNCS supports volunteer programs to tackle socioeconomic and community challenges. It provides grants for organizations committed to addressing issues through community engagement and service initiatives.",
+    "website": "https://www.nationalservice.gov/",
+    "organization": "Corporation for National and Community Service"
+  },
+  {
+    "name": "Community Services Recovery Fund",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Charities and non-profits serving communities in Canada.",
+    "description": "A one-time $400 million investment to help charities and non-profits adapt and modernize so they can better support the pandemic recovery in communities across Canada. The fund supports investments in organizational capacity, program adaptation, and digital solutions.",
+    "website": "https://communityservicesrecoveryfund.ca/",
+    "organization": "Government of Canada"
+  },
+  {
+    "name": "New Horizons for Seniors Program - Community-Based Projects",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Organizations undertaking projects led or inspired by seniors",
+    "description": "The New Horizons for Seniors Program (NHSP) is a federal grants program that supports projects led or inspired by seniors who make a difference in the lives of others in their communities. Community-based projects are funded up to $25,000 per year per organization. They focus on addressing social isolation, improving seniors' health, and promoting volunteerism.",
+    "website": "https://www.canada.ca/en/employment-social-development/services/funding/new-horizons-seniors-community-based.html",
+    "organization": "Government of Canada"
+  },
+  {
+    "name": "United Way Centraide Canada - Various Programs",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Registered charities and non-profit organizations",
+    "description": "United Way Centraide Canada supports a wide range of social service programs and initiatives across the country. These programs address issues such as poverty, homelessness, food security, and mental health, and provide vital support to vulnerable populations.",
+    "website": "https://www.unitedway.ca/",
+    "organization": "United Way Centraide Canada"
+  },
+  {
+    "name": "TELUS Community Grants",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Registered charities for youth-focused programs.",
+    "description": "TELUS Community Grants provides funding to grassroots and local charities that support youth-focused programs. Priority is given to innovative projects that promote health, education, and community development for young people.",
+    "website": "https://www.telus.com/en/about/company-overview/community-investment/community-grants",
+    "organization": "TELUS"
+  },
+  {
+    "name": "RBC Foundation",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Canadian registered charities and qualified donees.",
+    "description": "The RBC Foundation supports initiatives in areas such as arts and culture, community and social services, and environment. Their social services grants focus on programs that address issues like affordable housing, food security, and financial literacy for vulnerable populations.",
+    "website": "https://www.rbc.com/community-social-impact/index.html",
+    "organization": "RBC Foundation"
+  },
+  {
+    "name": "Law Foundation of Ontario - Access to Justice Fund",
+    "category": "social_services",
+    "country": "Canada",
+    "state": "Ontario",
+    "eligibility": "Non-profits working on access to justice issues",
+    "description": "The Law Foundation of Ontario funds projects in Ontario that promote access to justice for individuals and communities facing systemic barriers. Funding priorities include public legal education, legal research, and innovative solutions to justice problems.",
+    "website": "https://lawfoundation.on.ca/",
+    "organization": "Law Foundation of Ontario"
+  },
+  {
+    "name": "Atkinson Foundation",
+    "category": "social_services",
+    "country": "Canada",
+    "state": "Ontario",
+    "eligibility": "Organizations working for social and economic justice in Ontario.",
+    "description": "The Atkinson Foundation supports organizations and initiatives in Ontario that are working to address issues of social and economic justice. They provide grants for projects that promote decent work, reduce poverty, and advance social equity.",
+    "website": "https://atkinsonfoundation.ca/",
+    "organization": "Atkinson Foundation"
+  },
+  {
+    "name": "Movember Foundation - Various Programs",
+    "category": "social_services",
+    "country": "Canada",
+    "eligibility": "Organizations working on men's health",
+    "description": "The Movember Foundation funds research and support programs focused on men's health issues, including mental health and suicide prevention, prostate cancer, and testicular cancer. They provide grants to organizations working to improve men's health outcomes in Canada and around the world.",
+    "website": "https://ca.movember.com/",
+    "organization": "Movember Foundation"
+  },
+  {
+    "name": "FTA Enhanced Mobility of Seniors & Individuals with Disabilities (Section 5310)",
+    "category": "travel_transport",
+    "country": "US",
+    "eligibility": "Nonprofits, state/local governmental authorities",
+    "description": "The Section 5310 program provides funding for transportation services that meet the special needs of seniors and individuals with disabilities. Funding can be used for capital projects, operating assistance, and mobility management programs that improve access to transportation. The goal is to enhance mobility for these populations, connecting them to essential services, healthcare, and community activities.",
+    "website": "https://www.transit.dot.gov/funding/grants/enhanced-mobility-seniors-individuals-disabilities-section-5310",
+    "organization": "Federal Transit Administration (FTA)"
+  },
+  {
+    "name": "Ride Connection",
+    "category": "travel_transport",
+    "country": "US",
+    "state": "OR",
+    "eligibility": "Seniors and people with disabilities in the Portland, Oregon metro area.",
+    "description": "Ride Connection provides transportation options for seniors and people with disabilities, enabling them to access medical appointments, social activities, and other essential services. They offer a variety of services like volunteer driver programs, shuttle services, and travel training to promote independence and improve quality of life. The goal is to ensure that everyone has access to transportation, regardless of age or ability.",
+    "website": "https://rideconnection.org/",
+    "organization": "Ride Connection"
+  },
+  {
+    "name": "SHARE Mobility",
+    "category": "travel_transport",
+    "country": "US",
+    "eligibility": "Cities, counties, transit agencies, private companies, and universities.",
+    "description": "SHARE Mobility provides on-demand transit solutions for communities and organizations. They partner with organizations to launch microtransit services, commuter shuttles, and paratransit options. Their technology platform helps optimize routes, manage vehicles, and improve the overall rider experience, bridging transportation gaps",
+    "website": "https://www.sharemobility.com/",
+    "organization": "SHARE Mobility"
+  },
+  {
+    "name": "National Aging and Disability Transportation Center (NADTC)",
+    "category": "travel_transport",
+    "country": "US",
+    "eligibility": "Transportation providers, aging and disability organizations, individuals, and caregivers.",
+    "description": "NADTC is a resource center that provides information, training, and technical assistance on transportation options for older adults and people with disabilities. They offer webinars, publications, and individualized support to help communities develop and implement accessible transportation solutions. NADTC aims to improve mobility and promote independence for these populations.",
+    "website": "https://www.nadtc.org/",
+    "organization": "National Aging and Disability Transportation Center (NADTC)"
+  },
+  {
+    "name": "Reconnecting Communities Pilot Program",
+    "category": "travel_transport",
+    "country": "US",
+    "eligibility": "State, local and Tribal governments.",
+    "description": "This is a discretionary grant program to reconnect communities that are cut off from opportunity and burdened by past transportation infrastructure decisions. Planning Grants support planning activities and Small Capital Construction Grants support design and construction of projects that reconnect communities. It represents real solutions for underserved communities.",
+    "website": "https://www.transportation.gov/reconnectingcommunities",
+    "organization": "US Department of Transportation (USDOT)"
+  },
+  {
+    "name": "FTA Grants for Buses and Bus Facilities Program",
+    "category": "travel_transport",
+    "country": "US",
+    "eligibility": "Designated recipients, state departments of transportation, and direct recipients of FTA funds.",
+    "description": "The Buses and Bus Facilities Program provides financial assistance to states and transit agencies to replace, rehabilitate, and purchase buses and related equipment. This includes projects to purchase zero-emission and low-emission buses, as well as projects to build or improve bus facilities. The goal is to improve the safety and reliability of bus transportation, while also reducing emissions and promoting sustainable transportation practices.",
+    "website": "https://www.transit.dot.gov/funding/grants/buses-and-bus-facilities-program",
+    "organization": "Federal Transit Administration (FTA)"
+  },
+  {
+    "name": "Investment in Airport Infrastructure",
+    "category": "travel_transport",
+    "country": "Canada",
+    "state": null,
+    "eligibility": "Eligible airports include those that meet certain criteria.",
+    "description": "The Airports Capital Assistance Program (ACAP) provides funding to help ensure the safety of air travellers at regional and local airports. Funding is available for projects such as runway repairs, new lighting systems, and the purchase of specialized equipment. This improves safety and supports economic growth in remote communities.",
+    "website": "https://tc.canada.ca/en/aviation/airport-infrastructure/airports-capital-assistance-program",
+    "organization": "Transport Canada"
+  },
+  {
+    "name": "VIA Rail Capital Investment Program",
+    "category": "travel_transport",
+    "country": "Canada",
+    "state": null,
+    "eligibility": "VIA Rail.",
+    "description": "This initiative supports VIA Rail through capital investments that modernize its infrastructure, equipment and operations. The goal is to improve the reliability, safety, and efficiency of passenger rail service across Canada, as well as enhance the passenger experience.",
+    "website": "https://www.tc.gc.ca/en/initiatives/investing-via-rail-canada",
+    "organization": "Transport Canada"
+  },
+  {
+    "name": "Clean Transportation",
+    "category": "travel_transport",
+    "country": "Canada",
+    "state": null,
+    "eligibility": "Canadian organizations reducing emissions.",
+    "description": "The Government of Canada invests in projects that support the adoption of clean transportation technologies and fuels. Funding supports both research and deployment of innovative solutions to reduce greenhouse gas emissions from the transportation sector.",
+    "website": "https://www.nrcan.gc.ca/energy-efficiency/transportation/21053",
+    "organization": "Natural Resources Canada"
+  },
+  {
+    "name": "Active Transportation Fund",
+    "category": "travel_transport",
+    "country": "Canada",
+    "state": null,
+    "eligibility": "Provinces, territories, municipalities, Indigenous governments and organizations, non-profit organizations.",
+    "description": "Supports projects that build new and expanded networks of pathways, bike lanes, trails and pedestrian infrastructure. The fund aims to make communities more livable by enabling more Canadians to choose active transportation.",
+    "website": "https://www.infrastructure.gc.ca/active-actif/index-eng.html",
+    "organization": "Infrastructure Canada"
+  },
+  {
+    "name": "Zero Emission Transit Fund",
+    "category": "travel_transport",
+    "country": "Canada",
+    "state": null,
+    "eligibility": "Provinces, territories, municipal or regional governments, transit agencies, Indigenous governments.",
+    "description": "The Zero Emission Transit Fund (ZETF) makes it easier for communities across the country to purchase electric buses and build supporting infrastructure, helping to support a transition to cleaner and more sustainable transit options. The fund also provides planning support to ensure transit projects are well-planned.",
+    "website": "https://www.infrastructure.gc.ca/zero-emission-zero-emission/index-eng.html",
+    "organization": "Infrastructure Canada"
+  },
+  {
+    "name": "CAA International Bursary",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Individuals from developing countries working in civil aviation.",
+    "description": "This bursary provides financial assistance to individuals seeking training and professional development in civil aviation safety and security. It helps cover costs associated with travel, accommodation, and course fees, enabling recipients to enhance their expertise and contribute to aviation standards.",
+    "website": "https://www.caa.co.uk/about-us/corporate-information/international-development/bursaries/",
+    "organization": "Civil Aviation Authority (CAA) International"
+  },
+  {
+    "name": "Reaching Communities England",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Community groups and charities in England.",
+    "description": "This grant supports projects that help communities address transport disadvantages, such as providing community transport schemes for isolated individuals. Funding can cover vehicle costs, volunteer expenses, and operational support.",
+    "website": "https://www.tnlcommunityfund.org.uk/funding/programmes/national-lottery-awards-for-all-england",
+    "organization": "The National Lottery Community Fund"
+  },
+  {
+    "name": "Community Transport Fund",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Community transport organizations and charities.",
+    "description": "This fund provides financial assistance to community transport organizations that offer accessible and affordable transport solutions to those who have difficulty accessing mainstream transport. It helps to cover costs, such as vehicle purchase and maintenance, insurance, and volunteer training.",
+    "website": "https://www.gov.uk/government/publications/community-transport-fund-guidance-for-applicants",
+    "organization": "Department for Transport"
+  },
+  {
+    "name": "Energy Saving Trust: Fuel Efficient Driver Training",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Organizations with vehicle fleets",
+    "description": "This program provides funding and support for organizations looking to implement fuel-efficient driver training for their staff. The training aims to improve driving habits, reduce fuel consumption, and lower carbon emissions from vehicles. It promotes safer and more environmentally friendly driving practices.",
+    "website": "https://energysavingtrust.org.uk/service/fleet-review/",
+    "organization": "Energy Saving Trust"
+  },
+  {
+    "name": "Zero Emission Bus Regional Areas (ZEBRA) scheme",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "Local transport authorities",
+    "description": "The ZEBRA scheme provides funding for local transport authorities to invest in zero emission buses and the infrastructure needed to support them. This includes electric and hydrogen buses. The goal is to decarbonize the bus fleet and improve air quality in urban areas.",
+    "website": "https://www.gov.uk/government/publications/zero-emission-bus-zebra-scheme/zero-emission-bus-zebra-scheme",
+    "organization": "Department for Transport"
+  },
+  {
+    "name": "Innovate UK: Transport Vision 2050 - Call for innovation",
+    "category": "travel_transport",
+    "country": "UK",
+    "eligibility": "UK registered organisations",
+    "description": "This fund is looking to find innovative ideas for our future transport system. It should align with the UK’s Transport Vision for 2050 and aid in getting the UK to net zero. Solutions should demonstrate a potential impact in delivering a transport system that is sustainable, efficient, safe, healthy and inclusive",
+    "website": "https://www.ukri.org/opportunity/transforming-foundation-industries-demonstrator-call/",
+    "organization": "Innovate UK"
+  }
+]
