@@ -57,6 +57,53 @@ function makeItemId(name: string): string {
     .slice(0, 60);
 }
 
+/**
+ * findOrCreateOrg — ყოველი ახალი grant-ისთვის ვპოულობთ ან ვქმნით organizations რიგს.
+ *
+ * რატომ საჭიროა: grants.orgId არის NOT NULL FK → organizations.orgId (PR#3a-ს შემდეგ).
+ * ამის გარეშე ყოველი ახალი grant dangling (orphan) რიგი ხდებოდა და catalog/maps-ს ტეხავდა.
+ *
+ * Match strategy: შედარება orgName-ით (case-insensitive, trimmed).
+ * თუ orgName არ მოგვცემია, გრანტის name-ს ვიყენებთ (1:1 პროგრამა↔org მოდელი).
+ * ახალი org-ის orgId გენერირდება sequence-ით: ORG-0539, ORG-0540, ...
+ */
+async function findOrCreateOrg(
+  db: mysql.Connection,
+  orgName: string,
+  country: string,
+  description: string | null,
+): Promise<string> {
+  const cleanName = orgName.trim();
+  if (!cleanName) throw new Error("org name cannot be empty");
+
+  // 1. Try to find existing by exact (case-insensitive) name match
+  const [existing] = await db.execute(
+    "SELECT orgId FROM organizations WHERE LOWER(TRIM(name)) = LOWER(TRIM(?)) LIMIT 1",
+    [cleanName]
+  );
+  if ((existing as { orgId: string }[]).length > 0) {
+    return (existing as { orgId: string }[])[0].orgId;
+  }
+
+  // 2. Reserve next ORG-NNNN id
+  const [lastRows] = await db.execute(
+    `SELECT orgId FROM organizations WHERE orgId REGEXP '^ORG-[0-9]+$'
+      ORDER BY CAST(SUBSTRING(orgId, 5) AS UNSIGNED) DESC LIMIT 1`
+  );
+  const last = (lastRows as { orgId: string }[])[0];
+  const nextNum = last ? parseInt(last.orgId.slice(4), 10) + 1 : 1;
+  const newOrgId = `ORG-${String(nextNum).padStart(4, "0")}`;
+
+  // 3. Insert
+  await db.execute(
+    `INSERT INTO organizations (orgId, name, country, description, isActive, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, 1, NOW(), NOW())`,
+    [newOrgId, cleanName, country, description || null]
+  );
+
+  return newOrgId;
+}
+
 async function callLLM(
   messages: { role: string; content: string }[],
   jsonMode = false,
@@ -416,10 +463,19 @@ async function main() {
       // so downstream code (geocoding pipeline, frontend flag map,
       // region bucketing) can rely on a single canonical form.
       const normalizedCountry = normalizeCountryCode(grant.country) ?? grant.country;
+
+      // Step 1a: Find or create the organization first (grants.orgId is NOT NULL
+      // as of PR#3a — every grant must link to a row in `organizations`).
+      // If the import JSON provides an explicit `organization`, we use that;
+      // otherwise we fall back to the grant's own name (1:1 program↔org model).
+      const orgName = (grant.organization && grant.organization.trim()) || grant.name;
+      const orgId = await findOrCreateOrg(db, orgName, normalizedCountry, grant.description);
+      process.stdout.write(`org(${orgId}) `);
+
       await db.execute(
-        `INSERT INTO grants (itemId, name, category, country, state, eligibility, description, isActive, createdAt, updatedAt)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())`,
-        [itemId, grant.name, grant.category, normalizedCountry, grant.state || null, grant.eligibility, grant.description]
+        `INSERT INTO grants (itemId, name, category, country, state, eligibility, description, orgId, isActive, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW())`,
+        [itemId, grant.name, grant.category, normalizedCountry, grant.state || null, grant.eligibility, grant.description, orgId]
       );
       process.stdout.write("insert ✔ ");
 
