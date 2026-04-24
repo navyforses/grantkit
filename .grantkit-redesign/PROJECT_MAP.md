@@ -4,7 +4,7 @@
 > project. Any new session (Claude / Cowork / human) must scan this before
 > opening a PR, asking the user for setup, or touching schema/env vars.
 >
-> Last updated: **2026-04-23** — end of schema v2 + contact provenance work.
+> Last updated: **2026-04-24** — fire drill #2 (re-restore 8 files after PR #162 merge resolution dropped them).
 
 ---
 
@@ -227,6 +227,7 @@ _Each session appends a 3-line summary so the next session knows what was done a
 
 - **2026-04-22** — Grant + Org detail redesigns merged (PR #142, #143, #146, #148, #150, #151, #153). Schema v2 + contact provenance applied to Railway. Blocked briefly by a migration-after-code mistake → reverted → re-applied in the right order.
 - **2026-04-23** — Project Map created. Ready to start Phase B (contact enrichment script).
+- **2026-04-24** — Fire drill #2: Wave 1 merge (PR #160) deleted 8 detail-page files; PR #162 tried to restore them but the GitHub merge resolution (commit 72c926f) dropped the restored paths — only `package.json` landed in main. Railway builds from 05:49 → 20:29 all failed with `ENOENT: GrantDetailHeader`. Fix PR re-restores the 8 files via `git checkout af283e1 --`. Lesson: when a "restore" branch is based on a pre-deletion commit and the target `main` has the deletion, GitHub's default merge will keep the deletion — must rebase the restore branch onto current main first, or explicitly `git checkout <files>` on main.
 
 ---
 
