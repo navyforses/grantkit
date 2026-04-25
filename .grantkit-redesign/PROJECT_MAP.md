@@ -107,7 +107,7 @@ Defined in `server/routers.ts`. Grouped by router:
 | **GrantedAI** | `BUILT_IN_FORGE_API_URL` + `BUILT_IN_FORGE_API_KEY` | 84,000+ external grants search |
 | **Paddle** | `PADDLE_API_KEY` + `PADDLE_WEBHOOK_SECRET` | Subscription billing |
 | **Resend** | `RESEND_API_KEY` | Transactional email + newsletter |
-| **Manus OAuth** | `OAUTH_SERVER_URL` + `OWNER_OPEN_ID` + `JWT_SECRET` | Auth |
+| **Auth (in-house)** | `JWT_SECRET` | Email/password login → JWT cookie (jose) |
 
 ---
 

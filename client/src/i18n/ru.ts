@@ -1005,10 +1005,6 @@ export const ru: Translations = {
   },
 
   auth: {
-    tabEmail: "Email и пароль",
-    tabOAuth: "Единый вход",
-    oauthHint: "Войдите с помощью аккаунта Manus",
-    oauthCta: "Продолжить с Manus",
     emailLabel: "Email",
     emailPlaceholder: "you@example.com",
     passwordLabel: "Пароль",
