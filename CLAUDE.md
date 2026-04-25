@@ -4,6 +4,23 @@
 
 ---
 
+## 🧭 #0 ფილტრი — `.grantkit-redesign/KARPATHY_GUIDELINES.md`
+
+**ნებისმიერი AI (Claude Code, Cowork, სხვა agent), რომელიც ამ პროექტზე მუშაობს — პირველ რიგში ამ ფაილს კითხულობს.** ეს არის ქცევის სტანდარტი, საწყისი ფილტრი ნებისმიერი ცვლილებისთვის.
+
+👉 **[`.grantkit-redesign/KARPATHY_GUIDELINES.md`](.grantkit-redesign/KARPATHY_GUIDELINES.md)**
+
+ოთხი პრინციპი (Andrej Karpathy-ის დაკვირვებებიდან, წყარო: [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)):
+
+1. **Think Before Coding** — ვარაუდები ცალსახად, დაბნეულობა — კითხვით, არა გამოცნობით
+2. **Simplicity First** — მინიმალური კოდი მოთხოვნისთვის. არანაირი სპეკულატიური feature
+3. **Surgical Changes** — მხოლოდ ის რაც აუცილებელია. ყოველი შეცვლილი ხაზი უნდა მიდიოდეს მოთხოვნამდე
+4. **Goal-Driven Execution** — წარმატების კრიტერიუმი + ციკლი სანამ არ გადამოწმდება
+
+**წაკითხვის რიგი ყოველი სესიის დასაწყისში:** `KARPATHY_GUIDELINES.md` → `CLAUDE.md` → `PROJECT_MAP.md` → `OPS.md`
+
+---
+
 ## 🛑 READ THIS FIRST — `.grantkit-redesign/PROJECT_MAP.md`
 
 **ყოველი სესიის პირველი მოქმედება:** გახსენი და სრულად წაიკითხე
