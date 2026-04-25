@@ -5,13 +5,13 @@
 
 ---
 
-## TL;DR — 5 ცოცხალი მიმართულება, რეალური სტატუსი
+## TL;DR — 4 ცოცხალი მიმართულება
 
 | # | მიმართულება | სტატუსი | რა აკლია |
 |---|---|---|---|
-| 1 | Phase 2 — Org-centric migration (5-PR sequence) | 🟡 2/5 ship | PR#3, PR#4, PR#5 |
+| 1 | Phase 2 — `DROP organization_translations` (ერთი ნაბიჯი) | 🟡 ცარიელი ცხრილი ცოცხალი schema-ში | migration `0018` |
 | 2 | Contact Enrichment Phase B | 🟡 script ready, batch არ გაშვებული | 50/დღე batch + monitoring |
-| 3 | France Import (Wave 2) | 🔴 არ დაწყებული | Excel + migration 0018 + script |
+| 3 | France Import (Wave 2) | 🔴 არ დაწყებული | Excel + migration + script (JSON translations) |
 | 4 | Q5 — Resend DNS + `FROM_EMAIL=hello@grantkit.com` | 🔴 არ დაწყებული | DNS + `emailService.ts:69` |
 | 5 | Q2 — URL rename + 301 redirects | 🔴 არ დაწყებული | App.tsx routes + Express middleware |
 
@@ -19,42 +19,24 @@
 
 ---
 
-## 1. Phase 2 — Org-Centric Migration (EXECUTION-PLAN.md)
+## 1. Phase 2 — გადაწყვეტა: ARCHIVED, ერთი ნაბიჯი დარჩა
 
-**წყარო:** `.grantkit-redesign/EXECUTION-PLAN.md` — 7/7 გადაწყვეტილება დადასტურებულია მომხმარებლის მიერ.
+**კვლევის დასკვნა (2026-04-25):** Phase 2-ის სრული 5-PR sequence (EXECUTION-PLAN.md) **არ არის საჭირო**. user-facing problem-ს არ წყვეტს, რეალური რისკი (R2: production outage) აქვს.
 
-### რა შერეულია main-ში (✅)
+### რა გაკეთდა (✅, „phantom infrastructure")
+- PR#1 — `grants.orgId` NULLABLE column + FK + index (`drizzle/0017`)
+- PR#2 — backfill script (`scripts/backfill-grants-orgid.ts`)
+- 0 user-facing ცვლილება. frontend არცერთი კომპონენტი არ კითხულობს `grants.orgId`-ს.
 
-| PR | ფაქტი | მტკიცებულება |
-|---|---|---|
-| **PR#1** — `orgId` column + FK + index | ✅ schema-ში | `drizzle/schema.ts:99` (`grants.orgId nullable`), `drizzle/0017_add_orgid_to_grants.sql`, `scripts/apply-migration-0017.mjs` |
-| **PR#2** — backfill script | ✅ script main-ში | `scripts/backfill-grants-orgid.ts`, `pnpm backfill:orgid:dry` package.json-ში |
+### რა დარჩა (✅ მცირე, რეკომენდებული)
+**`DROP TABLE organization_translations`** — ცარიელი (0 row), მკვდარი (0 reader/writer ვერიფიცირებული codebase-ში). 1-ხაზიანი migration, ნული რისკი.
 
-⚠️ **გაუარკვეველი:** PR#2 backfill რეალურად **გაიშვა** Railway-ის ბაზაზე? STATE.md-ში 2026-04-20-ის შემდეგ ჩანაწერი არ არის. ცხრილში `SELECT COUNT(orgId) FROM grants` უნდა გადამოწმდეს.
+### რა გაუქმდა (❌ ცანცელ)
+- ~~PR#3 (NOT NULL + drop grants.organization/phone/email/lat/lng/address)~~ — 7 frontend კომპონენტი ეყრდნობა, server JOIN refactor საჭირო, არცერთ user bug-ს არ წყვეტს
+- ~~PR#4 (RENAME grants → programs)~~ — წმინდა cosmetic
+- ~~PR#5 (DELETE catalog.*)~~ — 4 page-ის refactor ნული user-სარგებლისთვის
 
-### რა აკლია (❌)
-
-#### PR#3 — NOT NULL + drop dup columns + drop org_translations
-**არცერთი ფაილი არ არსებობს:**
-- migration `0018_*.sql` — არა
-- `scripts/convert-orphan-grants-to-orgs.mjs` — არა
-- schema-ში ჯერ ისევ:
-  - `grants.organization`, `grants.phone`, `grants.email`, `grants.hqAddress` (დუბლიკატი)
-  - `grants.latitude`, `grants.longitude`, `grants.address` (Q7 — 558 დუბლიკატი)
-  - `organization_translations` ცხრილი (`schema.ts:283`, ცარიელი)
-- `grants.orgId` ჯერ ისევ `nullable` (`schema.ts:99`)
-
-**რისკი:** 🟠 ყველაზე აგრესიული PR. სტეიჯინგზე ტესტი + rollback-ი აუცილებელია.
-
-#### PR#4 — RENAME `grants` → `programs`
-- ცხრილი schema-ში ისევ `grants` ჰქვია
-- `grant_translations` → `program_translations` — არ შეცვლილა
-- VIEW (gradual migration) — არ შექმნილა
-
-#### PR#5 — DELETE `catalog.*` namespace + rewire
-- `server/routers.ts:321` — `catalog: router({ ... })` ისევ ცოცხალია
-- 9 catalog endpoint ისევ მოქმედი
-- frontend rewire (Home.tsx, Dashboard.tsx, EntityDetail.tsx) — არ შეცვლილა
+`grants.orgId` ცარიელ NULLABLE სვეტად რჩება — ცოცხალი outage-რისკი არ არის.
 
 ---
 
@@ -95,7 +77,7 @@
 | Import script | ❌ არ შექმნილა | `scripts/import-france-orgs.ts` |
 | UI (HousingCard, badges) + i18n | ❌ Wave 3 | depending on PR1.1+1.2 |
 
-⚠️ **კონფლიქტი Phase 2-თან:** France-ი იყენებს `organization_translations`-ს, რომელსაც PR#3 წაშლის. **რიგი:** ჯერ Phase 2-ის PR#3, მერე France (ან ცალკე გადაწყვეტა — JSON სვეტი organizations-ში).
+**Translation strategy:** Phase 2 ARCHIVED-ის შემდეგ თარგმანები JSON სვეტად ინახება `organizations.translations`-ში (`{en: {...}, fr: {...}}`). ცალკე `organization_translations` ცხრილი არ გვჭირდება — France-ის migration-ის pre-step-ად DROP TABLE იყოს.
 
 ---
 
@@ -145,7 +127,7 @@ client/src/App.tsx:69   <Route path="/organizations/:orgId" ...                �
 |---|---|---|
 | `MASTER-ROADMAP-2026-04-25.md` | ამბობს branch A (`claude/contact-enrichment-schema`, 24K ხაზი) და B (`feat/catalog-organizations-data-source`, 1.7K) main-ში არ შერეულა. სინამდვილეში **ორივე 0 ahead, 18-72 behind** — სრულად შერეულია/ჩამორჩა. | წაშლა ან განახლება Phase 2-ის რეალური მდგომარეობით |
 | `todo.md` | "Phase 1: Onboarding + Dashboard + Smart Search" `[ ]` ცარიელად — სინამდვილეში CLAUDE.md ყველაფერ ✅-ით აღნიშნავს. ყველა გრანტის ნომერი 3,650+ ცდება (PROJECT_MAP: 643). | წაშლა ან cyclic update |
-| `STATE.md` | ბოლო ცვლილება 2026-04-20 (Phase 8.5.A2 🟡 In progress); 5 დღე ჩუმად. Phase 2 / Wave 1 / France არ ფიგურირებს. | append: Phase 8.5.A2 დასრულდა / Phase 2 PR#1+#2 ship |
+| `STATE.md` | ბოლო ცვლილება 2026-04-20 (Phase 8.5.A2 🟡 In progress); 5 დღე ჩუმად. Phase 2 / Wave 1 / France არ ფიგურირებს. | append: Phase 8.5.A2 დასრულდა / Phase 2 ARCHIVED |
 | `DIAGNOSTIC-2026-04-23.md` | 2 დღით ძველი | OK (ისტორიული ჩანაწერი) |
 
 ---
@@ -153,42 +135,30 @@ client/src/App.tsx:69   <Route path="/organizations/:orgId" ...                �
 ## 7. რეკომენდებული თანმიმდევრობა
 
 ```
-დღე 1 — verify-and-update:
-  • Railway-ზე გადამოწმდე: SELECT COUNT(orgId IS NOT NULL) FROM grants → PR#2 backfill rate
-  • STATE.md + todo.md + MASTER-ROADMAP — სინქი რეალობასთან
-
-დღე 2-3 — Phase 2 დასრულება:
-  • PR#3 (NOT NULL + drop columns + drop org_translations) — 6 სთ
-  • migration 0018 Railway-ზე
-  • PR#4 (RENAME grants → programs) — 4 სთ + VIEW backward-compat
-  • PR#5 (DELETE catalog.*) — 4 სთ + rewire 4-5 frontend ფაილი
-
-დღე 4 — Contact Enrichment batch:
+დღე 1 — Contact Enrichment batch start:
   • cron / GitHub Action: 50 orgs/day
   • monitoring report ცხრილი
 
-დღე 5-7 — France:
+დღე 2-4 — France Import:
   • Excel upload data/-ში
-  • migration 0018b (post-Phase 2 rename)
+  • migration 0018: org extensions + organization_housing + DROP organization_translations
+  • organizations.translations JSON სვეტი
   • import-france-orgs.ts + dry-run + apply
-  • UI Wave 3 (HousingCard, badges, i18n)
+  • UI (HousingCard, badges, i18n 5 ენაში)
 
-დღე 4 (parallel) — Q5 + Q2:
-  • Resend DNS instructions → მომხმარებელი
-  • Express redirects + sitemap regen
+დღე 1-4 (parallel) — Q5 + Q2:
+  • Q5: Resend DNS instructions → მომხმარებელი → FROM_EMAIL=hello@grantkit.com
+  • Q2: Express 301 redirects + /organizations list route + sitemap regen
 ```
 
 ---
 
 ## 8. ბლოკერები + გადაწყვეტის საჭირო წერტილები
 
-1. **PR#3 აგრესიულია** — სტეიჯინგ DB-ზე ტესტი ან production backup სანამ აპლაიდი ექნება. (R2 EXECUTION-PLAN.md-დან.)
-2. **France vs Phase 2 ჩარჩო** — France-ის HANDOFF იყენებს `organization_translations`-ს რომელსაც PR#3 ხსნის. გადაწყვეტა საჭირო:
-   - **ვარიანტი A:** ჯერ Phase 2 PR#3, მერე France ცარიელი org_translations-ის ხელახლა შექმნით
-   - **ვარიანტი B:** ჯერ Phase 2 PR#3, France იყენებს `organizations.translations` JSON სვეტს
-3. **Backfill verification** — სანამ PR#3 NOT NULL დადგება, 100% backfill საჭიროა. 102 orphan-ი → ORG-9001..9102 (PR#3 step 1).
-4. **MASTER-ROADMAP-ი ცდება ფაქტებში** — მოწოდებული შემდგომი action-ები ნაწილობრივ უსარგებლოა, რადგან branches უკვე main-შია.
+1. **France schema strategy** — `organizations.translations` JSON column (Phase 2-ის გვერდის ავლა). HANDOFF brief-ი გადასაწერია ამ approach-ით.
+2. **`MASTER-ROADMAP` updated** — Phase 2 ARCHIVED-ი მონიშნულია; ძველი action-ები აქტიური აღარ არის.
+3. **Backfill verification (cosmetic)** — `grants.orgId` 535/637 row-ით ცარიელი NULLABLE-ად რჩება, არცერთ funcionality-ს არ აზიანებს.
 
 ---
 
-*ცოცხალი მიმართულება სამივე საფეხურზე ცხადია. რეკომენდაცია: ჯერ Phase 2 ბოლომდე (3 PR), მერე France (Wave 2), Contact Enrichment ცალკე background-ში.*
+*Phase 2 დახურულია. ცოცხალი 4 მიმართულება: Contact Enrichment, France Import, Q5 Resend DNS, Q2 URL redirects.*

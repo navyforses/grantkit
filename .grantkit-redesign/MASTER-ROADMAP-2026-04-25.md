@@ -31,12 +31,11 @@
 - Migration 0014 (widen country)
 - Verify scripts
 
-### C. Phase 2 / Wave 1 — დარჩენილი 3 PR (EXECUTION-PLAN.md)
-✅ PR#1 shipped (orgId column added)
-✅ PR#2 shipped (97.1% backfill)
-❌ **PR#3** — NOT NULL + drop dup columns + drop `organization_translations` (აგრესიული)
-❌ **PR#4** — RENAME `grants` → `programs`
-❌ **PR#5** — DELETE `catalog.*` namespace
+### C. Phase 2 / Wave 1 — 🗄 ARCHIVED (2026-04-25)
+PR#1 + PR#2 shipped (phantom infrastructure — 0 user-facing ცვლილება).
+PR#3, PR#4, PR#5 — **გაუქმდა.** კვლევის დასკვნა: სრული Phase 2 user-facing პრობლემას არ წყვეტს, R2 production-outage რისკი აქვს. დეტალები: `DIAGNOSTIC-2026-04-25.md`.
+
+ერთი ნაჭერი დარჩა cleanup-ისთვის: **`DROP TABLE organization_translations`** (ცარიელი, 0 reader/writer) — migration `0018` როცა საჭირო გახდება France Import-ის pre-step-ად.
 
 ### D. Contact Enrichment Phase B (PROJECT_MAP.md-ის "current phase")
 ✅ Schema shipped (PR #153, #155)
@@ -64,19 +63,9 @@ Migration 0021+ (0017–0020 დაცული)
 
 ---
 
-### ეტაპი 2 — Phase 2-ის დასრულება (3-4 დღე)
+### ეტაპი 2 — Phase 2 — 🗄 ARCHIVED (2026-04-25)
 
-**მიზანი:** EXECUTION-PLAN.md-ის Wave 1 დასასრულამდე.
-
-| ნაბიჯი | რა | ვინ | დრო |
-|---|---|---|---|
-| 2.1 | PR#3 — orphan grants → orgs, NOT NULL, DROP columns, DROP `organization_translations` | Claude Code | 6 სთ |
-| 2.2 | მე ვუშვებ Migration Railway-ზე | მე | 10 წთ |
-| 2.3 | PR#4 — RENAME grants → programs | Claude Code | 4 სთ |
-| 2.4 | PR#5 — DELETE catalog.* namespace + rewire | Claude Code | 4 სთ |
-| 2.5 | Production smoke test | შენ + მე | 30 წთ |
-
-⚠️ **PR#3 აგრესიულია** — წაშლის ცხრილს `organization_translations`. ეს ცხრილი ჯერ ცარიელია (არ არის რა დაიკარგოს), ამიტომ უპრობლემოა.
+PR#3-#5 გაუქმდა. დეტალები: `DIAGNOSTIC-2026-04-25.md`. დარჩენილი ერთადერთი მცირე cleanup — `DROP TABLE organization_translations` — გაკეთდება France Import-ის pre-step-ად, ცალკე ეტაპად არ ითვლება.
 
 ---
 
@@ -98,10 +87,7 @@ Migration 0021+ (0017–0020 დაცული)
 
 **მიზანი:** 624 ფრანგული ორგ. + 102 housing + i18n + UI.
 
-**Schema პოსტ-Phase 2:** ცხრილები გადარქმეული იქნება (`programs`, არა `grants`), `organization_translations` წაშლილი. ჩვენ თარგმანებს სხვა ფორმით უნდა დავუმატოთ:
-
-ვარიანტი 1 (recommended): JSON სვეტი `organizations.translations` ცხრილში — `{en: {...}, fr: {...}}`
-ვარიანტი 2: ხელახლა შევქმნათ `organization_translations`, დაცვით PR#3-ის DROP-ის შემდეგ
+**Schema:** Phase 2 ARCHIVED-ის მიუხედავად, თარგმანები JSON სვეტით — `organizations.translations` ცხრილში — `{en: {...}, fr: {...}}`. ცალკე `organization_translations` ცხრილი არ გვჭირდება (drop-ი France-ის pre-step-ად).
 
 | ნაბიჯი | რა | ვინ | დრო |
 |---|---|---|---|
@@ -118,43 +104,21 @@ Migration 0021+ (0017–0020 დაცული)
 
 ```
 დღე 1: [ეტაპი 1: branches cleanup] ████░░░░░░░░░░░░░░░░░
-დღე 2: [Phase 2: PR#3 ship]        ░░░░████░░░░░░░░░░░░░
-დღე 3: [Phase 2: PR#4 + PR#5]      ░░░░░░░░████░░░░░░░░░
-დღე 4: [Phase 2 wrap + smoke]      ░░░░░░░░░░░░██░░░░░░░
-დღე 5: [Contact Enrich script]     ░░░░░░░░░░░░░░██░░░░░
-დღე 5–6: [France Wave starts]      ░░░░░░░░░░░░░░░░██░░░  ← background contact enrichment-ი ცალკე
-დღე 6: [France import]             ░░░░░░░░░░░░░░░░░░██░
-დღე 7: [France UI + ფინალი]        ░░░░░░░░░░░░░░░░░░░██
+დღე 2-3: [Contact Enrich batch]    ░░░░████░░░░░░░░░░░░░
+დღე 4-6: [France import + UI]      ░░░░░░░░██████░░░░░░░  (DROP org_translations როგორც pre-step)
+დღე 5: [Q5 Resend DNS / Q2 redirects parallel]
 ```
 
-**ჯამი: ~7 დღე active work + 2 კვირა background contact enrichment.**
+**ჯამი: ~6 დღე active work + 2 კვირა background contact enrichment.**
 
 ---
 
-## 🚦 ახლა შენი 3 გადაწყვეტილება
+## 💡 რეკომენდაცია (განახლებული 2026-04-25)
 
-### გადაწყვეტა #1 — branches cleanup
-რომელი branch-ი ცოცხალი სჭირდება, რომელი მიატოვო?
-- A (`claude/contact-enrichment-schema`, 24K ხაზი) — ცოცხალი ნაკადი, აქ ვართ ახლა
-- B (`feat/catalog-organizations-data-source`, 1.7K ხაზი) — UI რედიზაინი
+Phase 2 ARCHIVED-ის შემდეგ ცოცხალი 4 მიმართულება:
+1. **Contact Enrichment Phase B** — script მზადაა, batch უნდა გაიშვას
+2. **France Import** — JSON translations-ით, Phase 2-ის გარეშე
+3. **Q5 — Resend DNS** + branded `FROM_EMAIL`
+4. **Q2 — URL redirects** (SEO)
 
-### გადაწყვეტა #2 — France Import-ის დრო
-- **წინ Phase 2** (recommended): ჯერ Phase 2 დაასრულე, მერე France — სუფთა, კონფლიქტის გარეშე
-- **პარალელურად**: France-ი ცალკე branch-ზე, მაგრამ მერჯისას რთული კონფლიქტი
-
-### გადაწყვეტა #3 — Phase 2-ის PR#3 (აგრესიული)
-PR#3 წაშლის `organization_translations`-ს. ცხრილი ცარიელია — დაკარგვა არაფერი არ არის. გავუშვათ?
-
----
-
-## 💡 ჩემი დილეტანტური რეკომენდაცია
-
-ვიყავი არასწორად — ვფიქრობდი რომ პროექტი მარტივ მდგომარეობაშია. რეალურად 5 ცოცხალი ნაკადია. რეკომენდაცია:
-
-1. **დღეს:** ეტაპი 1 (branches cleanup) — Claude Code IDE-ში გადახედე რა არის გასაჭრელი
-2. **დღე 2-4:** ეტაპი 2 (Phase 2 დასრულება) — სუფთა შედეგი
-3. **დღე 5-7:** ეტაპი 4 (France) — ჩვენი მიზანი
-
-Contact Enrichment (ეტაპი 3) — background, არ ბლოკავს.
-
-რომელი გადაწყვეტილებიდან დავიწყოთ?
+რომელი მიმართულებიდან დავიწყოთ?
