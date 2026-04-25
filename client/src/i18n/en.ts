@@ -1007,10 +1007,6 @@ export const en: Translations = {
   },
 
   auth: {
-    tabEmail: "Email & password",
-    tabOAuth: "Single sign-on",
-    oauthHint: "Sign in with your Manus account",
-    oauthCta: "Continue with Manus",
     emailLabel: "Email",
     emailPlaceholder: "you@example.com",
     passwordLabel: "Password",

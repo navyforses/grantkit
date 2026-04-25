@@ -156,7 +156,6 @@ export const appRouter = router({
 
         const sessionToken = await sdk.signSession({
           openId: user.openId,
-          appId: ENV.appId,
           name: user.name ?? user.email ?? "",
         });
         const cookieOptions = getSessionCookieOptions(ctx.req);

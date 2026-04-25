@@ -1007,10 +1007,6 @@ export const ka: Translations = {
   },
 
   auth: {
-    tabEmail: "ელფოსტა და პაროლი",
-    tabOAuth: "ერთიანი ავტორიზაცია",
-    oauthHint: "გააგრძელეთ თქვენი Manus ანგარიშით",
-    oauthCta: "გაგრძელება Manus-ით",
     emailLabel: "ელფოსტა",
     emailPlaceholder: "you@example.com",
     passwordLabel: "პაროლი",

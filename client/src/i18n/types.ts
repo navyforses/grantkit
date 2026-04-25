@@ -1198,10 +1198,6 @@ export interface Translations {
 
   // Auth (Phase 0 — email/password)
   auth: {
-    tabEmail: string;
-    tabOAuth: string;
-    oauthHint: string;
-    oauthCta: string;
 
     // Shared
     emailLabel: string;

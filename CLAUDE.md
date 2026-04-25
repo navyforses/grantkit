@@ -99,7 +99,7 @@ Drizzle გენერირებს SQL-ს schema.ts-ის კოლონ�
 | UI | Radix UI, Framer Motion |
 | Backend | Node.js, Express, tRPC 11 |
 | Database | MySQL + Drizzle ORM |
-| Auth | OpenID / JWT (jose) — Manus OAuth სერვერი |
+| Auth | Email/password — JWT cookie (jose) |
 | Payments | Paddle |
 | Email | Resend |
 | Package Manager | **pnpm** (არ გამოიყენო npm ან yarn) |
@@ -122,8 +122,7 @@ grantkit/
 │   ├── _core/
 │   │   ├── index.ts    # Express server entry point
 │   │   ├── trpc.ts     # publicProcedure, protectedProcedure, adminProcedure
-│   │   ├── env.ts      # ENV object (ყველა env var აქედან)
-│   │   └── oauth.ts    # OAuth routes
+│   │   └── env.ts      # ENV object (ყველა env var აქედან)
 │   ├── routers.ts      # ყველა tRPC endpoint (~960 ხაზი)
 │   ├── db.ts           # Drizzle ORM queries
 │   ├── externalGrants.ts  # GrantedAI API (searchExternalGrants, getExternalGrantDetail)
@@ -188,7 +187,7 @@ pnpm db:push          # schema generate + migrate
 | GrantedAI | `BUILT_IN_FORGE_API_URL` + `BUILT_IN_FORGE_API_KEY` | 84,000+ grant ძიება (`externalGrants.ts`) |
 | Paddle | `PADDLE_API_KEY` + `PADDLE_WEBHOOK_SECRET` | Subscription payments |
 | Resend | `RESEND_API_KEY` | Email notifications |
-| Manus OAuth | `OAUTH_SERVER_URL` + `OWNER_OPEN_ID` + `JWT_SECRET` | Auth |
+| Auth | `JWT_SECRET` | Email/password login → JWT cookie |
 
 **GrantedAI API** (`server/externalGrants.ts`):
 - `searchExternalGrants()` → `POST /v1/search_grants`
@@ -245,9 +244,6 @@ DATABASE_URL          ← Railway-ი ავტომატურად ამ�
 NODE_ENV=production
 PORT=8080
 JWT_SECRET
-OAUTH_SERVER_URL
-OWNER_OPEN_ID
-VITE_APP_ID
 BUILT_IN_FORGE_API_URL
 BUILT_IN_FORGE_API_KEY
 PADDLE_API_KEY
