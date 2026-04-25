@@ -8,17 +8,22 @@
  *   Block 1: DROP TABLE organization_translations (dead, 0 rows).
  *   Block 2: ALTER organizations — translations JSON + 9 France columns.
  *   Block 3: CREATE TABLE organization_housing.
+ *   Block 4: Record migration in __drizzle_migrations (so pnpm db:push
+ *            does not retry it).
  *
  * After running, verify with:
  *   DESCRIBE organizations;          -- should show translations + 9 new cols
  *   SHOW TABLES LIKE 'organization%'; -- branches + housing, no _translations
  *   SELECT COUNT(*) FROM organization_housing;  -- 0 (populated by import script)
+ *   SELECT id, hash, created_at FROM __drizzle_migrations ORDER BY id DESC LIMIT 3;
  *
  * Usage:
  *   DATABASE_URL=mysql://… node scripts/apply-migration-0018.mjs
  *
  * Idempotent — re-running on a DB that already has the changes logs the
- * duplicate-column / table-not-found errors but keeps going.
+ * duplicate-column / table-not-found errors but keeps going. The
+ * __drizzle_migrations row is inserted only if its hash is not already
+ * recorded.
  */
 
 import { createHash } from "crypto";
@@ -96,6 +101,42 @@ try {
       ORDER BY ORDINAL_POSITION`
   );
   console.table(housingCols);
+
+  // Block 4 — record this migration in __drizzle_migrations so a later
+  // `pnpm db:push` (drizzle-kit migrate) does not try to re-apply the same
+  // ALTER and crash on duplicate-column. The table is auto-created if it
+  // does not exist (matches drizzle-kit MySQL migrator's CREATE shape).
+  console.log(`\n[apply] recording in __drizzle_migrations:`);
+  await conn.query(
+    `CREATE TABLE IF NOT EXISTS __drizzle_migrations (
+       id SERIAL PRIMARY KEY,
+       hash TEXT NOT NULL,
+       created_at BIGINT
+     )`
+  );
+  const [existingRows] = await conn.query(
+    `SELECT id, created_at FROM __drizzle_migrations WHERE hash = ? LIMIT 1`,
+    [hash]
+  );
+  if (existingRows.length > 0) {
+    console.log(`        ✓ already recorded (id=${existingRows[0].id}, created_at=${existingRows[0].created_at})`);
+  } else {
+    const createdAt = Date.now();
+    await conn.query(
+      `INSERT INTO __drizzle_migrations (hash, created_at) VALUES (?, ?)`,
+      [hash, createdAt]
+    );
+    console.log(`        ✓ inserted (hash=${hash.slice(0, 16)}…, created_at=${createdAt})`);
+  }
+
+  console.log(`[apply] last 3 __drizzle_migrations rows:`);
+  const [tailRows] = await conn.query(
+    `SELECT id, LEFT(hash, 16) AS hash_prefix, created_at
+       FROM __drizzle_migrations
+      ORDER BY id DESC
+      LIMIT 3`
+  );
+  console.table(tailRows);
 
   console.log(`\n[apply] done.`);
 } finally {
