@@ -1,4 +1,4 @@
-import { boolean, decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar, uniqueIndex, index } from "drizzle-orm/mysql-core";
+import { boolean, decimal, int, json, mysqlEnum, mysqlTable, text, timestamp, varchar, uniqueIndex, index } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -256,6 +256,24 @@ export const organizations = mysqlTable("organizations", {
   contactEnrichmentStatus: mysqlEnum("contactEnrichmentStatus",
     ["pending", "enriched", "no_data", "failed"]).default("pending").notNull(),
 
+  // ── France Import (Wave 2 — migration 0018) ──────────────────────────
+  // Per-language prose stored as JSON: {en:{name,description,services,target},
+  // fr:{...}, es:{...}, ru:{...}, ka:{...}}. Replaces the dropped
+  // organization_translations table. Cells whose source value is Georgian on
+  // a non-KA sheet stay NULL (handled by the import script's gap policy).
+  translations: json("translations"),
+
+  // France-specific descriptive fields (filled from the 5-language Excel).
+  abbreviation: varchar("abbreviation", { length: 32 }),
+  organizationType: mysqlEnum("organizationType", ["NGO", "association", "government", "private"]),
+  servicesOffered: text("servicesOffered"),
+  targetAudience: text("targetAudience"),
+  emigrationPurpose: varchar("emigrationPurpose", { length: 64 }),  // CSV: "all,study,medical,work"
+  foundedYear: int("foundedYear"),
+  legalStatus: varchar("legalStatus", { length: 255 }),
+  mainCategory: varchar("mainCategory", { length: 64 }),
+  isNational: boolean("isNational").default(false).notNull(),
+
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -266,36 +284,40 @@ export const organizations = mysqlTable("organizations", {
   index("orgs_service_cost_idx").on(table.serviceCost),
   index("orgs_contact_batch_idx").on(table.contactEnrichmentBatch),
   index("orgs_contact_status_idx").on(table.contactEnrichmentStatus),
+  index("orgs_main_category_idx").on(table.mainCategory),
+  index("orgs_is_national_idx").on(table.isNational),
+  index("orgs_org_type_idx").on(table.organizationType),
 ]);
 
 export type Organization = typeof organizations.$inferSelect;
 export type InsertOrganization = typeof organizations.$inferInsert;
 
 /**
- * Organization translations — per-language overrides for free-text fields.
- * Structured enum values (cost, status, appointment) are translated client-side
- * via i18n keys; this table only stores prose (name / description /
- * missionStatement). Mirrors the grant_translations pattern.
- *
- * Populated by a future translation pipeline (AI auto-translate with admin
- * override); unique (orgId, language) enforces one row per language.
+ * Organization housing — 102 housing-specific records (shelters, temporary
+ * stays, social housing) attached to organizations whose Georgian-sheet
+ * `housingType` cell is non-NULL. One row per organization.
  */
-export const organizationTranslations = mysqlTable("organization_translations", {
+export const organizationHousing = mysqlTable("organization_housing", {
   id: int("id").autoincrement().primaryKey(),
   orgId: varchar("orgId", { length: 16 }).notNull(),              // FK → organizations.orgId
-  language: varchar("language", { length: 10 }).notNull(),
-  name: text("name"),
+  housingType: mysqlEnum("housingType",
+    ["parents_house", "shelter", "social", "temporary", "hotel", "apartment", "other"]),
   description: text("description"),
-  missionStatement: text("missionStatement"),
-  translatedAt: timestamp("translatedAt").defaultNow().notNull(),
-  source: varchar("source", { length: 32 }),                      // "ai" | "manual" | "imported"
+  registrationProcess: text("registrationProcess"),
+  costDetails: text("costDetails"),
+  maxStayDuration: varchar("maxStayDuration", { length: 64 }),
+  capacity: varchar("capacity", { length: 64 }),
+  childrenFriendly: mysqlEnum("childrenFriendly", ["yes", "no", "unknown"]).default("unknown"),
+  disabledAccessible: mysqlEnum("disabledAccessible", ["yes", "no", "unknown"]).default("unknown"),
+  relevanceNotes: text("relevanceNotes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
 }, (table) => [
-  uniqueIndex("org_lang_idx").on(table.orgId, table.language),
-  index("org_translations_lang_idx").on(table.language),
+  uniqueIndex("org_housing_idx").on(table.orgId),
+  index("housing_type_idx").on(table.housingType),
 ]);
 
-export type OrganizationTranslation = typeof organizationTranslations.$inferSelect;
-export type InsertOrganizationTranslation = typeof organizationTranslations.$inferInsert;
+export type OrganizationHousing = typeof organizationHousing.$inferSelect;
+export type InsertOrganizationHousing = typeof organizationHousing.$inferInsert;
 
 /**
  * Organization branches — 1 HQ row + 0..N Branch rows per organization.
