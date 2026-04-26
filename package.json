@@ -31,6 +31,7 @@
     "geocode:branches": "tsx scripts/geocode-branches.ts",
     "geocode:branches:dry": "tsx scripts/geocode-branches.ts --dry-run",
     "geocode:branches:fr": "tsx scripts/geocode-branches.ts --country=FR --apply",
+    "audit:branches:coords": "tsx scripts/audit-branches-coords.ts",
     "normalize:countries:dry": "tsx scripts/normalize-country-codes.ts --dry-run",
     "normalize:countries": "tsx scripts/normalize-country-codes.ts",
     "sitemap:generate": "tsx scripts/generate-sitemap.ts",
