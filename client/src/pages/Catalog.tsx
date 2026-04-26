@@ -551,7 +551,17 @@ export default function Catalog() {
   }, []);
 
   // Fly the camera when the user picks a region / country / state / city.
-  useGoogleMapFlyTo(mapInstance, mapRegionCode, mapCountryCode, mapStateCode, mapCityName);
+  // Pass `mapItems` so the hook can fitBounds the actually-filtered markers
+  // (capped per-filter) instead of falling back to a fixed COUNTRY/STATE/CITY
+  // zoom that often left the map looser than the data warranted.
+  useGoogleMapFlyTo(
+    mapInstance,
+    mapRegionCode,
+    mapCountryCode,
+    mapStateCode,
+    mapCityName,
+    mapItems,
+  );
 
   // Phase 5 — the currently-selected grant that powers GrantDetailPanel.
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);

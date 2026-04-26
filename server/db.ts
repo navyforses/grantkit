@@ -1843,6 +1843,11 @@ export async function getOrganizationMapPoints(options: {
   const branchConditions: any[] = [
     isNotNull(organizationBranches.latitude),
     isNotNull(organizationBranches.longitude),
+    // Reject "null island" rows (lat=0 AND lng=0). MySQL stores DECIMAL as
+    // strings, so a single point off the coast of Africa can otherwise drag
+    // the SuperCluster centroid hundreds of km away from the real cluster
+    // (e.g. France's 438 markers visually drifting over the UK at world zoom).
+    sql`NOT (${organizationBranches.latitude} = 0 AND ${organizationBranches.longitude} = 0)`,
   ];
   if (bounds) {
     branchConditions.push(
