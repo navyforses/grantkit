@@ -1094,10 +1094,12 @@ export const ru: Translations = {
     state: {
       label: "Штат",
       all: "Все штаты",
+      disabledHint: "Сначала выберите страну",
     },
     city: {
       label: "Город",
       all: "Все города",
+      disabledHint: "Сначала выберите страну",
     },
     category: {
       label: "Категория",

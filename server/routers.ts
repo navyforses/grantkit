@@ -1441,11 +1441,19 @@ export const appRouter = router({
         return getOrgDistinctCountries(input?.region || undefined);
       }),
 
-    /** Cascading city dropdown — requires a state. */
+    /** Cascading city dropdown — narrowed by country and/or state.
+     *  Both inputs are optional; an empty input returns []. State takes
+     *  precedence (US flow); country alone is the EU/non-US flow. */
     cities: publicProcedure
-      .input(z.object({ state: z.string() }))
+      .input(z.object({
+        country: z.string().optional(),
+        state: z.string().optional(),
+      }).optional())
       .query(async ({ input }) => {
-        return getOrgDistinctCities(input.state);
+        return getOrgDistinctCities({
+          country: input?.country || undefined,
+          state: input?.state || undefined,
+        });
       }),
 
     /** Region buckets (US / EU / GB) with org totals. */
