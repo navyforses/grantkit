@@ -25,26 +25,13 @@
 
 import "dotenv/config";
 import mysql from "mysql2/promise";
+import { COUNTRY_BBOX } from "./_country-bbox";
 
 const url = process.env.DATABASE_URL;
 if (!url) {
   console.error("DATABASE_URL not set");
   process.exit(1);
 }
-
-// Loose lat/lng bounding boxes for the countries we care about.
-// Wide enough to allow legitimate suburb/branch locations; tight enough
-// to flag a row that's clearly in another country.
-const COUNTRY_BBOX: Record<string, { latMin: number; latMax: number; lngMin: number; lngMax: number }> = {
-  FR: { latMin: 41.0, latMax: 51.5, lngMin: -5.5, lngMax: 9.8 },
-  GB: { latMin: 49.5, latMax: 61.0, lngMin: -8.7, lngMax: 2.0 },
-  US: { latMin: 24.0, latMax: 49.5, lngMin: -125.0, lngMax: -66.5 },
-  CA: { latMin: 41.5, latMax: 70.0, lngMin: -141.5, lngMax: -52.0 },
-  DE: { latMin: 47.2, latMax: 55.1, lngMin: 5.9, lngMax: 15.1 },
-  ES: { latMin: 35.9, latMax: 43.9, lngMin: -9.4, lngMax: 4.4 },
-  IT: { latMin: 35.5, latMax: 47.1, lngMin: 6.6, lngMax: 18.6 },
-  GE: { latMin: 41.0, latMax: 43.6, lngMin: 40.0, lngMax: 46.7 },
-};
 
 const conn = await mysql.createConnection(url);
 

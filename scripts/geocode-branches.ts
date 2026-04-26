@@ -54,6 +54,7 @@ import "dotenv/config";
 import mysql from "mysql2/promise";
 import fs from "fs";
 import path from "path";
+import { isInsideCountryBox } from "./_country-bbox";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -266,6 +267,13 @@ function isValidResult(result: PlaceResult, expectedCountry: string): { ok: true
   const expected = expectedCountry?.trim().toUpperCase();
   if (expected && expected.length === 2 && result.countryCode && result.countryCode !== expected) {
     return { ok: false, reason: `country mismatch (got ${result.countryCode}, expected ${expected})` };
+  }
+  // Defensive bbox check — Places sometimes omits the country addressComponent
+  // (then countryCode = null and the check above passes). If the lat/lng falls
+  // outside the country's bounding box, reject so we don't seed the cluster
+  // centroid drift bug. Unknown country codes are accepted (no box → no veto).
+  if (expected && expected.length === 2 && !isInsideCountryBox(expected, result.lat, result.lng)) {
+    return { ok: false, reason: `lat/lng outside ${expected} bbox (got ${result.lat.toFixed(3)}, ${result.lng.toFixed(3)})` };
   }
   return { ok: true };
 }
