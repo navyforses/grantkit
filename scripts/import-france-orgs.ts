@@ -708,6 +708,364 @@ export function buildOrgPayload(merged: MergedRow): OrgPayload {
   };
 }
 
+// ─── DB enum normalizers ──────────────────────────────────────────────────
+
+export type OrganizationType = "NGO" | "association" | "government" | "private";
+
+/** Pass-through if the raw text matches the schema enum exactly (case-insensitive); else null. */
+export function normalizeOrganizationType(raw: string | null): OrganizationType | null {
+  if (!raw) return null;
+  const lower = raw.trim().toLowerCase();
+  if (lower === "ngo") return "NGO";
+  if (lower === "association") return "association";
+  if (lower === "government") return "government";
+  if (lower === "private") return "private";
+  return null;
+}
+
+export type HousingType =
+  | "parents_house"
+  | "shelter"
+  | "social"
+  | "temporary"
+  | "hotel"
+  | "apartment"
+  | "other";
+
+const HOUSING_TYPE_VALUES: readonly HousingType[] = [
+  "parents_house",
+  "shelter",
+  "social",
+  "temporary",
+  "hotel",
+  "apartment",
+  "other",
+];
+
+export function normalizeHousingType(raw: string | null): HousingType | null {
+  if (!raw) return null;
+  const lower = raw.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  return (HOUSING_TYPE_VALUES as readonly string[]).includes(lower)
+    ? (lower as HousingType)
+    : null;
+}
+
+export type YesNoUnknown = "yes" | "no" | "unknown";
+
+/** Map free-form yes/no text (incl. Georgian and French variants) → enum. */
+export function parseYesNoUnknown(raw: string | null): YesNoUnknown {
+  if (!raw) return "unknown";
+  const lower = raw.trim().toLowerCase();
+  if (["yes", "true", "1", "y", "კი", "oui"].includes(lower)) return "yes";
+  if (["no", "false", "0", "n", "არა", "non"].includes(lower)) return "no";
+  return "unknown";
+}
+
+// ─── Org ID generator (loaded once, increment in-memory) ──────────────────
+
+export class OrgIdGenerator {
+  private next: number;
+  constructor(start: number) {
+    this.next = start;
+  }
+  nextId(): string {
+    const id = `ORG-${String(this.next).padStart(4, "0")}`;
+    this.next += 1;
+    return id;
+  }
+  peek(): number {
+    return this.next;
+  }
+}
+
+export async function loadOrgIdGenerator(
+  conn: mysql.Connection
+): Promise<OrgIdGenerator> {
+  const [rows] = (await conn.query(
+    `SELECT MAX(CAST(SUBSTRING(orgId, 5) AS UNSIGNED)) AS maxN
+       FROM organizations
+      WHERE orgId REGEXP '^ORG-[0-9]+$'`
+  )) as [Array<{ maxN: number | null }>, unknown];
+  const maxN = rows[0]?.maxN ?? 0;
+  return new OrgIdGenerator(Number(maxN) + 1);
+}
+
+// ─── 3-phase de-dup matcher (PLAN §4) ─────────────────────────────────────
+
+export interface MatchResult {
+  orgId: string;
+  phase: "name" | "domain" | "phone";
+}
+
+/**
+ * Find an existing organization that the Excel row should UPDATE rather than
+ * INSERT. Three phases tried in order; first hit wins.
+ *
+ *   Phase 1: LOWER(TRIM(name)) = ?  AND country = 'FR'
+ *   Phase 2: extractDomain(website) appears in any organization's website
+ *   Phase 3: normalizePhone(phone) = normalizePhone(organizations.phone)
+ *
+ * Returns null if none of the three matches.
+ */
+export async function findExistingOrg(
+  conn: mysql.Connection,
+  payload: OrgPayload
+): Promise<MatchResult | null> {
+  // Phase 1 — name + country
+  const nameKey = payload.name.toLowerCase().trim();
+  if (nameKey) {
+    const [rows] = (await conn.query(
+      `SELECT orgId FROM organizations
+        WHERE LOWER(TRIM(name)) = ? AND country = 'FR'
+        LIMIT 1`,
+      [nameKey]
+    )) as [Array<{ orgId: string }>, unknown];
+    if (rows[0]) return { orgId: rows[0].orgId, phase: "name" };
+  }
+
+  // Phase 2 — website domain (substring match)
+  const domain = extractDomain(payload.website);
+  if (domain) {
+    const [rows] = (await conn.query(
+      `SELECT orgId FROM organizations
+        WHERE LOWER(website) LIKE CONCAT('%', ?, '%')
+        LIMIT 1`,
+      [domain]
+    )) as [Array<{ orgId: string }>, unknown];
+    if (rows[0]) return { orgId: rows[0].orgId, phase: "domain" };
+  }
+
+  // Phase 3 — phone (normalize both sides for the comparison)
+  const phone = normalizePhone(payload.phone);
+  if (phone) {
+    // Pull candidates by country=FR to keep the table scan bounded, then
+    // compare normalized values in JS — phone column has unpredictable
+    // formatting so we can't safely do a SQL-side normalize.
+    const [rows] = (await conn.query(
+      `SELECT orgId, phone FROM organizations
+        WHERE country = 'FR' AND phone IS NOT NULL`
+    )) as [Array<{ orgId: string; phone: string | null }>, unknown];
+    for (const row of rows) {
+      if (normalizePhone(row.phone) === phone) {
+        return { orgId: row.orgId, phase: "phone" };
+      }
+    }
+  }
+
+  return null;
+}
+
+// ─── UPSERT operations ────────────────────────────────────────────────────
+
+/**
+ * INSERT a new organization row. Caller guarantees orgId is unique (came
+ * from OrgIdGenerator). Sets contactEnrichmentStatus='pending' so the
+ * existing Phase B scraper picks the row up later.
+ */
+export async function insertOrganization(
+  conn: mysql.Connection,
+  orgId: string,
+  payload: OrgPayload
+): Promise<void> {
+  const orgType = normalizeOrganizationType(payload.organizationType);
+  const translationsJson =
+    Object.keys(payload.translations).length > 0
+      ? JSON.stringify(payload.translations)
+      : null;
+
+  await conn.query(
+    `INSERT INTO organizations (
+       orgId, name, abbreviation, organizationType, description, country,
+       city, hqAddress, website, phone, email, servicesOffered, targetAudience,
+       emigrationPurpose, foundedYear, legalStatus, mainCategory, serviceArea,
+       serviceCost, isNational, orgLanguages, categories, translations,
+       branchesCount, programsCount, isActive
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, 1)`,
+    [
+      orgId,
+      payload.name,
+      payload.abbreviation,
+      orgType,
+      payload.description,
+      payload.country,
+      payload.city,
+      payload.hqAddress,
+      payload.website,
+      payload.phone,
+      payload.email,
+      payload.servicesOffered,
+      payload.targetAudience,
+      payload.emigrationPurpose,
+      payload.foundedYear,
+      payload.legalStatus,
+      payload.mainCategory,
+      payload.serviceArea,
+      payload.serviceCost,
+      payload.isNational ? 1 : 0,
+      payload.languages,
+      payload.categories,
+      translationsJson,
+    ]
+  );
+}
+
+/**
+ * UPDATE an existing organization with NEW-overrides-OLD policy: COALESCE
+ * keeps the existing DB value when the Excel cell is null, overwrites
+ * otherwise. Enums (serviceCost, isNational) always overwrite — they're
+ * never null in the payload.
+ *
+ * `name` always overwrites — duplicate-name rows by definition have the
+ * same name, so this is a no-op rather than a destructive change.
+ */
+export async function updateOrganization(
+  conn: mysql.Connection,
+  orgId: string,
+  payload: OrgPayload
+): Promise<void> {
+  const orgType = normalizeOrganizationType(payload.organizationType);
+  const translationsJson =
+    Object.keys(payload.translations).length > 0
+      ? JSON.stringify(payload.translations)
+      : null;
+
+  await conn.query(
+    `UPDATE organizations
+        SET name              = ?,
+            abbreviation      = COALESCE(?, abbreviation),
+            organizationType  = COALESCE(?, organizationType),
+            description       = COALESCE(?, description),
+            city              = COALESCE(?, city),
+            hqAddress         = COALESCE(?, hqAddress),
+            website           = COALESCE(?, website),
+            phone             = COALESCE(?, phone),
+            email             = COALESCE(?, email),
+            servicesOffered   = COALESCE(?, servicesOffered),
+            targetAudience    = COALESCE(?, targetAudience),
+            emigrationPurpose = COALESCE(?, emigrationPurpose),
+            foundedYear       = COALESCE(?, foundedYear),
+            legalStatus       = COALESCE(?, legalStatus),
+            mainCategory      = COALESCE(?, mainCategory),
+            serviceArea       = COALESCE(?, serviceArea),
+            serviceCost       = ?,
+            isNational        = ?,
+            orgLanguages      = COALESCE(?, orgLanguages),
+            categories        = COALESCE(?, categories),
+            translations      = COALESCE(?, translations)
+      WHERE orgId = ?`,
+    [
+      payload.name,
+      payload.abbreviation,
+      orgType,
+      payload.description,
+      payload.city,
+      payload.hqAddress,
+      payload.website,
+      payload.phone,
+      payload.email,
+      payload.servicesOffered,
+      payload.targetAudience,
+      payload.emigrationPurpose,
+      payload.foundedYear,
+      payload.legalStatus,
+      payload.mainCategory,
+      payload.serviceArea,
+      payload.serviceCost,
+      payload.isNational ? 1 : 0,
+      payload.languages,
+      payload.categories,
+      translationsJson,
+      orgId,
+    ]
+  );
+}
+
+/**
+ * UPSERT housing record for the org. Skips when housingType is missing or
+ * not in the schema enum (raw text outside the 7 values → null → skip).
+ *
+ * UNIQUE(orgId) on the table means a re-run updates the same row.
+ */
+export async function upsertHousing(
+  conn: mysql.Connection,
+  orgId: string,
+  base: RawRow
+): Promise<boolean> {
+  const housingType = normalizeHousingType(base.housingType);
+  if (!housingType) return false;
+
+  const childrenFriendly = parseYesNoUnknown(base.childrenFriendly);
+  const disabledAccessible = parseYesNoUnknown(base.disabledAccessible);
+
+  await conn.query(
+    `INSERT INTO organization_housing (
+       orgId, housingType, description, registrationProcess, costDetails,
+       maxStayDuration, capacity, childrenFriendly, disabledAccessible,
+       relevanceNotes
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE
+       housingType         = VALUES(housingType),
+       description         = COALESCE(VALUES(description), description),
+       registrationProcess = COALESCE(VALUES(registrationProcess), registrationProcess),
+       costDetails         = COALESCE(VALUES(costDetails), costDetails),
+       maxStayDuration     = COALESCE(VALUES(maxStayDuration), maxStayDuration),
+       capacity            = COALESCE(VALUES(capacity), capacity),
+       childrenFriendly    = VALUES(childrenFriendly),
+       disabledAccessible  = VALUES(disabledAccessible),
+       relevanceNotes      = COALESCE(VALUES(relevanceNotes), relevanceNotes)`,
+    [
+      orgId,
+      housingType,
+      base.housingDescription,
+      base.registrationProcess,
+      base.costDetails,
+      base.maxStayDuration,
+      base.capacity,
+      childrenFriendly,
+      disabledAccessible,
+      base.relevanceNotes,
+    ]
+  );
+  return true;
+}
+
+/**
+ * UPSERT a single HQ branch per org. branchId follows the existing
+ * convention `<orgId>-B01`. `notes` stores the import batch tag for
+ * traceability since organizations table has no batch column yet.
+ */
+export async function upsertHqBranch(
+  conn: mysql.Connection,
+  orgId: string,
+  payload: OrgPayload,
+  batchId: string
+): Promise<void> {
+  const branchId = `${orgId}-B01`;
+  const notes = `France import ${batchId}`;
+
+  await conn.query(
+    `INSERT INTO organization_branches (
+       branchId, orgId, branchType, country, city, address,
+       phone, email, source, notes
+     ) VALUES (?, ?, 'HQ', 'FR', ?, ?, ?, ?, 'France Excel import', ?)
+     ON DUPLICATE KEY UPDATE
+       city     = COALESCE(VALUES(city), city),
+       address  = COALESCE(VALUES(address), address),
+       phone    = COALESCE(VALUES(phone), phone),
+       email    = COALESCE(VALUES(email), email),
+       notes    = VALUES(notes)`,
+    [
+      branchId,
+      orgId,
+      payload.city,
+      payload.hqAddress,
+      payload.phone,
+      payload.email,
+      notes,
+    ]
+  );
+}
+
 // ─── Main (placeholder for Chunk 1) ───────────────────────────────────────
 // The full pipeline (parse → merge → de-dup → upsert/report) is implemented
 // in Chunks 2–5. This entry point currently validates flags and confirms the
