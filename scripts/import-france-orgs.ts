@@ -1066,21 +1066,85 @@ export async function upsertHqBranch(
   );
 }
 
-// ─── Main (placeholder for Chunk 1) ───────────────────────────────────────
-// The full pipeline (parse → merge → de-dup → upsert/report) is implemented
-// in Chunks 2–5. This entry point currently validates flags and confirms the
-// Excel file is reachable + all 5 sheets are present.
+// ─── Per-row processing ───────────────────────────────────────────────────
 
-async function main(): Promise<void> {
-  const flags = parseFlags();
-  console.log(
-    `[france-import] mode=${flags.apply ? "APPLY" : "DRY-RUN"}  batch=${flags.batchId}  ` +
-      `limit=${flags.limit ?? "all"}  file=${flags.file}`
-  );
+export interface RowOutcome {
+  rowIndex: number;
+  orgId: string;
+  action: "matched" | "new";
+  matchPhase: "name" | "domain" | "phone" | null;
+  housingWritten: boolean;
+  isNational: boolean;
+  costEnum: ServiceCost;
+}
 
+/**
+ * Process a single merged row: build payload, de-dup, INSERT or UPDATE,
+ * write housing + HQ branch. In dry-run mode, only de-dup runs (read-only)
+ * and the outcome is computed without DB writes.
+ */
+export async function processRow(
+  conn: mysql.Connection,
+  generator: OrgIdGenerator,
+  merged: MergedRow,
+  flags: Flags
+): Promise<RowOutcome> {
+  const payload = buildOrgPayload(merged);
+  const match = await findExistingOrg(conn, payload);
+
+  let orgId: string;
+  let action: "matched" | "new";
+  if (match) {
+    orgId = match.orgId;
+    action = "matched";
+  } else {
+    orgId = generator.nextId();
+    action = "new";
+  }
+
+  let housingWritten = false;
+  if (flags.apply) {
+    if (action === "matched") {
+      await updateOrganization(conn, orgId, payload);
+    } else {
+      await insertOrganization(conn, orgId, payload);
+    }
+    housingWritten = await upsertHousing(conn, orgId, merged.base);
+    await upsertHqBranch(conn, orgId, payload, flags.batchId);
+  } else {
+    // Dry-run: still report whether housing WOULD be written.
+    housingWritten = normalizeHousingType(merged.base.housingType) !== null;
+  }
+
+  return {
+    rowIndex: merged.rowIndex,
+    orgId,
+    action,
+    matchPhase: match?.phase ?? null,
+    housingWritten,
+    isNational: payload.isNational,
+    costEnum: payload.serviceCost,
+  };
+}
+
+// ─── Pipeline orchestrator ────────────────────────────────────────────────
+
+export async function runImport(flags: Flags): Promise<Stats> {
+  const stats: Stats = {
+    rowsProcessed: 0,
+    matchedExisting: 0,
+    createdNew: 0,
+    translationSkipped: 0,
+    housingRecords: 0,
+    nationalOrgs: 0,
+    costMapped: 0,
+    costUnknown: 0,
+    errors: 0,
+  };
+
+  // 1. Open workbook + resolve sheets
   const wb = new ExcelJS.Workbook();
   await wb.xlsx.readFile(flags.file);
-
   const sheets: Record<Lang, ExcelJS.Worksheet> = {
     ka: findSheet(wb, "ka"),
     en: findSheet(wb, "en"),
@@ -1089,40 +1153,163 @@ async function main(): Promise<void> {
     ru: findSheet(wb, "ru"),
   };
   console.log(
-    `[france-import] sheets resolved: ` +
+    `[france-import] sheets: ` +
       (Object.entries(sheets) as Array<[Lang, ExcelJS.Worksheet]>)
         .map(([l, w]) => `${l}="${w.name}" (${w.rowCount - 1} rows)`)
         .join(", ")
   );
-
   if (flags.verbose) {
     for (const ws of Object.values(sheets)) dumpSheetHeaders(ws);
   }
 
-  // TODO(chunk-2..5): field parsers, row reader, merger, de-dup, upsert,
-  // report, --notify. The skeleton above is intentionally minimal to keep
-  // chunk 1 reviewable on its own.
+  // 2. Parse + merge
+  const rowsByLang: Record<Lang, RawRow[]> = {
+    ka: parseSheetRows(sheets.ka, true),
+    en: parseSheetRows(sheets.en, false),
+    fr: parseSheetRows(sheets.fr, false),
+    es: parseSheetRows(sheets.es, false),
+    ru: parseSheetRows(sheets.ru, false),
+  };
+  const skipped = { count: 0 };
+  let merged = mergeRowsAcrossSheets(rowsByLang, skipped);
+  stats.translationSkipped = skipped.count;
   console.log(
-    `\n[france-import] chunk 1 (foundation) ready. Pipeline pending in chunks 2–5.`
+    `[france-import] parsed ${merged.length} rows; ` +
+      `${stats.translationSkipped} non-KA cells dropped (Georgian leftover)`
   );
 
-  // DB connection sanity-check (only if URL is present; pipeline will use it).
+  // 3. Apply --limit
+  if (flags.limit !== null && flags.limit < merged.length) {
+    console.log(`[france-import] --limit=${flags.limit} (truncating from ${merged.length})`);
+    merged = merged.slice(0, flags.limit);
+  }
+
+  // 4. DB connection + ID generator
   const url = process.env.DATABASE_URL;
   if (!url) {
-    console.warn(
-      `[france-import] DATABASE_URL not set — full pipeline cannot run yet.`
-    );
-    return;
+    throw new Error("DATABASE_URL is required (export MYSQL_PUBLIC_URL — see OPS.md)");
   }
-  const conn = await mysql.createConnection(url);
+  const conn = await mysql.createConnection({ uri: url, charset: "utf8mb4" });
+  let generator: OrgIdGenerator;
   try {
-    const [[row]] = (await conn.query(
-      `SELECT COUNT(*) AS total FROM organizations WHERE country = 'FR'`
-    )) as [Array<{ total: number }>, unknown];
-    console.log(`[france-import] FR orgs already in DB: ${row.total}`);
+    generator = await loadOrgIdGenerator(conn);
+    console.log(`[france-import] next orgId starts at ORG-${String(generator.peek()).padStart(4, "0")}`);
+
+    // 5. Process rows
+    for (const m of merged) {
+      try {
+        const outcome = await processRow(conn, generator, m, flags);
+        stats.rowsProcessed += 1;
+        if (outcome.action === "matched") stats.matchedExisting += 1;
+        else stats.createdNew += 1;
+        if (outcome.housingWritten) stats.housingRecords += 1;
+        if (outcome.isNational) stats.nationalOrgs += 1;
+        if (outcome.costEnum === "unknown") stats.costUnknown += 1;
+        else stats.costMapped += 1;
+
+        if (flags.verbose) {
+          console.log(
+            `  row ${outcome.rowIndex}: ${outcome.action.toUpperCase()} ${outcome.orgId}` +
+              (outcome.matchPhase ? ` (via ${outcome.matchPhase})` : "") +
+              (outcome.isNational ? " [National]" : "") +
+              (outcome.housingWritten ? " [housing]" : "") +
+              ` cost=${outcome.costEnum}`
+          );
+        }
+      } catch (err) {
+        stats.errors += 1;
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(`[france-import] ERROR at row ${m.rowIndex}: ${msg}`);
+      }
+    }
+
+    // 6. --notify (post-apply)
+    if (flags.apply && flags.notify) {
+      await notifySubscribers(conn, flags.batchId, stats);
+    }
   } finally {
     await conn.end();
   }
+
+  return stats;
+}
+
+// ─── Report formatter ─────────────────────────────────────────────────────
+
+export function formatReport(stats: Stats, flags: Flags): string {
+  const lines = [
+    "",
+    `== ${flags.apply ? "APPLY" : "Dry run"} summary (batch=${flags.batchId}) ==`,
+    `Excel rows:           ${stats.rowsProcessed}`,
+    `Matched existing:     ${stats.matchedExisting}  (${flags.apply ? "UPDATED" : "would UPDATE"})`,
+    `New orgs:             ${stats.createdNew}  (${flags.apply ? "INSERTED" : "would INSERT"})`,
+    `Translation skipped:  ${stats.translationSkipped} cells (Georgian on non-KA sheet)`,
+    `Housing records:      ${stats.housingRecords}`,
+    `National orgs:        ${stats.nationalOrgs}`,
+    `Cost mapped:          ${stats.costMapped}  (${stats.costUnknown} → unknown)`,
+  ];
+  if (stats.errors > 0) {
+    lines.push(`Errors:               ${stats.errors}  (see logs above)`);
+  }
+  lines.push("");
+  return lines.join("\n");
+}
+
+// ─── --notify (subscriber notification stub) ──────────────────────────────
+
+/**
+ * Stub notifier — looks up newsletter subscribers, logs intent, and writes
+ * a notificationHistory row to mark the batch. Actual email sending requires
+ * an org-specific email template (the existing emailService.ts only has
+ * grant-shaped templates). Adding the template is a follow-up PR scoped
+ * separately from the import pipeline.
+ *
+ * This keeps --apply --notify safe: it tags the batch in the DB and reports
+ * the recipient count, without sending malformed emails.
+ */
+export async function notifySubscribers(
+  conn: mysql.Connection,
+  batchId: string,
+  stats: Stats
+): Promise<void> {
+  const [rows] = (await conn.query(
+    `SELECT COUNT(*) AS n FROM newsletter_subscribers WHERE isActive = 1`
+  )) as [Array<{ n: number }>, unknown];
+  const recipientCount = Number(rows[0]?.n ?? 0);
+
+  const subject = `${stats.createdNew} new French organizations added (${batchId})`;
+  console.log(
+    `[france-import] --notify: would email ${recipientCount} active subscribers ` +
+      `about ${stats.createdNew} new + ${stats.matchedExisting} updated FR orgs`
+  );
+
+  // Record the intent in notificationHistory so the admin UI can track it.
+  // grantItemIds is left empty since this batch is org-shaped, not grant-shaped.
+  try {
+    await conn.query(
+      `INSERT INTO notification_history (subject, grantItemIds, recipientCount)
+       VALUES (?, ?, ?)`,
+      [subject, JSON.stringify([]), recipientCount]
+    );
+    console.log(`[france-import] --notify: notification_history row inserted`);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[france-import] --notify: notification_history insert skipped (${msg})`);
+  }
+}
+
+// ─── Main entry ───────────────────────────────────────────────────────────
+
+async function main(): Promise<void> {
+  const flags = parseFlags();
+  console.log(
+    `[france-import] mode=${flags.apply ? "APPLY" : "DRY-RUN"}  ` +
+      `batch=${flags.batchId}  limit=${flags.limit ?? "all"}  ` +
+      `notify=${flags.notify}  file=${flags.file}`
+  );
+
+  const stats = await runImport(flags);
+  console.log(formatReport(stats, flags));
 }
 
 main().catch((err) => {
