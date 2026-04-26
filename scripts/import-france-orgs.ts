@@ -434,6 +434,280 @@ export function dumpSheetHeaders(ws: ExcelJS.Worksheet): void {
   console.log(`[headers] ${ws.name} (${ws.rowCount - 1} rows): ${cells.join(" | ")}`);
 }
 
+// ─── Row reader + cross-sheet merger ─────────────────────────────────────
+
+/**
+ * Column positions (1-based, ExcelJS-style). Same across all 5 sheets for
+ * cols 1–21; cols 22–30 are housing-specific and present only on the
+ * Georgian sheet.
+ *
+ * If actual Excel positions differ, run with --verbose to dump the headers
+ * row from every sheet and adjust this table.
+ */
+export const COL = {
+  index: 1,
+  name: 2,
+  abbreviation: 3,
+  organizationType: 4,
+  address: 5,
+  phone: 6,
+  email: 7,
+  website: 8,
+  description: 9,
+  servicesOffered: 10,
+  targetAudience: 11,
+  category: 12,
+  emigrationPurpose: 13,
+  serviceLanguages: 14,
+  cost: 15,
+  coverageArea: 16,
+  foundedYear: 17,
+  legalStatus: 18,
+  mainCategory: 19,
+  cities: 20,
+  isNational: 21,
+  // Georgian sheet only — cols 22–30
+  housingType: 22,
+  housingDescription: 23,
+  registrationProcess: 24,
+  costDetails: 25,
+  maxStayDuration: 26,
+  capacity: 27,
+  childrenFriendly: 28,
+  disabledAccessible: 29,
+  relevanceNotes: 30,
+} as const;
+
+/**
+ * Read all data rows from a single sheet. Skips rows whose `name` cell is
+ * empty (treats them as trailing whitespace). The Georgian sheet supplies
+ * the housing fields; non-KA sheets leave those nullable fields as null.
+ *
+ * @param ws       The worksheet
+ * @param isGeorgian If true, also reads cols 22–30 (housing-specific)
+ */
+export function parseSheetRows(ws: ExcelJS.Worksheet, isGeorgian: boolean): RawRow[] {
+  const rows: RawRow[] = [];
+  for (let r = 2; r <= ws.rowCount; r++) {
+    const row = ws.getRow(r);
+    const name = cellToString(row.getCell(COL.name).value);
+    if (!name) continue;
+
+    const raw: RawRow = {
+      rowIndex: r,
+      name,
+      abbreviation: cellToString(row.getCell(COL.abbreviation).value),
+      organizationType: cellToString(row.getCell(COL.organizationType).value),
+      address: cellToString(row.getCell(COL.address).value),
+      phone: cellToString(row.getCell(COL.phone).value),
+      email: cellToString(row.getCell(COL.email).value),
+      website: cellToString(row.getCell(COL.website).value),
+      description: cellToString(row.getCell(COL.description).value),
+      servicesOffered: cellToString(row.getCell(COL.servicesOffered).value),
+      targetAudience: cellToString(row.getCell(COL.targetAudience).value),
+      category: cellToString(row.getCell(COL.category).value),
+      emigrationPurpose: cellToString(row.getCell(COL.emigrationPurpose).value),
+      serviceLanguages: cellToString(row.getCell(COL.serviceLanguages).value),
+      cost: cellToString(row.getCell(COL.cost).value),
+      coverageArea: cellToString(row.getCell(COL.coverageArea).value),
+      foundedYear: parseFoundedYear(row.getCell(COL.foundedYear).value),
+      legalStatus: cellToString(row.getCell(COL.legalStatus).value),
+      mainCategory: cellToString(row.getCell(COL.mainCategory).value),
+      cities: cellToString(row.getCell(COL.cities).value),
+      isNational: parseIsNational(row.getCell(COL.isNational).value),
+      // Housing — Georgian only
+      housingType: isGeorgian ? cellToString(row.getCell(COL.housingType).value) : null,
+      housingDescription: isGeorgian
+        ? cellToString(row.getCell(COL.housingDescription).value)
+        : null,
+      registrationProcess: isGeorgian
+        ? cellToString(row.getCell(COL.registrationProcess).value)
+        : null,
+      costDetails: isGeorgian ? cellToString(row.getCell(COL.costDetails).value) : null,
+      maxStayDuration: isGeorgian
+        ? cellToString(row.getCell(COL.maxStayDuration).value)
+        : null,
+      capacity: isGeorgian ? cellToString(row.getCell(COL.capacity).value) : null,
+      childrenFriendly: isGeorgian
+        ? cellToString(row.getCell(COL.childrenFriendly).value)
+        : null,
+      disabledAccessible: isGeorgian
+        ? cellToString(row.getCell(COL.disabledAccessible).value)
+        : null,
+      relevanceNotes: isGeorgian
+        ? cellToString(row.getCell(COL.relevanceNotes).value)
+        : null,
+    };
+    rows.push(raw);
+  }
+  return rows;
+}
+
+/**
+ * Apply translation-gap policy: on non-KA sheets, drop description /
+ * servicesOffered / targetAudience cells whose value is still in Georgian
+ * (~20% of cells per PLAN §3). Returns a copy with those fields nulled.
+ *
+ * Mutates the returned RawRow's three translation fields, leaves the
+ * original untouched. Increments `skipped` counter for stats.
+ */
+export function applyTranslationGap(
+  raw: RawRow,
+  lang: Lang,
+  skipped: { count: number }
+): RawRow {
+  if (lang === "ka") return raw;
+  const out: RawRow = { ...raw };
+  if (isGeorgianText(out.description)) {
+    if (out.description) skipped.count += 1;
+    out.description = null;
+  }
+  if (isGeorgianText(out.servicesOffered)) {
+    if (out.servicesOffered) skipped.count += 1;
+    out.servicesOffered = null;
+  }
+  if (isGeorgianText(out.targetAudience)) {
+    if (out.targetAudience) skipped.count += 1;
+    out.targetAudience = null;
+  }
+  return out;
+}
+
+/**
+ * Merge per-sheet row arrays into one array of MergedRow keyed by row index.
+ * Georgian sheet is the base (must include every row). Translation sheets
+ * may have fewer rows; missing rows degrade gracefully (lang block stays
+ * empty during JSON build).
+ */
+export function mergeRowsAcrossSheets(
+  rowsByLang: Record<Lang, RawRow[]>,
+  skipped: { count: number }
+): MergedRow[] {
+  const baseRows = rowsByLang.ka;
+  const merged: MergedRow[] = [];
+
+  for (const base of baseRows) {
+    const translations: Record<Lang, RawRow> = {
+      ka: base,
+      en: rowsByLang.en.find((r) => r.rowIndex === base.rowIndex) ?? base,
+      fr: rowsByLang.fr.find((r) => r.rowIndex === base.rowIndex) ?? base,
+      es: rowsByLang.es.find((r) => r.rowIndex === base.rowIndex) ?? base,
+      ru: rowsByLang.ru.find((r) => r.rowIndex === base.rowIndex) ?? base,
+    };
+
+    // Apply gap policy to the four non-KA translations.
+    const cleaned: Record<Lang, RawRow> = {
+      ka: translations.ka,
+      en: applyTranslationGap(translations.en, "en", skipped),
+      fr: applyTranslationGap(translations.fr, "fr", skipped),
+      es: applyTranslationGap(translations.es, "es", skipped),
+      ru: applyTranslationGap(translations.ru, "ru", skipped),
+    };
+
+    merged.push({
+      rowIndex: base.rowIndex,
+      base,
+      translations: cleaned,
+    });
+  }
+
+  return merged;
+}
+
+/**
+ * Build the JSON value for organizations.translations:
+ *   {
+ *     en: { description?, servicesOffered?, targetAudience? },
+ *     fr: { ... }, es: { ... }, ru: { ... }, ka: { ... }
+ *   }
+ *
+ * A language key is omitted entirely when all three sub-fields are null —
+ * keeps the JSON compact and lets translate-pipeline detect missing
+ * languages by key absence rather than by null-walking nested objects.
+ */
+export function buildTranslationsJson(merged: MergedRow): TranslationsJson {
+  const out: TranslationsJson = {};
+  const langs: Lang[] = ["en", "fr", "es", "ru", "ka"];
+  for (const lang of langs) {
+    const r = merged.translations[lang];
+    const block: TranslationBlock = {};
+    if (r.description) block.description = r.description;
+    if (r.servicesOffered) block.servicesOffered = r.servicesOffered;
+    if (r.targetAudience) block.targetAudience = r.targetAudience;
+    if (Object.keys(block).length > 0) out[lang] = block;
+  }
+  return out;
+}
+
+/**
+ * Map the merged row into the column-shape that `upsertOrganization`
+ * writes (chunk 4). The Georgian sheet supplies the canonical top-level
+ * value for `description` / `servicesOffered` / `targetAudience`; per-
+ * language overrides live in `translations`.
+ *
+ * city + serviceArea + isNational follow PLAN §8 decision #3:
+ *   ≥10 cities listed → isNational=true, city=primaryCity, serviceArea
+ *   ="Available in N cities: ..."; otherwise per-row HQ city only.
+ *
+ * Excel-side `isNational` (col 21) ORs into the cities-derived flag — if
+ * either signals national coverage, the row is marked national.
+ */
+export interface OrgPayload {
+  name: string;
+  abbreviation: string | null;
+  organizationType: string | null;       // raw text; chunk 4 normalizes to enum
+  description: string | null;
+  country: "FR";
+  city: string | null;
+  hqAddress: string | null;
+  website: string | null;
+  phone: string | null;
+  email: string | null;
+  servicesOffered: string | null;
+  targetAudience: string | null;
+  emigrationPurpose: string | null;
+  foundedYear: number | null;
+  legalStatus: string | null;
+  mainCategory: string | null;
+  serviceArea: string | null;
+  serviceCost: ServiceCost;
+  isNational: boolean;
+  languages: string | null;
+  categories: string | null;
+  translations: TranslationsJson;
+}
+
+export function buildOrgPayload(merged: MergedRow): OrgPayload {
+  const base = merged.base;
+  const cities = parseCities(base.cities);
+  const isNational = cities.isNational || base.isNational === true;
+
+  return {
+    name: base.name as string,             // parseSheetRows skips null-name rows
+    abbreviation: base.abbreviation,
+    organizationType: base.organizationType,
+    description: base.description,
+    country: "FR",
+    city: cities.primaryCity,
+    hqAddress: base.address,
+    website: base.website,
+    phone: base.phone,
+    email: base.email,
+    servicesOffered: base.servicesOffered,
+    targetAudience: base.targetAudience,
+    emigrationPurpose: base.emigrationPurpose,
+    foundedYear: base.foundedYear,
+    legalStatus: base.legalStatus,
+    mainCategory: base.mainCategory,
+    serviceArea: cities.serviceArea,
+    serviceCost: mapCost(base.cost),
+    isNational,
+    languages: base.serviceLanguages,
+    categories: base.category,
+    translations: buildTranslationsJson(merged),
+  };
+}
+
 // ─── Main (placeholder for Chunk 1) ───────────────────────────────────────
 // The full pipeline (parse → merge → de-dup → upsert/report) is implemented
 // in Chunks 2–5. This entry point currently validates flags and confirms the
