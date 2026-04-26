@@ -227,6 +227,179 @@ export function cellToBool(v: ExcelJS.CellValue): boolean | null {
   return null;
 }
 
+// ─── Field parsers ────────────────────────────────────────────────────────
+
+export type ServiceCost =
+  | "free"
+  | "sliding_scale"
+  | "paid"
+  | "insurance"
+  | "mixed"
+  | "unknown";
+
+/**
+ * COST_MAPPING — Georgian text → 6-enum value.
+ *
+ * Source: HANDOFF brief + PLAN doc §8 cost mapping table.
+ * Match policy: exact-after-trim. Anything not in this map → "unknown".
+ */
+export const COST_MAPPING: Record<string, ServiceCost> = {
+  // free (4)
+  "უფასო": "free",
+  "უფასო (მიგრანტებისთვის)": "free",
+  "უფასო (სამონტაჟოებისთვის)": "free",
+  "სერვისები უფასოა საჭიროების შემთხვევაში.": "free",
+
+  // paid (5)
+  "ფასიანი": "paid",
+  "გადახდილი": "paid",
+  "გადახდადი": "paid",
+  "გადასახადი": "paid",
+  "გადასახადიანი": "paid",
+
+  // sliding_scale (10)
+  "სუბსიდირებული": "sliding_scale",
+  "უფასო / სუბსიდირებული": "sliding_scale",
+  "უფასო/სუბსიდირებული": "sliding_scale",
+  "უფასო ან სუბსიდირებული": "sliding_scale",
+  "დაფინანსებული": "sliding_scale",
+  "საბაზისო დაფინანსება": "sliding_scale",
+  "საფინანსო მხარდაჭერით": "sliding_scale",
+  "შემწეობილი": "sliding_scale",
+  "წახალისებული": "sliding_scale",
+  "შემცირებული": "sliding_scale",
+
+  // insurance (3)
+  "გადახდილი (ჩვეულებრივ ინსტიტუტების მიერ)": "insurance",
+  "სუბსიდირებული / ინსტიტუტების მიერ გადახდილი": "insurance",
+  "ფასიანი (კერძო პროფესიონალები)": "insurance",
+
+  // mixed (10)
+  "უფასო / ფასიანი": "mixed",
+  "ფასიანი/სუბსიდირებული": "mixed",
+  "ფასიანი / სუბსიდირებული": "mixed",
+  "გადის / სუბსიდირებული": "mixed",
+  "უფასო / წევრობის საფასური": "mixed",
+  "უფასო / წევრობის გადასახადი": "mixed",
+  "წევრობის საფასური": "mixed",
+  "გაწევრიანების საკრედიტო გადასახადი": "mixed",
+  "დაახლოებით 10 ევრო ღამეში.": "mixed",
+  "უფასო კონსულტაცია": "mixed",
+};
+
+/** mapCost — null/empty → "unknown"; trimmed lookup; fallback "unknown". */
+export function mapCost(raw: string | null): ServiceCost {
+  if (!raw) return "unknown";
+  const trimmed = raw.trim();
+  if (!trimmed) return "unknown";
+  return COST_MAPPING[trimmed] ?? "unknown";
+}
+
+/**
+ * National-org threshold per PLAN §8 decision #3 — rows listing ≥10 cities
+ * collapse to a single HQ branch + serviceArea string, isNational=true.
+ */
+export const NATIONAL_CITY_THRESHOLD = 10;
+
+export interface CitiesParse {
+  isNational: boolean;
+  cityList: string[];
+  primaryCity: string | null;
+  serviceArea: string | null;
+}
+
+export function parseCities(citiesCell: string | null): CitiesParse {
+  if (!citiesCell) {
+    return { isNational: false, cityList: [], primaryCity: null, serviceArea: null };
+  }
+  const split = citiesCell
+    .split(/[,;]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const primaryCity = split[0] ?? null;
+  if (split.length >= NATIONAL_CITY_THRESHOLD) {
+    return {
+      isNational: true,
+      cityList: split,
+      primaryCity,
+      serviceArea: `Available in ${split.length} cities: ${split.join(", ")}`,
+    };
+  }
+  return {
+    isNational: false,
+    cityList: split,
+    primaryCity,
+    serviceArea: split.length > 1 ? split.join(", ") : null,
+  };
+}
+
+/**
+ * Founded-year validation. Excel data covers 1229–2024 (PLAN §1).
+ * Anything outside the range → null (treat as unknown).
+ */
+export const FOUNDED_YEAR_MIN = 1229;
+export const FOUNDED_YEAR_MAX = 2024;
+
+export function parseFoundedYear(v: ExcelJS.CellValue): number | null {
+  const n = cellToInt(v);
+  if (n === null) return null;
+  if (n < FOUNDED_YEAR_MIN || n > FOUNDED_YEAR_MAX) return null;
+  return n;
+}
+
+/** Yes/No/კი/არა/1/0/true/false → boolean | null (delegates to cellToBool). */
+export function parseIsNational(v: ExcelJS.CellValue): boolean | null {
+  return cellToBool(v);
+}
+
+/**
+ * Detect Georgian script anywhere in the string. Used for translation-gap
+ * detection: a non-KA sheet cell whose value is Georgian → drop, leave
+ * NULL for translate-pipeline to fill in later.
+ *
+ * Asomtavruli: U+10A0–U+10CF; Mkhedruli: U+10D0–U+10FF.
+ */
+export function isGeorgianText(s: string | null): boolean {
+  if (!s) return false;
+  return /[Ⴀ-ჿ]/.test(s);
+}
+
+/**
+ * Normalize a phone string for de-dup matching. Strips non-digits while
+ * preserving a leading +. French local 0XXXXXXXXX → 33XXXXXXXXX. Returns
+ * null on empty/digit-less input.
+ */
+export function normalizePhone(raw: string | null): string | null {
+  if (!raw) return null;
+  let s = raw.trim();
+  if (!s) return null;
+  const hasPlus = s.startsWith("+");
+  s = s.replace(/[^\d]/g, "");
+  if (!s) return null;
+  if (!hasPlus && /^0\d{9}$/.test(s)) {
+    // French national format → E.164 country code
+    s = "33" + s.slice(1);
+    return "+" + s;
+  }
+  return (hasPlus ? "+" : "") + s;
+}
+
+/**
+ * Extract bare lowercased domain from a URL.
+ *   "https://www.example.org/foo?x=1" → "example.org"
+ * Returns null on input without a recognizable domain.
+ */
+export function extractDomain(url: string | null): string | null {
+  if (!url) return null;
+  let s = url.trim();
+  if (!s) return null;
+  s = s.replace(/^https?:\/\//i, "").replace(/^www\./i, "");
+  const head = s.split("/")[0]?.split("?")[0]?.split("#")[0] ?? "";
+  const cleaned = head.toLowerCase();
+  if (!cleaned || !cleaned.includes(".")) return null;
+  return cleaned;
+}
+
 // ─── Sheet name resolver ──────────────────────────────────────────────────
 
 const SHEET_ALIASES: Record<Lang, string[]> = {
