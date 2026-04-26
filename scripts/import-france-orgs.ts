@@ -287,12 +287,33 @@ export const COST_MAPPING: Record<string, ServiceCost> = {
   "უფასო კონსულტაცია": "mixed",
 };
 
-/** mapCost — null/empty → "unknown"; trimmed lookup; fallback "unknown". */
+/**
+ * Substring rules — applied AFTER an exact-match miss in COST_MAPPING.
+ * Checked in order; first matching substring wins. Useful for free-form
+ * cost descriptions that contain a known stem (e.g. "დამოკიდებულია" ⇒
+ * "depends on...") without an exact phrase variant in COST_MAPPING.
+ */
+export const COST_SUBSTRING_RULES: ReadonlyArray<{
+  substring: string;
+  value: ServiceCost;
+}> = [
+  { substring: "დამოკიდებულია", value: "sliding_scale" },
+];
+
+/**
+ * mapCost — null/empty → "unknown"; trimmed exact lookup; substring rules
+ * fallback; ultimate fallback "unknown".
+ */
 export function mapCost(raw: string | null): ServiceCost {
   if (!raw) return "unknown";
   const trimmed = raw.trim();
   if (!trimmed) return "unknown";
-  return COST_MAPPING[trimmed] ?? "unknown";
+  const exact = COST_MAPPING[trimmed];
+  if (exact) return exact;
+  for (const rule of COST_SUBSTRING_RULES) {
+    if (trimmed.includes(rule.substring)) return rule.value;
+  }
+  return "unknown";
 }
 
 /**
