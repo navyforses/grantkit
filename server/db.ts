@@ -1441,7 +1441,17 @@ function buildOrgConditions(options: ListOrganizationsOptions): any[] {
   }
 
   if (state && state !== "all") conditions.push(eq(organizations.state, state));
-  if (city && city !== "all") conditions.push(eq(organizations.city, city));
+  // City matches against any branch (HQ or Branch) of the org, not just the
+  // HQ row's city — so picking "Lyon" returns orgs whose HQ is in Paris but
+  // operate a branch in Lyon. Aligns the result list with the city dropdown,
+  // which is sourced from `organization_branches` (see getOrgDistinctCities).
+  if (city && city !== "all") {
+    conditions.push(sql`EXISTS (
+      SELECT 1 FROM ${organizationBranches}
+      WHERE ${organizationBranches.orgId} = ${organizations.orgId}
+        AND ${organizationBranches.city} = ${city}
+    )`);
+  }
 
   if (category && category !== "all") {
     // `categories` is a comma-separated text column — match the token with
@@ -1623,23 +1633,41 @@ export async function getOrgDistinctStates(countryCode?: string): Promise<Array<
   return result.map((r) => ({ state: r.state as string, count: Number(r.count) }));
 }
 
-/** Distinct cities with org counts for a given state (cascading filter). */
-export async function getOrgDistinctCities(stateName: string): Promise<Array<{ city: string; count: number }>> {
+/** Distinct cities with org counts — narrowed by country and/or state.
+ *  Sources cities from `organization_branches` (which holds 1 HQ row + N
+ *  Branch rows per org), so users see every city an org operates in, not
+ *  just HQ cities. `COUNT(DISTINCT orgId)` ensures an org with HQ + Branch
+ *  in the same city counts once. Sorted by org count desc, matching the
+ *  state dropdown's relevance order. */
+export async function getOrgDistinctCities(
+  filter: { country?: string; state?: string } = {},
+): Promise<Array<{ city: string; count: number }>> {
   const db = await getDb();
   if (!db) return [];
+  if (!filter.country && !filter.state) return [];
+
+  const conditions: any[] = [
+    sql`${organizationBranches.city} IS NOT NULL AND ${organizationBranches.city} != ''`,
+    // Only return cities that belong to active orgs — avoids stale branch
+    // rows for orgs that have been soft-deleted.
+    sql`EXISTS (
+      SELECT 1 FROM ${organizations}
+      WHERE ${organizations.orgId} = ${organizationBranches.orgId}
+        AND ${organizations.isActive} = TRUE
+    )`,
+  ];
+  if (filter.country) conditions.push(eq(organizationBranches.country, filter.country));
+  if (filter.state)   conditions.push(eq(organizationBranches.state, filter.state));
 
   const result = await db
-    .select({ city: organizations.city, count: count() })
-    .from(organizations)
-    .where(
-      and(
-        eq(organizations.isActive, true),
-        eq(organizations.state, stateName),
-        sql`${organizations.city} IS NOT NULL AND ${organizations.city} != ''`,
-      ),
-    )
-    .groupBy(organizations.city)
-    .orderBy(asc(organizations.city));
+    .select({
+      city: organizationBranches.city,
+      count: sql<number>`COUNT(DISTINCT ${organizationBranches.orgId})`,
+    })
+    .from(organizationBranches)
+    .where(and(...conditions))
+    .groupBy(organizationBranches.city)
+    .orderBy(desc(sql`COUNT(DISTINCT ${organizationBranches.orgId})`), asc(organizationBranches.city));
 
   return result.map((r) => ({ city: r.city as string, count: Number(r.count) }));
 }

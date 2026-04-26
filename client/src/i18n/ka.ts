@@ -1096,10 +1096,12 @@ export const ka: Translations = {
     state: {
       label: "შტატი",
       all: "ყველა შტატი",
+      disabledHint: "ჯერ ქვეყანა აირჩიე",
     },
     city: {
       label: "ქალაქი",
       all: "ყველა ქალაქი",
+      disabledHint: "ჯერ ქვეყანა აირჩიე",
     },
     category: {
       label: "კატეგორია",

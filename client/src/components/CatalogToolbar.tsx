@@ -198,6 +198,7 @@ export default function CatalogToolbar({
         active={!!stateFilter}
         ariaLabel={t.toolbar.state.label}
         disabled={!stateEnabled}
+        disabledHint={t.toolbar.state.disabledHint}
       >
         <DropdownMenuItem
           data-active={stateFilter === null}
@@ -227,6 +228,7 @@ export default function CatalogToolbar({
         active={!!cityFilter}
         ariaLabel={t.toolbar.city.label}
         disabled={!cityEnabled}
+        disabledHint={t.toolbar.city.disabledHint}
       >
         <DropdownMenuItem
           data-active={cityFilter === null}
@@ -314,6 +316,8 @@ interface ToolbarDropdownProps {
   ariaLabel: string;
   /** When true, the trigger renders muted and the menu does not open. */
   disabled?: boolean;
+  /** Tooltip shown on hover when the dropdown is disabled — explains why. */
+  disabledHint?: string;
   children: React.ReactNode;
 }
 
@@ -323,6 +327,7 @@ function ToolbarDropdown({
   active,
   ariaLabel,
   disabled,
+  disabledHint,
   children,
 }: ToolbarDropdownProps) {
   const [open, setOpen] = useState(false);
@@ -332,6 +337,7 @@ function ToolbarDropdown({
         <button
           type="button"
           aria-label={ariaLabel}
+          title={disabled ? disabledHint : undefined}
           disabled={disabled}
           className={cn(
             "h-8 inline-flex items-center gap-1.5 px-3 rounded-md text-[13px] whitespace-nowrap flex-shrink-0",

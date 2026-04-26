@@ -1045,10 +1045,12 @@ export interface Translations {
     state: {
       label: string;
       all: string;
+      disabledHint: string;
     };
     city: {
       label: string;
       all: string;
+      disabledHint: string;
     };
     category: {
       label: string;

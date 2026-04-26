@@ -1094,10 +1094,12 @@ export const es: Translations = {
     state: {
       label: "Estado",
       all: "Todos los estados",
+      disabledHint: "Elige primero un país",
     },
     city: {
       label: "Ciudad",
       all: "Todas las ciudades",
+      disabledHint: "Elige primero un país",
     },
     category: {
       label: "Categoría",

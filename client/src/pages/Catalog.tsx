@@ -217,9 +217,12 @@ export default function Catalog() {
     { country: mapCountryCode || undefined },
     { retry: false, enabled: !!mapCountryCode },
   );
-  const { data: cityRows } = trpc.organizations.cities.useQuery(
-    { state: mapStateCode || "" },
-    { retry: false, enabled: !!mapStateCode },
+  // Cities query fires once a country OR a state is picked. Backend sources
+  // cities from `organization_branches` so EU countries (no state data) get
+  // their full city list with accurate org counts.
+  const { data: cityRows, isLoading: citiesLoading } = trpc.organizations.cities.useQuery(
+    { country: mapCountryCode || undefined, state: mapStateCode || undefined },
+    { retry: false, enabled: !!(mapCountryCode || mapStateCode) },
   );
 
   const availableRegions = useMemo(() => {
@@ -307,18 +310,19 @@ export default function Catalog() {
   }, [stateRows]);
 
   // City dropdown options.
-  //   • US: DB-driven, keyed on the selected state (existing flow).
-  //   • Non-US / EU: fall back to country-state-city so the user can pick
-  //     a city in a country with no DB grants yet. Capped at 50 alphabetic
-  //     results; the map's Google Maps Geocoder resolves the flyTo target.
+  //   • Primary: DB-backed (`organization_branches`) — every city where the
+  //     selected country/state actually has an org, sorted by org count desc.
+  //   • Fallback: when the DB returns zero rows for a non-US country (e.g.
+  //     Malta), country-state-city seeds the dropdown so the user can still
+  //     pick a city for map flyTo via the Google Maps Geocoder. Capped at 50
+  //     alphabetic results.
   const availableCities = useMemo(() => {
-    if (mapStateCode && (cityRows?.length ?? 0) > 0) {
-      return cityRows!.map((r) => ({ value: r.city, label: r.city, count: r.count }));
+    if (cityRows && cityRows.length > 0) {
+      return cityRows.map((r) => ({ value: r.city, label: r.city, count: r.count }));
     }
+    if (citiesLoading) return [];
     if (mapCountryCode && mapCountryCode !== "US") {
       const all = City.getCitiesOfCountry(mapCountryCode) ?? [];
-      // De-duplicate by name (csc sometimes has repeated entries across regions),
-      // then sort alphabetically and cap to keep the dropdown usable.
       const seen = new Set<string>();
       const unique: { value: string; label: string; count: number }[] = [];
       for (const c of all) {
@@ -331,7 +335,7 @@ export default function Catalog() {
         .slice(0, 50);
     }
     return [];
-  }, [cityRows, mapStateCode, mapCountryCode]);
+  }, [cityRows, citiesLoading, mapCountryCode]);
 
   const { data: savedData } = trpc.grants.savedList.useQuery(undefined, {
     enabled: isAuthenticated,
