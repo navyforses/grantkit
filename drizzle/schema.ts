@@ -338,11 +338,13 @@ export const organizationBranches = mysqlTable("organization_branches", {
   longitude: decimal("longitude", { precision: 10, scale: 7 }),
   source: varchar("source", { length: 64 }),   // "Database" | "Google Places" | "Google Places (HQ)" | "Not found"
   notes: text("notes"),
+  geocodedAt: timestamp("geocodedAt"),          // set by scripts/geocode-branches.ts (migration 0019)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 }, (table) => [
   index("branches_org_idx").on(table.orgId),
   index("branches_country_idx").on(table.country),
   index("branches_lat_lng_idx").on(table.latitude, table.longitude),
+  index("branches_geocoded_at_idx").on(table.geocodedAt),
 ]);
 
 export type OrganizationBranch = typeof organizationBranches.$inferSelect;
