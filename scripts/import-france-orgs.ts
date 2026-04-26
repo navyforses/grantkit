@@ -763,9 +763,36 @@ const HOUSING_TYPE_VALUES: readonly HousingType[] = [
   "other",
 ];
 
+/**
+ * Georgian → enum mapping for the KA sheet's col 22 ("საცხოვრებლის ტიპი").
+ * Cowork's Wave 2 dry-run found 7 distinct Georgian values across 102 rows;
+ * none matched the English enum directly so housing UPSERT was skipped.
+ *
+ * Pattern matches COST_MAPPING — exact match after trim. Add new entries
+ * here when Cowork's post-fix dry-run surfaces values that still fall
+ * through to null.
+ */
+export const HOUSING_TYPE_MAPPING: Record<string, HousingType> = {
+  "მშობელთა სახლი": "parents_house",
+  "თავშესაფარი": "shelter",
+  "სოციალური საცხოვრებელი": "social",
+  "დროებითი საცხოვრებელი": "temporary",
+  "სასტუმრო": "hotel",
+  "ბინა": "apartment",
+  "სხვა": "other",
+};
+
 export function normalizeHousingType(raw: string | null): HousingType | null {
   if (!raw) return null;
-  const lower = raw.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  // Phase 1 — Georgian (and other localized) exact-match mapping
+  const mapped = HOUSING_TYPE_MAPPING[trimmed];
+  if (mapped) return mapped;
+  // Phase 2 — backward-compat for English enum values: case-insensitive,
+  // whitespace and dashes collapse to underscores ("Parents House" →
+  // "parents_house").
+  const lower = trimmed.toLowerCase().replace(/[\s-]+/g, "_");
   return (HOUSING_TYPE_VALUES as readonly string[]).includes(lower)
     ? (lower as HousingType)
     : null;
