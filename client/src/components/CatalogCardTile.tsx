@@ -10,7 +10,7 @@
 
 import { memo, useCallback } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
-import { Globe, Home, MapPin, Phone } from "lucide-react";
+import { Globe, Home, Mail, MapPin, Phone } from "lucide-react";
 import type { CatalogItem } from "@/lib/constants";
 import { getCategoryStyle } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -217,6 +217,16 @@ function CatalogCardTileImpl({
             >
               <Phone className="h-3 w-3 shrink-0 text-muted-foreground/50" aria-hidden="true" />
               <span className="truncate max-w-[120px]">{item.phone}</span>
+            </a>
+          )}
+          {item.email && (
+            <a
+              href={`mailto:${item.email}`}
+              onClick={stop}
+              className="inline-flex items-center gap-1 min-w-0 hover:text-foreground transition-colors"
+            >
+              <Mail className="h-3 w-3 shrink-0 text-muted-foreground/50" aria-hidden="true" />
+              <span className="truncate max-w-[160px]">{item.email}</span>
             </a>
           )}
           {websiteHref && (

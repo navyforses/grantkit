@@ -394,10 +394,13 @@ export default function Catalog() {
     if (smartItems) return smartItems;
     if (catalogData?.organizations) {
       return catalogData.organizations.map((o) => {
-        const firstCategory = (o.categories ?? "")
+        const allCats = (o.categories ?? "")
           .split(",")
           .map((c) => c.trim())
-          .filter(Boolean)[0] || "other";
+          .filter(Boolean);
+        // Prefer a meaningful category over the catch-all "other" so the
+        // visible badge tells the user what the org actually does.
+        const firstCategory = allCats.find((c) => c !== "other") ?? allCats[0] ?? "other";
         return {
           id: o.orgId,
           orgId: o.orgId,
