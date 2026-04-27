@@ -116,15 +116,22 @@ export default function OrganizationsMap({
           algorithm: new SuperClusterAlgorithm({ radius: 80, maxZoom: 14 }),
           renderer: {
             render: ({ count, position }) => {
+              // Wrap the cluster bubble so it centers on the marker
+              // position instead of inheriting AdvancedMarkerElement's
+              // default bottom-center anchor (which leaves the icon
+              // visibly drifting north at world-zoom).
+              const wrapper = document.createElement("div");
+              wrapper.className = "orgmap-cluster-anchor";
               const el = document.createElement("div");
               el.className = "orgmap-cluster";
               const size = count < 10 ? 36 : count < 50 ? 50 : 64;
               el.style.width = `${size}px`;
               el.style.height = `${size}px`;
               el.textContent = String(count);
+              wrapper.appendChild(el);
               return new marker.AdvancedMarkerElement({
                 position,
-                content: el,
+                content: wrapper,
                 zIndex: 1000 + count,
               });
             },
@@ -326,6 +333,18 @@ const ORGMAP_CSS = `
 .orgmap-pin-branch {
   background: var(--orgmap-branch);
 }
+.orgmap-cluster-anchor {
+  /* AdvancedMarkerElement anchors content's bottom-center at the
+   * geographic position by default. The translate here pulls the
+   * wrapper so its visual centre sits on that position instead,
+   * which is what users expect from a count-cluster bubble. */
+  position: relative;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.orgmap-cluster-anchor > * {
+  pointer-events: auto;
+}
 .orgmap-cluster {
   display: flex;
   align-items: center;
@@ -338,7 +357,6 @@ const ORGMAP_CSS = `
   font-weight: 600;
   opacity: 0.92;
   cursor: pointer;
-  transform: translate(-50%, -50%);
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 .orgmap-cluster:hover { opacity: 1; }

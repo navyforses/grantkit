@@ -128,6 +128,11 @@ export default function MapPanel({
           }),
           renderer: {
             render: ({ count, position }) => {
+              // Wrap the cluster bubble so it centers on the marker
+              // position instead of inheriting AdvancedMarkerElement's
+              // default bottom-center anchor.
+              const wrapper = document.createElement("div");
+              wrapper.className = "mp-cluster-anchor";
               const el = document.createElement("div");
               el.className = "mp-cluster";
               // Spec sizes: 1-10 → 20, 10-50 → 30, 50+ → 40.
@@ -135,9 +140,10 @@ export default function MapPanel({
               el.style.width = `${size}px`;
               el.style.height = `${size}px`;
               el.textContent = String(count);
+              wrapper.appendChild(el);
               return new marker.AdvancedMarkerElement({
                 position,
-                content: el,
+                content: wrapper,
                 zIndex: 1000 + count,
               });
             },
@@ -390,6 +396,16 @@ const MAP_PANEL_CSS = `
   .mp-pin-highlight::before, .mp-pin-highlight::after { animation: none; opacity: 0; }
 }
 
+.mp-cluster-anchor {
+  /* See OrganizationsMap.tsx — same fix for AdvancedMarkerElement
+   * anchor drift at world-zoom. */
+  position: relative;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.mp-cluster-anchor > * {
+  pointer-events: auto;
+}
 .mp-cluster {
   display: flex;
   align-items: center;
@@ -402,7 +418,6 @@ const MAP_PANEL_CSS = `
   font-weight: 600;
   opacity: 0.9;
   cursor: pointer;
-  transform: translate(-50%, -50%);
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 .mp-cluster:hover { opacity: 1; }
