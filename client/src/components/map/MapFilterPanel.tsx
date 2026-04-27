@@ -212,23 +212,25 @@ export default function MapFilterPanel({
         {/* ── Filter sections ── */}
         <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 space-y-4">
 
-          {/* 🌍 Region — 3 large buttons */}
+          {/* 🌍 Region — 3 large buttons. 2-col on phones for honest touch
+              targets, 3-col from sm+ where the original tile size fits. */}
           <FilterSection label="Region" emoji="🌍">
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-1.5">
               {REGIONS.map((r) => (
                 <button
                   key={r.code}
                   type="button"
                   onClick={() => handleRegionChange(regionCode === r.code ? "" : r.code)}
                   className={[
-                    "flex flex-col items-center gap-1 py-2.5 px-1 rounded-xl border text-xs font-medium transition-all",
+                    "flex flex-col items-center gap-1 rounded-xl border font-medium transition-all",
+                    "py-3 px-2 text-sm sm:py-2.5 sm:px-1 sm:text-xs",
                     regionCode === r.code
                       ? "bg-primary/10 border-primary/50 text-primary"
                       : "bg-background/60 border-border text-foreground hover:bg-secondary hover:border-border/80",
                   ].join(" ")}
                 >
-                  <span className="text-xl leading-none">{r.flag}</span>
-                  <span className="text-[10px] leading-tight text-center">{r.label}</span>
+                  <span className="text-2xl sm:text-xl leading-none">{r.flag}</span>
+                  <span className="text-xs sm:text-[10px] leading-tight text-center">{r.label}</span>
                 </button>
               ))}
             </div>
