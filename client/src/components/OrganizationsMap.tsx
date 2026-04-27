@@ -334,15 +334,23 @@ const ORGMAP_CSS = `
   background: var(--orgmap-branch);
 }
 .orgmap-cluster-anchor {
-  /* AdvancedMarkerElement anchors content's bottom-center at the
-   * geographic position by default. The translate here pulls the
-   * wrapper so its visual centre sits on that position instead,
-   * which is what users expect from a count-cluster bubble. */
+  /* AdvancedMarkerElement anchors content's bottom-center at the marker
+   * position. A direct CSS transform on the content gets composed with
+   * Google's own wrapper transform and effectively no-ops, leaving the
+   * cluster offset upward by ~½ its height (very visible at world-zoom).
+   *
+   * The trick: make the anchor a 0×0 point at the marker position, then
+   * absolutely-position the visible cluster as its child and translate
+   * the cluster's centre onto that point. Geometry is now self-contained
+   * inside our DOM, immune to whatever transform Google applies. */
   position: relative;
-  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
   pointer-events: none;
 }
-.orgmap-cluster-anchor > * {
+.orgmap-cluster-anchor > .orgmap-cluster {
+  position: absolute;
+  transform: translate(-50%, -50%);
   pointer-events: auto;
 }
 .orgmap-cluster {
