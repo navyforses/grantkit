@@ -52,7 +52,8 @@
     "enrich:contacts": "tsx scripts/enrich-org-contacts.ts",
     "enrich:contacts:dry": "tsx scripts/enrich-org-contacts.ts --dry-run",
     "enrich:contacts:limit10": "tsx scripts/enrich-org-contacts.ts --limit=10 --dry-run",
-    "audit:org-duplicates": "tsx scripts/audit-org-duplicates.ts"
+    "audit:org-duplicates": "tsx scripts/audit-org-duplicates.ts",
+    "merge:org-duplicates": "tsx scripts/merge-org-duplicates.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
