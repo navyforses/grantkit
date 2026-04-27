@@ -14,10 +14,11 @@
  *   6. Type        — Grant | Resource | All
  */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { State, City, Country } from "country-state-city";
 import { SlidersHorizontal, X, ChevronRight } from "lucide-react";
 import { CATEGORIES, type CategoryValue, type TypeValue, REGIONS, EU_MEMBER_CODES, type RegionCode } from "@/lib/constants";
+import { useIsMobile } from "@/hooks/useMobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import SearchableSelect, { type SelectOption } from "./SearchableSelect";
 
@@ -73,6 +74,21 @@ export default function MapFilterPanel({
 }: MapFilterPanelProps) {
   const [collapsed, setCollapsed] = useState(false);
   const { t, tCategory } = useLanguage();
+  const isMobile = useIsMobile();
+
+  // Close the expanded panel on Escape — but only when there's no input
+  // focused inside it (Esc inside SearchableSelect should clear search first).
+  useEffect(() => {
+    if (collapsed) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      setCollapsed(true);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [collapsed]);
 
   // ── Sub-region options depend on which region is selected ──────────────────
 
@@ -139,20 +155,24 @@ export default function MapFilterPanel({
   };
 
   // ── Collapsed pill ────────────────────────────────────────────────────────
+  // Mobile: detached pill with both side rounded corners + larger tap target so
+  // it doesn't blend into the map edge. Desktop: original flush-left pill.
   if (collapsed) {
     return (
-      <div className="absolute top-4 left-0 z-10">
+      <div className={isMobile ? "absolute top-3 left-3 z-10" : "absolute top-4 left-0 z-10"}>
         <button
           type="button"
           onClick={() => setCollapsed(false)}
           aria-label={t.filters.openFilters}
           className={[
-            "flex items-center gap-2 pl-3 pr-4 py-2.5",
-            "rounded-r-full shadow-lg",
-            "bg-background/90 backdrop-blur-xl",
-            "border border-l-0 border-border/40",
-            "text-sm font-medium text-foreground",
-            "transition-all duration-200 hover:pl-4",
+            "flex items-center gap-2 shadow-lg",
+            "bg-background/95 backdrop-blur-xl",
+            "border border-border/40",
+            "font-medium text-foreground",
+            "transition-all duration-200",
+            isMobile
+              ? "h-11 px-4 rounded-full text-sm"
+              : "pl-3 pr-4 py-2.5 rounded-r-full border-l-0 text-sm hover:pl-4",
           ].join(" ")}
         >
           <SlidersHorizontal className="w-4 h-4 text-primary flex-shrink-0" />
@@ -169,19 +189,39 @@ export default function MapFilterPanel({
   }
 
   // ── Expanded panel ────────────────────────────────────────────────────────
+  // Mobile: bottom sheet anchored to the bottom of the map, with a translucent
+  // backdrop so users see the sheet is dismissible and the map stays partially
+  // visible. Desktop: original left-side rail, no backdrop.
   return (
-    <div
-      className={[
-        "absolute top-0 left-0 z-10",
-        "h-full",
-        "w-full sm:w-80",
-        "bg-background/90 backdrop-blur-xl",
-        "border-r border-border/40",
-        "shadow-2xl",
-        "transition-transform duration-300 ease-out",
-      ].join(" ")}
-    >
-      <div className="flex flex-col h-full">
+    <>
+      {isMobile && (
+        <button
+          type="button"
+          aria-label={t.filters.closeFilters}
+          onClick={() => setCollapsed(true)}
+          className="absolute inset-0 z-[9] bg-black/40 backdrop-blur-[1px]"
+        />
+      )}
+      <div
+        className={[
+          "absolute z-10",
+          "bg-background/95 backdrop-blur-xl",
+          "shadow-2xl",
+          "transition-transform duration-300 ease-out",
+          isMobile
+            ? "bottom-0 left-0 right-0 max-h-[85dvh] rounded-t-2xl border-t border-border/40"
+            : "top-0 left-0 h-full w-full sm:w-80 border-r border-border/40",
+        ].join(" ")}
+      >
+      <div className="flex flex-col max-h-full sm:h-full">
+
+        {/* Mobile drag handle — gives the sheet a "draggable / dismissible" hint
+            even though we don't actually wire vaul gestures here. */}
+        {isMobile && (
+          <div className="flex-shrink-0 flex justify-center pt-2 pb-1">
+            <div className="w-10 h-1 rounded-full bg-border" />
+          </div>
+        )}
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 flex-shrink-0">
@@ -202,9 +242,12 @@ export default function MapFilterPanel({
               type="button"
               onClick={() => setCollapsed(true)}
               aria-label={t.filters.closeFilters}
-              className="p-1.5 rounded-lg hover:bg-secondary transition-colors text-muted-foreground"
+              className={[
+                "rounded-lg hover:bg-secondary transition-colors text-muted-foreground",
+                isMobile ? "h-10 w-10 inline-flex items-center justify-center" : "p-1.5",
+              ].join(" ")}
             >
-              <X className="w-4 h-4" />
+              <X className={isMobile ? "w-5 h-5" : "w-4 h-4"} />
             </button>
           </div>
         </div>
@@ -335,6 +378,7 @@ export default function MapFilterPanel({
 
       </div>
     </div>
+    </>
   );
 }
 
