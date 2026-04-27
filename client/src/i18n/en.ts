@@ -862,6 +862,7 @@ export const en: Translations = {
     focusPlaceholder: "Ask about {grantName}...",
     chatTab: "AI Chat",
     grantSuggestedPrompts: ["How do I apply?", "Am I eligible?", "Tell me more about this grant"],
+    orgSuggestedPrompts: ["What does this organization offer?", "Who do they help?", "Tell me more about this organization"],
   },
   resources: {
     typeGrant: "Grants",

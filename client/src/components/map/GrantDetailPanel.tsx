@@ -222,6 +222,38 @@ function InfoTabContent({ item }: { item: CatalogItem }) {
   const location = formatLocation(item.country, item.state, item.city);
   const catStyle  = getCategoryStyle(item.category);
   const catIcon   = categoryIcon(item.category);
+  const isOrg     = item.type !== "grant";
+
+  const descriptionTitle = isOrg
+    ? (t.resourceDetail?.descriptionTitle ?? t.grantDetail.description)
+    : t.grantDetail.description;
+
+  const contactSection = (present(item.website) || present(item.email) || present(item.phone)) ? (
+    <Section title={t.grantDetail.contact}>
+      <div className="space-y-2">
+        {present(item.website) && (() => {
+          const href = safeWebsiteHref(item.website);
+          return href ? (
+            <LinkButton href={href} icon={<Globe className="w-4 h-4" />} label={item.website} />
+          ) : null;
+        })()}
+        {present(item.email) && (
+          <LinkButton
+            href={`mailto:${safeMail(item.email)}`}
+            icon={<Mail className="w-4 h-4" />}
+            label={item.email}
+          />
+        )}
+        {present(item.phone) && (
+          <LinkButton
+            href={`tel:${safeTel(item.phone)}`}
+            icon={<Phone className="w-4 h-4" />}
+            label={item.phone}
+          />
+        )}
+      </div>
+    </Section>
+  ) : null;
 
   return (
     <div id="panel-tab-info" role="tabpanel" className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-5">
@@ -257,7 +289,22 @@ function InfoTabContent({ item }: { item: CatalogItem }) {
         )}
       </div>
 
-      {/* Key metrics */}
+      {/* Location */}
+      {location.length > 0 && (
+        <InfoRow icon={<MapPin className="w-4 h-4" />} text={location} />
+      )}
+
+      {/* Description — uses "About this organization" title for orgs */}
+      {present(item.description) && (
+        <Section title={descriptionTitle}>
+          <p className="text-sm text-foreground leading-relaxed">{item.description}</p>
+        </Section>
+      )}
+
+      {/* Contact — surfaced up-top for organisations so it's the second thing they see */}
+      {isOrg && contactSection}
+
+      {/* Key metrics — typically only meaningful for grants */}
       {(present(item.amount) || present(item.deadline) || present(item.status)) && (
         <div className="grid grid-cols-2 gap-2">
           {present(item.amount) && (
@@ -285,18 +332,6 @@ function InfoTabContent({ item }: { item: CatalogItem }) {
             </div>
           )}
         </div>
-      )}
-
-      {/* Location */}
-      {location.length > 0 && (
-        <InfoRow icon={<MapPin className="w-4 h-4" />} text={location} />
-      )}
-
-      {/* Description */}
-      {present(item.description) && (
-        <Section title={t.grantDetail.description}>
-          <p className="text-sm text-foreground leading-relaxed">{item.description}</p>
-        </Section>
       )}
 
       {/* Eligibility */}
@@ -349,33 +384,8 @@ function InfoTabContent({ item }: { item: CatalogItem }) {
         </Section>
       )}
 
-      {/* Links */}
-      {(present(item.website) || present(item.email) || present(item.phone)) && (
-        <Section title={t.grantDetail.contact}>
-          <div className="space-y-2">
-            {present(item.website) && (() => {
-              const href = safeWebsiteHref(item.website);
-              return href ? (
-                <LinkButton href={href} icon={<Globe className="w-4 h-4" />} label={item.website} />
-              ) : null;
-            })()}
-            {present(item.email) && (
-              <LinkButton
-                href={`mailto:${safeMail(item.email)}`}
-                icon={<Mail className="w-4 h-4" />}
-                label={item.email}
-              />
-            )}
-            {present(item.phone) && (
-              <LinkButton
-                href={`tel:${safeTel(item.phone)}`}
-                icon={<Phone className="w-4 h-4" />}
-                label={item.phone}
-              />
-            )}
-          </div>
-        </Section>
-      )}
+      {/* Links — kept in original position only for grants; orgs render contact up-top instead */}
+      {!isOrg && contactSection}
 
       {/* Resource detail link — shown for Supabase resources with a slug */}
       {item.resourceSlug && (
@@ -474,12 +484,17 @@ function AiTabContent({ item }: { item: CatalogItem }) {
   }, []);
 
   const suggestedPrompts = useMemo(
-    () => t.aiAssistant.grantSuggestedPrompts ?? [
-      t.aiAssistant.suggestedPrompts?.[0] ?? "How do I apply?",
-      "Am I eligible?",
-      "Tell me more",
-    ],
-    [t],
+    () => {
+      const isOrg = item.type !== "grant";
+      const orgPrompts = t.aiAssistant.orgSuggestedPrompts;
+      const grantPrompts = t.aiAssistant.grantSuggestedPrompts;
+      return (isOrg ? orgPrompts : grantPrompts) ?? [
+        t.aiAssistant.suggestedPrompts?.[0] ?? "How do I apply?",
+        "Am I eligible?",
+        "Tell me more",
+      ];
+    },
+    [t, item.type],
   );
 
   return (
