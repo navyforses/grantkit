@@ -895,6 +895,7 @@ export interface Translations {
     focusPlaceholder: string;
     chatTab: string;
     grantSuggestedPrompts: string[];
+    orgSuggestedPrompts: string[];
   };
 
   // Resource system (Supabase multi-category resources)

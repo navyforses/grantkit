@@ -860,6 +860,7 @@ export const ru: Translations = {
     focusPlaceholder: "Вопрос о {grantName}...",
     chatTab: "ИИ Чат",
     grantSuggestedPrompts: ["Как подать заявку?", "Подхожу ли я?", "Расскажите больше об этом гранте"],
+    orgSuggestedPrompts: ["Что предлагает эта организация?", "Кому они помогают?", "Расскажите больше об этой организации"],
   },
   resources: {
     typeGrant: "Гранты",

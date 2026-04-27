@@ -860,6 +860,7 @@ export const es: Translations = {
     focusPlaceholder: "Pregunta sobre {grantName}...",
     chatTab: "Chat IA",
     grantSuggestedPrompts: ["¿Cómo solicito?", "¿Soy elegible?", "Cuéntame más sobre esta subvención"],
+    orgSuggestedPrompts: ["¿Qué ofrece esta organización?", "¿A quiénes ayudan?", "Cuéntame más sobre esta organización"],
   },
   resources: {
     typeGrant: "Becas",

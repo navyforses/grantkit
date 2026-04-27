@@ -860,6 +860,7 @@ export const fr: Translations = {
     focusPlaceholder: "Question sur {grantName}...",
     chatTab: "Chat IA",
     grantSuggestedPrompts: ["Comment postuler ?", "Suis-je éligible ?", "Dites-moi en plus sur cette subvention"],
+    orgSuggestedPrompts: ["Que propose cette organisation ?", "Qui aident-ils ?", "Dites-moi en plus sur cette organisation"],
   },
   resources: {
     typeGrant: "Subventions",

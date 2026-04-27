@@ -862,6 +862,7 @@ export const ka: Translations = {
     focusPlaceholder: "შეკითხვა {grantName}-ს შესახებ...",
     chatTab: "AI ჩატი",
     grantSuggestedPrompts: ["როგორ განვაცხადო?", "ვარ თუ არა უფლებამოსილი?", "მომიყევი მეტი ამ გრანტზე"],
+    orgSuggestedPrompts: ["რას სთავაზობს ეს ორგანიზაცია?", "ვის ეხმარებიან?", "მომიყევი მეტი ამ ორგანიზაციაზე"],
   },
   resources: {
     typeGrant: "გრანტები",

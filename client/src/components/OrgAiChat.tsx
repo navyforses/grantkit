@@ -104,7 +104,7 @@ export default function OrgAiChat({
 
   const suggestedPrompts = useMemo(
     () =>
-      t.aiAssistant.grantSuggestedPrompts ?? [
+      t.aiAssistant.orgSuggestedPrompts ?? [
         "What services does this organisation offer?",
         "Who is eligible for support here?",
         "How do I contact them?",
