@@ -394,10 +394,13 @@ export default function Catalog() {
     if (smartItems) return smartItems;
     if (catalogData?.organizations) {
       return catalogData.organizations.map((o) => {
-        const firstCategory = (o.categories ?? "")
+        const allCats = (o.categories ?? "")
           .split(",")
           .map((c) => c.trim())
-          .filter(Boolean)[0] || "other";
+          .filter(Boolean);
+        // Prefer a meaningful category over the catch-all "other" so the
+        // visible badge tells the user what the org actually does.
+        const firstCategory = allCats.find((c) => c !== "other") ?? allCats[0] ?? "other";
         return {
           id: o.orgId,
           orgId: o.orgId,
@@ -405,7 +408,7 @@ export default function Catalog() {
           organization: o.name,
           description: o.description || "",
           category: firstCategory,
-          type: "grant" as const,
+          type: "resource" as const,
           country: o.country,
           eligibility: "",
           website: o.website || "",
@@ -466,7 +469,7 @@ export default function Catalog() {
         organization: p.name,
         description: "",
         category: "other",
-        type: "grant" as const,
+        type: "resource" as const,
         country: p.country,
         eligibility: "",
         website: "",
@@ -590,12 +593,18 @@ export default function Catalog() {
   );
 
   // Phase 5 — detail panel for the selected marker.
-  // Prefer displayItems (may carry translations) then fall back to mapItems (full catalog).
+  // Prefer displayItems (full org data with description + contact) then fall back to mapItems.
+  // When selectedItemId is a branchId from the map, the displayItems lookup misses (orgId-keyed),
+  // so we resolve via the orgId on the matching mapItem to recover the full org row.
   const selectedItem = useMemo(
-    () =>
-      displayItems.find((g) => g.id === selectedItemId) ??
-      mapItems.find((g) => g.id === selectedItemId) ??
-      null,
+    () => {
+      const mapItem = mapItems.find((g) => g.id === selectedItemId);
+      if (mapItem?.orgId) {
+        const fullOrg = displayItems.find((g) => g.orgId === mapItem.orgId);
+        if (fullOrg) return fullOrg;
+      }
+      return displayItems.find((g) => g.id === selectedItemId) ?? mapItem ?? null;
+    },
     [displayItems, mapItems, selectedItemId]
   );
   const handleToggleSave = useCallback(() => {

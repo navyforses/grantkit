@@ -57,7 +57,7 @@ export default function CatalogSidebar({
     <aside
       aria-label={t.toolbar.category.label}
       className={cn(
-        "w-[240px] shrink-0 h-full overflow-y-auto border-r border-border bg-background",
+        "w-[280px] shrink-0 h-full overflow-y-auto border-r border-border bg-background",
         "scrollbar-thin",
         className,
       )}
