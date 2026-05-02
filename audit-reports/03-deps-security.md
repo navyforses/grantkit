@@ -26,7 +26,7 @@ Total dependencies: 1,206
 | Package | Current | Patched | Severity | Issue |
 |---|---|---|---|---|
 | `@anthropic-ai/sdk` | `^0.88.0` | `0.91.1+` | moderate | CVE-2026-41686 — insecure file permissions in `BetaLocalFilesystemMemoryTool` (world-readable memory files) |
-| `pnpm` (devDep) | `10.18.1` | `10.27.0+` | high | CVE-2025-69262 — RCE via env var substitution in `.npmrc` `tokenHelper` |
+| `pnpm` (runtime) | `10.4.1` (via `packageManager`) | `10.27.0+` | high | CVE-2025-69262 — RCE via env var substitution in `.npmrc` `tokenHelper`. **The `devDependencies.pnpm` entry (`10.18.1`) is cosmetic — Corepack uses the `packageManager` field**. The CI workflow `daily-discovery.yml` also calls `pnpm/action-setup@v4` with no `version:` input, so it inherits the same pin. Both must be updated. |
 | `xlsx` | `^0.18.5` | **none** | high × 2 | Prototype Pollution + ReDoS. **The `xlsx` project moved off npm** — no patched npm version exists. Migration to alternative (`exceljs`, `node-xlsx`) recommended. |
 | `vite` | `^7.1.7` | `7.x` patches | high × 2, mod × 4 | fs.deny bypass, path traversal, arbitrary file read via WS, `.map` path traversal |
 | `express` | `^4.21.2` | `5.x` | high (transitive: `path-to-regexp`) | ReDoS in route param handling |
@@ -120,11 +120,33 @@ c3d2421 fix(catalog): hydrate selected map item with full org row + correct type
 ## 🎯 Recommended remediation order
 
 ### Tier 1 — Quick security patches (low risk, high value)
+
 ```bash
 pnpm update @anthropic-ai/sdk@latest        # → 0.92.x, fixes CVE-2026-41686
-pnpm add -D pnpm@latest                     # → 10.33.x, fixes CVE-2025-69262
 ```
-~5 min work, no breaking changes expected.
+
+For pnpm CVE-2025-69262, `pnpm add -D pnpm@latest` is **not enough** — it only updates a cosmetic devDependency entry. The actual runtime pnpm version is controlled by:
+
+1. **`package.json` `packageManager` field** (line 166) — currently pinned to `pnpm@10.4.1`, which is in the vulnerable range. Corepack uses this value, ignoring `devDependencies.pnpm`.
+2. **`.github/workflows/daily-discovery.yml`** — `pnpm/action-setup@v4` is used **without a `version:` input**, so it falls back to the `packageManager` value (also vulnerable).
+
+**Correct remediation:**
+```jsonc
+// package.json
+"packageManager": "pnpm@10.33.2+sha512.<new hash>"  // or any 10.27.0+
+```
+
+Update steps:
+1. `corepack use pnpm@10.33.2` (rewrites `packageManager` with a fresh integrity hash)
+2. Verify locally: `pnpm --version` reports the new version
+3. Either trust `packageManager` for CI (already does), or pin explicitly in the workflow:
+   ```yaml
+   - uses: pnpm/action-setup@v4
+     with:
+       version: 10.33.2
+   ```
+
+~10 min work, no breaking changes expected.
 
 ### Tier 2 — Vite security patches (within vite 7.x, then v8)
 - Try `pnpm update vite@^7` first (within-major patch)

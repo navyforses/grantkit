@@ -15,7 +15,7 @@
 | 2 | **`ai.grantChat` is publicProcedure — no rate limit, no auth** → unbounded Anthropic API spend | 🔴 HIGH | 15 min | Code fix |
 | 3 | **tRPC `errorFormatter` leaks SQL queries to clients** in production | 🟠 MOD | 5 min | Code fix |
 | 4 | **`@anthropic-ai/sdk` 0.88 has CVE-2026-41686** (insecure file perms) | 🟠 MOD | 5 min | `pnpm update` |
-| 5 | **`pnpm` 10.18.1 has CVE-2025-69262** (RCE via env) | 🟠 HIGH | 5 min | `pnpm update` |
+| 5 | **`pnpm` runtime 10.4.1 (per `packageManager` field) has CVE-2025-69262** (RCE via env) — `pnpm add -D pnpm@latest` is **not enough**; must update `package.json` `packageManager` and pin the workflow's `pnpm/action-setup` `version` | 🟠 HIGH | 10 min | `corepack use pnpm@10.33.2` + workflow pin |
 | 6 | **`xlsx` package — 2 unpatched HIGH CVEs**, project moved off npm | 🟠 HIGH | 1–2 hr | Migrate to `exceljs` |
 | 7 | **`Catalog.tsx` freeze rule** — listed as DO-NOT-TOUCH but 5 commits since | 🟡 LOW | 5 min | Update CLAUDE.md/PROJECT_MAP.md |
 
