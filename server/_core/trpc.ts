@@ -45,7 +45,12 @@ const t = initTRPC.context<TrpcContext>().create({
       ...shape,
       data: {
         ...shape.data,
-        causeChain: extractCauseChain(error.cause ?? error),
+        // Only expose the underlying mysql/node cause chain in non-production
+        // environments. In prod this can leak SQL queries, table names, and
+        // sqlState codes to API consumers (info disclosure).
+        ...(process.env.NODE_ENV !== "production" && {
+          causeChain: extractCauseChain(error.cause ?? error),
+        }),
       },
     };
   },
