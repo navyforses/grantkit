@@ -28,7 +28,7 @@ Defined in `client/src/App.tsx`.
 | URL | Component | What users see |
 |---|---|---|
 | `/` | Home.tsx | Landing page, hero, features, pricing, FAQ |
-| `/catalog` | 🚫 **FROZEN** Catalog.tsx | Split view — map + org list with filters |
+| `/catalog` | Catalog.tsx | Split view — map + org list with filters |
 | `/organizations/:orgId` | OrganizationDetail.tsx | **Primary detail page** — compact map + branches + trust + enrichment |
 | `/grant/:id` | ⚠️ **LEGACY** EntityDetail.tsx | Legacy grant detail — only used as fallback |
 | `/profile` | Profile.tsx | User profile, subscription status |
@@ -196,7 +196,7 @@ See `.grantkit-redesign/OPS.md` for full operational details.
 ## 🚫 Constraints
 
 ### Frozen files (🚫 DO NOT TOUCH)
-- `client/src/pages/Catalog.tsx`
+- _(none — `Catalog.tsx` un-frozen 2026-05-02 per audit PR #194; see CLAUDE.md historical note)_
 
 ### Legacy files (⚠️ do not extend, new features go elsewhere)
 - `client/src/pages/EntityDetail.tsx` — `/grant/:id` (extend OrganizationDetail instead)
