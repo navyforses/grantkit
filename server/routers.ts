@@ -1324,8 +1324,11 @@ export const appRouter = router({
      *   - MCP Toolbox server running (pnpm toolbox:start)
      *   - BUILT_IN_FORGE_API_KEY configured
      *   - MCP_TOOLBOX_URL pointing at the running server (default: localhost:5000)
+     *
+     * Auth: protectedProcedure — each call hits the paid Anthropic/Forge API,
+     * so unauthenticated traffic is gated to prevent uncapped LLM spend.
      */
-    grantChat: publicProcedure
+    grantChat: protectedProcedure
       .input(
         z.object({
           message: z.string().min(1).max(1000),
