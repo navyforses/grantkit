@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { createServer } from "http";
 import net from "net";
@@ -57,6 +58,20 @@ async function startServer() {
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
   }));
+  // Per-IP rate limit on tRPC traffic. Mounted before body parsers so a
+  // throttled client never burns the 50 MB JSON parse. Path-specific
+  // limits for /auth.* and /ai.* are a follow-up — tRPC's dot-syntax
+  // route names need a custom matcher.
+  app.use(
+    "/api/trpc",
+    rateLimit({
+      windowMs: 60_000,
+      limit: 100,
+      standardHeaders: "draft-7",
+      legacyHeaders: false,
+      message: { error: "Too many requests, please slow down." },
+    })
+  );
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
