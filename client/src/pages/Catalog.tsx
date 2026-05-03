@@ -37,7 +37,12 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { useLocation, useSearch } from "wouter";
 import SEO from "@/components/SEO";
-import MapPanel from "@/components/MapPanel";
+// MapPanel pulls in @googlemaps/markerclusterer + the Google Maps loader,
+// which together fetch a ~750 KB Maps script + tile imagery on first render.
+// Most mobile users never switch to the Map tab; desktop users may stay in
+// list mode. Make the panel lazy so its chunk + the Maps API only download
+// when the map is actually shown.
+const MapPanel = lazy(() => import("@/components/MapPanel"));
 import MapStatsBar, { type FilterKey } from "@/components/map/MapStatsBar";
 import { useSaveEntity } from "@/hooks/useSaveEntity";
 const MapFilterPanel  = lazy(() => import("@/components/map/MapFilterPanel"));
@@ -748,13 +753,15 @@ export default function Catalog() {
           </div>
         ) : (
           <>
-            <MapPanel
-              className="absolute inset-0 w-full h-full"
-              grants={activeMapItems as unknown as import("@/components/MapPanel").MapPanelGrant[]}
-              highlightedId={selectedItemId}
-              onMarkerClick={handleMarkerClick}
-              onMapReady={handleMapReady}
-            />
+            <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">…</div>}>
+              <MapPanel
+                className="absolute inset-0 w-full h-full"
+                grants={activeMapItems as unknown as import("@/components/MapPanel").MapPanelGrant[]}
+                highlightedId={selectedItemId}
+                onMarkerClick={handleMarkerClick}
+                onMapReady={handleMapReady}
+              />
+            </Suspense>
 
             {/* Phase 2 — cascading filter panel overlay (map-only; list view relies on the toolbar) */}
             <Suspense fallback={null}>
