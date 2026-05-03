@@ -38,6 +38,7 @@
     "normalize:countries": "tsx scripts/normalize-country-codes.ts",
     "sitemap:generate": "tsx scripts/generate-sitemap.ts",
     "audit:locations": "tsx scripts/audit-locations.ts",
+    "audit:db": "tsx scripts/audit-db-content.ts",
     "audit:locations:sample": "tsx scripts/audit-locations.ts --limit=20",
     "enhance:locations:dry": "tsx scripts/enhance-locations.ts",
     "enhance:locations": "tsx scripts/enhance-locations.ts --apply",
