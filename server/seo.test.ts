@@ -9,6 +9,10 @@ vi.mock("./db", () => ({
     { itemId: "item_0002", updatedAt: new Date("2026-03-20") },
     { itemId: "item_0003", updatedAt: new Date("2026-03-25") },
   ]),
+  getAllOrgIds: vi.fn().mockResolvedValue([
+    { orgId: "org_001", updatedAt: new Date("2026-04-01") },
+    { orgId: "org_002", updatedAt: new Date("2026-04-10") },
+  ]),
 }));
 
 import { registerSeoRoutes } from "./seoRoutes";

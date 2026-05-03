@@ -1395,6 +1395,18 @@ export async function getAllGrantItemIds(): Promise<Array<{ itemId: string; upda
   return result;
 }
 
+export async function getAllOrgIds(): Promise<Array<{ orgId: string; updatedAt: Date }>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({ orgId: organizations.orgId, updatedAt: organizations.updatedAt })
+    .from(organizations)
+    .orderBy(asc(organizations.name));
+
+  return result;
+}
+
 // ===== Organizations helpers =====
 
 /**

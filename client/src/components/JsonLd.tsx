@@ -12,7 +12,7 @@ export function OrganizationJsonLd() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "GrantKit",
-    url: typeof window !== "undefined" ? window.location.origin : "https://grantkit-ne96tb4y.manus.space",
+    url: window.location.origin,
     logo: "https://d2xsxph8kpxj0f.cloudfront.net/310519663102724389/ne96tB4yURpkfMNLLJuy9T/og-image-LT43qbv2mf3WDHuJv8pmuH.png",
     description:
       `Curated database of ${GRANT_COUNT_DISPLAY} grants for medical treatment, financial assistance, and academic scholarships worldwide.`,
@@ -33,7 +33,8 @@ export function OrganizationJsonLd() {
 
 /** WebSite schema with search action for sitelinks search box */
 export function WebSiteJsonLd() {
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://grantkit-ne96tb4y.manus.space";
+  const origin = window.location.origin;
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -114,7 +115,8 @@ export function GrantJsonLd({
   }
 
   // BreadcrumbList for grant detail pages
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://grantkit-ne96tb4y.manus.space";
+  const origin = window.location.origin;
+
   const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
