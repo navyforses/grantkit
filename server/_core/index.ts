@@ -58,20 +58,17 @@ async function startServer() {
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
   }));
-  // Per-IP rate limit on tRPC traffic. Mounted before body parsers so a
-  // throttled client never burns the 50 MB JSON parse. Path-specific
-  // limits for /auth.* and /ai.* are a follow-up — tRPC's dot-syntax
-  // route names need a custom matcher.
-  app.use(
-    "/api/trpc",
-    rateLimit({
-      windowMs: 60_000,
-      limit: 100,
-      standardHeaders: "draft-7",
-      legacyHeaders: false,
-      message: { error: "Too many requests, please slow down." },
-    })
-  );
+  // Per-IP rate limits on tRPC traffic. Mounted before body parsers so a
+  // throttled client never burns the 50 MB JSON parse.
+  // Express prefix-matches /api/trpc/auth against /api/trpc/auth.login etc.,
+  // so dot-suffix tRPC route names work without a custom matcher.
+  const rlBase = { standardHeaders: "draft-7" as const, legacyHeaders: false, message: { error: "Too many requests, please slow down." } };
+  // Auth endpoints — brute-force protection: 10 req/min/IP
+  app.use("/api/trpc/auth", rateLimit({ ...rlBase, windowMs: 60_000, limit: 10 }));
+  // AI endpoints — expensive compute: 20 req/min/IP
+  app.use("/api/trpc/ai", rateLimit({ ...rlBase, windowMs: 60_000, limit: 20 }));
+  // General tRPC baseline: 100 req/min/IP
+  app.use("/api/trpc", rateLimit({ ...rlBase, windowMs: 60_000, limit: 100 }));
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
