@@ -1,0 +1,189 @@
+import "dotenv/config";
+import express, { type Express } from "express";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import { createServer, type Server } from "http";
+import net from "net";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { registerPaddleWebhookRoute } from "../paddleWebhook";
+import { registerSeoRoutes } from "../seoRoutes";
+import { appRouter } from "../routers";
+import { createContext } from "./context";
+
+// Frontend wiring is the only thing that differs between dev and prod entry
+// points: dev mounts Vite middleware, prod serves the built static files.
+// Both entries call startServer() with their own implementation, so vite/*
+// stays out of the production esbuild graph entirely.
+export type FrontendSetup = (app: Express, server: Server) => Promise<void> | void;
+
+function unsubscribeHtml(success: boolean, message: string): string {
+  const color = success ? "#16a34a" : "#dc2626";
+  const icon = success ? "&#10003;" : "&#10007;";
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Unsubscribe - GrantKit</title></head>
+<body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+  <div style="background:#fff;border-radius:12px;padding:48px;max-width:480px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="width:64px;height:64px;border-radius:50%;background:${color}15;color:${color};font-size:32px;line-height:64px;margin:0 auto 24px;">${icon}</div>
+    <h1 style="margin:0 0 16px;color:#18181b;font-size:22px;font-weight:600;">${success ? "Unsubscribed" : "Error"}</h1>
+    <p style="margin:0 0 24px;color:#52525b;font-size:15px;line-height:1.6;">${message}</p>
+    <a href="/" style="display:inline-block;background:#6C3AED;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">Go to GrantKit</a>
+  </div>
+</body>
+</html>`;
+}
+
+function isPortAvailable(port: number): Promise<boolean> {
+  return new Promise(resolve => {
+    const server = net.createServer();
+    server.listen(port, () => {
+      server.close(() => resolve(true));
+    });
+    server.on("error", () => resolve(false));
+  });
+}
+
+async function findAvailablePort(startPort: number = 3000): Promise<number> {
+  for (let port = startPort; port < startPort + 20; port++) {
+    if (await isPortAvailable(port)) {
+      return port;
+    }
+  }
+  throw new Error(`No available port found starting from ${startPort}`);
+}
+
+export async function startServer(setupFrontend: FrontendSetup) {
+  const app = express();
+  const server = createServer(app);
+  // Security response headers.
+  // COEP=require-corp stays off — it would block Google Maps cross-origin tiles.
+  // CSP notes:
+  //   'unsafe-inline' in script-src is unavoidable: Google Maps JS API injects
+  //   inline scripts at runtime. Paddle.js does the same for its overlay.
+  //   'unsafe-inline' in style-src is unavoidable: Radix UI, Framer Motion,
+  //   and Recharts all write inline styles. Removing either requires nonces
+  //   threaded through Vite + React SSR — a separate, larger rollout.
+  //   Despite 'unsafe-inline', CSP still blocks scripts/frames/objects from
+  //   unwhitelisted external origins, preventing the most common XSS pivots.
+  //   Google Maps domains: the JS loader fetches initial code from
+  //   maps.googleapis.com but the bulk of map code, vector tiles, fonts,
+  //   and worker blobs come from maps.gstatic.com — both must be allowed.
+  const isDev = process.env.NODE_ENV !== "production";
+  app.use(helmet({
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",           // Google Maps + Paddle inject inline scripts
+          "blob:",                     // Maps loads worker scripts as blob: URLs
+          "https://maps.googleapis.com",
+          "https://maps.gstatic.com",  // Maps API runtime code lives here
+          "https://cdn.paddle.com",
+        ],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",           // Radix UI / Framer Motion / Recharts inline styles
+          "https://fonts.googleapis.com",
+          "https://maps.googleapis.com", // Maps injects stylesheet links
+          "https://maps.gstatic.com",
+        ],
+        fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "blob:",
+          "https://*.googleapis.com",  // Google Maps tiles + Street View
+          "https://*.gstatic.com",
+          "https://*.google.com",
+          "https://*.ggpht.com",       // Street View / Place photos
+          "https://*.googleusercontent.com", // Place photos
+          "https://d2xsxph8kpxj0f.cloudfront.net", // OG / CDN images
+        ],
+        connectSrc: [
+          "'self'",
+          "https://maps.googleapis.com",
+          "https://maps.gstatic.com",
+          "https://*.googleapis.com",
+          "https://api.paddle.com",
+          // Vite HMR websocket — dev only; not exposed in production builds
+          ...(isDev ? ["ws://localhost:*", "wss://localhost:*"] : []),
+        ],
+        workerSrc: ["'self'", "blob:"], // Maps worker scripts are blob: URLs
+        frameSrc: [
+          "https://buy.paddle.com",    // Paddle checkout overlay iframe
+          "https://sandbox-buy.paddle.com",
+        ],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+      },
+    },
+  }));
+  // Per-IP rate limits on tRPC traffic. Mounted before body parsers so a
+  // throttled client never burns the 50 MB JSON parse.
+  // Express prefix-matches /api/trpc/auth against /api/trpc/auth.login etc.,
+  // so dot-suffix tRPC route names work without a custom matcher.
+  const rlBase = { standardHeaders: "draft-7" as const, legacyHeaders: false, message: { error: "Too many requests, please slow down." } };
+  // Auth endpoints — brute-force protection: 10 req/min/IP
+  app.use("/api/trpc/auth", rateLimit({ ...rlBase, windowMs: 60_000, limit: 10 }));
+  // AI endpoints — expensive compute: 20 req/min/IP
+  app.use("/api/trpc/ai", rateLimit({ ...rlBase, windowMs: 60_000, limit: 20 }));
+  // General tRPC baseline: 100 req/min/IP
+  app.use("/api/trpc", rateLimit({ ...rlBase, windowMs: 60_000, limit: 100 }));
+  // Configure body parser with larger size limit for file uploads
+  app.use(express.json({ limit: "50mb" }));
+  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Paddle webhook under /api/paddle/webhook
+  registerPaddleWebhookRoute(app);
+  // SEO routes (sitemap.xml, robots.txt)
+  registerSeoRoutes(app);
+
+  // Health check for Railway / load balancers
+  app.get("/healthz", (_req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
+
+  // Newsletter unsubscribe route (GET for email link compatibility)
+  app.get("/api/newsletter/unsubscribe", async (req, res) => {
+    const token = req.query.token as string;
+    if (!token) {
+      return res.status(400).send(unsubscribeHtml(false, "Invalid unsubscribe link."));
+    }
+    try {
+      const { unsubscribeByToken } = await import("../db");
+      const result = await unsubscribeByToken(token);
+      if (result.success) {
+        return res.send(unsubscribeHtml(true, `You have been successfully unsubscribed${result.email ? ` (${result.email})` : ""}. You will no longer receive grant notification emails.`));
+      } else {
+        return res.send(unsubscribeHtml(false, "This unsubscribe link is invalid or has already been used."));
+      }
+    } catch (err) {
+      console.error("[Unsubscribe] Error:", err);
+      return res.status(500).send(unsubscribeHtml(false, "An error occurred. Please try again later."));
+    }
+  });
+  // tRPC API
+  app.use(
+    "/api/trpc",
+    createExpressMiddleware({
+      router: appRouter,
+      createContext,
+    })
+  );
+
+  await setupFrontend(app, server);
+
+  const preferredPort = parseInt(process.env.PORT || "3000");
+  const port = await findAvailablePort(preferredPort);
+
+  if (port !== preferredPort) {
+    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
+  }
+
+  server.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}/`);
+  });
+}
