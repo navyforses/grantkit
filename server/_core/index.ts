@@ -60,6 +60,9 @@ async function startServer() {
   //   threaded through Vite + React SSR — a separate, larger rollout.
   //   Despite 'unsafe-inline', CSP still blocks scripts/frames/objects from
   //   unwhitelisted external origins, preventing the most common XSS pivots.
+  //   Google Maps domains: the JS loader fetches initial code from
+  //   maps.googleapis.com but the bulk of map code, vector tiles, fonts,
+  //   and worker blobs come from maps.gstatic.com — both must be allowed.
   const isDev = process.env.NODE_ENV !== "production";
   app.use(helmet({
     crossOriginEmbedderPolicy: false,
@@ -69,13 +72,17 @@ async function startServer() {
         scriptSrc: [
           "'self'",
           "'unsafe-inline'",           // Google Maps + Paddle inject inline scripts
+          "blob:",                     // Maps loads worker scripts as blob: URLs
           "https://maps.googleapis.com",
+          "https://maps.gstatic.com",  // Maps API runtime code lives here
           "https://cdn.paddle.com",
         ],
         styleSrc: [
           "'self'",
           "'unsafe-inline'",           // Radix UI / Framer Motion / Recharts inline styles
           "https://fonts.googleapis.com",
+          "https://maps.googleapis.com", // Maps injects stylesheet links
+          "https://maps.gstatic.com",
         ],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
         imgSrc: [
@@ -85,16 +92,20 @@ async function startServer() {
           "https://*.googleapis.com",  // Google Maps tiles + Street View
           "https://*.gstatic.com",
           "https://*.google.com",
+          "https://*.ggpht.com",       // Street View / Place photos
+          "https://*.googleusercontent.com", // Place photos
           "https://d2xsxph8kpxj0f.cloudfront.net", // OG / CDN images
         ],
         connectSrc: [
           "'self'",
           "https://maps.googleapis.com",
+          "https://maps.gstatic.com",
           "https://*.googleapis.com",
           "https://api.paddle.com",
           // Vite HMR websocket — dev only; not exposed in production builds
           ...(isDev ? ["ws://localhost:*", "wss://localhost:*"] : []),
         ],
+        workerSrc: ["'self'", "blob:"], // Maps worker scripts are blob: URLs
         frameSrc: [
           "https://buy.paddle.com",    // Paddle checkout overlay iframe
           "https://sandbox-buy.paddle.com",
