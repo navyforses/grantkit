@@ -5,15 +5,13 @@
  */
 
 import type { Express } from "express";
-import { getAllGrantItemIds } from "./db";
-
-const LANGUAGES = ["en", "fr", "es", "ru", "ka"] as const;
-const DEFAULT_LANG = "en";
+import { getAllGrantItemIds, getAllOrgIds } from "./db";
 
 // Static pages with their change frequency and priority
 const STATIC_PAGES = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/catalog", changefreq: "daily", priority: "0.9" },
+  { path: "/organizations", changefreq: "daily", priority: "0.8" },
   { path: "/contact", changefreq: "monthly", priority: "0.5" },
   { path: "/privacy", changefreq: "yearly", priority: "0.3" },
   { path: "/terms", changefreq: "yearly", priority: "0.3" },
@@ -21,7 +19,7 @@ const STATIC_PAGES = [
 ] as const;
 
 function getBaseUrl(req: { protocol: string; get: (name: string) => string | undefined }): string {
-  const host = req.get("host") || "grantkit-ne96tb4y.manus.space";
+  const host = req.get("host") || process.env.RAILWAY_PUBLIC_DOMAIN || "localhost:3000";
   const protocol = req.get("x-forwarded-proto") || req.protocol || "https";
   return `${protocol}://${host}`;
 }
@@ -65,7 +63,7 @@ export function registerSeoRoutes(app: Express) {
   app.get("/sitemap.xml", async (req, res) => {
     try {
       const baseUrl = getBaseUrl(req);
-      const grantItems = await getAllGrantItemIds();
+      const [grantItems, orgItems] = await Promise.all([getAllGrantItemIds(), getAllOrgIds()]);
       const now = formatDate(new Date());
 
       let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -79,6 +77,17 @@ export function registerSeoRoutes(app: Express) {
         xml += `    <lastmod>${now}</lastmod>\n`;
         xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
         xml += `    <priority>${page.priority}</priority>\n`;
+        xml += "  </url>\n";
+      }
+
+      // Organization detail pages (primary detail pages)
+      for (const org of orgItems) {
+        const lastmod = formatDate(org.updatedAt);
+        xml += "  <url>\n";
+        xml += `    <loc>${escapeXml(baseUrl + "/organizations/" + org.orgId)}</loc>\n`;
+        xml += `    <lastmod>${lastmod}</lastmod>\n`;
+        xml += `    <changefreq>monthly</changefreq>\n`;
+        xml += `    <priority>0.8</priority>\n`;
         xml += "  </url>\n";
       }
 

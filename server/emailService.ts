@@ -68,7 +68,9 @@ const BRAND_GREEN = "#16a34a";
 const BRAND_NAME = "GrantKit";
 const FROM_EMAIL = "onboarding@resend.dev"; // Resend default sender for testing
 const SUPPORT_EMAIL = "support@grantkit.io";
-const SITE_URL = "https://grantkit-ne96tb4y.manus.space";
+const SITE_URL = process.env.RAILWAY_PUBLIC_DOMAIN
+  ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+  : "https://grantkit-production-06f7.up.railway.app";
 
 function baseTemplate(title: string, content: string, footerExtra?: string): string {
   return `<!DOCTYPE html>
