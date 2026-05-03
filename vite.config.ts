@@ -150,7 +150,12 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+// Manus runtime + debug-collector are dev tools — they inject 200+ KB of
+// inline script into index.html. Excluded from production to keep TTFB low.
+const isProd = process.env.NODE_ENV === "production";
+const plugins = isProd
+  ? [react(), tailwindcss(), jsxLocPlugin()]
+  : [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
 export default defineConfig({
   plugins,
