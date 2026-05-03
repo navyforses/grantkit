@@ -17,7 +17,7 @@
  * aren't savable today. Tracked alongside the other grant/org data gaps.
  */
 
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "wouter";
 import {
   ArrowUpRight,
@@ -39,7 +39,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import OrganizationsMap, { type OrgMapPoint } from "@/components/OrganizationsMap";
-import OrgAiChat from "@/components/OrgAiChat";
+const OrgAiChat = lazy(() => import("@/components/OrgAiChat"));
 import GrantDetailHeader from "@/components/grant/GrantDetailHeader";
 import TrustPanel from "@/components/org/TrustPanel";
 import WhoWeHelpCard from "@/components/org/WhoWeHelpCard";
@@ -62,6 +62,12 @@ export default function OrganizationDetail() {
   const { t, tCountry } = useLanguage();
   const { isAuthenticated } = useAuth();
   const [aiOpen, setAiOpen] = useState(false);
+  // Latch — once the chat has been opened we keep the lazy chunk mounted
+  // (even when the sheet is closed) so messages survive open/close cycles.
+  const [hasOpenedAi, setHasOpenedAi] = useState(false);
+  useEffect(() => {
+    if (aiOpen) setHasOpenedAi(true);
+  }, [aiOpen]);
 
   const detailQuery = trpc.organizations.detail.useQuery(
     { orgId: orgId ?? "" },
@@ -521,23 +527,27 @@ export default function OrganizationDetail() {
             </SheetTitle>
           </SheetHeader>
           <div className="flex-1 min-h-0">
-            <OrgAiChat
-              className="h-full border-0 rounded-none bg-background"
-              orgId={orgId}
-              org={{
-                name: orgName,
-                description: orgDescription || null,
-                address: org.hqAddress ?? null,
-                city: org.city ?? null,
-                state: org.state ?? null,
-                country: org.country ?? null,
-                phone: org.phone ?? null,
-                email: org.email ?? null,
-                website: website || null,
-                serviceArea: org.serviceArea ?? null,
-                categories: org.categories ?? null,
-              }}
-            />
+            {hasOpenedAi && (
+              <Suspense fallback={<div className="flex h-full items-center justify-center text-sm text-muted-foreground">{t.aiAssistant.emptyState}</div>}>
+                <OrgAiChat
+                  className="h-full border-0 rounded-none bg-background"
+                  orgId={orgId}
+                  org={{
+                    name: orgName,
+                    description: orgDescription || null,
+                    address: org.hqAddress ?? null,
+                    city: org.city ?? null,
+                    state: org.state ?? null,
+                    country: org.country ?? null,
+                    phone: org.phone ?? null,
+                    email: org.email ?? null,
+                    website: website || null,
+                    serviceArea: org.serviceArea ?? null,
+                    categories: org.categories ?? null,
+                  }}
+                />
+              </Suspense>
+            )}
           </div>
         </SheetContent>
       </Sheet>

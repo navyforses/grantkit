@@ -12,7 +12,7 @@
  * Closed by the X button, the Escape key, or clicking the backdrop (mobile).
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   X, Bookmark, BookmarkCheck, Globe, Mail, Phone,
@@ -23,7 +23,13 @@ import { Link } from "wouter";
 import { type CatalogItem, CATEGORIES, getCategoryStyle } from "@/lib/constants";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { AIChatBox, type Message } from "@/components/AIChatBox";
+// AIChatBox is lazy-loaded — the panel mounts on marker click but the AI tab
+// is one click further. Keeping the chat chunk out of the panel chunk means
+// users browsing only the Info tab never download the ~600 KB chat bundle.
+import { type Message } from "@/components/AIChatBox";
+const AIChatBox = lazy(() =>
+  import("@/components/AIChatBox").then((m) => ({ default: m.AIChatBox })),
+);
 import type { ParsedGrant } from "@/components/GrantCard";
 import { trpc } from "@/lib/trpc";
 import { buildGrantFocusContext } from "@/lib/grantFocusContext";
@@ -499,31 +505,33 @@ function AiTabContent({ item }: { item: CatalogItem }) {
 
   return (
     <div id="panel-tab-ai" role="tabpanel" className="flex-1 flex flex-col min-h-0">
-      <AIChatBox
-        className="flex-1 min-h-0 border-0 shadow-none rounded-none"
-        messages={messages}
-        onSendMessage={handleSend}
-        onClearMessages={handleClear}
-        isLoading={grantChat.isPending}
-        error={grantChat.isError}
-        onRetry={handleRetry}
-        hideHeader
-        emptyStateMessage={t.aiAssistant.emptyState}
-        suggestedPrompts={suggestedPrompts}
-        placeholder={
-          t.aiAssistant.focusPlaceholder.replace(
-            "{grantName}",
-            item.name.length > 30 ? item.name.slice(0, 30) + "…" : item.name,
-          )
-        }
-        focusedGrant={focusGrant}
-        focusLabel={t.aiAssistant.focusLabel}
-        removeFocusLabel={t.aiAssistant.removeFocus}
-        newChatLabel={t.aiAssistant.newChat}
-        copyLabel={t.aiAssistant.copy}
-        errorMessage={t.aiAssistant.error}
-        retryLabel={t.aiAssistant.retry}
-      />
+      <Suspense fallback={<div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">{t.aiAssistant.emptyState}</div>}>
+        <AIChatBox
+          className="flex-1 min-h-0 border-0 shadow-none rounded-none"
+          messages={messages}
+          onSendMessage={handleSend}
+          onClearMessages={handleClear}
+          isLoading={grantChat.isPending}
+          error={grantChat.isError}
+          onRetry={handleRetry}
+          hideHeader
+          emptyStateMessage={t.aiAssistant.emptyState}
+          suggestedPrompts={suggestedPrompts}
+          placeholder={
+            t.aiAssistant.focusPlaceholder.replace(
+              "{grantName}",
+              item.name.length > 30 ? item.name.slice(0, 30) + "…" : item.name,
+            )
+          }
+          focusedGrant={focusGrant}
+          focusLabel={t.aiAssistant.focusLabel}
+          removeFocusLabel={t.aiAssistant.removeFocus}
+          newChatLabel={t.aiAssistant.newChat}
+          copyLabel={t.aiAssistant.copy}
+          errorMessage={t.aiAssistant.error}
+          retryLabel={t.aiAssistant.retry}
+        />
+      </Suspense>
     </div>
   );
 }

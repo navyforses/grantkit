@@ -26,7 +26,7 @@
  * ("grant" vs "resource") — see conditional blocks below.
  */
 
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Link, useParams, useLocation } from "wouter";
 import {
   ArrowUpRight,
@@ -65,7 +65,7 @@ import { openInGoogleMapsDirections } from "@/lib/googleMaps";
 import { catalogItems } from "@/data/catalogData";
 import { useSaveEntity } from "@/hooks/useSaveEntity";
 import { pickLocalizedFields } from "@/lib/localizeEntity";
-import GrantAiChat from "@/components/GrantAiChat";
+const GrantAiChat = lazy(() => import("@/components/GrantAiChat"));
 import GrantDetailHeader from "@/components/grant/GrantDetailHeader";
 import MatchSummary from "@/components/grant/MatchSummary";
 import { parseToBullets, parseToSteps } from "@/lib/parseList";
@@ -78,6 +78,12 @@ export default function EntityDetail() {
   const { t, tCategory, tCountry, tCatalogContent, language } = useLanguage();
   const { isAuthenticated, user } = useAuth();
   const [aiOpen, setAiOpen] = useState(false);
+  // Latch — once the chat has been opened we keep the lazy chunk mounted
+  // (even when the sheet is closed) so messages survive open/close cycles.
+  const [hasOpenedAi, setHasOpenedAi] = useState(false);
+  useEffect(() => {
+    if (aiOpen) setHasOpenedAi(true);
+  }, [aiOpen]);
 
   const itemId = params.id || "";
   const { data: detailData, isLoading } = trpc.catalog.detail.useQuery(
@@ -751,32 +757,36 @@ export default function EntityDetail() {
             </SheetTitle>
           </SheetHeader>
           <div className="flex-1 min-h-0">
-            <GrantAiChat
-              className="h-full border-0 rounded-none bg-background"
-              grantId={item.id}
-              grant={{
-                name: content.name,
-                organization: item.organization || undefined,
-                country: translatedCountry || undefined,
-                amount: item.amount || undefined,
-                deadline: content.deadline || undefined,
-                website: item.website || undefined,
-                category: translatedCategory,
-                eligibility: content.eligibility || undefined,
-                applicationProcess: content.applicationProcess || undefined,
-                targetDiagnosis: content.targetDiagnosis || undefined,
-                ageRange: content.ageRange || undefined,
-                geographicScope: content.geographicScope || undefined,
-                documentsRequired: content.documentsRequired || undefined,
-                phone: item.phone || undefined,
-                email: item.email || undefined,
-                address: mapAddress || undefined,
-                officeHours: officeHours || undefined,
-                status: item.status || undefined,
-                fundingType: item.fundingType || undefined,
-                b2VisaEligible: item.b2VisaEligible || undefined,
-              }}
-            />
+            {hasOpenedAi && (
+              <Suspense fallback={<div className="flex h-full items-center justify-center text-sm text-muted-foreground">{t.aiAssistant.emptyState}</div>}>
+                <GrantAiChat
+                  className="h-full border-0 rounded-none bg-background"
+                  grantId={item.id}
+                  grant={{
+                    name: content.name,
+                    organization: item.organization || undefined,
+                    country: translatedCountry || undefined,
+                    amount: item.amount || undefined,
+                    deadline: content.deadline || undefined,
+                    website: item.website || undefined,
+                    category: translatedCategory,
+                    eligibility: content.eligibility || undefined,
+                    applicationProcess: content.applicationProcess || undefined,
+                    targetDiagnosis: content.targetDiagnosis || undefined,
+                    ageRange: content.ageRange || undefined,
+                    geographicScope: content.geographicScope || undefined,
+                    documentsRequired: content.documentsRequired || undefined,
+                    phone: item.phone || undefined,
+                    email: item.email || undefined,
+                    address: mapAddress || undefined,
+                    officeHours: officeHours || undefined,
+                    status: item.status || undefined,
+                    fundingType: item.fundingType || undefined,
+                    b2VisaEligible: item.b2VisaEligible || undefined,
+                  }}
+                />
+              </Suspense>
+            )}
           </div>
         </SheetContent>
       </Sheet>
