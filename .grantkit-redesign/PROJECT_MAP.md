@@ -4,7 +4,7 @@
 > project. Any new session (Claude / Cowork / human) must scan this before
 > opening a PR, asking the user for setup, or touching schema/env vars.
 >
-> Last updated: **2026-04-24** — fire drill #2 (re-restore 8 files after PR #162 merge resolution dropped them).
+> Last updated: **2026-05-03** — Migration 0011 (email/password auth columns) finally applied to production after 6-month drift; Phase 4 audit Task 2.1 closed.
 
 ---
 
@@ -13,7 +13,7 @@
 | Area | State |
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
-| Last migration on DB | `0016_contact_provenance` ✅ |
+| Migrations applied | `0011` (users auth, applied 2026-05-03) + `0012`-`0016` (grants/orgs, applied earlier). Schema.ts in sync with DB. |
 | Pending migrations | _(none)_ |
 | Active PR | _(none open)_ |
 | Current phase | **Contact enrichment — Phase B (scraping script)** |
@@ -228,6 +228,7 @@ _Each session appends a 3-line summary so the next session knows what was done a
 - **2026-04-22** — Grant + Org detail redesigns merged (PR #142, #143, #146, #148, #150, #151, #153). Schema v2 + contact provenance applied to Railway. Blocked briefly by a migration-after-code mistake → reverted → re-applied in the right order.
 - **2026-04-23** — Project Map created. Ready to start Phase B (contact enrichment script).
 - **2026-04-24** — Fire drill #2: Wave 1 merge (PR #160) deleted 8 detail-page files; PR #162 tried to restore them but the GitHub merge resolution (commit 72c926f) dropped the restored paths — only `package.json` landed in main. Railway builds from 05:49 → 20:29 all failed with `ENOENT: GrantDetailHeader`. Fix PR re-restores the 8 files via `git checkout af283e1 --`. Lesson: when a "restore" branch is based on a pre-deletion commit and the target `main` has the deletion, GitHub's default merge will keep the deletion — must rebase the restore branch onto current main first, or explicitly `git checkout <files>` on main.
+- **2026-05-03** — Audit blitz: PRs #210/#211/#212/#214/#216 shipped (bundle −78%, self-hosted fonts, dropped eval, Express 4→5). Operator ran `apply-migration-0011.mjs --apply` against Railway proxy — closed the 6-month-old `users` table drift (8 auth columns + 3 indexes added, schema.ts and DB now in sync through 0011). Email/password auth, lockout, password reset, brute-force protection now functional on production. Last DB migration on Railway: `0011_volatile_demogoblin`.
 
 ---
 

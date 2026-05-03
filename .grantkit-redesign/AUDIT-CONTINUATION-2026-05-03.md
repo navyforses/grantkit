@@ -13,15 +13,17 @@
 | Area | State |
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
-| Latest commit on main | `ffeefdc Merge pull request #213` |
+| Latest commit on main | `0ddc26d Merge pull request #216` |
 | Active development branch | _(none — between sessions)_ |
-| Last merged audit PR | #214 (fonts self-host); recent: #210/#211/#212/#214 |
-| Last DB migration on production | `0010_*` (drift detected — 0011-0016 PARTIALLY applied) |
-| Pending operator actions | 4 local DB scripts (see "Pending Actions" section) |
+| Last merged audit PR | #216 (Express 5); recent: #210/#211/#212/#214/#216 |
+| Last DB migration on production | `0011_volatile_demogoblin` ✅ applied 2026-05-03 (operator) |
+| Pending operator actions | 3 local DB scripts (see "Pending Actions" section) |
 | Tier 1 security patches | ✅ Verified complete (2026-05-03) — see Goal 1 task 1.1 |
 | Bundle size (main `index-*.js`) | ✅ 2,554 KB → 563 KB (Task 3.2, PR #211) |
 | Server entry split (no eval hack) | ✅ Done (Task 6.1, PR #212) |
 | Self-hosted fonts | ✅ Done (Task 3.3, PR #214) |
+| Express 5 migration | ✅ Done (Task 1.3, PR #216) |
+| Production auth columns | ✅ Done (Task 2.1, operator 2026-05-03) |
 
 ---
 
@@ -227,22 +229,24 @@ Smaller than the spec's "~2 day" estimate — research showed only 4 line-level 
 ### 🎯 მიზანი 2 — მონაცემთა ბაზა
 **პასუხისმგებელი:** Database Engineer | **პრიორიტეტი:** 🔴 HIGH
 
-#### ამოცანა 2.1 — Migration Drift Fix (~30 წუთი)
-**ⓘ ლოკალური ოპერაცია — Cloud sandbox Railway-ს ვერ წვდება**
+#### ✅ ამოცანა 2.1 — Migration Drift Fix — **DONE** (operator 2026-05-03)
 
-```powershell
-$pw = "dyrGKtAkILpUkEaSJpgYKzYAcLIsetdh"
-$env:DATABASE_URL = "mysql://root:" + $pw + "@mainline.proxy.rlwy.net:51195/railway"
-node scripts/apply-migration-0011.mjs           # dry-run preview
-node scripts/apply-migration-0011.mjs --apply   # production execute
+Operator-მა გაუშვა `scripts/apply-migration-0011.mjs --apply` Windows PowerShell-დან Railway public proxy-ზე. Script-ი idempotent-ია — pre-check-მა აღმოაჩინა 8 სვეტი (ყველა target column) დაკარგული + 3 ინდექსი დაკარგული. ყველა ALTER + CREATE INDEX წარმატებით გავიდა.
+
+**ცვლილება production `users` ცხრილში:**
+- 8 ახალი სვეტი: `passwordHash`, `emailVerified`, `verificationToken`, `verificationTokenExpires`, `resetPasswordToken`, `resetPasswordTokenExpires`, `failedLoginAttempts`, `lockedUntil`
+- 3 ახალი ინდექსი: `users_email_idx`, `users_verification_token_idx`, `users_reset_token_idx`
+- SHA-256 of migration SQL: `4787414f2dcf1ceab395cd4e25cf66e77221b7ba2bd300e868146859681ee196`
+
+**✅ აუდიტი 2.1 — verification 2026-05-03:**
+```
+✅ post-check from script: 2/2 critical columns present (emailVerified + lockedUntil)
+✅ 8/8 ALTER TABLE statements succeeded (per-statement progress logged)
+✅ 3/3 CREATE INDEX statements succeeded
+✅ No errors, no warnings, exit code 0
 ```
 
-**✅ აუდიტი 2.1:**
-```
-□ scripts/audit-db-content.ts → Sections 11, 12 → "Query failed" გაქრა
-□ SELECT emailVerified FROM users LIMIT 1 → no error
-□ SELECT lockedUntil FROM users LIMIT 1 → no error
-```
+**Production effect:** email/password auth, email verification flow, password reset, account lockout, brute-force protection — ყველა ახლა functional-ია. ეს Phase 4 audit-ის (PR #206) მთავარი finding-ი იყო — closed.
 
 #### ამოცანა 2.2 — Data Normalization (~30 წუთი)
 
@@ -355,10 +359,13 @@ catalogTranslations-*.js         —     1,114 KB   (lazy chunk)
 ეს ვერ გაკეთდა cloud sandbox-დან, რადგან Railway proxy egress-ს ვერ მივწვდით:
 
 ```powershell
-# 1. Migration drift fix (CRITICAL — production auth-ს აფერხებს)
+# DATABASE_URL setup (one-time per session):
 $pw = "dyrGKtAkILpUkEaSJpgYKzYAcLIsetdh"
 $env:DATABASE_URL = "mysql://root:" + $pw + "@mainline.proxy.rlwy.net:51195/railway"
-node scripts/apply-migration-0011.mjs --apply
+
+# 1. ✅ DONE 2026-05-03 — Migration drift fix
+#    node scripts/apply-migration-0011.mjs --apply
+#    Result: 8 columns + 3 indexes added to users table.
 
 # 2. Country code normalization (7 rows)
 pnpm fix:countries:apply
@@ -427,10 +434,11 @@ scripts/
 
 ## 🎬 Next Up — შემდეგი action item
 
-**Status (2026-05-04):** Tasks 1.1, 1.2, **1.3**, 3.2, 3.3, 6.1 — ✅ ALL DONE on main. Sandbox-side audit work დასრულებულია — დარჩენილი ყველა ამოცანა operator-side ან live-browser წვდომას მოითხოვს.
+**Status (2026-05-04):** Tasks 1.1, 1.2, **1.3**, **2.1**, 3.2, 3.3, 6.1 — ✅ ALL DONE on main. Sandbox-side audit work დასრულებულია — დარჩენილი ყველა ამოცანა live-browser ან hybrid წვდომას მოითხოვს.
 
 **Done 2026-05-04:**
-- (PR pending) — fix(deps): Express 4 → 5 migration (Task 1.3) — 4-line change, all tests pass
+- ✅ Task 2.1 — Migration 0011 drift fix (operator) — production `users` table now has all 8 auth columns + 3 indexes
+- ✅ PR #216 — fix(deps): Express 4 → 5 migration (Task 1.3) — merged
 
 **Done 2026-05-03:**
 - PR #210 — docs(audit): verify Tier 1+2 security tasks complete
@@ -440,12 +448,12 @@ scripts/
 
 **CTO recommends next (in priority order):**
 
-1. **🔴 Task 2.1 — Migration 0011 drift fix** _(operator-side, CRITICAL)_ — production auth-ს აფერხებს. Script ready: `node scripts/apply-migration-0011.mjs --apply`. ⓘ ლოკალური Railway proxy წვდომა საჭიროა — script main-ზეა shipped (PR #207).
-2. **🟠 Task 3.1 — Lighthouse Baseline** _(operator-side, ~30 min)_ — Chrome DevTools live production URL-ზე. Output → `audit-reports/09-lighthouse-baseline.md`. ბოლო 5 PR-ის ეფექტის გაზომვა (bundle 78 % less, fonts self-hosted, no eval, Express 5).
-3. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `pnpm translate:missing` (22 keys). DB write access საჭირო.
+1. **🟠 Task 3.1 — Lighthouse Baseline** _(operator-side, ~30 min)_ — Chrome DevTools live production URL-ზე. Output → `audit-reports/09-lighthouse-baseline.md`. ბოლო 5 PR-ის ეფექტის გაზომვა (bundle 78 % less, fonts self-hosted, no eval, Express 5).
+2. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `pnpm translate:missing` (22 keys). DB write access საჭირო.
+3. **🟡 Task 2.2 — Data normalization** _(operator-side, ~30 min)_ — country codes (7 rows) + orphan grants (968) + branches (84). All scripts ready on main.
 4. **🟡 Task 5.2 — Subscription Funnel review** _(~5 hr)_ — Paddle test mode flow + webhook → DB path.
 
-**Operator-side (Pending Operator Actions ↓ section):** Task 2.1 (Migration 0011 drift), Task 2.2 (data normalization).
+**Operator-side (Pending Operator Actions ↓ section):** Task 2.2 (data normalization), Task 4.1 (translations), Task 4.2 (contact enrichment).
 
 ---
 
