@@ -13,12 +13,15 @@
 | Area | State |
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
-| Latest commit on main | `1ebae61 Merge pull request #209 (mcp-servers)` |
-| Active development branch | `claude/tier-1-security-patches-T7kPu` (Tier 1 verification) |
-| Last merged audit PR | #209 (mcp-servers); Tier 1/2 security shipped in #195/#197/#199/#200/#201/#203 |
+| Latest commit on main | `ffeefdc Merge pull request #213` |
+| Active development branch | _(none — between sessions)_ |
+| Last merged audit PR | #214 (fonts self-host); recent: #210/#211/#212/#214 |
 | Last DB migration on production | `0010_*` (drift detected — 0011-0016 PARTIALLY applied) |
-| Pending operator actions | 2 local DB scripts (see "Pending Actions" section) |
+| Pending operator actions | 4 local DB scripts (see "Pending Actions" section) |
 | Tier 1 security patches | ✅ Verified complete (2026-05-03) — see Goal 1 task 1.1 |
+| Bundle size (main `index-*.js`) | ✅ 2,554 KB → 563 KB (Task 3.2, PR #211) |
+| Server entry split (no eval hack) | ✅ Done (Task 6.1, PR #212) |
+| Self-hosted fonts | ✅ Done (Task 3.3, PR #214) |
 
 ---
 
@@ -42,8 +45,17 @@
 | #207 | audit: close Phases 9/10 + migration & data scripts | ✅ Merged |
 | #208 | perf(build): exclude manus-runtime from production | ✅ Merged |
 | #209 | chore: add MCP servers + audit continuation memory | ✅ Merged |
+| #210 | docs(audit): verify Tier 1 + Tier 2 security tasks complete | ✅ Merged |
+| #211 | perf(build): main bundle 2.55 MB → 563 KB (Task 3.2) | ✅ Merged |
+| #212 | refactor(server): split dev/prod entry, drop eval() hack (Task 6.1) | ✅ Merged |
+| #214 | perf(fonts): self-host DM Sans + Noto Sans Georgian (Task 3.3) | ✅ Merged |
 
-**ეფექტი:** `index.html` 369 KB → 2.4 KB (production load time გაუმჯობესდა). Tier 1 + Tier 2 security სრული — ai.grantChat auth-gated, helmet+CSP enabled, rate limits per-path, prod SQL leak closed.
+**კუმულატიური ეფექტი:**
+- `index.html` 369 KB → 2.4 KB (PR #208)
+- main `index-*.js` 2,554 KB → 563 KB (PR #211, **−78 %**)
+- Tier 1 + Tier 2 security: ai.grantChat auth-gated, helmet+CSP enabled, rate limits per-path, prod SQL leak closed
+- Production esbuild: no `direct-eval` warning, vite excluded from prod graph (PR #212)
+- 2 fewer cross-origin font handshakes per page load (PR #214); CSP `font-src 'self' data:`
 
 ---
 
@@ -247,23 +259,33 @@ pnpm geocode:branches          # execute
 - Desktop + Mobile + `/catalog` route
 - → `audit-reports/09-lighthouse-baseline.md`
 
-#### ამოცანა 3.2 — Bundle Reduction (~4 საათი)
-- `pnpm add -D rollup-plugin-visualizer`
-- `client/src/App.tsx` — lazy-load remaining routes (Onboarding, Profile, Admin, AiAssistant)
-- Lucide icons → specific imports
-- **Target:** main bundle < 1.5 MB
+#### ✅ ამოცანა 3.2 — Bundle Reduction — **DONE** (PR #211, 2026-05-03)
 
-**✅ აუდიტი 3.2:**
+**Three chunking fixes** identified via `rollup-plugin-visualizer` (gated behind `ANALYZE=1 pnpm build`):
+
+1. `vite.config.ts` — switched `manualChunks` from string-array to function form so `react-dom/client` subpath (~540 KB) lands in `vendor-react` instead of leaking into the main entry.
+2. `client/src/contexts/LanguageContext.tsx` — `catalogTranslations.json` (1.2 MB) lazy-loaded via `import()` only when a non-EN language is selected (≈80 % of traffic never downloads it).
+3. `client/src/pages/Home.tsx` — replaced eager `catalog.json` (765 KB) import with hand-baked `client/src/data/catalogPreview.ts` (5 picks, ~6 KB).
+
+**Result — `dist/public/assets/` chunks:**
 ```
-□ pnpm build → main index-*.js < 1.5 MB
-□ Onboarding route → on-demand chunk
-□ Lighthouse LCP → improvement vs baseline
+                              before    after    delta
+index-*.js                   2,554 KB    563 KB   -78 %
+vendor-react-*.js               12 KB    217 KB   (correct now)
+catalogData-*.js                 —       670 KB   (lazy chunk)
+catalogTranslations-*.js         —     1,114 KB   (lazy chunk)
 ```
 
-#### ამოცანა 3.3 — Google Fonts Self-Hosting (~30 წუთი)
-- DM Sans local download
-- `client/index.html`-დან external link წაშლა
-- Tailwind `@font-face` rule
+`App.tsx` lazy-loading audit found that all non-Home/Login routes were ALREADY lazy-loaded prior to this work — the spec's "lazy-load Onboarding/Profile/Admin/AiAssistant" item was stale. Lucide-icons specific-import optimisation skipped — only 16 KB total in main, low ROI.
+
+#### ✅ ამოცანა 3.3 — Google Fonts Self-Hosting — **DONE** (PR #214, 2026-05-03)
+
+- 11 WOFF2 subset files (~272 KB total) downloaded to `client/public/fonts/` via `scripts/refresh-fonts.sh` (idempotent regenerator).
+- `client/src/fonts.css` — `@font-face` rules with `unicode-range` subsetting preserved, `url()` rewritten to `/fonts/<hash>.woff2`. Imported from `index.css`.
+- `client/index.html` — removed `<link preconnect>` × 2 and `<link href="fonts.googleapis.com…">`.
+- `server/_core/bootstrap.ts` (CSP) — `style-src` no longer needs `https://fonts.googleapis.com`; `font-src` reduced to `'self' data:`.
+
+**Effect:** 2 fewer cross-origin handshakes on first paint, no third-party tracking on font load (GDPR-friendly), CSP attack surface reduced.
 
 ---
 
@@ -306,10 +328,11 @@ pnpm geocode:branches          # execute
 ### 🎯 მიზანი 6 — ინფრასტრუქტურა
 **პასუხისმგებელი:** DevOps Engineer | **პრიორიტეტი:** 🟡 MEDIUM
 
-#### ამოცანა 6.1 — CI/CD (~2 საათი)
-- GitHub Actions pnpm version pin (security)
-- `eval('import(...)')` hack-ის ჩანაცვლება
-- Dev/prod entry points გათიშვა (`index.dev.ts` / `index.prod.ts`)
+#### ✅ ამოცანა 6.1 — CI/CD — **DONE** (PR #212, 2026-05-03)
+
+- ✅ **GitHub Actions pnpm version pin** — already done in PR #195 (`103ca97`); `.github/workflows/daily-discovery.yml` pinned at `version: 10.33.2`.
+- ✅ **`eval('import(...)')` hack removed** — `server/_core/bootstrap.ts` extracted as shared startup; `server/_core/index.ts` is now production-only (calls `serveStatic`); new `server/_core/index.dev.ts` is the dev entry (calls `setupVite`). No more `eval()`, no more esbuild `direct-eval` warning.
+- ✅ **Dev/prod entry points split** — `pnpm dev` → `tsx watch server/_core/index.dev.ts`; `pnpm build` and `pnpm start` paths unchanged. `vite` and `vite-plugin-manus-runtime` cannot leak into `dist/index.js` — `grep "node_modules/vite\|setupVite" dist/index.js` → 0 hits.
 
 ---
 
@@ -390,14 +413,21 @@ scripts/
 
 ## 🎬 Next Up — შემდეგი action item
 
-**Status (2026-05-03):** Tasks 1.1 + 1.2 — ✅ DONE on main (PRs #195/#197/#199/#200/#201/#203). Task 2.1 — pending operator (local Railway access required).
+**Status (2026-05-03 evening):** Tasks 1.1, 1.2, 3.2, 3.3, 6.1 — ✅ ALL DONE on main. Sandbox-side audit work დასრულებულია — დარჩენილი ამოცანები ან Express 5 dedicated session-ს მოითხოვს, ან operator-side / live-browser წვდომას.
 
-**CTO recommends next:**
+**Done today (2026-05-03):**
+- PR #210 — docs(audit): verify Tier 1+2 security tasks complete
+- PR #211 — perf(build): main bundle 2.55 MB → 563 KB (Task 3.2)
+- PR #212 — refactor(server): split dev/prod entry, drop eval() hack (Task 6.1)
+- PR #214 — perf(fonts): self-host DM Sans + Noto Sans Georgian (Task 3.3)
 
-- **Task 3.1 — Lighthouse Baseline** (~30 min) — ცოცხალი production-ზე გასაშვებად მხოლოდ Chrome DevTools საჭიროა. Output → `audit-reports/09-lighthouse-baseline.md`.
-- **Task 3.2 — Bundle Reduction** (~4 hr) — main `index-*.js` 2.55 MB → < 1.5 MB (lazy-load Onboarding/Profile/Admin/AiAssistant routes; lucide-icons specific imports).
-- **Task 4.1 — Translations** (~30 min) — `pnpm translate:missing` (22 keys missing).
-- **Task 1.3 — Express 4 → 5** (~2 დღე, ცალკე PR) — async middleware errors + body-parser breaking changes.
+**CTO recommends next (in priority order):**
+
+1. **🔴 Task 2.1 — Migration 0011 drift fix** _(operator-side, CRITICAL)_ — production auth-ს აფერხებს. Script ready: `node scripts/apply-migration-0011.mjs --apply`. ⓘ ლოკალური Railway proxy წვდომა საჭიროა — script main-ზეა shipped (PR #207).
+2. **🟠 Task 3.1 — Lighthouse Baseline** _(operator-side, ~30 min)_ — Chrome DevTools live production URL-ზე. Output → `audit-reports/09-lighthouse-baseline.md`. ბოლო 4 PR-ის ეფექტის გაზომვა (bundle 78 % less, fonts self-hosted, no eval).
+3. **🟡 Task 1.3 — Express 4 → 5** _(~2 დღე, dedicated session)_ — async middleware errors, body-parser breaking changes, path-to-regexp v6 ReDoS fix. ცალკე PR.
+4. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `pnpm translate:missing` (22 keys). DB write access საჭირო.
+5. **🟡 Task 5.2 — Subscription Funnel review** _(~5 hr)_ — Paddle test mode flow + webhook → DB path.
 
 **Operator-side (Pending Operator Actions ↓ section):** Task 2.1 (Migration 0011 drift), Task 2.2 (data normalization).
 
