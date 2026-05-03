@@ -1183,7 +1183,7 @@ export const appRouter = router({
         } else {
           // Decode base64 to buffer
           const buffer = Buffer.from(input.content, "base64");
-          result = parseExcel(buffer);
+          result = await parseExcel(buffer);
         }
 
         // Run batch validation for duplicates

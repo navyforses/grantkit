@@ -130,8 +130,8 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
     "wouter": "^3.3.5",
-    "xlsx": "^0.18.5",
-    "zod": "^4.1.12"
+    "zod": "^4.1.12",
+    "exceljs": "^4.4.0"
   },
   "devDependencies": {
     "@builder.io/vite-plugin-jsx-loc": "^0.1.1",
@@ -151,7 +151,6 @@
     "cross-env": "^7.0.3",
     "drizzle-kit": "^0.31.4",
     "esbuild": "^0.25.0",
-    "exceljs": "^4.4.0",
     "gitnexus": "^1.5.3",
     "pnpm": "^10.15.1",
     "postcss": "^8.4.47",
