@@ -4,7 +4,8 @@
  */
 
 import Papa from "papaparse";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
+import { Readable } from "stream";
 
 // Valid categories and countries for validation
 const VALID_CATEGORIES = [
@@ -248,26 +249,32 @@ export function parseCSV(csvContent: string): ImportParseResult {
 /**
  * Parse Excel file buffer into ImportParseResult.
  */
-export function parseExcel(buffer: Buffer): ImportParseResult {
+export async function parseExcel(buffer: Buffer): Promise<ImportParseResult> {
   const errors: ImportValidationError[] = [];
 
-  const workbook = XLSX.read(buffer, { type: "buffer" });
-  const sheetName = workbook.SheetNames[0];
-  if (!sheetName) {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.read(Readable.from(buffer));
+
+  const sheet = workbook.worksheets[0];
+  if (!sheet) {
     return { grants: [], errors: [{ row: 0, field: "file", message: "No sheets found in Excel file" }], totalRows: 0, validRows: 0, skippedRows: 0 };
   }
 
-  const sheet = workbook.Sheets[sheetName];
-  const rawRows = XLSX.utils.sheet_to_json<Record<string, any>>(sheet, { defval: "" });
+  const rows: Record<string, string>[] = [];
+  let headers: string[] = [];
 
-  // Normalize headers
-  const rows: Record<string, string>[] = rawRows.map(row => {
-    const normalized: Record<string, string> = {};
-    for (const [key, value] of Object.entries(row)) {
-      const normalizedKey = normalizeHeader(key);
-      normalized[normalizedKey] = String(value ?? "");
+  sheet.eachRow((row, rowNumber) => {
+    const values = row.values as (ExcelJS.CellValue | null)[];
+    if (rowNumber === 1) {
+      headers = values.slice(1).map(h => normalizeHeader(String(h ?? "")));
+      return;
     }
-    return normalized;
+    const rowObj: Record<string, string> = {};
+    for (let i = 0; i < headers.length; i++) {
+      const cell = values[i + 1];
+      rowObj[headers[i]] = String(cell ?? "");
+    }
+    rows.push(rowObj);
   });
 
   const grants: ImportedGrant[] = [];
