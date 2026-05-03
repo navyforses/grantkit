@@ -1,11 +1,28 @@
-import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { en } from "@/i18n/en";
 import { fr } from "@/i18n/fr";
 import { es } from "@/i18n/es";
 import { ru } from "@/i18n/ru";
 import { ka } from "@/i18n/ka";
 import type { Translations } from "@/i18n/types";
-import catalogTranslations from "@/data/catalogTranslations.json";
+
+// catalogTranslations.json (~1.2 MB) holds non-English content for every
+// catalog item. English users (the majority) never read it, so we load it
+// on demand the first time a non-English language is selected, instead
+// of bundling it into the main entry chunk.
+type ContentLookup = Record<string, Record<string, { name: string; description: string; eligibility: string }>>;
+let catalogTranslationsCache: ContentLookup | null = null;
+let catalogTranslationsPromise: Promise<ContentLookup> | null = null;
+function loadCatalogTranslations(): Promise<ContentLookup> {
+  if (catalogTranslationsCache) return Promise.resolve(catalogTranslationsCache);
+  if (!catalogTranslationsPromise) {
+    catalogTranslationsPromise = import("@/data/catalogTranslations.json").then((mod) => {
+      catalogTranslationsCache = mod.default as ContentLookup;
+      return catalogTranslationsCache;
+    });
+  }
+  return catalogTranslationsPromise;
+}
 
 export type Language = "en" | "fr" | "es" | "ru" | "ka";
 
@@ -25,8 +42,6 @@ export const LANGUAGES: LanguageOption[] = [
 ];
 
 const translations: Record<Language, Translations> = { en, fr, es, ru, ka };
-
-type ContentLookup = Record<string, Record<string, { name: string; description: string; eligibility: string }>>;
 
 interface TranslatedContent {
   name: string;
@@ -83,6 +98,19 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = lang;
   }, []);
 
+  // Track the resolved catalog translations as state so consumers re-render
+  // when the lazy-loaded JSON arrives.
+  const [catalogTrans, setCatalogTrans] = useState<ContentLookup | null>(catalogTranslationsCache);
+  useEffect(() => {
+    if (language === "en") return;
+    if (catalogTrans) return;
+    let cancelled = false;
+    loadCatalogTranslations().then((data) => {
+      if (!cancelled) setCatalogTrans(data);
+    });
+    return () => { cancelled = true; };
+  }, [language, catalogTrans]);
+
   const t = translations[language];
 
   const tCategory = useCallback(
@@ -104,7 +132,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const tCatalogContent = useCallback(
     (itemId: string, fallback: TranslatedContent): TranslatedContent => {
       if (language === "en") return fallback;
-      const itemTrans = (catalogTranslations as ContentLookup)[itemId];
+      // While the lazy chunk is in flight, fall back to English content.
+      if (!catalogTrans) return fallback;
+      const itemTrans = catalogTrans[itemId];
       if (!itemTrans) return fallback;
       const langTrans = itemTrans[language];
       if (!langTrans) return fallback;
@@ -114,7 +144,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         eligibility: langTrans.eligibility || fallback.eligibility,
       };
     },
-    [language]
+    [language, catalogTrans]
   );
 
   return (

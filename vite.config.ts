@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { defineConfig, type Plugin, type ViteDevServer } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // =============================================================================
 // Manus Debug Collector - Vite Plugin
@@ -153,9 +154,15 @@ function vitePluginManusDebugCollector(): Plugin {
 // Manus runtime + debug-collector are dev tools — they inject 200+ KB of
 // inline script into index.html. Excluded from production to keep TTFB low.
 const isProd = process.env.NODE_ENV === "production";
+// ANALYZE=1 pnpm build → emits dist/public/stats.html (treemap of every chunk).
+// Off by default — keeps prod builds fast and avoids the extra plugin in CI.
+const enableVisualizer = process.env.ANALYZE === "1";
+const visualizerPlugin = enableVisualizer
+  ? [visualizer({ filename: "dist/public/stats.html", template: "treemap", gzipSize: true, brotliSize: false })]
+  : [];
 const plugins = isProd
-  ? [react(), tailwindcss(), jsxLocPlugin()]
-  : [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+  ? [react(), tailwindcss(), jsxLocPlugin(), ...visualizerPlugin]
+  : [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector(), ...visualizerPlugin];
 
 export default defineConfig({
   plugins,
@@ -175,16 +182,16 @@ export default defineConfig({
     reportCompressedSize: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Split heavy geo/map libs so they can be cached independently
-          "vendor-csc": ["country-state-city"],
-          "vendor-gmaps": ["@googlemaps/js-api-loader", "@googlemaps/markerclusterer"],
-          // Split core React runtime separately for long-term cache hits
-          "vendor-react": ["react", "react-dom"],
-          // Animation lib
-          "vendor-framer": ["framer-motion"],
-          // tRPC + React Query
-          "vendor-trpc": ["@trpc/client", "@trpc/react-query", "@tanstack/react-query"],
+        // Function form catches subpath imports (e.g. `react-dom/client`,
+        // `@trpc/server/...`) that the previous string-array form missed —
+        // those modules were silently leaking into the main `index-*.js`.
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("/country-state-city/")) return "vendor-csc";
+          if (id.includes("/@googlemaps/")) return "vendor-gmaps";
+          if (id.includes("/react-dom/") || id.match(/\/react\/(?!.*\/node_modules\/)/) || id.includes("/scheduler/")) return "vendor-react";
+          if (id.includes("/framer-motion/")) return "vendor-framer";
+          if (id.includes("/@trpc/") || id.includes("/@tanstack/react-query/") || id.includes("/superjson/")) return "vendor-trpc";
         },
       },
     },

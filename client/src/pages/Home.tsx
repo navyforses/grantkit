@@ -32,7 +32,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import SEO from "@/components/SEO";
 import { OrganizationJsonLd, WebSiteJsonLd, FaqJsonLd } from "@/components/JsonLd";
 import { trpc } from "@/lib/trpc";
-import { catalogItems } from "@/data/catalogData";
+import { catalogPreviewItems } from "@/data/catalogPreview";
 import { useMemo } from "react";
 
 // Scroll animation: trigger when 10% of the element is visible.
@@ -66,18 +66,10 @@ export default function Home() {
   );
   const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
 
-  // Static preview — pick 5 diverse items from bundled catalog (available immediately)
-  const staticPreview = useMemo(() => {
-    const seen = new Set<string>();
-    const picks: any[] = [];
-    for (const g of catalogItems) {
-      if (!seen.has(g.category) && picks.length < 5) {
-        seen.add(g.category);
-        picks.push(g);
-      }
-    }
-    return picks;
-  }, []);
+  // Static 5-item preview baked at build time — see catalogPreview.ts.
+  // Avoids shipping the full 765 KB catalog.json in the main bundle just
+  // to pre-populate the landing-page card row before the API responds.
+  const staticPreview = catalogPreviewItems;
 
   const previewItems: CatalogItem[] = useMemo(() => {
     const source = previewData?.grants || staticPreview;
