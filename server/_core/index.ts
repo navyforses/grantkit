@@ -50,13 +50,61 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  // Security response headers. CSP and COEP are off for now — default CSP
-  // would block Google Maps tiles, AI chat streaming, and inline shadcn
-  // chart styles; COEP=require-corp would block cross-origin map tiles.
-  // Tightening both is a follow-up rollout.
+  // Security response headers.
+  // COEP=require-corp stays off — it would block Google Maps cross-origin tiles.
+  // CSP notes:
+  //   'unsafe-inline' in script-src is unavoidable: Google Maps JS API injects
+  //   inline scripts at runtime. Paddle.js does the same for its overlay.
+  //   'unsafe-inline' in style-src is unavoidable: Radix UI, Framer Motion,
+  //   and Recharts all write inline styles. Removing either requires nonces
+  //   threaded through Vite + React SSR — a separate, larger rollout.
+  //   Despite 'unsafe-inline', CSP still blocks scripts/frames/objects from
+  //   unwhitelisted external origins, preventing the most common XSS pivots.
+  const isDev = process.env.NODE_ENV !== "production";
   app.use(helmet({
-    contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",           // Google Maps + Paddle inject inline scripts
+          "https://maps.googleapis.com",
+          "https://cdn.paddle.com",
+        ],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",           // Radix UI / Framer Motion / Recharts inline styles
+          "https://fonts.googleapis.com",
+        ],
+        fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "blob:",
+          "https://*.googleapis.com",  // Google Maps tiles + Street View
+          "https://*.gstatic.com",
+          "https://*.google.com",
+          "https://d2xsxph8kpxj0f.cloudfront.net", // OG / CDN images
+        ],
+        connectSrc: [
+          "'self'",
+          "https://maps.googleapis.com",
+          "https://*.googleapis.com",
+          "https://api.paddle.com",
+          // Vite HMR websocket — dev only; not exposed in production builds
+          ...(isDev ? ["ws://localhost:*", "wss://localhost:*"] : []),
+        ],
+        frameSrc: [
+          "https://buy.paddle.com",    // Paddle checkout overlay iframe
+          "https://sandbox-buy.paddle.com",
+        ],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+      },
+    },
   }));
   // Per-IP rate limits on tRPC traffic. Mounted before body parsers so a
   // throttled client never burns the 50 MB JSON parse.
