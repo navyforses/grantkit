@@ -39,6 +39,8 @@
     "sitemap:generate": "tsx scripts/generate-sitemap.ts",
     "audit:locations": "tsx scripts/audit-locations.ts",
     "audit:db": "tsx scripts/audit-db-content.ts",
+    "fix:countries": "tsx scripts/fix-country-codes.ts",
+    "fix:countries:apply": "tsx scripts/fix-country-codes.ts --apply",
     "audit:locations:sample": "tsx scripts/audit-locations.ts --limit=20",
     "enhance:locations:dry": "tsx scripts/enhance-locations.ts",
     "enhance:locations": "tsx scripts/enhance-locations.ts --apply",
