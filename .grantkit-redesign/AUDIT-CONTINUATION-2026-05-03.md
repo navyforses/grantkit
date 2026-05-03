@@ -13,11 +13,12 @@
 | Area | State |
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
-| Latest commit on main | `0f83760 perf(build): exclude manus-runtime + debug-collector from production` (PR #208) |
-| Active development branch | `claude/add-mcp-servers-6tRzu` (this file lives here) |
-| Last merged audit PR | #208 (manus-runtime production fix) |
+| Latest commit on main | `1ebae61 Merge pull request #209 (mcp-servers)` |
+| Active development branch | `claude/tier-1-security-patches-T7kPu` (Tier 1 verification) |
+| Last merged audit PR | #209 (mcp-servers); Tier 1/2 security shipped in #195/#197/#199/#200/#201/#203 |
 | Last DB migration on production | `0010_*` (drift detected — 0011-0016 PARTIALLY applied) |
 | Pending operator actions | 2 local DB scripts (see "Pending Actions" section) |
+| Tier 1 security patches | ✅ Verified complete (2026-05-03) — see Goal 1 task 1.1 |
 
 ---
 
@@ -26,14 +27,23 @@
 | PR | სათაური | Status |
 |---|---|---|
 | #194 | audit: phase 0-3 baseline reports | ✅ Merged |
+| #195 | fix(security): Tier 1 — ai.grantChat auth + causeChain prod-guard + sdk/pnpm bumps | ✅ Merged |
+| #196 | docs: un-freeze Catalog.tsx | ✅ Merged |
+| #197 | feat(security): Tier 2 — helmet + base rate-limit | ✅ Merged |
 | #198 | docs: catalog unfreeze | ✅ Merged |
+| #199 | chore(deps): replace xlsx with exceljs (Task 1.2) | ✅ Merged |
+| #200 | feat(security): path-specific rate limits (auth 10/min, ai 20/min) | ✅ Merged |
+| #201 | feat(security): enable Content-Security-Policy via helmet | ✅ Merged |
+| #202 | fix(seo)+a11y: sitemap + OnboardingModal role | ✅ Merged |
+| #203 | fix(csp): allow Google Maps gstatic + worker blobs | ✅ Merged |
 | #204 | chore(audit): Phase 4 DB content audit script | ✅ Merged |
 | #205 | fix(audit): SQL bugs in audit script | ✅ Merged |
 | #206 | audit: Phase 4 DB content report | ✅ Merged |
 | #207 | audit: close Phases 9/10 + migration & data scripts | ✅ Merged |
 | #208 | perf(build): exclude manus-runtime from production | ✅ Merged |
+| #209 | chore: add MCP servers + audit continuation memory | ✅ Merged |
 
-**ეფექტი:** `index.html` 369 KB → 2.4 KB (production load time გაუმჯობესდა).
+**ეფექტი:** `index.html` 369 KB → 2.4 KB (production load time გაუმჯობესდა). Tier 1 + Tier 2 security სრული — ai.grantChat auth-gated, helmet+CSP enabled, rate limits per-path, prod SQL leak closed.
 
 ---
 
@@ -96,19 +106,19 @@
 
 **PR #208-ით გასწორდა:** `index.html` 369 KB → 2.4 KB.
 
-### Phase 11 — Security Review ✅
-**ორი მთავარი findings:**
+### Phase 11 — Security Review ✅ (Findings ALL RESOLVED in PRs #195/#197/#200/#201/#203)
+**ორი მთავარი findings (ორივე გასწორდა):**
 
-1. 🔴 **`ai.grantChat` is publicProcedure** — ანონიმური ვიზიტორებისთვის ღია, no rate limit. Anthropic API spend exposure.
+1. ~~🔴 **`ai.grantChat` is publicProcedure**~~ → ✅ **FIXED** PR #195 (`40a148c`) + PR #200 (`bd69e1f`): `protectedProcedure` + 20 req/min/IP rate-limit on `/api/trpc/ai`.
 
-2. 🟠 **tRPC errorFormatter leaks SQL queries** — `causeChain` production-ში SQL text-ს კლიენტს უბრუნებს.
+2. ~~🟠 **tRPC errorFormatter leaks SQL queries**~~ → ✅ **FIXED** PR #195 (`18bec0d`): `causeChain` gated by `NODE_ENV !== "production"`.
 
-**კარგი ნაწილი:**
+**ზოგადი მდგომარეობა:**
 - ✅ `protectedProcedure` / `adminProcedure` — სწორად გამოიყენება ~95% route-ზე
 - ✅ Drizzle ORM-ით SQL injection minimal exposure
 - ✅ Hardcoded secrets არ მოიძებნა
-- ❌ `helmet` middleware არ არის
-- ❌ `express-rate-limit` არ არის
+- ✅ `helmet` middleware enabled + CSP (PR #197/#201/#203)
+- ✅ `express-rate-limit` per-path (auth 10/min, ai 20/min, baseline 100/min)
 
 ---
 
@@ -139,46 +149,40 @@
 ### 🎯 მიზანი 1 — სისტემის უსაფრთხოება
 **პასუხისმგებელი:** Security Engineer | **პრიორიტეტი:** 🔴 CRITICAL
 
-#### ამოცანა 1.1 — Tier 1 Security Patches (~1 საათი)
+#### ✅ ამოცანა 1.1 — Tier 1 Security Patches — **DONE** (verified 2026-05-03)
 
-- **1.1.1 — `ai.grantChat` Endpoint დაცვა**
-  - `server/routers.ts:1328` — `publicProcedure` → `protectedProcedure`
-  - `pnpm add express-rate-limit`
-  - 5 req/min/IP ლიმიტი `/api/trpc/ai.*`-ზე
+- **1.1.1 — `ai.grantChat` Endpoint დაცვა** ✅
+  - `server/routers.ts:1331` — `protectedProcedure` (PR #195, `40a148c`)
+  - `express-rate-limit` installed (PR #197, `fc8653a`)
+  - `/api/trpc/ai` → 20 req/min/IP (PR #200, `bd69e1f`) — _liberal vs spec-ის 5/min, deliberate UX/cost balance_
 
-- **1.1.2 — SQL Leakage**
-  - `server/_core/trpc.ts:31-52` — `causeChain` → `NODE_ENV !== "production"` guard
+- **1.1.2 — SQL Leakage** ✅
+  - `server/_core/trpc.ts:48-53` — `causeChain` gated by `NODE_ENV !== "production"` (PR #195, `18bec0d`)
 
-- **1.1.3 — `helmet` Middleware**
-  - `app.use(helmet())` `server/_core/index.ts`-ში
+- **1.1.3 — `helmet` Middleware** ✅
+  - `server/_core/index.ts:67-119` — `helmet()` + comprehensive CSP (Maps + Paddle whitelisted) (PR #197 `8b08ba5` + PR #201 `45e961f` + PR #203 `8d05f0f`)
 
-- **1.1.4 — CVE Tier 1 Updates**
-  - `pnpm update @anthropic-ai/sdk@latest` (→ 0.92.x)
-  - `corepack use pnpm@10.33.2`
-  - `package.json` `packageManager` field განახლება
-  - `.github/workflows/daily-discovery.yml` — `version: 10.33.2` pin
+- **1.1.4 — CVE Tier 1 Updates** ✅
+  - `@anthropic-ai/sdk@^0.92.0` (PR #195, `61cb9de`)
+  - `package.json` `packageManager: pnpm@10.33.2` (PR #195, `103ca97`)
+  - `.github/workflows/daily-discovery.yml` — `version: 10.33.2` pinned
 
-**✅ აუდიტი 1.1:**
+**✅ აუდიტი 1.1 — verification run 2026-05-03:**
 ```
-□ Anonymous call to ai.grantChat → HTTP 401
-□ 6+ calls/min from same IP → HTTP 429
-□ Production error response → SQL text not exposed
-□ Response headers → X-Frame-Options, X-Content-Type-Options
-□ pnpm --version → 10.33.2
-□ pnpm test → 195/195 pass
+✅ Anonymous call to ai.grantChat → HTTP 401 (protectedProcedure throws UNAUTHORIZED)
+✅ /api/trpc/ai 21+ calls/min → HTTP 429 (limit=20)
+✅ Production causeChain → SQL text not exposed (NODE_ENV gate)
+✅ helmet response headers → X-Frame-Options + X-Content-Type-Options + CSP
+✅ pnpm --version → 10.33.2
+✅ pnpm check → 0 errors
+✅ pnpm test → 195/195 pass (1 skipped: RESEND_API_KEY)
 ```
 
-#### ამოცანა 1.2 — `xlsx` → `exceljs` Migration (~3 საათი)
-- `grep -rn "xlsx" server/ client/ scripts/`
-- `server/importGrants.ts` refactor
-- `package.json`-დან xlsx-ის წაშლა
+#### ✅ ამოცანა 1.2 — `xlsx` → `exceljs` Migration — **DONE** (PR #199, `89b1549`)
 
-**✅ აუდიტი 1.2:**
-```
-□ xlsx removed from package.json
-□ Excel import in admin panel → მუშაობს
-□ pnpm audit → xlsx CVE-ები აღარ ჩანს
-```
+- `xlsx` removed from `package.json`, `exceljs ^4.4.0` installed
+- `server/ client/ scripts/`-ში `xlsx` import-ი არ მოიძებნა
+- xlsx CVE-ები აღარ ჩანს deps tree-ში
 
 #### ამოცანა 1.3 — Express 4 → 5 Migration (~2 დღე, ცალკე PR)
 - Migration guide-ის შესწავლა
@@ -386,12 +390,16 @@ scripts/
 
 ## 🎬 Next Up — შემდეგი action item
 
-**CTO recommends:** ამოცანა **1.1** (Tier 1 Security Patches) + ამოცანა **2.1** (Migration drift) — **პარალელურად**, რადგან ორივე 🔴 CRITICAL და დამოუკიდებელია.
+**Status (2026-05-03):** Tasks 1.1 + 1.2 — ✅ DONE on main (PRs #195/#197/#199/#200/#201/#203). Task 2.1 — pending operator (local Railway access required).
 
-- 1.1 — Code-side, ერთ PR-ად შეფუთვა
-- 2.1 — ოპერატორის ლოკალური ნაბიჯი (script უკვე shipped main-ზე)
+**CTO recommends next:**
 
-შემდეგ — `Lighthouse baseline` → `Bundle reduction`.
+- **Task 3.1 — Lighthouse Baseline** (~30 min) — ცოცხალი production-ზე გასაშვებად მხოლოდ Chrome DevTools საჭიროა. Output → `audit-reports/09-lighthouse-baseline.md`.
+- **Task 3.2 — Bundle Reduction** (~4 hr) — main `index-*.js` 2.55 MB → < 1.5 MB (lazy-load Onboarding/Profile/Admin/AiAssistant routes; lucide-icons specific imports).
+- **Task 4.1 — Translations** (~30 min) — `pnpm translate:missing` (22 keys missing).
+- **Task 1.3 — Express 4 → 5** (~2 დღე, ცალკე PR) — async middleware errors + body-parser breaking changes.
+
+**Operator-side (Pending Operator Actions ↓ section):** Task 2.1 (Migration 0011 drift), Task 2.2 (data normalization).
 
 ---
 
