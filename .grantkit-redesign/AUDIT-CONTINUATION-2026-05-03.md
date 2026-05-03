@@ -3,7 +3,7 @@
 > **დანიშნულება:** ეს არის სრული მეხსიერების გვერდი. ნებისმიერმა ახალმა Claude / agent სესიამ ამ ფაილის წაკითხვით უნდა შეძლოს უკვე გაკეთებული აუდიტის გაგრძელება და გეგმის შესრულება.
 >
 > **შექმნა:** 2026-05-03
-> **წყარო:** აუდიტის სრული ციკლი (ფაზები 0-11) PR-ები #194 → #208
+> **წყარო:** აუდიტის სრული ციკლი (ფაზები 0-11) PR-ები #194 → #219
 > **ენა:** ქართული + ტექნიკური ტერმინები English-ად
 
 ---
@@ -13,9 +13,9 @@
 | Area | State |
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
-| Latest commit on main | `0ddc26d Merge pull request #216` |
-| Active development branch | `claude/audit-task-3-1-lighthouse-baseline` (Lighthouse baseline) |
-| Last merged audit PR | #216 (Express 5); recent: #210/#211/#212/#214/#216 |
+| Latest commit on main | `263f4f2 Merge pull request #219` (lazy-load AIChatBox) |
+| Active development branch | `claude/audit-task-3-4-verification-lighthouse` (post-3.4 re-baseline) |
+| Last merged audit PR | #219 (Task 3.4); recent: #216 / #217 / #218 / #219 |
 | Last DB migration on production | `0011_volatile_demogoblin` ✅ applied 2026-05-03 (operator) |
 | Pending operator actions | 3 local DB scripts (see "Pending Actions" section) |
 | Tier 1 security patches | ✅ Verified complete (2026-05-03) — see Goal 1 task 1.1 |
@@ -24,7 +24,9 @@
 | Self-hosted fonts | ✅ Done (Task 3.3, PR #214) |
 | Express 5 migration | ✅ Done (Task 1.3, PR #216) |
 | Production auth columns | ✅ Done (Task 2.1, operator 2026-05-03) |
-| Lighthouse baseline (live) | ✅ Done (Task 3.1, branch `claude/audit-task-3-1-lighthouse-baseline`, 2026-05-03) |
+| Lighthouse baseline (live) | ✅ Done (Task 3.1, PR #218 merged 2026-05-03) |
+| AIChatBox lazy-load | ✅ Done (Task 3.4, PR #219 merged 2026-05-03) |
+| Latest Lighthouse re-baseline | ✅ 2026-05-03 post-3.4 — `audit-reports/09-lighthouse-after-3-4.md` (mobile `/organizations/:id` LCP 13.7 → 9.1 s, unused-JS −601 KB) |
 
 ---
 
@@ -52,7 +54,11 @@
 | #211 | perf(build): main bundle 2.55 MB → 563 KB (Task 3.2) | ✅ Merged |
 | #212 | refactor(server): split dev/prod entry, drop eval() hack (Task 6.1) | ✅ Merged |
 | #214 | perf(fonts): self-host DM Sans + Noto Sans Georgian (Task 3.3) | ✅ Merged |
-| _draft_ | audit: phase 9 Lighthouse baseline post-perf-blitz (Task 3.1) | 🟡 Draft on `claude/audit-task-3-1-lighthouse-baseline` |
+| #216 | fix(deps): Express 4 → 5 migration (Task 1.3) | ✅ Merged |
+| #217 | docs(audit): record Task 2.1 — migration 0011 applied to production | ✅ Merged |
+| #218 | audit: phase 9 Lighthouse baseline post-perf-blitz (Task 3.1) | ✅ Merged |
+| #219 | perf(client): lazy-load AIChatBox on detail pages (Task 3.4) | ✅ Merged |
+| _draft_ | audit: re-baseline after Task 3.4 (verify AIChatBox lazy-load impact) | 🟡 Draft on `claude/audit-task-3-4-verification-lighthouse` |
 
 **კუმულატიური ეფექტი:**
 - `index.html` 369 KB → 2.4 KB (PR #208)
@@ -60,6 +66,7 @@
 - Tier 1 + Tier 2 security: ai.grantChat auth-gated, helmet+CSP enabled, rate limits per-path, prod SQL leak closed
 - Production esbuild: no `direct-eval` warning, vite excluded from prod graph (PR #212)
 - 2 fewer cross-origin font handshakes per page load (PR #214); CSP `font-src 'self' data:`
+- AIChatBox 873 KB chunk no longer in eager preload graph for `/catalog` or `/organizations/:id` (PR #219); mobile `/organizations/:id` total weight 3,033 → 2,106 KiB (−31 %)
 
 ---
 
@@ -113,14 +120,22 @@
 - Score: 🔴 ~30-55 / 100 mobile
 - მიზეზი: 2.55 MB initial JS + 369 KB HTML (HTML უკვე გასწორდა PR #208-ით)
 
-**Live baseline (2026-05-03, Task 3.1):**
+**Live baseline (2026-05-03, Task 3.1, PR #218):**
 - mobile `/` — score **39**, LCP 8.4 s, TBT **821 ms**, CLS 0.008
 - mobile `/catalog` — score **31**, LCP 59.4 s (Maps tile), total weight **11.5 MB**
 - mobile `/organizations/ORG-0061` — score **39**, LCP 13.7 s
 - desktop `/` — score **86**, LCP 1.8 s, TBT 1 ms
 - TBT landed inside the theorised post-fix band → bundle cut (PR #211) is paying off
 - 🔴 New finding: `AIChatBox-BE_jayqH.js` ships 873 KB but ~600 KB unused on `/catalog` & `/organizations/:id` — defer until interaction
-- See `audit-reports/09-lighthouse-baseline.md` for full numbers + raw JSON/HTML
+
+**Re-baseline (2026-05-03, Task 3.4 verification, draft PR on `claude/audit-task-3-4-verification-lighthouse`):**
+- mobile `/organizations/ORG-0061` — LCP **13.7 → 9.1 s** (−33 %), total weight **3,033 → 2,106 KiB** (−927 KiB), unused-JS **1,163 → 562 KB** (−601 KB — matches Phase 9 estimate to the kilobyte)
+- desktop `/catalog` — score **28 → 36** (+8), TBT **781 → 432 ms** (−349 ms — matches the −300 ms estimate)
+- desktop `/organizations/ORG-0061` — score **67 → 75**, TBT **27 → 0 ms**
+- mobile `/` — flat (314 → 313 KB unused-JS) — home wasn't affected, expected
+- ⚠️ mobile `/catalog` TBT spike 1,366 → 4,196 ms attributed to vendor-react long task on slower edge RTT (250 ms vs baseline 130 ms); chunk hash unchanged → not caused by PR #219, treat as Slow-4G run-variance until averaged across 2-3 re-runs
+- ✅ AIChatBox absent from `unused-javascript` audit on every page after PR #219
+- See `audit-reports/09-lighthouse-after-3-4.md` for full delta tables + diagnostics
 
 ### Phase 10 — Bundle Analysis ✅
 **Top chunks:**
@@ -283,7 +298,7 @@ pnpm geocode:branches          # execute
 ### 🎯 მიზანი 3 — Performance
 **პასუხისმგებელი:** Performance Engineer + UX Designer | **პრიორიტეტი:** 🟠 HIGH
 
-#### ✅ ამოცანა 3.1 — Lighthouse Baseline — **DONE** (2026-05-03)
+#### ✅ ამოცანა 3.1 — Lighthouse Baseline — **DONE** (PR #218, 2026-05-03)
 
 Live measurement against production, run from Cowork sandbox using `lighthouse@13.2.0` + `chrome-headless-shell@148`. 3 routes × 2 form factors = 6 runs, performance category only.
 
@@ -308,11 +323,9 @@ Live measurement against production, run from Cowork sandbox using `lighthouse@1
 - Score 39 (theoretical 30-55) — ✅ in band
 - LCP 8.4 s (theoretical 4-6 s) — 🔴 worse than estimate, Lighthouse Slow-4G is harsher than the "4G" the estimate assumed
 
-**Top finding (new):** `AIChatBox-BE_jayqH.js` ships 873 KB but only ~273 KB used on `/catalog` and `/organizations/:id`. The chat surface mounts on every route via `MobileBottomNav` / floating launcher before the user opens it. Highest-ROI follow-up.
+**Top finding (new):** `AIChatBox-BE_jayqH.js` ships 873 KB but only ~273 KB used on `/catalog` and `/organizations/:id`. The chat surface mounts on every route via `MobileBottomNav` / floating launcher before the user opens it. Highest-ROI follow-up → became Task 3.4.
 
-**Output:** `audit-reports/09-lighthouse-baseline.md` + raw JSON/HTML reports under `audit-reports/lighthouse-2026-05-03/` (delivered as a separate zip — sandbox MCP cannot push 5 MB of raw reports through tool calls).
-
-**Branch:** `claude/audit-task-3-1-lighthouse-baseline` (Draft PR).
+**Output:** `audit-reports/09-lighthouse-baseline.md` + raw JSON/HTML reports under `audit-reports/lighthouse-2026-05-03/`.
 
 #### ✅ ამოცანა 3.2 — Bundle Reduction — **DONE** (PR #211, 2026-05-03)
 
@@ -341,6 +354,28 @@ catalogTranslations-*.js         —     1,114 KB   (lazy chunk)
 - `server/_core/bootstrap.ts` (CSP) — `style-src` no longer needs `https://fonts.googleapis.com`; `font-src` reduced to `'self' data:`.
 
 **Effect:** 2 fewer cross-origin handshakes on first paint, no third-party tracking on font load (GDPR-friendly), CSP attack surface reduced.
+
+#### ✅ ამოცანა 3.4 — Lazy-Load AIChatBox on Detail Pages — **DONE** (PR #219, 2026-05-03)
+
+`AIChatBox` (873 KB chunk) was eagerly imported on `/catalog`, `/organizations/:id`, and the legacy entity-detail page despite being hidden behind a Sheet that most users never open. PR #219 introduced three lazy boundaries:
+
+- `OrganizationDetail.tsx` — `lazy(() => import("./OrgAiChat"))` + `hasOpenedAi` latch (keeps the chat mounted across open/close cycles once first opened, so chat history survives)
+- `EntityDetail.tsx` — same pattern for the legacy chat surface
+- `map/GrantDetailPanel.tsx` — `lazy()` namespace import + `<Suspense>`
+
+**Bundle-graph verification (post `pnpm build`):** `Catalog-*.js` no longer references `AIChatBox`; `OrganizationDetail-*.js`, `EntityDetail-*.js`, `GrantDetailPanel-*.js` only carry `__vitePreload` manifests (lazy preload hints, not eager fetches). `index.html` modulepreloads dropped to `vendor-react` / `vendor-trpc` / `vendor-framer`.
+
+**✅ აუდიტი 3.4 — live verification 2026-05-03 (`audit-reports/09-lighthouse-after-3-4.md`):**
+
+Same Lighthouse harness as Task 3.1, post-merge:
+
+- mobile `/organizations/ORG-0061` — LCP **13.7 → 9.1 s** (−33 %), total weight **3,033 → 2,106 KiB** (−927 KiB), unused-JS **1,163 → 562 KB** (−601 KB — exact match against the −600 KB Phase 9 prediction)
+- desktop `/catalog` — score **28 → 36** (+8), TBT **781 → 432 ms** (−349 ms — matches the −300 ms estimate)
+- desktop `/organizations/ORG-0061` — score **67 → 75**, TBT **27 → 0 ms**
+- mobile `/` — flat (314 → 313 KB unused-JS, no AIChatBox to remove there)
+- ✅ AIChatBox absent from `unused-javascript` audit on every page
+
+**Caveat:** mobile `/catalog` TBT spiked 1,366 → 4,196 ms in this single re-run; long-task breakdown attributed it to vendor-react (chunk hash unchanged) on a slower edge RTT (250 ms vs baseline 130 ms). Most likely Slow-4G run-variance — not caused by PR #219. Recommend 2-3 mobile-catalog re-runs and median the result before treating it as a real regression.
 
 ---
 
@@ -440,32 +475,34 @@ pnpm translate:missing
 
 ```
 audit-reports/
-├── 00-phase0-prep.md              ← Phase 0 setup
-├── 01-prod-403-triage.md          ← Production 403 fix
-├── 02-code-health.md              ← TypeScript/tests/build
-├── 03-deps-security.md            ← 56 CVE list
-├── 04-db-content.md               ← Live DB audit results
-├── 09-performance.md              ← Theoretical Lighthouse
-├── 09-lighthouse-baseline.md      ← Live Lighthouse run (Task 3.1, 2026-05-03)
-├── lighthouse-2026-05-03/         ← Raw JSON+HTML reports (operator to attach)
-├── 10-bundle.md                   ← Bundle analysis (PR #208 fix)
-├── 11-security-review.md          ← Auth/SQL/XSS review
-├── migration-drift.md             ← 0011 missing analysis
-└── SUMMARY.md                     ← Executive summary
+├── 00-phase0-prep.md                       ← Phase 0 setup
+├── 01-prod-403-triage.md                   ← Production 403 fix
+├── 02-code-health.md                       ← TypeScript/tests/build
+├── 03-deps-security.md                     ← 56 CVE list
+├── 04-db-content.md                        ← Live DB audit results
+├── 09-performance.md                       ← Theoretical Lighthouse
+├── 09-lighthouse-baseline.md               ← Live Lighthouse run (Task 3.1, 2026-05-03, PR #218)
+├── lighthouse-2026-05-03/                  ← Raw JSON+HTML reports (operator to attach)
+├── 09-lighthouse-after-3-4.md              ← Re-baseline after Task 3.4 (2026-05-03)
+├── lighthouse-2026-05-03-after-3-4/        ← Raw JSON+HTML reports (operator to attach)
+├── 10-bundle.md                            ← Bundle analysis (PR #208 fix)
+├── 11-security-review.md                   ← Auth/SQL/XSS review
+├── migration-drift.md                      ← 0011 missing analysis
+└── SUMMARY.md                              ← Executive summary
 
 scripts/
-├── audit-db-content.ts            ← Phase 4 audit script
-├── apply-migration-0011.mjs       ← Idempotent migration fix
-├── fix-country-codes.ts           ← Canada/International normalization
-├── backfill-grants-orgid.ts       ← Orphan grants → orgs
-├── geocode-branches.ts            ← Coordinate enrichment
-└── translate-missing.ts           ← Translation gaps
+├── audit-db-content.ts                     ← Phase 4 audit script
+├── apply-migration-0011.mjs                ← Idempotent migration fix
+├── fix-country-codes.ts                    ← Canada/International normalization
+├── backfill-grants-orgid.ts                ← Orphan grants → orgs
+├── geocode-branches.ts                     ← Coordinate enrichment
+└── translate-missing.ts                    ← Translation gaps
 
 .grantkit-redesign/
-├── KARPATHY_GUIDELINES.md         ← Read first (always)
-├── PROJECT_MAP.md                 ← Living project state
-├── OPS.md                         ← Existing API keys / env vars
-├── AUDIT-CONTINUATION-2026-05-03.md  ← THIS FILE
+├── KARPATHY_GUIDELINES.md                  ← Read first (always)
+├── PROJECT_MAP.md                          ← Living project state
+├── OPS.md                                  ← Existing API keys / env vars
+├── AUDIT-CONTINUATION-2026-05-03.md        ← THIS FILE
 └── ...
 ```
 
@@ -473,10 +510,11 @@ scripts/
 
 ## 🎬 Next Up — შემდეგი action item
 
-**Status (2026-05-03):** Tasks 1.1, 1.2, **1.3**, **2.1**, **3.1**, 3.2, 3.3, 6.1 — ✅ ALL DONE on main / draft. Sandbox-side audit work დასრულებულია — დარჩენილი ყველა ამოცანა live-browser ან hybrid წვდომას მოითხოვს.
+**Status (2026-05-03):** Tasks 1.1, 1.2, **1.3**, **2.1**, **3.1**, **3.2**, **3.3**, **3.4**, 6.1 — ✅ ALL DONE on main / draft. Sandbox-side audit work for the AIChatBox bundle finding is closed; Maps payload is now the unambiguous next bundle target.
 
 **Done 2026-05-03 (this session):**
-- ✅ Task 3.1 — Lighthouse baseline (Cowork sandbox, lighthouse@13.2.0) — branch `claude/audit-task-3-1-lighthouse-baseline`, draft PR
+- ✅ Task 3.1 — Lighthouse baseline (PR #218 merged)
+- ✅ Task 3.4 — AIChatBox lazy-load (PR #219 merged) + verification re-baseline (draft on `claude/audit-task-3-4-verification-lighthouse`)
 
 **Done 2026-05-04:**
 - ✅ Task 2.1 — Migration 0011 drift fix (operator) — production `users` table now has all 8 auth columns + 3 indexes
@@ -490,10 +528,11 @@ scripts/
 
 **CTO recommends next (in priority order):**
 
-1. **🟠 Defer `AIChatBox` until interaction** _(operator-side or sandbox, ~1 hr)_ — Task 3.1 surfaced this as the highest-ROI bundle win remaining: 600 KB unused on `/catalog` & `/organizations/:id` mobile. Wrap the launcher in a stub that imports the chat chunk only on click. Re-baseline after.
-2. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `pnpm translate:missing` (22 keys). DB write access საჭირო.
-3. **🟡 Task 2.2 — Data normalization** _(operator-side, ~30 min)_ — country codes (7 rows) + orphan grants (968) + branches (84). All scripts ready on main.
-4. **🟡 Task 5.2 — Subscription Funnel review** _(~5 hr)_ — Paddle test mode flow + webhook → DB path.
+1. **🟠 Trim `/catalog` Google Maps payload** _(operator-side or sandbox, ~2-3 hr)_ — now the unambiguous biggest cost on `/catalog` (10.5 MB transferred mobile, `webgl.js` topping the unused-JS chart). Confirm `loading=async` + `defer` on the Maps script tag; consider paginating marker data server-side instead of shipping all 1,110 organisations to the client up front.
+2. **🟡 Re-run mobile `/catalog` 3× to median TBT** _(sandbox, ~5 min)_ — the post-3.4 re-baseline showed a 4,196 ms TBT spike likely caused by Slow-4G run-variance (vendor-react chunk hash unchanged, slower edge RTT). Re-running and taking median will close the caveat in `09-lighthouse-after-3-4.md`.
+3. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `pnpm translate:missing` (22 keys). DB write access საჭირო.
+4. **🟡 Task 2.2 — Data normalization** _(operator-side, ~30 min)_ — country codes (7 rows) + orphan grants (968) + branches (84). All scripts ready on main.
+5. **🟡 Task 5.2 — Subscription Funnel review** _(~5 hr)_ — Paddle test mode flow + webhook → DB path.
 
 **Operator-side (Pending Operator Actions ↓ section):** Task 2.2 (data normalization), Task 4.1 (translations), Task 4.2 (contact enrichment).
 
