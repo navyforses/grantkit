@@ -174,7 +174,7 @@ async function main() {
       await q(
         conn,
         `SELECT language,
-           COUNT(*) as rows,
+           COUNT(*) as n,
            SUM(name IS NULL OR name = '') as missing_name,
            SUM(description IS NULL OR description = '') as missing_desc,
            SUM(eligibility IS NULL OR eligibility = '') as missing_eligibility
