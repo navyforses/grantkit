@@ -8,10 +8,13 @@
  * navigation.
  */
 
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { List as ListIcon, Map as MapIcon } from "lucide-react";
 import GrantList from "@/components/GrantList";
-import MapPanel, { type MapPanelGrant } from "@/components/MapPanel";
+// Mobile defaults to the list tab; users who never tap "Map" should not pay
+// for the ~150 KB MapPanel chunk + ~750 KB Google Maps script.
+const MapPanel = lazy(() => import("@/components/MapPanel"));
+import type { MapPanelGrant } from "@/components/MapPanel";
 import type { CatalogItem } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -69,15 +72,17 @@ export default function MobileCatalogView({
         {tab === "list" ? (
           <GrantList grants={grants} onCardClick={onCardClick} />
         ) : (
-          <MapPanel
-            className="absolute inset-0 w-full h-full"
-            grants={grants as unknown as MapPanelGrant[]}
-            onMarkerClick={(g) => {
-              const match = grants.find((it) => it.id === g.id);
-              if (match) onMarkerClick(match);
-            }}
-            onMapReady={onMapReady}
-          />
+          <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">…</div>}>
+            <MapPanel
+              className="absolute inset-0 w-full h-full"
+              grants={grants as unknown as MapPanelGrant[]}
+              onMarkerClick={(g) => {
+                const match = grants.find((it) => it.id === g.id);
+                if (match) onMarkerClick(match);
+              }}
+              onMapReady={onMapReady}
+            />
+          </Suspense>
         )}
       </div>
     </div>
