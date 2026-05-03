@@ -85,11 +85,12 @@ export async function startServer(setupFrontend: FrontendSetup) {
         styleSrc: [
           "'self'",
           "'unsafe-inline'",           // Radix UI / Framer Motion / Recharts inline styles
-          "https://fonts.googleapis.com",
           "https://maps.googleapis.com", // Maps injects stylesheet links
           "https://maps.gstatic.com",
         ],
-        fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+        // Fonts are now self-hosted under /fonts/* (see client/src/fonts.css);
+        // 'self' covers them. data: kept for inline icon fonts some libs use.
+        fontSrc: ["'self'", "data:"],
         imgSrc: [
           "'self'",
           "data:",
