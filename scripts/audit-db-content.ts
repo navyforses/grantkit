@@ -27,12 +27,20 @@ const REPORT_PATH = path.resolve(process.cwd(), "audit-reports/04-db-content.md"
 
 type Row = Record<string, unknown>;
 
-async function q(conn: mysql.Connection, sql: string): Promise<Row[]> {
-  const [rows] = await conn.query(sql);
-  return rows as Row[];
+async function q(conn: mysql.Connection, sql: string): Promise<Row[] | { error: string }> {
+  try {
+    const [rows] = await conn.query(sql);
+    return rows as Row[];
+  } catch (err: any) {
+    const msg = err?.sqlMessage || err?.message || String(err);
+    console.warn(`  ⚠ query failed: ${msg.slice(0, 120)}`);
+    return { error: msg };
+  }
 }
 
-function table(rows: Row[]): string {
+function table(result: Row[] | { error: string }): string {
+  if (!Array.isArray(result)) return `> ⚠ **Query failed:** \`${result.error}\``;
+  const rows = result;
   if (rows.length === 0) return "_(no rows)_";
   const cols = Object.keys(rows[0]);
   const head = "| " + cols.join(" | ") + " |";
@@ -174,7 +182,7 @@ async function main() {
       await q(
         conn,
         `SELECT language,
-           COUNT(*) as rows,
+           COUNT(*) as n,
            SUM(name IS NULL OR name = '') as missing_name,
            SUM(description IS NULL OR description = '') as missing_desc,
            SUM(eligibility IS NULL OR eligibility = '') as missing_eligibility
