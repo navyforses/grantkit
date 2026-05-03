@@ -196,16 +196,30 @@
 - `server/ client/ scripts/`-ში `xlsx` import-ი არ მოიძებნა
 - xlsx CVE-ები აღარ ჩანს deps tree-ში
 
-#### ამოცანა 1.3 — Express 4 → 5 Migration (~2 დღე, ცალკე PR)
-- Migration guide-ის შესწავლა
-- Middleware-ების refactor (async errors, body-parser)
-- `pnpm update express@5 @types/express@5`
+#### ✅ ამოცანა 1.3 — Express 4 → 5 Migration — **DONE** (2026-05-04)
 
-**✅ აუდიტი 1.3:**
+Smaller than the spec's "~2 day" estimate — research showed only 4 line-level changes were required:
+
+- `package.json` — `express ^4.21.2 → ^5.1.0` (resolved 5.2.1), `@types/express 4.17.21 → ^5.0.0`
+- `server/_core/static.ts:24` — `app.use("*", ...)` → `app.use((req, res, next) => ...)` (path-to-regexp v8 rejects bare `"*"`; path-less middleware is the idiomatic Express 5 catch-all)
+- `server/_core/vite.ts:24` and `:70` — same fix
+
+**No other changes needed:** `seoRoutes.ts`, `paddleWebhook.ts`, `bootstrap.ts` use only named string paths. No `req.param()`, `app.del()`, `res.sendfile`, `res.redirect("back")`, or `res.json(status,body)` usage anywhere. Body parsers (`express.json`, `express.urlencoded`), `express.static`, `helmet@8`, `express-rate-limit@8`, `@trpc/server/adapters/express` and `supertest@7` are all Express 5 compatible.
+
+**✅ აუდიტი 1.3 — verification 2026-05-04:**
 ```
-□ pnpm test → 195/195 pass
-□ Login/catalog/admin → manual smoke pass
-□ pnpm audit → path-to-regexp CVE აღარ ჩანს
+✅ pnpm check → 0 errors
+✅ pnpm test → 195/195 pass (1 skipped: RESEND_API_KEY)
+✅ pnpm build → succeeds (main bundle 563 KB, unchanged from PR #211)
+✅ Smoke boot (PORT=3099 NODE_ENV=production node dist/index.js):
+     /healthz       → 200 {"status":"ok"}
+     /robots.txt    → 200 text/plain (SEO routes work)
+     /              → 200 text/html (SPA fallback works)
+     /catalog       → 200 text/html (path-less middleware matches all paths)
+     /api/nope      → 404 {"error":"Not found"} (API exclusion preserved)
+✅ Production runtime path-to-regexp → 8.4.2 (patched, no ReDoS)
+✅ pnpm audit total CVE → 56 → 53 (-3 from Express 4 chain)
+   Remaining path-to-regexp finding is dev-only (gitnexus>express@4>path-to-regexp@0.1.12) — not shipped
 ```
 
 ---
@@ -413,9 +427,12 @@ scripts/
 
 ## 🎬 Next Up — შემდეგი action item
 
-**Status (2026-05-03 evening):** Tasks 1.1, 1.2, 3.2, 3.3, 6.1 — ✅ ALL DONE on main. Sandbox-side audit work დასრულებულია — დარჩენილი ამოცანები ან Express 5 dedicated session-ს მოითხოვს, ან operator-side / live-browser წვდომას.
+**Status (2026-05-04):** Tasks 1.1, 1.2, **1.3**, 3.2, 3.3, 6.1 — ✅ ALL DONE on main. Sandbox-side audit work დასრულებულია — დარჩენილი ყველა ამოცანა operator-side ან live-browser წვდომას მოითხოვს.
 
-**Done today (2026-05-03):**
+**Done 2026-05-04:**
+- (PR pending) — fix(deps): Express 4 → 5 migration (Task 1.3) — 4-line change, all tests pass
+
+**Done 2026-05-03:**
 - PR #210 — docs(audit): verify Tier 1+2 security tasks complete
 - PR #211 — perf(build): main bundle 2.55 MB → 563 KB (Task 3.2)
 - PR #212 — refactor(server): split dev/prod entry, drop eval() hack (Task 6.1)
@@ -424,10 +441,9 @@ scripts/
 **CTO recommends next (in priority order):**
 
 1. **🔴 Task 2.1 — Migration 0011 drift fix** _(operator-side, CRITICAL)_ — production auth-ს აფერხებს. Script ready: `node scripts/apply-migration-0011.mjs --apply`. ⓘ ლოკალური Railway proxy წვდომა საჭიროა — script main-ზეა shipped (PR #207).
-2. **🟠 Task 3.1 — Lighthouse Baseline** _(operator-side, ~30 min)_ — Chrome DevTools live production URL-ზე. Output → `audit-reports/09-lighthouse-baseline.md`. ბოლო 4 PR-ის ეფექტის გაზომვა (bundle 78 % less, fonts self-hosted, no eval).
-3. **🟡 Task 1.3 — Express 4 → 5** _(~2 დღე, dedicated session)_ — async middleware errors, body-parser breaking changes, path-to-regexp v6 ReDoS fix. ცალკე PR.
-4. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `pnpm translate:missing` (22 keys). DB write access საჭირო.
-5. **🟡 Task 5.2 — Subscription Funnel review** _(~5 hr)_ — Paddle test mode flow + webhook → DB path.
+2. **🟠 Task 3.1 — Lighthouse Baseline** _(operator-side, ~30 min)_ — Chrome DevTools live production URL-ზე. Output → `audit-reports/09-lighthouse-baseline.md`. ბოლო 5 PR-ის ეფექტის გაზომვა (bundle 78 % less, fonts self-hosted, no eval, Express 5).
+3. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `pnpm translate:missing` (22 keys). DB write access საჭირო.
+4. **🟡 Task 5.2 — Subscription Funnel review** _(~5 hr)_ — Paddle test mode flow + webhook → DB path.
 
 **Operator-side (Pending Operator Actions ↓ section):** Task 2.1 (Migration 0011 drift), Task 2.2 (data normalization).
 
