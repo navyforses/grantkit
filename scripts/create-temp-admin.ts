@@ -4,6 +4,7 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { randomBytes } from "node:crypto";
 import { users } from "../drizzle/schema";
 import { getDb } from "../server/db";
 
@@ -20,6 +21,7 @@ async function main() {
   }
 
   const email = process.env.TEMP_ADMIN_EMAIL || "admin-temp@grantkit.local";
+  const password = process.env.TEMP_ADMIN_PASSWORD || randomBytes(18).toString("base64url");
   const password = process.env.TEMP_ADMIN_PASSWORD || "GrantKitAdmin2026!";
   const name = process.env.TEMP_ADMIN_NAME || "Temporary Admin";
 
@@ -57,6 +59,14 @@ async function main() {
     console.log(`✅ Created temporary admin user: ${email}`);
   }
 
+  const wasGenerated = !process.env.TEMP_ADMIN_PASSWORD;
+
+  console.log("\nTemporary admin credentials:");
+  console.log(`username/email: ${email}`);
+  console.log(`password: ${password}`);
+  if (wasGenerated) {
+    console.log("(password was auto-generated for this run)");
+  }
   console.log("\nTemporary admin credentials:");
   console.log(`email (login field): ${email}`);
   console.log(`password: ${password}`);
