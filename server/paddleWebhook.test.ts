@@ -120,7 +120,43 @@ describe("processWebhookEvent", () => {
     expect(result.message).toContain("Ignored event type");
   });
 
-  it("handles missing customer_id", async () => {
+  it("looks up user via custom_data.userId when present (numeric)", async () => {
+    const event = {
+      event_id: "evt_cd_num",
+      event_type: "subscription.activated",
+      occurred_at: "2026-03-30T00:00:00Z",
+      data: {
+        id: "sub_cd_num",
+        status: "active",
+        customer_id: "ctm_anything",
+        custom_data: { userId: 999999 },
+      },
+    };
+
+    // userId 999999 won't exist in test DB, but message should mention it
+    const result = await processWebhookEvent(event);
+    expect(result.handled).toBe(false);
+    expect(result.message).toContain("No user found");
+  });
+
+  it("falls back to paddleCustomerId when custom_data is absent", async () => {
+    const event = {
+      event_id: "evt_fb",
+      event_type: "subscription.activated",
+      occurred_at: "2026-03-30T00:00:00Z",
+      data: {
+        id: "sub_fb",
+        status: "active",
+        customer_id: "ctm_fallback",
+      },
+    };
+
+    const result = await processWebhookEvent(event);
+    expect(result.handled).toBe(false);
+    expect(result.message).toContain("No user found");
+  });
+
+  it("returns no-user-found when both lookups fail (no customer_id, no custom_data)", async () => {
     const event = {
       event_id: "evt_999",
       event_type: "subscription.activated",
@@ -134,7 +170,7 @@ describe("processWebhookEvent", () => {
 
     const result = await processWebhookEvent(event);
     expect(result.handled).toBe(false);
-    expect(result.message).toContain("No customer_id");
+    expect(result.message).toContain("No user found");
   });
 
   it("handles subscription.past_due event", async () => {

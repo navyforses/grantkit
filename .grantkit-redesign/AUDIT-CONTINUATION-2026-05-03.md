@@ -450,7 +450,7 @@ Same Lighthouse harness as Task 3.1, post-merge:
 
 **Critical / High (5 findings, ship-blocking before serious user acquisition):**
 
-1. 🔴 **`subscription.activate` is client-trusted** — premium-bypass exploit. Any authenticated user can `POST /api/trpc/subscription.activate.mutate({})` from browser console and get `subscriptionStatus: "active"` for free. Fix: delete the endpoint, rely on webhook as source of truth.
+1. ~~🔴 **`subscription.activate` is client-trusted**~~ → ✅ **FIXED** (this branch): endpoint deleted, `Paddle.Checkout.open` now passes `customData: { userId }`, webhook looks up user via `custom_data.userId` first (paddleCustomerId fallback), webhook always writes `paddleCustomerId` so the fallback path is reliable on later events.
 2. 🟠 **`subscription.cancel` doesn't tell Paddle** — user marked cancelled in our DB but Paddle continues billing card. Fix: call Paddle `cancel` API.
 3. 🟠 **Webhook signature verification fail-open** if `PADDLE_WEBHOOK_SECRET` unset (production currently has no secret per env-var list). Fix: fail-closed in production.
 4. 🟠 **`rawBody = JSON.stringify(req.body)` will mismatch HMAC** — `express.json()` runs BEFORE webhook route, so reconstruction is byte-mismatched. Latent today (no secret), surfaces immediately when fix #3 ships. Fix: register `express.raw()` route BEFORE global `express.json()`.
@@ -459,7 +459,7 @@ Same Lighthouse harness as Task 3.1, post-merge:
 **Medium / Low (6 findings):** no replay protection, no event-id idempotency, webhook always returns 200 (silent state drift on transient errors), hardcoded plan ID, unknown-status maps to `"none"` (silent cancel), `PADDLE_CLIENT_TOKEN` hardcoded.
 
 **Recommended remediation order** (full table in audit report):
-1. Hotfix PR — delete `subscription.activate` (~30 min)
+1. ✅ ~~Hotfix PR — delete `subscription.activate`~~ — DONE this branch (custom_data path).
 2. Webhook hardening PR — raw-body middleware + fail-closed + replay + idempotency + 5xx-on-transient (~3 hr + 1 migration)
 3. `cancel` via Paddle API (~1 hr, needs `PADDLE_API_KEY` on Railway)
 4. Annual price wiring (~30 min sandbox + operator creates annual price ID)
@@ -585,6 +585,7 @@ scripts/
 - ✅ Audit memory sync — PR #224 merged
 - 🟡 Task 1 deferred — Maps key rotation (operator decision: ship business priorities first; key rotation post-launch)
 - ✅ Task 5.2 sandbox-side code review — `audit-reports/12-subscription-funnel.md` (11 findings; 1 critical premium-bypass exploit + 3 high)
+- ✅ Task 5.2 hotfix #1 — `subscription.activate` exploit closed via custom_data path: `Paddle.Checkout.open({ customData: { userId } })` + webhook lookup via `custom_data.userId` first (paddleCustomerId fallback) + endpoint deleted. 197/197 tests pass, build green.
 
 **Done 2026-05-03:**
 - ✅ Task 2.1 — Migration 0011 drift fix (operator + PR #217 merged)
@@ -601,8 +602,8 @@ scripts/
 
 **CTO recommends next (in priority order):**
 
-1. **🔴 Hotfix — delete `subscription.activate` endpoint** _(sandbox, ~30 min)_ — closes premium-bypass exploit (Task 5.2 Finding #1). MUST ship before any meaningful user acquisition. See `audit-reports/12-subscription-funnel.md` §1.
-2. **🟠 Webhook hardening PR** _(sandbox, ~3 hr + 1 DB migration)_ — bundle Findings #3 (fail-closed) + #4 (raw-body middleware) + #5 (replay) + #6 (event-id idempotency) + #8 (5xx on transient errors). See `audit-reports/12-subscription-funnel.md` §3-#8.
+1. ~~🔴 Hotfix — delete `subscription.activate`~~ ✅ DONE (this branch, 2026-05-04).
+2. **🟠 Webhook hardening PR** _(sandbox, ~3 hr + 1 DB migration)_ — bundle Findings #3 (fail-closed) + #4 (raw-body middleware) + #5 (replay) + #6 (event-id idempotency) + #8 (5xx on transient errors). See `audit-reports/12-subscription-funnel.md` §3-#8. **Now blocking** — webhook is the only activation path.
 3. **🟠 `subscription.cancel` via Paddle API** _(sandbox + operator, ~1 hr)_ — operator adds `PADDLE_API_KEY` on Railway, sandbox replaces DB-only cancel with Paddle SDK call. See `audit-reports/12-subscription-funnel.md` §2.
 4. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `npx tsx scripts/translate-missing.ts` (22 keys). DB write access საჭირო. Blocked on AI provider key (defer or Google AI Studio setup).
 5. **🟡 Task 4.2 — Contact enrichment Phase B** _(operator-side + GrantedAI API, ~1-2 hr)_ — 331 phones + 436 emails missing. Same blocker.
