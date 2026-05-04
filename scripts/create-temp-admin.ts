@@ -22,6 +22,7 @@ async function main() {
 
   const email = process.env.TEMP_ADMIN_EMAIL || "admin-temp@grantkit.local";
   const password = process.env.TEMP_ADMIN_PASSWORD || randomBytes(18).toString("base64url");
+  const password = process.env.TEMP_ADMIN_PASSWORD || "GrantKitAdmin2026!";
   const name = process.env.TEMP_ADMIN_NAME || "Temporary Admin";
 
   const existing = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -66,6 +67,9 @@ async function main() {
   if (wasGenerated) {
     console.log("(password was auto-generated for this run)");
   }
+  console.log("\nTemporary admin credentials:");
+  console.log(`email (login field): ${email}`);
+  console.log(`password: ${password}`);
   console.log("\n⚠️ Rotate or delete this account after use.");
 }
 

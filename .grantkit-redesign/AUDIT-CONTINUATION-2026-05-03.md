@@ -13,9 +13,9 @@
 | Area | State |
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
-| Latest commit on main | `cb88813 Merge pull request #221` (lazy-load MapPanel) |
-| Active development branch | `claude/audit-task-2-2-data-normalization` (Task 2.2 docs PR) |
-| Last merged audit PR | #221 (Task 3.5); recent: #217 / #218 / #219 / #220 / #221 |
+| Latest commit on main | `7ae690a` (post #224 merge) |
+| Active development branch | `claude/grantkit-audit-continue-7mEhS` (Task 5.2 sandbox-side review) |
+| Last merged audit PR | #224 (audit memory sync); recent: #218 / #219 / #220 / #221 / #223 / #222 / #224 |
 | Last DB migration on production | `0011_volatile_demogoblin` ✅ applied 2026-05-03 (operator) |
 | Pending operator actions | _(none — Task 2.2 closed; only Tasks 4.1 / 4.2 / 5.2 remaining)_ |
 | Tier 1 security patches | ✅ Verified complete (2026-05-03) — see Goal 1 task 1.1 |
@@ -29,6 +29,7 @@
 | MapPanel lazy-load | ✅ Done (Task 3.5, PR #221 merged 2026-05-03) |
 | Data normalization | ✅ Done (Task 2.2, operator 2026-05-04) — 13 country fixes + 618 grants linked + 1,245 branches geocoded |
 | Latest Lighthouse re-baseline | ✅ 2026-05-03 post-3.4 — `audit-reports/09-lighthouse-after-3-4.md` (mobile `/organizations/:id` LCP 13.7 → 9.1 s, unused-JS −601 KB) |
+| Latest bundle-graph verification | ✅ 2026-05-03 Task 3.5 — `audit-reports/09-task-3-5-verification.md` (8/8 PASS — `MapPanel`, `googleMapsLoader`, `vendor-gmaps` removed from `/catalog` initial graph) |
 
 ---
 
@@ -62,8 +63,8 @@
 | #219 | perf(client): lazy-load AIChatBox on detail pages (Task 3.4) | ✅ Merged |
 | #220 | audit: re-baseline after Task 3.4 (verify AIChatBox lazy-load impact) | ✅ Merged |
 | #221 | perf(client): lazy-load MapPanel on /catalog (Task 3.5) | ✅ Merged |
-| _draft_ | audit: Task 3.5 verification (bundle-graph deterministic check) | 🟡 Draft on `claude/audit-task-3-5-verification-bundle` |
-| _draft_ | docs(audit): record Task 2.2 data normalization (operator outputs) | 🟡 Draft on `claude/audit-task-2-2-data-normalization` |
+| #222 | audit: Task 3.5 verification (bundle-graph deterministic check) | ✅ Merged |
+| #223 | docs(audit): record Task 2.2 data normalization (operator outputs) | ✅ Merged |
 
 **კუმულატიური ეფექტი:**
 - `index.html` 369 KB → 2.4 KB (PR #208)
@@ -72,7 +73,7 @@
 - Production esbuild: no `direct-eval` warning, vite excluded from prod graph (PR #212)
 - 2 fewer cross-origin font handshakes per page load (PR #214); CSP `font-src 'self' data:`
 - AIChatBox 873 KB chunk no longer in eager preload graph for `/catalog` or `/organizations/:id` (PR #219); mobile `/organizations/:id` total weight 3,033 → 2,106 KiB (−31 %)
-- MapPanel + googleMapsLoader + vendor-gmaps (~34 KB JS) + Google Maps API script (~750 KB) no longer in `/catalog` initial graph (PR #221); list-only mobile viewers avoid the entire Maps stack until they tap "Map" tab
+- MapPanel + googleMapsLoader + vendor-gmaps (~34 KB JS) + Google Maps API script (~750 KB) no longer in `/catalog` initial graph (PR #221); list-only mobile viewers avoid the entire Maps stack until they tap "Map" tab. 8/8 deterministic bundle-graph checks PASS — see `audit-reports/09-task-3-5-verification.md`
 - Task 2.2 (operator 2026-05-04): country codes normalized (13 rows), 618 orphan grants linked to orgs (12% → 68% linked), 1,245 branches geocoded (94% success of 1,324 total)
 
 ---
@@ -143,6 +144,15 @@
 - ⚠️ mobile `/catalog` TBT spike 1,366 → 4,196 ms attributed to vendor-react long task on slower edge RTT (250 ms vs baseline 130 ms); chunk hash unchanged → not caused by PR #219, treat as Slow-4G run-variance until averaged across 2-3 re-runs
 - ✅ AIChatBox absent from `unused-javascript` audit on every page after PR #219
 - See `audit-reports/09-lighthouse-after-3-4.md` for full delta tables + diagnostics
+
+**Task 3.5 verification (2026-05-03, bundle-graph deterministic check, draft PR on `claude/audit-task-3-5-verification-bundle`):**
+
+Lighthouse skipped deliberately — Task 3.4 verification showed mobile `/catalog` Lighthouse scores are dominated by `vendor-react` Slow-4G run-variance unrelated to either PR #219 or PR #221. Bundle graph is deterministic, derives from build artefacts, and tests exactly what PR #221 changed (no eager `MapPanel` import in Catalog chunk).
+
+- ✅ Pre-flight 4/4: `/healthz` 200, main bundle hash flipped (`index-CWHJ_15x.js` → `index-BMm4yPCq.js`), `/` and `/catalog` modulepreloads list only `vendor-react` + `vendor-trpc` + `vendor-framer` (no `MapPanel` chain on either route)
+- ✅ Bundle graph 4/4: `MapPanel-DDhfE79J.js` fetchable separately (7,059 b), `googleMapsLoader-CfbSf2Bo.js` fetchable separately (542 b), `Catalog-BvPaRsoV.js` references `MapPanel` only via 2 `React.lazy(() => __vitePreload(import("./MapPanel...")))` boundaries (0 static imports), 0 `markercluster` references in Catalog chunk
+- Lazy chunks now gated on Map tab tap: ~34 KB JS (`MapPanel` + `googleMapsLoader` + `vendor-gmaps`) + ~750 KB external Maps API script + tile imagery
+- See `audit-reports/09-task-3-5-verification.md` for full check tables + chunk inventory
 
 ### Phase 10 — Bundle Analysis ✅
 **Top chunks:**
@@ -434,10 +444,31 @@ Same Lighthouse harness as Task 3.1, post-merge:
 - Onboarding flow end-to-end ტესტი
 - Registration → Email verification → Login მთლიანი დატოლება
 
-#### ამოცანა 5.2 — Subscription Funnel (~5 საათი)
-- Paddle test mode flow
-- Webhook → DB update path
-- Pricing page UX review
+#### ✅ ამოცანა 5.2 — Subscription Funnel (Sandbox-side code review) — **DONE** (2026-05-04)
+
+**Output:** `audit-reports/12-subscription-funnel.md` — 11 findings across webhook, tRPC subscription router, Pricing UI, Paddle.js client.
+
+**Critical / High (5 findings, ship-blocking before serious user acquisition):**
+
+1. 🔴 **`subscription.activate` is client-trusted** — premium-bypass exploit. Any authenticated user can `POST /api/trpc/subscription.activate.mutate({})` from browser console and get `subscriptionStatus: "active"` for free. Fix: delete the endpoint, rely on webhook as source of truth.
+2. 🟠 **`subscription.cancel` doesn't tell Paddle** — user marked cancelled in our DB but Paddle continues billing card. Fix: call Paddle `cancel` API.
+3. 🟠 **Webhook signature verification fail-open** if `PADDLE_WEBHOOK_SECRET` unset (production currently has no secret per env-var list). Fix: fail-closed in production.
+4. 🟠 **`rawBody = JSON.stringify(req.body)` will mismatch HMAC** — `express.json()` runs BEFORE webhook route, so reconstruction is byte-mismatched. Latent today (no secret), surfaces immediately when fix #3 ships. Fix: register `express.raw()` route BEFORE global `express.json()`.
+5. 🟡 **Annual/monthly toggle is decorative** — checkout always uses monthly `PADDLE_PRICE_ID` regardless of toggle. UX trust issue.
+
+**Medium / Low (6 findings):** no replay protection, no event-id idempotency, webhook always returns 200 (silent state drift on transient errors), hardcoded plan ID, unknown-status maps to `"none"` (silent cancel), `PADDLE_CLIENT_TOKEN` hardcoded.
+
+**Recommended remediation order** (full table in audit report):
+1. Hotfix PR — delete `subscription.activate` (~30 min)
+2. Webhook hardening PR — raw-body middleware + fail-closed + replay + idempotency + 5xx-on-transient (~3 hr + 1 migration)
+3. `cancel` via Paddle API (~1 hr, needs `PADDLE_API_KEY` on Railway)
+4. Annual price wiring (~30 min sandbox + operator creates annual price ID)
+5. Cleanup (~30 min)
+
+**Out of scope (operator-side, follow-up Task 5.2.B):**
+- Paddle test-mode flow verification: register → checkout → webhook → DB → email
+- Verify Railway env: `PADDLE_WEBHOOK_SECRET`, `PADDLE_API_KEY`
+- Paddle dashboard config review
 
 ---
 
@@ -549,13 +580,17 @@ scripts/
 
 **Done 2026-05-04 (this session):**
 - ✅ Task 2.2 — Data normalization (operator) — 13 country fixes + 618 grants linked + 1,245 branches geocoded (94%)
-- ⏳ Sandbox: docs PR for Task 2.2 (this branch)
+- ✅ Sandbox: docs PR for Task 2.2 — PR #223 merged
+- ✅ PR #222 (Task 3.5 verification) merged — rebased onto post-#223 main, conflict resolved on this audit doc, force-with-lease push, draft → ready → merged
+- ✅ Audit memory sync — PR #224 merged
+- 🟡 Task 1 deferred — Maps key rotation (operator decision: ship business priorities first; key rotation post-launch)
+- ✅ Task 5.2 sandbox-side code review — `audit-reports/12-subscription-funnel.md` (11 findings; 1 critical premium-bypass exploit + 3 high)
 
 **Done 2026-05-03:**
 - ✅ Task 2.1 — Migration 0011 drift fix (operator + PR #217 merged)
 - ✅ Task 3.1 — Lighthouse baseline (PR #218 merged)
 - ✅ Task 3.4 — AIChatBox lazy-load (PR #219 merged) + verification re-baseline (PR #220 merged)
-- ✅ Task 3.5 — MapPanel lazy-load (PR #221 merged) + bundle-graph verification (PR #222 draft)
+- ✅ Task 3.5 — MapPanel lazy-load (PR #221 merged) + bundle-graph verification (PR #222 merged 2026-05-04)
 - ✅ Task 1.3 — Express 4 → 5 migration (PR #216 merged)
 
 **Done earlier:**
@@ -566,11 +601,15 @@ scripts/
 
 **CTO recommends next (in priority order):**
 
-1. **🟡 Security cleanup — rotate Google Maps keys** _(operator-side, ~5 min)_ — both browser and server keys leaked to chat during Task 2.2 diagnosis. Regenerate in GCP Console + update `VITE_GOOGLE_MAPS_BROWSER_KEY` on Railway. Server key operator-only — no Railway update needed.
-2. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `npx tsx scripts/translate-missing.ts` (22 keys). DB write access საჭირო.
-3. **🟡 Task 4.2 — Contact enrichment Phase B** _(operator-side + GrantedAI API, ~1-2 hr)_ — 331 phones + 436 emails missing. Scripts ready on main.
-4. **🟡 Task 5.2 — Subscription Funnel review** _(hybrid, ~5 hr)_ — Paddle test mode flow + webhook → DB path. Sandbox-side code review possible without Paddle access.
-5. **🟢 Org cleanup (new finding from Task 2.2)** _(operator + sandbox, ~2 hr)_ — Task 2.2 surfaced ~30 organizations with garbage names that are actually spreadsheet headers (`დეტალები`, `მგზავრობა`, `Not specified`, etc.). Need to either delete those rows or relabel. Geocoding currently fails for them, which is correct but accumulates noise.
+1. **🔴 Hotfix — delete `subscription.activate` endpoint** _(sandbox, ~30 min)_ — closes premium-bypass exploit (Task 5.2 Finding #1). MUST ship before any meaningful user acquisition. See `audit-reports/12-subscription-funnel.md` §1.
+2. **🟠 Webhook hardening PR** _(sandbox, ~3 hr + 1 DB migration)_ — bundle Findings #3 (fail-closed) + #4 (raw-body middleware) + #5 (replay) + #6 (event-id idempotency) + #8 (5xx on transient errors). See `audit-reports/12-subscription-funnel.md` §3-#8.
+3. **🟠 `subscription.cancel` via Paddle API** _(sandbox + operator, ~1 hr)_ — operator adds `PADDLE_API_KEY` on Railway, sandbox replaces DB-only cancel with Paddle SDK call. See `audit-reports/12-subscription-funnel.md` §2.
+4. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `npx tsx scripts/translate-missing.ts` (22 keys). DB write access საჭირო. Blocked on AI provider key (defer or Google AI Studio setup).
+5. **🟡 Task 4.2 — Contact enrichment Phase B** _(operator-side + GrantedAI API, ~1-2 hr)_ — 331 phones + 436 emails missing. Same blocker.
+6. **🟡 Task 5.2.B — Operator-side Paddle test-mode flow** _(operator, ~1 hr)_ — register → checkout → webhook → DB → confirmation email, after webhook hardening lands.
+7. **🟡 Annual price wiring** _(operator + sandbox, ~30 min)_ — operator creates annual price ID in Paddle; sandbox wires `PricingCTA` plan prop. See `audit-reports/12-subscription-funnel.md` §7.
+8. **🟢 Org cleanup (new finding from Task 2.2)** _(operator + sandbox, ~2 hr)_ — ~30 orgs with garbage names from spreadsheet headers.
+9. **🟡 [Deferred] Maps key rotation** _(operator-side, ~5 min)_ — both keys leaked during Task 2.2 diagnosis. Operator decided 2026-05-04 to defer until post-launch; track here so it's not lost.
 
 **Operator-side (Pending Operator Actions ↓ section):** Tasks 4.1 (translations), 4.2 (contact enrichment), security cleanup (Maps key rotation).
 
