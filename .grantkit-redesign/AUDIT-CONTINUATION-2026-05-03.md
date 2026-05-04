@@ -13,11 +13,11 @@
 | Area | State |
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
-| Latest commit on main | `263f4f2 Merge pull request #219` (lazy-load AIChatBox) |
-| Active development branch | `claude/audit-task-3-4-verification-lighthouse` (post-3.4 re-baseline) |
-| Last merged audit PR | #219 (Task 3.4); recent: #216 / #217 / #218 / #219 |
+| Latest commit on main | `cb88813 Merge pull request #221` (lazy-load MapPanel) |
+| Active development branch | `claude/audit-task-2-2-data-normalization` (Task 2.2 docs PR) |
+| Last merged audit PR | #221 (Task 3.5); recent: #217 / #218 / #219 / #220 / #221 |
 | Last DB migration on production | `0011_volatile_demogoblin` ✅ applied 2026-05-03 (operator) |
-| Pending operator actions | 3 local DB scripts (see "Pending Actions" section) |
+| Pending operator actions | _(none — Task 2.2 closed; only Tasks 4.1 / 4.2 / 5.2 remaining)_ |
 | Tier 1 security patches | ✅ Verified complete (2026-05-03) — see Goal 1 task 1.1 |
 | Bundle size (main `index-*.js`) | ✅ 2,554 KB → 563 KB (Task 3.2, PR #211) |
 | Server entry split (no eval hack) | ✅ Done (Task 6.1, PR #212) |
@@ -26,6 +26,8 @@
 | Production auth columns | ✅ Done (Task 2.1, operator 2026-05-03) |
 | Lighthouse baseline (live) | ✅ Done (Task 3.1, PR #218 merged 2026-05-03) |
 | AIChatBox lazy-load | ✅ Done (Task 3.4, PR #219 merged 2026-05-03) |
+| MapPanel lazy-load | ✅ Done (Task 3.5, PR #221 merged 2026-05-03) |
+| Data normalization | ✅ Done (Task 2.2, operator 2026-05-04) — 13 country fixes + 618 grants linked + 1,245 branches geocoded |
 | Latest Lighthouse re-baseline | ✅ 2026-05-03 post-3.4 — `audit-reports/09-lighthouse-after-3-4.md` (mobile `/organizations/:id` LCP 13.7 → 9.1 s, unused-JS −601 KB) |
 
 ---
@@ -58,7 +60,10 @@
 | #217 | docs(audit): record Task 2.1 — migration 0011 applied to production | ✅ Merged |
 | #218 | audit: phase 9 Lighthouse baseline post-perf-blitz (Task 3.1) | ✅ Merged |
 | #219 | perf(client): lazy-load AIChatBox on detail pages (Task 3.4) | ✅ Merged |
-| _draft_ | audit: re-baseline after Task 3.4 (verify AIChatBox lazy-load impact) | 🟡 Draft on `claude/audit-task-3-4-verification-lighthouse` |
+| #220 | audit: re-baseline after Task 3.4 (verify AIChatBox lazy-load impact) | ✅ Merged |
+| #221 | perf(client): lazy-load MapPanel on /catalog (Task 3.5) | ✅ Merged |
+| _draft_ | audit: Task 3.5 verification (bundle-graph deterministic check) | 🟡 Draft on `claude/audit-task-3-5-verification-bundle` |
+| _draft_ | docs(audit): record Task 2.2 data normalization (operator outputs) | 🟡 Draft on `claude/audit-task-2-2-data-normalization` |
 
 **კუმულატიური ეფექტი:**
 - `index.html` 369 KB → 2.4 KB (PR #208)
@@ -67,6 +72,8 @@
 - Production esbuild: no `direct-eval` warning, vite excluded from prod graph (PR #212)
 - 2 fewer cross-origin font handshakes per page load (PR #214); CSP `font-src 'self' data:`
 - AIChatBox 873 KB chunk no longer in eager preload graph for `/catalog` or `/organizations/:id` (PR #219); mobile `/organizations/:id` total weight 3,033 → 2,106 KiB (−31 %)
+- MapPanel + googleMapsLoader + vendor-gmaps (~34 KB JS) + Google Maps API script (~750 KB) no longer in `/catalog` initial graph (PR #221); list-only mobile viewers avoid the entire Maps stack until they tap "Map" tab
+- Task 2.2 (operator 2026-05-04): country codes normalized (13 rows), 618 orphan grants linked to orgs (12% → 68% linked), 1,245 branches geocoded (94% success of 1,324 total)
 
 ---
 
@@ -274,24 +281,43 @@ Operator-მა გაუშვა `scripts/apply-migration-0011.mjs --apply` Wi
 
 **Production effect:** email/password auth, email verification flow, password reset, account lockout, brute-force protection — ყველა ახლა functional-ია. ეს Phase 4 audit-ის (PR #206) მთავარი finding-ი იყო — closed.
 
-#### ამოცანა 2.2 — Data Normalization (~30 წუთი)
+#### ✅ ამოცანა 2.2 — Data Normalization — **DONE** (operator 2026-05-04)
 
-```bash
-pnpm fix:countries             # dry-run (7 row preview)
-pnpm fix:countries:apply       # execute
-pnpm backfill:orgid:dry        # dry-run (968 grants preview)
-pnpm backfill:orgid            # execute
-pnpm geocode:branches:dry      # dry-run (84 branches preview)
-pnpm geocode:branches          # execute
+Operator-მა Windows PowerShell-დან Railway public proxy-ზე ცამივე script წარმატებით გაუშვა. დროითი ხარჯი ~30 წუთი (ფაილების ჩამოტვირთვა + 3 dry-run + 3 apply + Google Maps key დიაგნოსტიკა).
+
+**Sub-task A — Country code normalization** (`scripts/fix-country-codes.ts --apply`):
+- ✅ 1 row: `organizations.country` "Canada" → "CA"
+- ✅ 6 rows: `organizations.country` "International" → "INT"
+- ✅ 6 rows: `grants.country` "International" → "INT"
+- **Total: 13 rows updated**
+
+**Sub-task B — Orphan grants → orgs link** (`scripts/backfill-grants-orgid.ts`):
+- ✅ Tier 1 (exact name+country): 608
+- ✅ Tier 3 (normalized name-only, unambiguous): 10
+- 0 ambiguous unmatched
+- 350 grants stay NULL (no `organization` string by design — unlinkable)
+- **Total: 618 grants linked in single CASE-statement transaction**
+- Linked count: 134 → **752** (12% → 68% of 1,102 active grants)
+
+**Sub-task C — Branch geocoding** (`scripts/geocode-branches.ts --apply --force`, Google Places API):
+- Initial run failed with 84/84 403 errors — operator copied browser key (HTTP referrer restriction) instead of server key by mistake; corrected on second run
+- Re-run with `--force` to override checkpoint from failed attempt → re-geocoded ALL 1,324 branches (not just 84 missing)
+- ✅ **1,245/1,324 success (94.0%)**
+- 79 failed (Georgian-header garbage org names, "country mismatch" edge cases, "no Places result" for genuinely unfindable orgs)
+- Duration: 13:51 (830s)
+- API cost: ~$45 (1,324 × ~$0.034 per query)
+
+**✅ აუდიტი 2.2 — verification:**
+```
+✅ SELECT COUNT(*) WHERE country='International' → 0 (was 12)
+✅ SELECT COUNT(*) WHERE country='Canada' → 0 (was 1)
+✅ Orphan grants (orgId IS NULL) → 350 (down from 968, ALL linkable backfilled)
+✅ Branches without coords → 79 (down from 84, expected — Georgian-header garbage entries)
 ```
 
-**✅ აუდიტი 2.2:**
-```
-□ SELECT COUNT(*) WHERE country='International' → 0
-□ SELECT COUNT(*) WHERE country='Canada' → 0
-□ Orphan grants (orgId IS NULL) → < 968
-□ Branches without coords → < 84
-```
+**Notes:**
+- Browser key (`Maps Platform API Key`) was accidentally pasted into chat during diagnosis — flagged for rotation post-task. Server key (`grantkit-server-geocoding-v2`) likewise.
+- 79 failed branches logged to `geocode-branches-failed.json` on operator's machine. Subset (Georgian-header garbage like "დეტალები", "მგზავრობა") indicate a separate org-cleanup task: spreadsheet headers got imported as organization rows. Tracked as future work, not blocking.
 
 ---
 
@@ -435,18 +461,27 @@ Same Lighthouse harness as Task 3.1, post-merge:
 $pw = "dyrGKtAkILpUkEaSJpgYKzYAcLIsetdh"
 $env:DATABASE_URL = "mysql://root:" + $pw + "@mainline.proxy.rlwy.net:51195/railway"
 
-# 1. ✅ DONE 2026-05-03 — Migration drift fix
+# 1. ✅ DONE 2026-05-03 — Migration 0011 drift fix
 #    node scripts/apply-migration-0011.mjs --apply
 #    Result: 8 columns + 3 indexes added to users table.
 
-# 2. Country code normalization (7 rows)
-pnpm fix:countries:apply
+# 2. ✅ DONE 2026-05-04 — Data normalization (Task 2.2)
+#    npx tsx scripts/fix-country-codes.ts --apply        # 13 rows
+#    npx tsx scripts/backfill-grants-orgid.ts            # 618 grants linked
+#    $env:GOOGLE_MAPS_API_KEY = "<grantkit-server-geocoding-v2 value>"
+#    npx tsx scripts/geocode-branches.ts --apply --force # 1,245/1,324 (94%)
 
-# 3. (Optional) Orphan grants → org link
-pnpm backfill:orgid
+# 3. Translations (Task 4.1) — 22 missing keys
+npx tsx scripts/translate-missing.ts
 
-# 4. (Optional) Translations
-pnpm translate:missing
+# 4. Contact enrichment Phase B (Task 4.2) — 331 phones + 436 emails missing
+npx tsx scripts/enrich-org-contacts.ts --limit=100
+
+# 5. Security cleanup post-Task-2.2 — rotate Google Maps keys
+#    Browser key (Maps Platform API Key) — Regenerate in GCP Console + update
+#      VITE_GOOGLE_MAPS_BROWSER_KEY on Railway dashboard
+#    Server key (grantkit-server-geocoding-v2) — Regenerate (operator-only)
+#    Both leaked into chat history during Task 2.2 diagnosis
 ```
 
 ---
@@ -510,17 +545,20 @@ scripts/
 
 ## 🎬 Next Up — შემდეგი action item
 
-**Status (2026-05-03):** Tasks 1.1, 1.2, **1.3**, **2.1**, **3.1**, **3.2**, **3.3**, **3.4**, 6.1 — ✅ ALL DONE on main / draft. Sandbox-side audit work for the AIChatBox bundle finding is closed; Maps payload is now the unambiguous next bundle target.
+**Status (2026-05-04):** Tasks 1.1, 1.2, **1.3**, **2.1**, **2.2**, **3.1**, **3.2**, **3.3**, **3.4**, **3.5**, 6.1 — ✅ ALL DONE on main / draft. All Phase 9 perf objectives closed; all Phase 4 DB-content findings closed.
 
-**Done 2026-05-03 (this session):**
+**Done 2026-05-04 (this session):**
+- ✅ Task 2.2 — Data normalization (operator) — 13 country fixes + 618 grants linked + 1,245 branches geocoded (94%)
+- ⏳ Sandbox: docs PR for Task 2.2 (this branch)
+
+**Done 2026-05-03:**
+- ✅ Task 2.1 — Migration 0011 drift fix (operator + PR #217 merged)
 - ✅ Task 3.1 — Lighthouse baseline (PR #218 merged)
-- ✅ Task 3.4 — AIChatBox lazy-load (PR #219 merged) + verification re-baseline (draft on `claude/audit-task-3-4-verification-lighthouse`)
+- ✅ Task 3.4 — AIChatBox lazy-load (PR #219 merged) + verification re-baseline (PR #220 merged)
+- ✅ Task 3.5 — MapPanel lazy-load (PR #221 merged) + bundle-graph verification (PR #222 draft)
+- ✅ Task 1.3 — Express 4 → 5 migration (PR #216 merged)
 
-**Done 2026-05-04:**
-- ✅ Task 2.1 — Migration 0011 drift fix (operator) — production `users` table now has all 8 auth columns + 3 indexes
-- ✅ PR #216 — fix(deps): Express 4 → 5 migration (Task 1.3) — merged
-
-**Done 2026-05-03 (earlier):**
+**Done earlier:**
 - PR #210 — docs(audit): verify Tier 1+2 security tasks complete
 - PR #211 — perf(build): main bundle 2.55 MB → 563 KB (Task 3.2)
 - PR #212 — refactor(server): split dev/prod entry, drop eval() hack (Task 6.1)
@@ -528,13 +566,13 @@ scripts/
 
 **CTO recommends next (in priority order):**
 
-1. **🟠 Trim `/catalog` Google Maps payload** _(operator-side or sandbox, ~2-3 hr)_ — now the unambiguous biggest cost on `/catalog` (10.5 MB transferred mobile, `webgl.js` topping the unused-JS chart). Confirm `loading=async` + `defer` on the Maps script tag; consider paginating marker data server-side instead of shipping all 1,110 organisations to the client up front.
-2. **🟡 Re-run mobile `/catalog` 3× to median TBT** _(sandbox, ~5 min)_ — the post-3.4 re-baseline showed a 4,196 ms TBT spike likely caused by Slow-4G run-variance (vendor-react chunk hash unchanged, slower edge RTT). Re-running and taking median will close the caveat in `09-lighthouse-after-3-4.md`.
-3. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `pnpm translate:missing` (22 keys). DB write access საჭირო.
-4. **🟡 Task 2.2 — Data normalization** _(operator-side, ~30 min)_ — country codes (7 rows) + orphan grants (968) + branches (84). All scripts ready on main.
-5. **🟡 Task 5.2 — Subscription Funnel review** _(~5 hr)_ — Paddle test mode flow + webhook → DB path.
+1. **🟡 Security cleanup — rotate Google Maps keys** _(operator-side, ~5 min)_ — both browser and server keys leaked to chat during Task 2.2 diagnosis. Regenerate in GCP Console + update `VITE_GOOGLE_MAPS_BROWSER_KEY` on Railway. Server key operator-only — no Railway update needed.
+2. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `npx tsx scripts/translate-missing.ts` (22 keys). DB write access საჭირო.
+3. **🟡 Task 4.2 — Contact enrichment Phase B** _(operator-side + GrantedAI API, ~1-2 hr)_ — 331 phones + 436 emails missing. Scripts ready on main.
+4. **🟡 Task 5.2 — Subscription Funnel review** _(hybrid, ~5 hr)_ — Paddle test mode flow + webhook → DB path. Sandbox-side code review possible without Paddle access.
+5. **🟢 Org cleanup (new finding from Task 2.2)** _(operator + sandbox, ~2 hr)_ — Task 2.2 surfaced ~30 organizations with garbage names that are actually spreadsheet headers (`დეტალები`, `მგზავრობა`, `Not specified`, etc.). Need to either delete those rows or relabel. Geocoding currently fails for them, which is correct but accumulates noise.
 
-**Operator-side (Pending Operator Actions ↓ section):** Task 2.2 (data normalization), Task 4.1 (translations), Task 4.2 (contact enrichment).
+**Operator-side (Pending Operator Actions ↓ section):** Tasks 4.1 (translations), 4.2 (contact enrichment), security cleanup (Maps key rotation).
 
 ---
 
