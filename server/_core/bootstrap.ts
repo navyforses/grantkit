@@ -134,11 +134,14 @@ export async function startServer(setupFrontend: FrontendSetup) {
   app.use("/api/trpc/ai", rateLimit({ ...rlBase, windowMs: 60_000, limit: 20 }));
   // General tRPC baseline: 100 req/min/IP
   app.use("/api/trpc", rateLimit({ ...rlBase, windowMs: 60_000, limit: 100 }));
+  // Paddle webhook needs the raw body bytes for HMAC signature verification.
+  // Register it BEFORE express.json() so the global parser doesn't consume
+  // the stream first; otherwise JSON.stringify(req.body) would be byte-
+  // mismatched against what Paddle signed.
+  registerPaddleWebhookRoute(app);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
-  // Paddle webhook under /api/paddle/webhook
-  registerPaddleWebhookRoute(app);
   // SEO routes (sitemap.xml, robots.txt)
   registerSeoRoutes(app);
 

@@ -349,3 +349,19 @@ export const organizationBranches = mysqlTable("organization_branches", {
 
 export type OrganizationBranch = typeof organizationBranches.$inferSelect;
 export type InsertOrganizationBranch = typeof organizationBranches.$inferInsert;
+
+/**
+ * Idempotency log for Paddle webhook events. Inserted-or-rejected at the
+ * top of paddleWebhook.processWebhookEvent so a retry of the same event_id
+ * is a no-op. Garbage-collect rows older than 90 days separately.
+ */
+export const processedWebhookEvents = mysqlTable("processed_webhook_events", {
+  eventId: varchar("event_id", { length: 128 }).primaryKey(),
+  eventType: varchar("event_type", { length: 64 }).notNull(),
+  processedAt: timestamp("processed_at").defaultNow().notNull(),
+}, (table) => [
+  index("processed_webhook_events_processed_at_idx").on(table.processedAt),
+]);
+
+export type ProcessedWebhookEvent = typeof processedWebhookEvents.$inferSelect;
+

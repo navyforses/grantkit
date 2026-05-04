@@ -459,8 +459,8 @@ Same Lighthouse harness as Task 3.1, post-merge:
 **Medium / Low (6 findings):** no replay protection, no event-id idempotency, webhook always returns 200 (silent state drift on transient errors), hardcoded plan ID, unknown-status maps to `"none"` (silent cancel), `PADDLE_CLIENT_TOKEN` hardcoded.
 
 **Recommended remediation order** (full table in audit report):
-1. ✅ ~~Hotfix PR — delete `subscription.activate`~~ — DONE this branch (custom_data path).
-2. Webhook hardening PR — raw-body middleware + fail-closed + replay + idempotency + 5xx-on-transient (~3 hr + 1 migration)
+1. ✅ ~~Hotfix PR — delete `subscription.activate`~~ — DONE 2026-05-04 (custom_data path).
+2. ✅ ~~Webhook hardening PR~~ — DONE 2026-05-04 (this branch). Raw-body middleware + fail-closed in production + 5-min replay window + event_id idempotency + 5xx-on-transient. Migration 0020 (`processed_webhook_events`) ready for operator to apply before merge.
 3. `cancel` via Paddle API (~1 hr, needs `PADDLE_API_KEY` on Railway)
 4. Annual price wiring (~30 min sandbox + operator creates annual price ID)
 5. Cleanup (~30 min)
@@ -502,7 +502,18 @@ $env:DATABASE_URL = "mysql://root:" + $pw + "@mainline.proxy.rlwy.net:51195/rail
 #    $env:GOOGLE_MAPS_API_KEY = "<grantkit-server-geocoding-v2 value>"
 #    npx tsx scripts/geocode-branches.ts --apply --force # 1,245/1,324 (94%)
 
-# 3. Translations (Task 4.1) — 22 missing keys
+# 3. Migration 0020 — processed_webhook_events table (BEFORE merging
+#    "Webhook hardening" PR; the deployed code INSERTs into this table for
+#    every event and will fail if the column doesn't exist).
+node scripts/apply-migration-0020.mjs
+
+# 4. Set PADDLE_WEBHOOK_SECRET on Railway dashboard (Variables tab,
+#    grantkit service). Without this in production, the hardened handler
+#    returns 503 to every webhook and Paddle retries until the secret is
+#    set — i.e. fail-closed. Take the value from the Paddle dashboard
+#    → Developer Tools → Notifications → your endpoint → Show secret.
+
+# 5. Translations (Task 4.1) — 22 missing keys
 npx tsx scripts/translate-missing.ts
 
 # 4. Contact enrichment Phase B (Task 4.2) — 331 phones + 436 emails missing
@@ -586,6 +597,7 @@ scripts/
 - 🟡 Task 1 deferred — Maps key rotation (operator decision: ship business priorities first; key rotation post-launch)
 - ✅ Task 5.2 sandbox-side code review — `audit-reports/12-subscription-funnel.md` (11 findings; 1 critical premium-bypass exploit + 3 high)
 - ✅ Task 5.2 hotfix #1 — `subscription.activate` exploit closed via custom_data path: `Paddle.Checkout.open({ customData: { userId } })` + webhook lookup via `custom_data.userId` first (paddleCustomerId fallback) + endpoint deleted. 197/197 tests pass, build green.
+- ✅ Task 5.2 webhook hardening — Findings #3 (fail-closed in prod), #4 (express.raw before express.json — Buffer not JSON.stringify), #5 (5-min replay window via `isFreshSignatureTimestamp`), #6 (event_id idempotency via new `processed_webhook_events` table — migration 0020), #8 (503 on transient errors so Paddle retries). 201/201 tests pass, build green. Migration ready for operator to apply.
 
 **Done 2026-05-03:**
 - ✅ Task 2.1 — Migration 0011 drift fix (operator + PR #217 merged)
@@ -603,7 +615,7 @@ scripts/
 **CTO recommends next (in priority order):**
 
 1. ~~🔴 Hotfix — delete `subscription.activate`~~ ✅ DONE (this branch, 2026-05-04).
-2. **🟠 Webhook hardening PR** _(sandbox, ~3 hr + 1 DB migration)_ — bundle Findings #3 (fail-closed) + #4 (raw-body middleware) + #5 (replay) + #6 (event-id idempotency) + #8 (5xx on transient errors). See `audit-reports/12-subscription-funnel.md` §3-#8. **Now blocking** — webhook is the only activation path.
+2. ~~🟠 Webhook hardening PR~~ ✅ DONE (this branch, 2026-05-04). Migration 0020 ready for operator to apply before merge.
 3. **🟠 `subscription.cancel` via Paddle API** _(sandbox + operator, ~1 hr)_ — operator adds `PADDLE_API_KEY` on Railway, sandbox replaces DB-only cancel with Paddle SDK call. See `audit-reports/12-subscription-funnel.md` §2.
 4. **🟡 Task 4.1 — Translations** _(operator-side, ~30 min)_ — `npx tsx scripts/translate-missing.ts` (22 keys). DB write access საჭირო. Blocked on AI provider key (defer or Google AI Studio setup).
 5. **🟡 Task 4.2 — Contact enrichment Phase B** _(operator-side + GrantedAI API, ~1-2 hr)_ — 331 phones + 436 emails missing. Same blocker.

@@ -1,6 +1,6 @@
 import { eq, and, or, like, desc, asc, count, sql, inArray, gte, lte, isNotNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations, notificationHistory, organizations, organizationBranches } from "../drizzle/schema";
+import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations, notificationHistory, organizations, organizationBranches, processedWebhookEvents } from "../drizzle/schema";
 import type { Grant, InsertGrant, GrantTranslation, Organization, OrganizationBranch } from "../drizzle/schema";
 import * as crypto from "crypto";
 
@@ -1929,4 +1929,36 @@ export async function getOrganizationMapPoints(options: {
       latitude: Number(r.latitude),
       longitude: Number(r.longitude),
     }));
+}
+
+/**
+ * Insert a row into processed_webhook_events; return false if the event_id
+ * was already processed (PRIMARY KEY collision). Used by the Paddle webhook
+ * handler for idempotency — Paddle retries on non-2xx and may also redeliver
+ * on its own schedule.
+ */
+export async function tryRecordProcessedEvent(
+  eventId: string,
+  eventType: string
+): Promise<{ inserted: boolean }> {
+  const db = await getDb();
+  if (!db) {
+    // No DB available (test env or misconfig). Allow processing to proceed
+    // — the caller's primary defense (signature + replay window) still
+    // applies; we just lose dedup until DB returns.
+    return { inserted: true };
+  }
+  try {
+    await db.insert(processedWebhookEvents).values({
+      eventId,
+      eventType,
+    });
+    return { inserted: true };
+  } catch (err: unknown) {
+    const code = (err as { code?: string } | null)?.code;
+    if (code === "ER_DUP_ENTRY") {
+      return { inserted: false };
+    }
+    throw err;
+  }
 }
