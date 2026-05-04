@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { verifyPaddleSignature, processWebhookEvent } from "./paddleWebhook";
+import { verifyPaddleSignature, isFreshSignatureTimestamp, processWebhookEvent } from "./paddleWebhook";
 import { createHmac } from "crypto";
 
 // ===== Signature Verification Tests =====
@@ -55,6 +55,33 @@ describe("verifyPaddleSignature", () => {
 
   it("returns false when h1 is missing from signature", () => {
     expect(verifyPaddleSignature("body", "ts=123456", secret)).toBe(false);
+  });
+});
+
+// ===== Replay-Protection Tests =====
+
+describe("isFreshSignatureTimestamp", () => {
+  const now = 1711800000; // pinned for determinism
+
+  it("accepts a timestamp within the tolerance window", () => {
+    expect(isFreshSignatureTimestamp(`ts=${now};h1=abc`, 300, now)).toBe(true);
+    expect(isFreshSignatureTimestamp(`ts=${now - 60};h1=abc`, 300, now)).toBe(true);
+    expect(isFreshSignatureTimestamp(`ts=${now - 299};h1=abc`, 300, now)).toBe(true);
+  });
+
+  it("rejects a stale timestamp older than tolerance", () => {
+    expect(isFreshSignatureTimestamp(`ts=${now - 301};h1=abc`, 300, now)).toBe(false);
+    expect(isFreshSignatureTimestamp(`ts=${now - 3600};h1=abc`, 300, now)).toBe(false);
+  });
+
+  it("rejects a future timestamp beyond tolerance (clock skew abuse)", () => {
+    expect(isFreshSignatureTimestamp(`ts=${now + 301};h1=abc`, 300, now)).toBe(false);
+  });
+
+  it("returns false for missing or malformed timestamp", () => {
+    expect(isFreshSignatureTimestamp("", 300, now)).toBe(false);
+    expect(isFreshSignatureTimestamp("h1=abc", 300, now)).toBe(false);
+    expect(isFreshSignatureTimestamp("ts=notanumber;h1=abc", 300, now)).toBe(false);
   });
 });
 

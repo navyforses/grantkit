@@ -9,10 +9,16 @@
  */
 
 import { createHmac, timingSafeEqual } from "crypto";
+import express from "express";
 import type { Express, Request, Response } from "express";
 import { ENV } from "./_core/env";
-import { getUserById, getUserByPaddleCustomerId, updateUserSubscription } from "./db";
+import { getUserById, getUserByPaddleCustomerId, tryRecordProcessedEvent, updateUserSubscription } from "./db";
 import { sendSubscriptionEmail, sendAdminNewSubscriberNotification, type SubscriptionEmailType } from "./emailService";
+
+// Reject signed events whose ts header is older than this many seconds —
+// Paddle's documented tolerance, also wide enough for reasonable clock
+// skew between Paddle and our server.
+const SIGNATURE_FRESHNESS_SECONDS = 5 * 60;
 
 // ===== Types =====
 
@@ -87,6 +93,28 @@ export function verifyPaddleSignature(
   }
 }
 
+/**
+ * Check that the `ts=` field of a Paddle signature header is within the
+ * freshness window. Replay protection — separate from signature verify so
+ * the two can be reasoned about independently.
+ */
+export function isFreshSignatureTimestamp(
+  signature: string,
+  toleranceSeconds: number = SIGNATURE_FRESHNESS_SECONDS,
+  nowSeconds: number = Math.floor(Date.now() / 1000)
+): boolean {
+  if (!signature) return false;
+  for (const part of signature.split(";")) {
+    const [key, ...valueParts] = part.split("=");
+    if (key === "ts" && valueParts.length > 0) {
+      const ts = parseInt(valueParts.join("="), 10);
+      if (!Number.isFinite(ts)) return false;
+      return Math.abs(nowSeconds - ts) <= toleranceSeconds;
+    }
+  }
+  return false;
+}
+
 // ===== Event Processing =====
 
 /**
@@ -149,6 +177,20 @@ export async function processWebhookEvent(event: PaddleWebhookEvent): Promise<{
 
   if (!subscriptionEvents.includes(event_type)) {
     return { handled: false, message: `Ignored event type: ${event_type}` };
+  }
+
+  // Idempotency: dedupe by event_id. Paddle retries non-2xx responses and
+  // also redelivers on its own retry schedule, so the same event_id can
+  // arrive multiple times. Without this we send duplicate emails and
+  // double-fire admin notifications.
+  if (event.event_id) {
+    const { inserted } = await tryRecordProcessedEvent(event.event_id, event_type);
+    if (!inserted) {
+      return {
+        handled: false,
+        message: `Already processed event_id=${event.event_id}`,
+      };
+    }
   }
 
   const customerId = data.customer_id;
@@ -241,19 +283,24 @@ export async function processWebhookEvent(event: PaddleWebhookEvent): Promise<{
 // ===== Express Route Registration =====
 
 export function registerPaddleWebhookRoute(app: Express): void {
-  // We need the raw body for signature verification, so use a separate raw body parser
+  // express.raw() captures the request body as a Buffer. The signed payload
+  // is `${ts}:${rawBody}` — JSON.stringify(req.body) wouldn't reproduce
+  // Paddle's exact bytes (property order, escaping, whitespace), so the
+  // raw stream is the only source of truth.
   app.post(
     "/api/paddle/webhook",
-    // Express raw body middleware for this route only
+    express.raw({ type: "application/json", limit: "1mb" }),
     (req: Request, res: Response) => {
-      let rawBody = "";
-
-      // If body is already parsed by express.json(), reconstruct it
-      if (req.body && typeof req.body === "object") {
-        rawBody = JSON.stringify(req.body);
-      }
-
-      handleWebhook(req, res, rawBody);
+      const rawBuffer = Buffer.isBuffer(req.body) ? (req.body as Buffer) : null;
+      const rawBody = rawBuffer ? rawBuffer.toString("utf8") : "";
+      handleWebhook(req, res, rawBody).catch((err) => {
+        // Defensive — handleWebhook handles its own errors, but if a sync
+        // throw escapes the promise we still want to respond.
+        console.error("[Paddle Webhook] Unhandled error:", err);
+        if (!res.headersSent) {
+          res.status(503).json({ error: "Internal processing error" });
+        }
+      });
     }
   );
 }
@@ -263,43 +310,64 @@ async function handleWebhook(
   res: Response,
   rawBody: string
 ): Promise<void> {
-  try {
-    const signature = req.headers["paddle-signature"] as string | undefined;
-
-    // Verify signature if webhook secret is configured
-    if (ENV.paddleWebhookSecret) {
-      if (!signature) {
-        res.status(401).json({ error: "Missing Paddle-Signature header" });
-        return;
-      }
-
-      const isValid = verifyPaddleSignature(rawBody, signature, ENV.paddleWebhookSecret);
-      if (!isValid) {
-        console.warn("[Paddle Webhook] Invalid signature");
-        res.status(401).json({ error: "Invalid signature" });
-        return;
-      }
-    }
-
-    const event: PaddleWebhookEvent = req.body;
-
-    if (!event || !event.event_type) {
-      res.status(400).json({ error: "Invalid event payload" });
+  // Fail-closed in production: a missing secret means the deployment is
+  // misconfigured and webhooks would be unsigned. A 503 prompts Paddle to
+  // retry once we set the secret, instead of silently accepting forged
+  // events.
+  if (!ENV.paddleWebhookSecret) {
+    if (process.env.NODE_ENV === "production") {
+      console.error("[Paddle Webhook] PADDLE_WEBHOOK_SECRET not set in production — refusing");
+      res.status(503).json({ error: "Webhook secret not configured" });
       return;
     }
+    console.warn("[Paddle Webhook] No secret set — skipping signature verification (DEV ONLY)");
+  }
 
-    console.log(`[Paddle Webhook] Received: ${event.event_type} (${event.event_id})`);
+  const signature = req.headers["paddle-signature"] as string | undefined;
 
+  if (ENV.paddleWebhookSecret) {
+    if (!signature) {
+      res.status(401).json({ error: "Missing Paddle-Signature header" });
+      return;
+    }
+    if (!isFreshSignatureTimestamp(signature)) {
+      console.warn("[Paddle Webhook] Stale or missing timestamp");
+      res.status(401).json({ error: "Stale signature timestamp" });
+      return;
+    }
+    if (!verifyPaddleSignature(rawBody, signature, ENV.paddleWebhookSecret)) {
+      console.warn("[Paddle Webhook] Invalid signature");
+      res.status(401).json({ error: "Invalid signature" });
+      return;
+    }
+  }
+
+  let event: PaddleWebhookEvent;
+  try {
+    event = JSON.parse(rawBody) as PaddleWebhookEvent;
+  } catch (err) {
+    console.warn("[Paddle Webhook] Body is not valid JSON:", err);
+    res.status(400).json({ error: "Invalid JSON body" });
+    return;
+  }
+
+  if (!event || !event.event_type) {
+    res.status(400).json({ error: "Invalid event payload" });
+    return;
+  }
+
+  console.log(`[Paddle Webhook] Received: ${event.event_type} (${event.event_id})`);
+
+  try {
     const result = await processWebhookEvent(event);
-
-    // Always return 200 to Paddle to acknowledge receipt
-    res.status(200).json({
-      success: true,
-      ...result,
-    });
+    // 200 acknowledges receipt — handled-or-ignored is documented in the
+    // body but doesn't change Paddle's retry behavior.
+    res.status(200).json({ success: true, ...result });
   } catch (error) {
+    // Transient errors (DB connection drop, Railway restart mid-request)
+    // get a 5xx so Paddle retries the webhook later — silent state drift
+    // is worse than a brief retry storm.
     console.error("[Paddle Webhook] Error processing webhook:", error);
-    // Still return 200 to prevent Paddle from retrying
-    res.status(200).json({ success: false, error: "Internal processing error" });
+    res.status(503).json({ success: false, error: "Internal processing error" });
   }
 }
