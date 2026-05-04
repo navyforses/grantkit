@@ -19,6 +19,9 @@ import {
   Calendar,
   CreditCard,
   Shield,
+  Bell,
+  Globe,
+  Sparkles,
   LogOut,
   ArrowLeft,
   CheckCircle,
@@ -109,6 +112,36 @@ export default function Profile() {
           <h1 className="text-xl md:text-3xl font-bold text-foreground tracking-tight mb-4 md:mb-8">
             {t.profile.title}
           </h1>
+
+          {/* Profile hero */}
+          <section className="bg-gradient-to-br from-primary/10 via-card to-card border border-border/70 rounded-2xl p-4 md:p-6 mb-3 md:mb-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-primary/15 text-primary font-semibold text-lg md:text-2xl flex items-center justify-center shrink-0">
+                {(user?.name || user?.email || "?").charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm md:text-base text-muted-foreground">{t.profile.accountInfo}</p>
+                <h2 className="text-lg md:text-2xl font-semibold text-foreground truncate">
+                  {user?.name || user?.email || "Guest"}
+                </h2>
+                <p className="text-xs md:text-sm text-muted-foreground truncate">{user?.email || "—"}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 md:gap-3 mt-4">
+              <div className="rounded-xl border border-border bg-card/70 px-3 py-2.5">
+                <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider">Status</p>
+                <p className="text-sm font-medium text-foreground mt-1">{statusLabel[statusKey] || statusLabel.none}</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card/70 px-3 py-2.5">
+                <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider">Role</p>
+                <p className="text-sm font-medium text-foreground mt-1 capitalize">{user?.role || "member"}</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card/70 px-3 py-2.5">
+                <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider">Plan</p>
+                <p className="text-sm font-medium text-foreground mt-1">{subStatus?.subscriptionStatus === "active" ? t.profile.planName : t.profile.statusNone}</p>
+              </div>
+            </div>
+          </section>
 
           {/* Account Information Card */}
           <div className="bg-card border border-border/80 rounded-xl p-4 md:p-6 mb-3 md:mb-6">
@@ -203,6 +236,32 @@ export default function Profile() {
                 )}
               </div>
             )}
+          </div>
+
+          {/* Preferences Card */}
+          <div className="bg-card border border-border/80 rounded-xl p-4 md:p-6 mb-3 md:mb-6">
+            <div className="flex items-center gap-2.5 md:gap-3 mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+              </div>
+              <h2 className="text-base md:text-lg font-semibold text-foreground">Profile preferences</h2>
+            </div>
+            <div className="space-y-2">
+              <div className="rounded-lg border border-border p-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-muted-foreground" />
+                  <p className="text-sm text-foreground">Email notifications</p>
+                </div>
+                <span className="text-xs text-muted-foreground">Coming soon</span>
+              </div>
+              <div className="rounded-lg border border-border p-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-muted-foreground" />
+                  <p className="text-sm text-foreground">Language & region</p>
+                </div>
+                <span className="text-xs text-muted-foreground">Coming soon</span>
+              </div>
+            </div>
           </div>
 
           {/* Logout button */}
