@@ -11,7 +11,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import type { Express, Request, Response } from "express";
 import { ENV } from "./_core/env";
-import { getUserByPaddleCustomerId, updateUserSubscription } from "./db";
+import { getUserById, getUserByPaddleCustomerId, updateUserSubscription } from "./db";
 import { sendSubscriptionEmail, sendAdminNewSubscriberNotification, type SubscriptionEmailType } from "./emailService";
 
 // ===== Types =====
@@ -89,6 +89,27 @@ export function verifyPaddleSignature(
 
 // ===== Event Processing =====
 
+/**
+ * Extract our internal numeric userId from Paddle's custom_data echo.
+ * Paddle preserves the original JSON value, but if a checkout was triggered
+ * by an old client without customData this will be missing — return null
+ * so the caller can fall back to paddleCustomerId lookup.
+ */
+function parseUserIdFromCustomData(
+  customData: Record<string, unknown> | undefined
+): number | null {
+  if (!customData) return null;
+  const raw = customData["userId"];
+  if (typeof raw === "number" && Number.isFinite(raw) && raw > 0) {
+    return Math.floor(raw);
+  }
+  if (typeof raw === "string") {
+    const parsed = parseInt(raw, 10);
+    if (Number.isFinite(parsed) && parsed > 0) return parsed;
+  }
+  return null;
+}
+
 /** Map Paddle subscription status to our internal status */
 function mapPaddleStatus(
   paddleStatus: string
@@ -131,15 +152,27 @@ export async function processWebhookEvent(event: PaddleWebhookEvent): Promise<{
   }
 
   const customerId = data.customer_id;
-  if (!customerId) {
-    return { handled: false, message: "No customer_id in event data" };
-  }
 
-  // Find user by Paddle customer ID
-  const user = await getUserByPaddleCustomerId(customerId);
+  // Find the user. Preferred path: custom_data.userId set by openPaddleCheckout
+  // — Paddle echoes it back unchanged in every subscription.* event for the
+  // life of the subscription. Fallback path: paddleCustomerId lookup, used
+  // when a webhook arrives for a user already linked from a previous event.
+  let user = null as Awaited<ReturnType<typeof getUserById>> | null;
+  const customDataUserId = parseUserIdFromCustomData(data.custom_data);
+  if (customDataUserId !== null) {
+    user = await getUserById(customDataUserId);
+  }
+  if (!user && customerId) {
+    user = await getUserByPaddleCustomerId(customerId);
+  }
   if (!user) {
-    console.warn(`[Paddle Webhook] No user found for customer_id: ${customerId}`);
-    return { handled: false, message: `No user found for customer: ${customerId}` };
+    console.warn(
+      `[Paddle Webhook] No user found (custom_data.userId=${customDataUserId ?? "none"}, customer_id=${customerId ?? "none"})`
+    );
+    return {
+      handled: false,
+      message: `No user found for event ${event.event_id}`,
+    };
   }
 
   // Map Paddle status to our internal status
@@ -157,11 +190,13 @@ export async function processWebhookEvent(event: PaddleWebhookEvent): Promise<{
     planId = data.items[0].price.id;
   }
 
-  // Update user subscription in database
+  // Update user subscription in database. Always write paddleCustomerId so
+  // the fallback lookup works on later webhooks for this subscription.
   await updateUserSubscription(user.id, {
     paddleSubscriptionId: data.id,
     subscriptionStatus: internalStatus,
     subscriptionCurrentPeriodEnd: periodEnd,
+    ...(customerId ? { paddleCustomerId: customerId } : {}),
     ...(planId ? { subscriptionPlanId: planId } : {}),
   });
 

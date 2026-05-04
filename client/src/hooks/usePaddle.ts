@@ -20,6 +20,7 @@ declare global {
         open: (config: {
           items: { priceId: string; quantity: number }[];
           customer?: { email?: string };
+          customData?: Record<string, string | number>;
           settings?: {
             displayMode?: string;
             theme?: string;
@@ -35,13 +36,6 @@ declare global {
 
 interface PaddleEvent {
   name: string;
-  data?: {
-    customer_id?: string;
-    subscription_id?: string;
-    transaction_id?: string;
-    id?: string;
-    status?: string;
-  };
 }
 
 export function usePaddleInit() {
@@ -79,26 +73,23 @@ export function usePaddleInit() {
 }
 
 export function openPaddleCheckout(
+  userId: number,
   locale?: string,
   email?: string,
-  onSuccess?: (data: { customerId?: string; subscriptionId?: string; transactionId?: string }) => void
+  onCompleted?: () => void
 ) {
   if (!window.Paddle) {
     console.warn("Paddle.js not loaded yet");
     return;
   }
 
-  // Set up event callback for this checkout session
-  if (onSuccess) {
+  // The webhook is the source of truth for activation. The client only needs
+  // to know that the checkout completed so it can poll auth.me until the
+  // server-side status flips to "active".
+  if (onCompleted) {
     window.__paddleEventCallback = (event: PaddleEvent) => {
-      if (event.name === "checkout.completed" || event.name === "checkout.closed") {
-        if (event.name === "checkout.completed" && event.data) {
-          onSuccess({
-            customerId: event.data.customer_id,
-            subscriptionId: event.data.subscription_id || event.data.id,
-            transactionId: event.data.transaction_id || event.data.id,
-          });
-        }
+      if (event.name === "checkout.completed") {
+        onCompleted();
       }
     };
   }
@@ -114,6 +105,11 @@ export function openPaddleCheckout(
 
   const checkoutConfig: Parameters<typeof window.Paddle.Checkout.open>[0] = {
     items: [{ priceId: PADDLE_PRICE_ID, quantity: 1 }],
+    // Paddle echoes customData back in subscription.* webhook events as
+    // event.data.custom_data — the webhook uses userId to link the
+    // subscription to the right user without trusting any client-supplied
+    // value on the activation path.
+    customData: { userId },
     settings: {
       displayMode: "overlay",
       theme: "light",

@@ -27,7 +27,7 @@ import {
   getOrgCategoryCounts, searchOrganizationsMultiTerm,
 } from "./db";
 import {
-  sendSubscriptionEmail, sendAdminNewSubscriberNotification,
+  sendSubscriptionEmail,
   sendBatchNewGrantNotifications, buildNewGrantsSubject,
   sendVerificationEmail, sendPasswordResetEmail,
   type GrantEmailData, type AuthEmailLang,
@@ -268,36 +268,6 @@ export const appRouter = router({
 
       return { success: true };
     }),
-
-    // Called from frontend after successful Paddle checkout to record the subscription
-    activate: protectedProcedure
-      .input(z.object({
-        paddleCustomerId: z.string().optional(),
-        paddleSubscriptionId: z.string().optional(),
-        transactionId: z.string().optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        await updateUserSubscription(ctx.user.id, {
-          paddleCustomerId: input.paddleCustomerId || undefined,
-          paddleSubscriptionId: input.paddleSubscriptionId || undefined,
-          subscriptionStatus: "active",
-          subscriptionPlanId: "pri_01kmygcd8stckbs3d7vt3xenq6",
-        });
-
-        // Send activation email + admin notification
-        if (ctx.user.email) {
-          sendSubscriptionEmail(
-            { email: ctx.user.email, name: ctx.user.name },
-            "activated"
-          ).catch((err: unknown) => console.error("[Email] Activation notification failed:", err));
-
-          sendAdminNewSubscriberNotification(
-            { email: ctx.user.email, name: ctx.user.name }
-          ).catch((err: unknown) => console.error("[Email] Admin notification failed:", err));
-        }
-
-        return { success: true };
-      }),
   }),
 
   // ===== Saved Grants =====

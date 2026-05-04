@@ -27,14 +27,6 @@ export default function PricingCTA({
   const { language } = useLanguage();
   const { user, isAuthenticated } = useAuth();
   const utils = trpc.useUtils();
-  const activateMutation = trpc.subscription.activate.useMutation({
-    onSuccess: () => {
-      utils.auth.me.invalidate();
-      utils.subscription.status.invalidate();
-      // Redirect to catalog after successful payment
-      window.location.href = "/catalog";
-    },
-  });
 
   const baseStyles = "inline-flex items-center gap-2 font-semibold rounded-full transition-all duration-200 group cursor-pointer hover:scale-[1.02] active:scale-[0.99]";
   const sizeStyles = size === "large"
@@ -51,17 +43,24 @@ export default function PricingCTA({
       return;
     }
 
-    // User is logged in, open Paddle checkout
+    if (!user?.id) {
+      console.warn("PricingCTA: cannot open checkout without user.id");
+      return;
+    }
+
     openPaddleCheckout(
+      user.id,
       language,
-      user?.email || undefined,
-      (data) => {
-        // On successful payment, activate subscription in our DB
-        activateMutation.mutate({
-          paddleCustomerId: data.customerId,
-          paddleSubscriptionId: data.subscriptionId,
-          transactionId: data.transactionId,
-        });
+      user.email ?? undefined,
+      () => {
+        // The Paddle webhook is the source of truth for activation. Invalidate
+        // local caches and give the webhook ~2s to land before redirecting,
+        // so /catalog reflects the new "active" status on first paint.
+        utils.auth.me.invalidate();
+        utils.subscription.status.invalidate();
+        setTimeout(() => {
+          window.location.href = "/catalog";
+        }, 2000);
       }
     );
   };
