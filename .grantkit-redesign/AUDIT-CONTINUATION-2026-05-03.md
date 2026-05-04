@@ -13,9 +13,9 @@
 | Area | State |
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
-| Latest commit on main | `cb88813 Merge pull request #221` (lazy-load MapPanel) |
-| Active development branch | `claude/audit-task-3-5-verification-bundle` (Task 3.5 bundle-graph verification) |
-| Last merged audit PR | #223 (Task 2.2 docs); recent: #217 / #218 / #219 / #220 / #221 / #223 |
+| Latest commit on main | `2094cea Merge pull request #222` (Task 3.5 verification) |
+| Active development branch | `claude/grantkit-audit-continue-7mEhS` (snapshot sync after #222 merged) |
+| Last merged audit PR | #222 (Task 3.5 verification); recent: #218 / #219 / #220 / #221 / #223 / #222 |
 | Last DB migration on production | `0011_volatile_demogoblin` ✅ applied 2026-05-03 (operator) |
 | Pending operator actions | _(none — Task 2.2 closed; only Tasks 4.1 / 4.2 / 5.2 remaining)_ |
 | Tier 1 security patches | ✅ Verified complete (2026-05-03) — see Goal 1 task 1.1 |
@@ -63,7 +63,7 @@
 | #219 | perf(client): lazy-load AIChatBox on detail pages (Task 3.4) | ✅ Merged |
 | #220 | audit: re-baseline after Task 3.4 (verify AIChatBox lazy-load impact) | ✅ Merged |
 | #221 | perf(client): lazy-load MapPanel on /catalog (Task 3.5) | ✅ Merged |
-| _draft_ | audit: Task 3.5 verification (bundle-graph deterministic check) | 🟡 Draft on `claude/audit-task-3-5-verification-bundle` |
+| #222 | audit: Task 3.5 verification (bundle-graph deterministic check) | ✅ Merged |
 | #223 | docs(audit): record Task 2.2 data normalization (operator outputs) | ✅ Merged |
 
 **კუმულატიური ეფექტი:**
@@ -559,13 +559,14 @@ scripts/
 
 **Done 2026-05-04 (this session):**
 - ✅ Task 2.2 — Data normalization (operator) — 13 country fixes + 618 grants linked + 1,245 branches geocoded (94%)
-- ⏳ Sandbox: docs PR for Task 2.2 (this branch)
+- ✅ Sandbox: docs PR for Task 2.2 — PR #223 merged
+- ✅ PR #222 (Task 3.5 verification) merged — rebased onto post-#223 main, conflict resolved on this audit doc, force-with-lease push, draft → ready → merged
 
 **Done 2026-05-03:**
 - ✅ Task 2.1 — Migration 0011 drift fix (operator + PR #217 merged)
 - ✅ Task 3.1 — Lighthouse baseline (PR #218 merged)
 - ✅ Task 3.4 — AIChatBox lazy-load (PR #219 merged) + verification re-baseline (PR #220 merged)
-- ✅ Task 3.5 — MapPanel lazy-load (PR #221 merged) + bundle-graph verification (PR #222 draft)
+- ✅ Task 3.5 — MapPanel lazy-load (PR #221 merged) + bundle-graph verification (PR #222 merged 2026-05-04)
 - ✅ Task 1.3 — Express 4 → 5 migration (PR #216 merged)
 
 **Done earlier:**
