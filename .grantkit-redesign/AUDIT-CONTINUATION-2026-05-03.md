@@ -14,8 +14,8 @@
 |---|---|
 | Production URL | https://grantkit-production-06f7.up.railway.app |
 | Latest commit on main | `cb88813 Merge pull request #221` (lazy-load MapPanel) |
-| Active development branch | `claude/audit-task-2-2-data-normalization` (Task 2.2 docs PR) |
-| Last merged audit PR | #221 (Task 3.5); recent: #217 / #218 / #219 / #220 / #221 |
+| Active development branch | `claude/audit-task-3-5-verification-bundle` (Task 3.5 bundle-graph verification) |
+| Last merged audit PR | #223 (Task 2.2 docs); recent: #217 / #218 / #219 / #220 / #221 / #223 |
 | Last DB migration on production | `0011_volatile_demogoblin` ✅ applied 2026-05-03 (operator) |
 | Pending operator actions | _(none — Task 2.2 closed; only Tasks 4.1 / 4.2 / 5.2 remaining)_ |
 | Tier 1 security patches | ✅ Verified complete (2026-05-03) — see Goal 1 task 1.1 |
@@ -29,6 +29,7 @@
 | MapPanel lazy-load | ✅ Done (Task 3.5, PR #221 merged 2026-05-03) |
 | Data normalization | ✅ Done (Task 2.2, operator 2026-05-04) — 13 country fixes + 618 grants linked + 1,245 branches geocoded |
 | Latest Lighthouse re-baseline | ✅ 2026-05-03 post-3.4 — `audit-reports/09-lighthouse-after-3-4.md` (mobile `/organizations/:id` LCP 13.7 → 9.1 s, unused-JS −601 KB) |
+| Latest bundle-graph verification | ✅ 2026-05-03 Task 3.5 — `audit-reports/09-task-3-5-verification.md` (8/8 PASS — `MapPanel`, `googleMapsLoader`, `vendor-gmaps` removed from `/catalog` initial graph) |
 
 ---
 
@@ -63,7 +64,7 @@
 | #220 | audit: re-baseline after Task 3.4 (verify AIChatBox lazy-load impact) | ✅ Merged |
 | #221 | perf(client): lazy-load MapPanel on /catalog (Task 3.5) | ✅ Merged |
 | _draft_ | audit: Task 3.5 verification (bundle-graph deterministic check) | 🟡 Draft on `claude/audit-task-3-5-verification-bundle` |
-| _draft_ | docs(audit): record Task 2.2 data normalization (operator outputs) | 🟡 Draft on `claude/audit-task-2-2-data-normalization` |
+| #223 | docs(audit): record Task 2.2 data normalization (operator outputs) | ✅ Merged |
 
 **კუმულატიური ეფექტი:**
 - `index.html` 369 KB → 2.4 KB (PR #208)
@@ -72,7 +73,7 @@
 - Production esbuild: no `direct-eval` warning, vite excluded from prod graph (PR #212)
 - 2 fewer cross-origin font handshakes per page load (PR #214); CSP `font-src 'self' data:`
 - AIChatBox 873 KB chunk no longer in eager preload graph for `/catalog` or `/organizations/:id` (PR #219); mobile `/organizations/:id` total weight 3,033 → 2,106 KiB (−31 %)
-- MapPanel + googleMapsLoader + vendor-gmaps (~34 KB JS) + Google Maps API script (~750 KB) no longer in `/catalog` initial graph (PR #221); list-only mobile viewers avoid the entire Maps stack until they tap "Map" tab
+- MapPanel + googleMapsLoader + vendor-gmaps (~34 KB JS) + Google Maps API script (~750 KB) no longer in `/catalog` initial graph (PR #221); list-only mobile viewers avoid the entire Maps stack until they tap "Map" tab. 8/8 deterministic bundle-graph checks PASS — see `audit-reports/09-task-3-5-verification.md`
 - Task 2.2 (operator 2026-05-04): country codes normalized (13 rows), 618 orphan grants linked to orgs (12% → 68% linked), 1,245 branches geocoded (94% success of 1,324 total)
 
 ---
@@ -143,6 +144,15 @@
 - ⚠️ mobile `/catalog` TBT spike 1,366 → 4,196 ms attributed to vendor-react long task on slower edge RTT (250 ms vs baseline 130 ms); chunk hash unchanged → not caused by PR #219, treat as Slow-4G run-variance until averaged across 2-3 re-runs
 - ✅ AIChatBox absent from `unused-javascript` audit on every page after PR #219
 - See `audit-reports/09-lighthouse-after-3-4.md` for full delta tables + diagnostics
+
+**Task 3.5 verification (2026-05-03, bundle-graph deterministic check, draft PR on `claude/audit-task-3-5-verification-bundle`):**
+
+Lighthouse skipped deliberately — Task 3.4 verification showed mobile `/catalog` Lighthouse scores are dominated by `vendor-react` Slow-4G run-variance unrelated to either PR #219 or PR #221. Bundle graph is deterministic, derives from build artefacts, and tests exactly what PR #221 changed (no eager `MapPanel` import in Catalog chunk).
+
+- ✅ Pre-flight 4/4: `/healthz` 200, main bundle hash flipped (`index-CWHJ_15x.js` → `index-BMm4yPCq.js`), `/` and `/catalog` modulepreloads list only `vendor-react` + `vendor-trpc` + `vendor-framer` (no `MapPanel` chain on either route)
+- ✅ Bundle graph 4/4: `MapPanel-DDhfE79J.js` fetchable separately (7,059 b), `googleMapsLoader-CfbSf2Bo.js` fetchable separately (542 b), `Catalog-BvPaRsoV.js` references `MapPanel` only via 2 `React.lazy(() => __vitePreload(import("./MapPanel...")))` boundaries (0 static imports), 0 `markercluster` references in Catalog chunk
+- Lazy chunks now gated on Map tab tap: ~34 KB JS (`MapPanel` + `googleMapsLoader` + `vendor-gmaps`) + ~750 KB external Maps API script + tile imagery
+- See `audit-reports/09-task-3-5-verification.md` for full check tables + chunk inventory
 
 ### Phase 10 — Bundle Analysis ✅
 **Top chunks:**
