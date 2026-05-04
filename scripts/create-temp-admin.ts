@@ -58,7 +58,7 @@ async function main() {
   }
 
   console.log("\nTemporary admin credentials:");
-  console.log(`username/email: ${email}`);
+  console.log(`email (login field): ${email}`);
   console.log(`password: ${password}`);
   console.log("\n⚠️ Rotate or delete this account after use.");
 }
