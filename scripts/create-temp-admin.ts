@@ -19,7 +19,7 @@ async function main() {
     process.exit(1);
   }
 
-  const email = process.env.TEMP_ADMIN_EMAIL || "admin@grantkit.com";
+  const email = process.env.TEMP_ADMIN_EMAIL || "admin-temp@grantkit.local";
   const password = process.env.TEMP_ADMIN_PASSWORD || "GrantKitAdmin2026!";
   const name = process.env.TEMP_ADMIN_NAME || "Temporary Admin";
 
