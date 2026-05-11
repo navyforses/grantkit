@@ -125,6 +125,57 @@ pnpm geocode:grants
 
 ---
 
+## 📞 Contact Enrichment — GitHub Action
+
+Unlike geocoding (operator-driven), contact enrichment runs on a
+GitHub Actions cron because the workload (50 orgs/day for ~11 days
+to clear ~538 pending) is too tedious for manual operator runs.
+
+- **Workflow:** `.github/workflows/contact-enrichment.yml`
+- **Schedule:** every day 09:00 UTC (13:00 Tbilisi). Offset by 1 h from
+  `daily-discovery.yml` (08:00 UTC) so the two jobs never share DB load.
+- **Script:** `scripts/enrich-org-contacts.ts` — Google Places (New)
+  Text Search + domain-validated email scraping. Anti-hallucination
+  guard: emails are kept only if domain matches the org website.
+- **Default batch size:** 50 orgs/day. Override via `workflow_dispatch`.
+
+### Required GitHub Secrets (Settings → Secrets and variables → Actions)
+
+| Secret | Source | Used by |
+|---|---|---|
+| `DATABASE_URL` | Railway → MySQL service → `MYSQL_PUBLIC_URL` | Already set (used by `daily-discovery.yml`) |
+| `GOOGLE_MAPS_API_KEY` | Google Cloud → `grantkit-server-geocoding-v2` key value | **NEW — operator must add before first run** |
+
+> ⚠️ `GOOGLE_MAPS_API_KEY` is the **server** key (IP-unrestricted), not
+> the browser key. Same value the operator exports locally when running
+> `pnpm geocode:grants`.
+
+### Manual trigger (workflow_dispatch)
+
+GitHub → Actions tab → "Contact Enrichment (Phase B)" → Run workflow.
+
+Inputs:
+- `limit` — orgs per batch (default 50)
+- `dry_run` — skip DB writes, produce CSV/JSON only (default false)
+- `force` — re-process already-enriched rows (default false; default
+  query filter is `contactEnrichmentStatus = 'pending'`)
+
+### Outputs (per run)
+
+- `contact-enrichment-report.json` — stats + per-org outcomes
+- `contact-enrichment-dry-run.csv` — only on `--dry-run`
+- Uploaded as artifact: `contact-enrichment-<batch-id>` (30-day retention)
+
+### First-run checklist
+
+1. Operator adds `GOOGLE_MAPS_API_KEY` to GitHub repo secrets.
+2. Trigger manually with `dry_run = true`, `limit = 10` — verify CSV output.
+3. Trigger manually with `dry_run = false`, `limit = 50` — verify DB
+   columns `phoneSource`, `phoneVerifiedAt`, etc. populated for the batch.
+4. Leave the cron to drain remaining backlog (~538 / 50 ≈ 11 days).
+
+---
+
 ## 🌍 Country-code Normalisation
 
 The `grants.country` column stores **ISO 3166-1 alpha-2** codes
