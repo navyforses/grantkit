@@ -1,0 +1,113 @@
+name: Contact Enrichment (Phase B)
+
+on:
+  schedule:
+    # ყოველ დღე 09:00 UTC (13:00 თბილისის დროით)
+    # 1 საათით გვიან daily-discovery-ზე — ერთდროულად DB load-ი არ მოხდეს
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'რამდენი ორგ. დამუშავდეს ერთ batch-ში'
+        required: false
+        type: string
+        default: '50'
+      dry_run:
+        description: 'Dry-run (DB-ს არ შეცვლის, CSV + JSON report-ი დაბრუნდება artifact-ად)'
+        required: false
+        type: boolean
+        default: false
+      force:
+        description: 'Re-process already-enriched rows (default: only pending)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  enrich-contacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Compute batch ID
+        id: batch
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            BATCH_ID="${DATE}-auto"
+          else
+            BATCH_ID="${DATE}-manual-${{ github.run_number }}"
+          fi
+          echo "batch_id=$BATCH_ID" >> $GITHUB_OUTPUT
+          echo "Batch ID: $BATCH_ID"
+
+      - name: Run contact enrichment
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        run: |
+          LIMIT="${{ inputs.limit }}"
+          if [ -z "$LIMIT" ]; then LIMIT="50"; fi
+
+          ARGS="--limit=$LIMIT --batch-id=${{ steps.batch.outputs.batch_id }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ "${{ inputs.force }}" = "true" ]; then
+            ARGS="$ARGS --force"
+          fi
+
+          echo "Running: pnpm tsx scripts/enrich-org-contacts.ts $ARGS"
+          pnpm tsx scripts/enrich-org-contacts.ts $ARGS
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contact-enrichment-${{ steps.batch.outputs.batch_id }}
+          path: |
+            contact-enrichment-report.json
+            contact-enrichment-dry-run.csv
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Contact Enrichment — ${{ steps.batch.outputs.batch_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f contact-enrichment-report.json ]; then
+            STATS=$(python3 -c "
+          import json
+          d = json.load(open('contact-enrichment-report.json'))
+          s = d.get('stats', {})
+          print(f\"- **Total processed:** {s.get('total', 0)}\")
+          print(f\"- **✓ Enriched:** {s.get('enriched', 0)}\")
+          print(f\"- **— No data:** {s.get('no_data', 0)}\")
+          print(f\"- **✗ Failed:** {s.get('failed', 0)}\")
+          print(f\"- **📞 Phone found:** {s.get('withPhone', 0)}\")
+          print(f\"- **✉ Email found:** {s.get('withEmail', 0)}\")
+          print(f\"- **📝 Contact-form only:** {s.get('withForm', 0)}\")
+          ")
+            echo "$STATS" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "_Report uploaded as artifact: \`contact-enrichment-${{ steps.batch.outputs.batch_id }}\`_" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No report file produced. Check job logs." >> $GITHUB_STEP_SUMMARY
+          fi
