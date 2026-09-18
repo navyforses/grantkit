@@ -3,8 +3,12 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm — pinned to the version in package.json "packageManager".
+# An unpinned `npm install -g pnpm` installs the newest major (12.x), which then
+# tries to self-switch to 10.33.2 via the @pnpm/exe native binary — none exists
+# for linux-x64-musl (Alpine), so the build dies with
+# ERR_PNPM_PNPM_ENGINE_NO_NATIVE_BINARY. Keep this in sync with packageManager.
+RUN npm install -g pnpm@10.33.2
 
 # Copy package files + patches
 COPY package.json pnpm-lock.yaml ./
@@ -35,7 +39,8 @@ FROM node:22-alpine AS runner
 
 WORKDIR /app
 
-RUN npm install -g pnpm
+# Same pin as the builder stage (see comment above).
+RUN npm install -g pnpm@10.33.2
 
 # Copy only what's needed for production
 COPY package.json pnpm-lock.yaml ./
