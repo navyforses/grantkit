@@ -4,7 +4,7 @@
 > project. Any new session (Claude / Cowork / human) must scan this before
 > opening a PR, asking the user for setup, or touching schema/env vars.
 >
-> Last updated: **2026-05-04** — Phase 4 data-quality findings closed via Task 2.2 (operator): 13 country fixes + 618 orphan grants linked + 1,245 branches geocoded (94 % success).
+> Last updated: **2026-09-18** — integration-pivot diagnostic + master plan added (`.grantkit-redesign/integration-pivot/`); leaked DB credential redacted from AUDIT-CONTINUATION (rotation still required). Previous: **2026-05-04** — Phase 4 data-quality findings closed via Task 2.2 (operator): 13 country fixes + 618 orphan grants linked + 1,245 branches geocoded (94 % success).
 
 ---
 
@@ -15,7 +15,7 @@
 | Production URL | https://grantkit-production-06f7.up.railway.app |
 | Migrations applied | `0011` (users auth, applied 2026-05-03) + `0012`-`0016` (grants/orgs, applied earlier). Schema.ts in sync with DB. |
 | Pending migrations | _(none)_ |
-| Active PR | _(none open)_ |
+| Active PR | [#247](https://github.com/navyforses/grantkit/pull/247) — integration-pivot diagnostic + master plan (docs only, draft) |
 | Current phase | **Contact enrichment — Phase B (scraping script)** |
 | Blocker | _(none — Google Places server key exists as `grantkit-server-geocoding-v2`)_ |
 
@@ -232,6 +232,7 @@ _Each session appends a 3-line summary so the next session knows what was done a
 - **2026-05-04** — Phase 9 closeout + Phase 4 closeout. Sandbox: PR #218 (Lighthouse baseline), #219 (lazy AIChatBox), #220 (verification re-baseline), #221 (lazy MapPanel), #222 draft (bundle-graph verification). Operator (Task 2.2): `fix-country-codes.ts --apply` (13 rows), `backfill-grants-orgid.ts` (618 grants linked), `geocode-branches.ts --apply --force` (1,245/1,324 branches geocoded, 94 % — re-geocoded entire DB rather than just 84 missing because of `--force` flag). Live data: 1,102 active grants, 752 linked to orgs (68 %, was 12 %). Discovered side-finding: ~30 organizations with garbage names (Georgian spreadsheet headers misimported) — tracked as Tier 2 cleanup. Both Google Maps keys leaked to chat during diagnosis — flagged for rotation.
 
 ---
+- **2026-09-18** — Integration-pivot planning session (4 parallel specialist agents + 1 manager): `.grantkit-redesign/integration-pivot/` — `00-MASTER-PLAN.md` (definition, positioning, consolidated diagnostic, 5-phase roadmap with done-when, agent team, KPIs, 18 owner decisions) + reports 01–04. Verified `pnpm check` 0 errors / `pnpm test` 201/202 / `pnpm build` OK / `pnpm audit --prod` 57 vuln (0 critical). **P0 found:** production MySQL root password was committed in `AUDIT-CONTINUATION-2026-05-03.md` → redacted in PR #247, value still in git history → operator must rotate (OPS.md §Secret rotation) + both Google Maps keys; Paddle webhook fail-closed while `PADDLE_WEBHOOK_SECRET` absent from documented Railway env and migration 0020 unverified. Note: `subscription.activate` no longer exists (removed 2026-05-12) — tRPC list in CLAUDE.md is stale. Blocking owner decisions: D1 paywall, D2 billing, D3 history rewrite, D5 beachhead, D6 status question (plan §8). Docs-only PR: #247 (draft).
 
 ## 🔎 How to use this file
 
