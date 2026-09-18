@@ -489,8 +489,8 @@ Same Lighthouse harness as Task 3.1, post-merge:
 
 ```powershell
 # DATABASE_URL setup (one-time per session):
-$pw = "dyrGKtAkILpUkEaSJpgYKzYAcLIsetdh"
-$env:DATABASE_URL = "mysql://root:" + $pw + "@mainline.proxy.rlwy.net:51195/railway"
+$pw = "<REDACTED 2026-09-18 — credential was committed here; rotate it per OPS.md §Secret rotation>"
+$env:DATABASE_URL = "<MYSQL_PUBLIC_URL from Railway MySQL service — never commit the value>"
 
 # 1. ✅ DONE 2026-05-03 — Migration 0011 drift fix
 #    node scripts/apply-migration-0011.mjs --apply
