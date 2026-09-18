@@ -226,6 +226,13 @@ The full deployment story lives in `CLAUDE.md`. Short version:
 - MySQL plugin shares the same Railway project
 - `git push origin main` → auto-deploys via Railway's GitHub integration
 - Manual redeploy: `railway up` from local
+- **Dockerfile pins pnpm** (`npm install -g pnpm@10.33.2`, same as
+  `packageManager` in `package.json`). Do not unpin: an unpinned install pulls
+  the newest pnpm major, which tries to self-switch to 10.33.2 via the
+  `@pnpm/exe` native binary — none exists for Alpine (linux-x64-musl) and the
+  Railway build dies with `ERR_PNPM_PNPM_ENGINE_NO_NATIVE_BINARY` (this broke
+  every deploy 2026-08-12 → 2026-09-18). When bumping `packageManager`, bump
+  both `RUN npm install -g pnpm@…` lines in the Dockerfile too.
 
 ---
 
