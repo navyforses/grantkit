@@ -132,8 +132,13 @@ GitHub Actions cron because the workload (50 orgs/day for ~11 days
 to clear ~538 pending) is too tedious for manual operator runs.
 
 - **Workflow:** `.github/workflows/contact-enrichment.yml`
-- **Schedule:** every day 09:00 UTC (13:00 Tbilisi). Offset by 1 h from
-  `daily-discovery.yml` (08:00 UTC) so the two jobs never share DB load.
+- **Schedule:** ⏸️ **paused since 2026-09-18** — the cron ran 130 days in a
+  row and failed every time because `GOOGLE_MAPS_API_KEY` was never added
+  to GitHub Secrets. The `schedule:` block is commented out in the
+  workflow file; only `workflow_dispatch` remains. Re-enable it after
+  completing the first-run checklist below (was: every day 09:00 UTC,
+  offset by 1 h from `daily-discovery.yml` so the two jobs never share
+  DB load).
 - **Script:** `scripts/enrich-org-contacts.ts` — Google Places (New)
   Text Search + domain-validated email scraping. Anti-hallucination
   guard: emails are kept only if domain matches the org website.
@@ -172,7 +177,8 @@ Inputs:
 2. Trigger manually with `dry_run = true`, `limit = 10` — verify CSV output.
 3. Trigger manually with `dry_run = false`, `limit = 50` — verify DB
    columns `phoneSource`, `phoneVerifiedAt`, etc. populated for the batch.
-4. Leave the cron to drain remaining backlog (~538 / 50 ≈ 11 days).
+4. Uncomment the `schedule:` block in `contact-enrichment.yml` and let the
+   cron drain the remaining backlog (~538 / 50 ≈ 11 days).
 
 ---
 

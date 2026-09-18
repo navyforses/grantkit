@@ -1,10 +1,14 @@
 name: Contact Enrichment (Phase B)
 
 on:
-  schedule:
-    # ყოველ დღე 09:00 UTC (13:00 თბილისის დროით)
-    # 1 საათით გვიან daily-discovery-ზე — ერთდროულად DB load-ი არ მოხდეს
-    - cron: '0 9 * * *'
+  # ⏸️ Schedule დროებით გათიშულია (2026-09-18): GOOGLE_MAPS_API_KEY secret
+  # რეპოზიტორიაში არ არის და cron ყოველ დღე მარცხდებოდა (130/130 failed).
+  # ჩასართავად: (1) დაამატე GOOGLE_MAPS_API_KEY GitHub Secrets-ში
+  # (server key `grantkit-server-geocoding-v2`, იხ. OPS.md), (2) დააბრუნე:
+  #   schedule:
+  #     # ყოველ დღე 09:00 UTC (13:00 თბილისის დროით)
+  #     # 1 საათით გვიან daily-discovery-ზე — ერთდროულად DB load-ი არ მოხდეს
+  #     - cron: '0 9 * * *'
   workflow_dispatch:
     inputs:
       limit:
