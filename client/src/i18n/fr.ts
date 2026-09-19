@@ -790,6 +790,12 @@ export const fr: Translations = {
     totalAvailable: "Total disponible",
     removeFromSaved: "Retirer des enregistrés",
     toastRemoveError: "Échec de la suppression de la subvention enregistrée",
+    // Phase 1.3 — organizations for the user's country / domains
+    forYou: "Organisations pour vous",
+    forYouAll: "Dans votre pays",
+    forYouEmpty: "Pas encore d'organisation dans ce domaine pour votre pays — consultez le catalogue complet.",
+    seeAll: "Tout voir",
+    yourNeeds: "Vos besoins",
   },
   dashboardLayout: {
     signInTitle: "Connectez-vous pour continuer",
@@ -1248,5 +1254,27 @@ export const fr: Translations = {
     ratingHidden: "La note Google s'affiche à partir de 5 avis",
     disclaimer: "Les informations peuvent changer — vérifiez auprès de l'organisation.",
     reportError: "Signaler une erreur",
+  },
+  // Onboarding v2 (Phase 1.3): country → city+language → status (client-only) → needs
+  onboardingV2: {
+    welcomeTitle: "Bienvenue sur GrantKit",
+    welcomeSubtitle: "Quatre étapes rapides et nous vous montrons les organisations qui peuvent vraiment vous aider.",
+    stepCity: "Ville et langue",
+    stepCityHint: "Où vous habitez et la langue que vous préférez — modifiables plus tard.",
+    cityLabel: "Ville (facultatif)",
+    cityPlaceholder: "ex. Paris",
+    languageLabel: "Langue",
+    stepStatus: "Votre situation",
+    stepStatusHint: "Cette question est facultative — la réponse nous aide à mieux vous orienter.",
+    privacyNote: "Votre réponse reste uniquement sur cet appareil — elle n'est jamais envoyée à notre serveur.",
+    statuses: {
+      asylum_seeker: "Demandeur d'asile",
+      refugee: "Réfugié / protection",
+      residence_permit: "Titre de séjour ou visa",
+      undocumented: "Sans papiers",
+      other: "Autre",
+    },
+    stepNeeds: "De quoi avez-vous besoin ?",
+    stepNeedsHint: "Cochez tous les domaines où vous avez besoin d'aide — nous sélectionnons les organisations selon cela.",
   },
 };

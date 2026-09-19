@@ -1,75 +1,50 @@
+/*
+ * StepNeeds — pick integration domains (the 11-domain taxonomy in
+ * shared/domains.ts). Domain keys are what the profile's `needs` field stores.
+ */
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import {
-  NEED_OPTIONS,
-  NEED_DETAIL_OPTIONS,
-  type Need,
-  type NeedDetail,
-} from "@shared/profileTypes";
+import { DOMAIN_KEYS, type Domain } from "@shared/domains";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface StepNeedsProps {
-  needs: Need[];
-  needDetails: NeedDetail[];
-  onUpdate: (needs: Need[], details: NeedDetail[]) => void;
+  needs: Domain[];
+  onUpdate: (needs: Domain[]) => void;
   onBack: () => void;
   onFinish: () => void;
   saving: boolean;
 }
 
-export default function StepNeeds({ needs, needDetails, onUpdate, onBack, onFinish, saving }: StepNeedsProps) {
+export default function StepNeeds({ needs, onUpdate, onBack, onFinish, saving }: StepNeedsProps) {
   const { t } = useLanguage();
 
-  const toggleNeed = (need: Need) => {
-    const exists = needs.includes(need);
-    const nextNeeds = exists ? needs.filter((n) => n !== need) : [...needs, need];
-
-    const detailValues = (NEED_DETAIL_OPTIONS[need] ?? []).map((d) => d.value);
-    const nextDetails = exists
-      ? needDetails.filter((d) => !detailValues.includes(d))
-      : needDetails;
-
-    onUpdate(nextNeeds, nextDetails);
-  };
-
-  const toggleDetail = (detail: NeedDetail) => {
-    const exists = needDetails.includes(detail);
-    onUpdate(needs, exists ? needDetails.filter((d) => d !== detail) : [...needDetails, detail]);
+  const toggle = (domain: Domain) => {
+    onUpdate(needs.includes(domain) ? needs.filter((n) => n !== domain) : [...needs, domain]);
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-foreground md:text-2xl">{t.profile.stepNeeds}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{t.profile.stepNeedsHint}</p>
+        <h2 className="text-xl font-semibold text-foreground md:text-2xl">{t.onboardingV2.stepNeeds}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{t.onboardingV2.stepNeedsHint}</p>
       </div>
 
-      <div className="space-y-3">
-        {NEED_OPTIONS.map((need) => {
-          const checked = needs.includes(need.value);
-          const details = NEED_DETAIL_OPTIONS[need.value];
-
+      <div className="grid gap-3 sm:grid-cols-2">
+        {DOMAIN_KEYS.map((domain) => {
+          const checked = needs.includes(domain);
           return (
-            <div key={need.value} className="rounded-xl border border-border p-3">
-              <label className="flex items-center gap-3">
-                <Checkbox checked={checked} onCheckedChange={() => toggleNeed(need.value)} />
-                <span className="text-lg">{need.icon}</span>
-                <span className="font-medium">{t.profile[need.labelKey.split(".")[1] as keyof typeof t.profile]}</span>
-              </label>
-              {checked && details && (
-                <div className="mt-2 space-y-2 pl-7">
-                  {details.map((detail) => (
-                    <label key={detail.value} className="flex items-center gap-2 text-sm">
-                      <Checkbox
-                        checked={needDetails.includes(detail.value)}
-                        onCheckedChange={() => toggleDetail(detail.value)}
-                      />
-                      <span>{t.profile[detail.labelKey.split(".")[1] as keyof typeof t.profile]}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
+            <label
+              key={domain}
+              className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors ${
+                checked ? "border-brand-green bg-brand-green/5" : "border-border"
+              }`}
+            >
+              <Checkbox checked={checked} onCheckedChange={() => toggle(domain)} className="mt-0.5" />
+              <span className="min-w-0">
+                <span className="block font-medium">{t.domains[domain].label}</span>
+                <span className="block text-xs text-muted-foreground">{t.domains[domain].description}</span>
+              </span>
+            </label>
           );
         })}
       </div>

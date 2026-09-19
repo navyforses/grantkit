@@ -792,6 +792,12 @@ export const ka: Translations = {
     totalAvailable: "სულ ხელმისაწვდომი",
     removeFromSaved: "შენახულიდან ამოშლა",
     toastRemoveError: "შენახული გრანტის ამოშლა ვერ მოხერხდა",
+    // Phase 1.3 — organizations for the user's country / domains
+    forYou: "ორგანიზაციები თქვენთვის",
+    forYouAll: "თქვენს ქვეყანაში",
+    forYouEmpty: "ამ სფეროში თქვენს ქვეყანაში ჯერ ორგანიზაცია არ გვაქვს — სცადეთ სრული კატალოგი.",
+    seeAll: "ყველას ნახვა",
+    yourNeeds: "თქვენი საჭიროებები",
   },
   dashboardLayout: {
     signInTitle: "შედით გასაგრძელებლად",
@@ -1250,5 +1256,27 @@ export const ka: Translations = {
     ratingHidden: "Google-ის რეიტინგი ჩანს მხოლოდ 5 ან მეტი შეფასების შემთხვევაში",
     disclaimer: "ინფორმაცია შეიძლება შეიცვალოს — გადაამოწმეთ ორგანიზაციასთან.",
     reportError: "შეცდომის შეტყობინება",
+  },
+  // Onboarding v2 (Phase 1.3): country → city+language → status (client-only) → needs
+  onboardingV2: {
+    welcomeTitle: "მოგესალმებით GrantKit-ში",
+    welcomeSubtitle: "ოთხი მოკლე ნაბიჯი — და გაჩვენებთ ორგანიზაციებს, რომლებიც ნამდვილად დაგეხმარებიან.",
+    stepCity: "ქალაქი და ენა",
+    stepCityHint: "სად ცხოვრობთ და რომელ ენაზე გირჩევნიათ კითხვა — ორივე მოგვიანებითაც შეიცვლება.",
+    cityLabel: "ქალაქი (არასავალდებულო)",
+    cityPlaceholder: "მაგ. პარიზი",
+    languageLabel: "ენა",
+    stepStatus: "თქვენი მდგომარეობა",
+    stepStatusHint: "ეს კითხვა არასავალდებულოა — პასუხი უფრო ზუსტი რჩევის მოცემაში გვეხმარება.",
+    privacyNote: "პასუხი მხოლოდ ამ მოწყობილობაზე რჩება — ჩვენს სერვერზე არასდროს იგზავნება.",
+    statuses: {
+      asylum_seeker: "თავშესაფრის მაძიებელი",
+      refugee: "ლტოლვილი / დაცვის სტატუსი",
+      residence_permit: "ბინადრობის ნებართვა ან ვიზა",
+      undocumented: "ჯერ საბუთების გარეშე",
+      other: "სხვა",
+    },
+    stepNeeds: "რა გჭირდებათ?",
+    stepNeedsHint: "მონიშნეთ ყველა სფერო, სადაც დახმარება გჭირდებათ — ორგანიზაციებს ამის მიხედვით შეგირჩევთ.",
   },
 };

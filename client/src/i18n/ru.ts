@@ -790,6 +790,12 @@ export const ru: Translations = {
     totalAvailable: "Всего доступно",
     removeFromSaved: "Удалить из сохранённых",
     toastRemoveError: "Не удалось удалить сохранённый грант",
+    // Phase 1.3 — organizations for the user's country / domains
+    forYou: "Организации для вас",
+    forYouAll: "В вашей стране",
+    forYouEmpty: "В этой сфере для вашей страны пока нет организаций — посмотрите полный каталог.",
+    seeAll: "Все",
+    yourNeeds: "Ваши потребности",
   },
   dashboardLayout: {
     signInTitle: "Войдите для продолжения",
@@ -1248,5 +1254,27 @@ export const ru: Translations = {
     ratingHidden: "Рейтинг Google показывается при наличии не менее 5 отзывов",
     disclaimer: "Информация может измениться — уточните в организации.",
     reportError: "Сообщить об ошибке",
+  },
+  // Onboarding v2 (Phase 1.3): country → city+language → status (client-only) → needs
+  onboardingV2: {
+    welcomeTitle: "Добро пожаловать в GrantKit",
+    welcomeSubtitle: "Четыре коротких шага — и мы покажем организации, которые действительно могут вам помочь.",
+    stepCity: "Город и язык",
+    stepCityHint: "Где вы живёте и на каком языке вам удобнее — это можно изменить позже.",
+    cityLabel: "Город (необязательно)",
+    cityPlaceholder: "напр. Париж",
+    languageLabel: "Язык",
+    stepStatus: "Ваша ситуация",
+    stepStatusHint: "Вопрос необязательный — ответ помогает нам давать более точные подсказки.",
+    privacyNote: "Ответ хранится только на этом устройстве — на наш сервер он никогда не отправляется.",
+    statuses: {
+      asylum_seeker: "Проситель убежища",
+      refugee: "Беженец / защита",
+      residence_permit: "ВНЖ или виза",
+      undocumented: "Без документов",
+      other: "Другое",
+    },
+    stepNeeds: "Что вам нужно?",
+    stepNeedsHint: "Отметьте все сферы, где нужна помощь — по ним мы подберём организации.",
   },
 };

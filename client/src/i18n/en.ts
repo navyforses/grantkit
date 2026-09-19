@@ -792,6 +792,12 @@ export const en: Translations = {
     totalAvailable: "Total Available",
     removeFromSaved: "Remove from saved",
     toastRemoveError: "Failed to remove saved grant",
+    // Phase 1.3 — organizations for the user's country / domains
+    forYou: "Organizations for you",
+    forYouAll: "In your country",
+    forYouEmpty: "No organizations in this area for your country yet — try the full catalog.",
+    seeAll: "See all",
+    yourNeeds: "Your needs",
   },
   dashboardLayout: {
     signInTitle: "Sign in to continue",
@@ -1250,5 +1256,27 @@ export const en: Translations = {
     ratingHidden: "Google rating is shown once there are at least 5 reviews",
     disclaimer: "Information may change — verify with the organization.",
     reportError: "Report an error",
+  },
+  // Onboarding v2 (Phase 1.3): country → city+language → status (client-only) → needs
+  onboardingV2: {
+    welcomeTitle: "Welcome to GrantKit",
+    welcomeSubtitle: "Four short steps and we show you the organizations that can actually help you.",
+    stepCity: "City and language",
+    stepCityHint: "Where you live and which language you prefer — both can be changed later.",
+    cityLabel: "City (optional)",
+    cityPlaceholder: "e.g. Paris",
+    languageLabel: "Language",
+    stepStatus: "Your situation",
+    stepStatusHint: "This question is optional — the answer helps us give more precise advice.",
+    privacyNote: "Your answer stays on this device only — it is never sent to our server.",
+    statuses: {
+      asylum_seeker: "Asylum seeker",
+      refugee: "Refugee / protection status",
+      residence_permit: "Residence permit or visa",
+      undocumented: "No papers yet",
+      other: "Other",
+    },
+    stepNeeds: "What do you need?",
+    stepNeedsHint: "Pick every area where you need help — we choose organizations based on this.",
   },
 };

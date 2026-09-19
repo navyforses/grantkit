@@ -1,3 +1,13 @@
+/*
+ * OnboardingFlow — Onboarding v2 (Phase 1.3). One flow component shared by
+ * the /onboarding page and the first-login prompt (OnboardingPrompt).
+ *
+ * Steps: 1 country → 2 city + language → 3 status (optional, client-only,
+ * D6) → 4 needs (11 integration domains). `purpose` is no longer asked.
+ *
+ * What reaches the server: `targetCountry` + `needs` (domain keys) only —
+ * see buildProfilePayload. Status and city stay in localStorage.
+ */
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { AnimatePresence, motion } from "framer-motion";
@@ -7,26 +17,50 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { useLanguage } from "@/contexts/LanguageContext";
-import type { Purpose, PurposeDetail, Need, NeedDetail } from "@shared/profileTypes";
+import { useLanguage, type Language } from "@/contexts/LanguageContext";
+import { isDomain, needToDomain, type Domain } from "@shared/domains";
+import { writeViewerCity, writeViewerStatus, type ViewerStatus } from "@/lib/onboardingLocal";
 import ProgressBar from "./ProgressBar";
 import StepCountry from "./StepCountry";
-import StepPurpose from "./StepPurpose";
+import StepCityLanguage from "./StepCityLanguage";
+import StepStatus from "./StepStatus";
 import StepNeeds from "./StepNeeds";
 
-interface OnboardingState {
-  step: 1 | 2 | 3;
+export interface OnboardingState {
+  step: 1 | 2 | 3 | 4;
   country: string | null;
-  purposes: Purpose[];
-  purposeDetails: PurposeDetail[];
-  needs: Need[];
-  needDetails: NeedDetail[];
+  city: string;
+  language: Language;
+  status: ViewerStatus | null;
+  needs: Domain[];
 }
 
 export const ONBOARDING_STATE_STORAGE_KEY = "grantkit_onboarding_state";
 
-export default function OnboardingFlow() {
-  const { t } = useLanguage();
+/** The only fields the server receives. Status/city are deliberately absent (D6). */
+export function buildProfilePayload(state: Pick<OnboardingState, "country" | "needs">): { targetCountry: string; needs: Domain[] } {
+  return { targetCountry: state.country ?? "", needs: state.needs };
+}
+
+/** Accept legacy `Need` values (VISA, HOUSING …) as well as domain keys. */
+export function normalizeNeeds(raw: unknown): Domain[] {
+  if (!Array.isArray(raw)) return [];
+  const out: Domain[] = [];
+  for (const value of raw) {
+    const domain = isDomain(value) ? value : needToDomain(typeof value === "string" ? value : null);
+    if (domain && !out.includes(domain)) out.push(domain);
+  }
+  return out;
+}
+
+interface OnboardingFlowProps {
+  /** Rendered inside a dialog — no full-page wrapper. */
+  embedded?: boolean;
+  onDone?: () => void;
+}
+
+export default function OnboardingFlow({ embedded = false, onDone }: OnboardingFlowProps) {
+  const { t, language: uiLanguage, setLanguage } = useLanguage();
   const { isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const [direction, setDirection] = useState(1);
@@ -34,36 +68,34 @@ export default function OnboardingFlow() {
   const [state, setState] = useState<OnboardingState>({
     step: 1,
     country: null,
-    purposes: [],
-    purposeDetails: [],
+    city: "",
+    language: uiLanguage,
+    status: null,
     needs: [],
-    needDetails: [],
   });
 
   const saveProfile = trpc.onboarding.saveProfile.useMutation();
 
-  const persistState = (value: OnboardingState) => {
-    sessionStorage.setItem(ONBOARDING_STATE_STORAGE_KEY, JSON.stringify(value));
+  const go = (step: OnboardingState["step"], dir: 1 | -1) => {
+    setDirection(dir);
+    setState((prev) => ({ ...prev, step }));
   };
 
   const submitState = async (payload: OnboardingState) => {
     if (!payload.country) return;
+    writeViewerStatus(payload.status);
+    writeViewerCity(payload.city);
 
     try {
-      await saveProfile.mutateAsync({
-        targetCountry: payload.country,
-        purposes: payload.purposes,
-        purposeDetails: payload.purposeDetails,
-        needs: payload.needs,
-        needDetails: payload.needDetails,
-      });
+      await saveProfile.mutateAsync(buildProfilePayload(payload));
       sessionStorage.removeItem(ONBOARDING_STATE_STORAGE_KEY);
+      onDone?.();
       navigate("/dashboard");
     } catch (err) {
       if (err instanceof TRPCClientError) {
         const message = String(err.message ?? "");
         if (message.includes("UNAUTHORIZED") || message.includes("Unauthorized")) {
-          persistState(payload);
+          sessionStorage.setItem(ONBOARDING_STATE_STORAGE_KEY, JSON.stringify(payload));
           window.location.href = getLoginUrl();
           return;
         }
@@ -72,19 +104,23 @@ export default function OnboardingFlow() {
     }
   };
 
-  const handleFinish = async () => {
-    await submitState(state);
-  };
-
   useEffect(() => {
     const raw = sessionStorage.getItem(ONBOARDING_STATE_STORAGE_KEY);
     if (!raw) return;
 
     try {
-      const restored: OnboardingState = JSON.parse(raw) as OnboardingState;
-      setState(restored);
-      if (isAuthenticated && restored.country) {
-        void submitState(restored);
+      const restored = JSON.parse(raw) as Partial<OnboardingState>;
+      const next: OnboardingState = {
+        step: 4,
+        country: restored.country ?? null,
+        city: restored.city ?? "",
+        language: restored.language ?? uiLanguage,
+        status: restored.status ?? null,
+        needs: normalizeNeeds(restored.needs),
+      };
+      setState(next);
+      if (isAuthenticated && next.country) {
+        void submitState(next);
       }
     } catch {
       sessionStorage.removeItem(ONBOARDING_STATE_STORAGE_KEY);
@@ -99,70 +135,77 @@ export default function OnboardingFlow() {
           <StepCountry
             selected={state.country}
             onSelect={(country) => setState((prev) => ({ ...prev, country }))}
-            onNext={() => {
-              setDirection(1);
-              setState((prev) => ({ ...prev, step: 2 }));
-            }}
+            onNext={() => go(2, 1)}
           />
         );
       case 2:
         return (
-          <StepPurpose
-            purposes={state.purposes}
-            purposeDetails={state.purposeDetails}
-            onUpdate={(purposes, purposeDetails) => setState((prev) => ({ ...prev, purposes, purposeDetails }))}
-            onBack={() => {
-              setDirection(-1);
-              setState((prev) => ({ ...prev, step: 1 }));
+          <StepCityLanguage
+            city={state.city}
+            language={state.language}
+            onCityChange={(city) => setState((prev) => ({ ...prev, city }))}
+            onLanguageChange={(language) => {
+              setLanguage(language);
+              setState((prev) => ({ ...prev, language }));
             }}
-            onNext={() => {
-              setDirection(1);
-              setState((prev) => ({ ...prev, step: 3 }));
-            }}
+            onBack={() => go(1, -1)}
+            onNext={() => go(3, 1)}
+          />
+        );
+      case 3:
+        return (
+          <StepStatus
+            status={state.status}
+            onSelect={(status) => setState((prev) => ({ ...prev, status }))}
+            onBack={() => go(2, -1)}
+            onNext={() => go(4, 1)}
           />
         );
       default:
         return (
           <StepNeeds
             needs={state.needs}
-            needDetails={state.needDetails}
-            onUpdate={(needs, needDetails) => setState((prev) => ({ ...prev, needs, needDetails }))}
-            onBack={() => {
-              setDirection(-1);
-              setState((prev) => ({ ...prev, step: 2 }));
-            }}
-            onFinish={handleFinish}
+            onUpdate={(needs) => setState((prev) => ({ ...prev, needs }))}
+            onBack={() => go(3, -1)}
+            onFinish={() => submitState(state)}
             saving={saveProfile.isPending}
           />
         );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, saveProfile.isPending]);
+
+  const body = (
+    <div className="space-y-6">
+      <ProgressBar currentStep={state.step} totalSteps={4} />
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+          key={state.step}
+          custom={direction}
+          initial={{ opacity: 0, x: direction > 0 ? 30 : -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: direction > 0 ? -30 : 30 }}
+          transition={{ duration: 0.2 }}
+        >
+          {content}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+
+  if (embedded) return body;
 
   return (
     <div className="min-h-screen bg-secondary px-4 py-6 md:flex md:items-center md:justify-center">
       <Card className="mx-auto w-full max-w-2xl">
-        <CardContent className="space-y-6">
-          <ProgressBar currentStep={state.step} totalSteps={3} />
-
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={state.step}
-              custom={direction}
-              initial={{ opacity: 0, x: direction > 0 ? 30 : -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: direction > 0 ? -30 : 30 }}
-              transition={{ duration: 0.2 }}
-            >
-              {content}
-            </motion.div>
-          </AnimatePresence>
-        </CardContent>
+        <CardContent>{body}</CardContent>
       </Card>
     </div>
   );

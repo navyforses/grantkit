@@ -12,7 +12,7 @@ import MobileHeader from "./components/MobileHeader";
 import MobileBottomNav from "./components/MobileBottomNav";
 import PageFallback from "./components/PageFallback";
 import Home from "./pages/Home";
-import OnboardingModal from "./components/OnboardingModal";
+import OnboardingPrompt from "./components/onboarding/OnboardingPrompt";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { ONBOARDING_STATE_STORAGE_KEY } from "@/components/onboarding/OnboardingFlow";
 
@@ -109,7 +109,7 @@ function App() {
             <PaddleInitializer />
             <HtmlLangSetter />
             <OnboardingResumeGuard />
-            <OnboardingModal />
+            <OnboardingPrompt />
             {/* Mobile-only header (hidden on md+) */}
             <MobileHeader />
             {/* Main content with bottom padding on mobile for bottom nav */}
