@@ -2,7 +2,7 @@
 
 **თარიღი:** 2026-04-23
 **სფერო:** Phase A (DB inventory). Phases B–E დარჩენილია.
-**მონაცემთა წყარო:** Railway MySQL production (`mainline.proxy.rlwy.net:59681/railway`), წაკითხული `.env`-დან live query-ებით.
+**მონაცემთა წყარო:** Railway MySQL production (`<MYSQL_PUBLIC_URL host:port>/railway`), წაკითხული `.env`-დან live query-ებით.
 
 ---
 

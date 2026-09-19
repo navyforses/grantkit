@@ -5,8 +5,8 @@
 
 ## Pre-flight
 
-- DB: Railway MySQL `mainline.proxy.rlwy.net:51195/railway`
-- Connection: `mysql://root:****@mainline.proxy.rlwy.net:51195/railway`
+- DB: Railway MySQL `<MYSQL_PUBLIC_URL host:port>/railway`
+- Connection: `mysql://<user>:<password>@<MYSQL_PUBLIC_URL host:port>/railway`
 - Tooling: Node 24.15, `tsx` 4.20.6, scripts pulled from `main` via `Invoke-WebRequest`
   (operator workspace was a 2026-04-26 ZIP extract without the post-PR-#207 scripts)
 

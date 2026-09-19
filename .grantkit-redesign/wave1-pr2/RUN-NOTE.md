@@ -3,7 +3,7 @@
 **Date:** 2026-04-23
 **Author:** Tamar (Wave 1)
 **Script:** `scripts/backfill-grants-orgid.ts`
-**Target DB:** Railway MySQL (`mainline.proxy.rlwy.net:59681`)
+**Target DB:** Railway MySQL (`<MYSQL_PUBLIC_URL host:port>`)
 
 ## Prerequisite discovered at runtime
 
