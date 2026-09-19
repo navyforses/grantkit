@@ -241,6 +241,38 @@ normalised form. It's safe to run repeatedly.
 
 ---
 
+## 🤝 Affiliate accounts (D19, operator) — Phase 1 item 1.13
+
+> Self-serve registrations the **operator** does once D19 is answered "yes"
+> (MASTER-PLAN §8). Code side is already merged: `content/offers/partners.json`
+> (public registry, rendered on `/trust` as names + disclosure only) and its
+> schema `content/offers/partners.schema.json` (`pnpm test` validates it).
+> **No placement on any page until Phase 2.9** (`server/offers/placement.ts`).
+>
+> Rule: a tracking URL is public and goes in the repo; a postback/API secret
+> **never** goes in the repo — env var only.
+
+| Partner | Programme / where to register | Approval | What you get back |
+|---|---|---|---|
+| Wise | "Wise Affiliates" programme (self-serve form on wise.com; runs on the Partnerize network) | manual review, days–weeks | tracking link (`wise.com/…?partnerizecampaignID=…` or `wise.prf.hn/…`) |
+| Remitly | Impact.com publisher account → marketplace → apply to "Remitly" — https://app.impact.com/ | manual review | tracking link (`remitly.sjv.io/…`) |
+| Lebara **or** Lyca (FR) | Awin publisher account → join programme "Lebara France" / "Lycamobile France" — https://www.awin.com/ | Awin account (small refundable deposit) + advertiser approval | tracking link (`awin1.com/cread.php?awinmid=…&awinaffid=…`) |
+| Lingoda | "Lingoda affiliate/partner programme" page on lingoda.com (network varies by region — follow the page) | manual review | tracking link |
+
+Programme URLs above were not verified from this sandbox — search the partner's site for the programme name; the network names come from MASTER-PLAN 1.13 / report 06 §5.2.
+
+**Checklist, per partner:**
+
+1. Register with the GrantKit contact email; describe the site as "integration navigator for migrants in France, 5 languages, disclosure on every offer".
+2. Once approved, copy the **public tracking URL** into `content/offers/partners.json` → that partner's `trackingUrl` (replace `TODO-after-registration`). Open a PR; `pnpm test` must stay green (schema requires `https://…`).
+3. If the programme offers a **postback / server-to-server** conversion secret (Impact "postback key", Awin "API key", Partnerize "conversion API key"): put it on Railway as `AFFILIATE_POSTBACK_SECRET` (one variable; per-partner suffix `AFFILIATE_POSTBACK_SECRET_<SLUG>` only if two programmes need different secrets). Value never in a file, issue, chat log or doc. Consumer: none until Phase 2.9/4 (`POST /api/partners/postback`, report 07 §I).
+4. Paste the programme's **disclosure requirements** (if any) into the PR description; Salomé checks the 5 `disclosure` texts against them (loi influenceurs 2023 / DGCCRF).
+5. Record in `PROJECT_MAP.md` Session Log: partner slug, date approved, no amounts.
+
+**Do not:** add a partner in a `NEVER_MONETIZE` domain (test fails), remove `asylum_seeker`/`undocumented` from `excludedStatuses` without an owner decision (PIVOT §6 rule 4), or paste a tracking URL anywhere except `partners.json`.
+
+---
+
 ## 📝 DO NOT do these (already done — skip)
 
 These common first-time tasks have **already been completed** — don't redo:
