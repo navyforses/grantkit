@@ -1382,6 +1382,21 @@ export async function getRelatedGrants(itemId: string, category: string, limit =
 }
 
 /** Get all active grant itemIds and updatedAt for sitemap generation */
+/**
+ * orgId of a grant, for the /grant/:id → /organizations/:orgId 301.
+ * Returns undefined when the DB is unavailable (caller decides the fallback).
+ */
+export async function getGrantOrgId(itemId: string): Promise<{ orgId: string | null } | null | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const rows = await db
+    .select({ orgId: grants.orgId })
+    .from(grants)
+    .where(eq(grants.itemId, itemId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
 export async function getAllGrantItemIds(): Promise<Array<{ itemId: string; updatedAt: Date }>> {
   const db = await getDb();
   if (!db) return [];

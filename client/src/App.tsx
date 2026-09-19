@@ -54,6 +54,8 @@ function Router() {
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/reset-password" component={ResetPassword} />
         {/* Everything else is lazy */}
+        <Route path="/organizations" component={Catalog} />
+        {/* Legacy path — Express 301s it; client-side navigation lands here. */}
         <Route path="/catalog" component={Catalog} />
         <Route path="/grant/:id" component={EntityDetail} />
         <Route path="/profile" component={Profile} />

@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
+import { renderIndexHtml } from "../seoHead";
 
 export function serveStatic(app: Express) {
   const distPath =
@@ -22,7 +23,7 @@ export function serveStatic(app: Express) {
 
   // SPA fallback — Express 5 path-to-regexp v8 rejects bare "*" wildcards,
   // so use a path-less middleware that runs after express.static().
-  app.use((req, res, next) => {
+  app.use(async (req, res, next) => {
     const url = req.originalUrl;
     if (url.startsWith("/api/") || url === "/sitemap.xml" || url === "/robots.txt") {
       return res.status(404).json({ error: "Not found" });
@@ -31,6 +32,11 @@ export function serveStatic(app: Express) {
     if (!fs.existsSync(indexPath)) {
       return res.status(503).json({ error: "Frontend not built", distPath });
     }
-    res.sendFile(indexPath);
+    try {
+      const html = await fs.promises.readFile(indexPath, "utf-8");
+      res.status(200).set({ "Content-Type": "text/html; charset=utf-8" }).end(await renderIndexHtml(html, req));
+    } catch (e) {
+      next(e);
+    }
   });
 }

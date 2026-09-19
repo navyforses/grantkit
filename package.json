@@ -38,7 +38,7 @@
     "null:bad-coords:apply": "tsx scripts/null-bad-coords.ts --apply",
     "normalize:countries:dry": "tsx scripts/normalize-country-codes.ts --dry-run",
     "normalize:countries": "tsx scripts/normalize-country-codes.ts",
-    "sitemap:generate": "tsx scripts/generate-sitemap.ts",
+    "check:sitemap": "tsx scripts/check-sitemap.ts",
     "audit:locations": "tsx scripts/audit-locations.ts",
     "audit:db": "tsx scripts/audit-db-content.ts",
     "fix:countries": "tsx scripts/fix-country-codes.ts",
