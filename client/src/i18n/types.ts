@@ -17,14 +17,17 @@ export interface Translations {
   };
 
   // Hero
+  // Country-first entry (Phase 1.2, D5 France / D17 language + status).
+  // No "grant" wording in any hero key — enforced by Home.hero.test.ts.
   hero: {
-    badge: string;
-    title: string;
+    title: string;        // "{count}" = live FR organization count
     titleAccent: string;
     subtitle: string;
+    free: string;
     cta: string;
-    seeCatalog: string;
-    statGrantsLabel: string;
+    cityPrompt: string;
+    orgLine: string;
+    orgCta: string;
     statOrganizationsLabel: string;
     statCountriesLabel: string;
   };
