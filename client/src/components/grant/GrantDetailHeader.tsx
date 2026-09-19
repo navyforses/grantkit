@@ -33,7 +33,7 @@ interface Props {
   onToggleSave?: () => void;
   onShare: () => void;
   onOpenAi: () => void;
-  backHref?: string;               // fallback when history is empty (default /catalog)
+  backHref?: string;               // fallback when history is empty (default /organizations)
 }
 
 export default function GrantDetailHeader({
@@ -49,7 +49,7 @@ export default function GrantDetailHeader({
   onToggleSave,
   onShare,
   onOpenAi,
-  backHref = "/catalog",
+  backHref = "/organizations",
 }: Props) {
   const current = breadcrumb[breadcrumb.length - 1];
   const trail = breadcrumb.slice(0, -1);

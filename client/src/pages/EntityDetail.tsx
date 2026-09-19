@@ -125,7 +125,7 @@ export default function EntityDetail() {
           <div className="text-center">
             <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{t.grantDetail.notFound}</h2>
             <p className="text-muted-foreground/80 mb-6 text-sm">{t.grantDetail.notFoundDesc}</p>
-            <Link href="/catalog">
+            <Link href="/organizations">
               <Button variant="outline" className="gap-2 border-border text-foreground/80 hover:bg-muted hover:text-foreground">
                 <ChevronRight className="w-4 h-4 rotate-180" />
                 {t.grantDetail.backToCatalog}
@@ -334,7 +334,7 @@ export default function EntityDetail() {
       <GrantDetailHeader
         breadcrumb={[
           { label: t.detail.breadcrumbHome, href: "/" },
-          { label: t.detail.breadcrumbCatalog, href: "/catalog" },
+          { label: t.detail.breadcrumbCatalog, href: "/organizations" },
           { label: content.name },
         ]}
         isAuthenticated={isAuthenticated}

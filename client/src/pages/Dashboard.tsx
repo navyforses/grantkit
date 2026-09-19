@@ -267,7 +267,7 @@ export default function Dashboard() {
                     <span className="text-xs md:text-sm font-normal text-muted-foreground">({savedItems.length})</span>
                   )}
                 </h2>
-                <Link href="/catalog">
+                <Link href="/organizations">
                   <Button variant="ghost" size="sm" className="text-primary gap-1 h-8 text-xs md:text-sm">
                     <Search className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     {t.dashboard.browse}
@@ -286,7 +286,7 @@ export default function Dashboard() {
                   <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
                     {t.dashboard.noSavedDesc}
                   </p>
-                  <Link href="/catalog">
+                  <Link href="/organizations">
                     <Button variant="outline" size="sm" className="gap-1.5 h-10 md:h-9 text-xs md:text-sm rounded-lg md:rounded-md">
                       <Search className="w-4 h-4" />
                       {t.dashboard.exploreCatalog}
@@ -343,7 +343,7 @@ export default function Dashboard() {
             <div className="md:hidden">
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">{t.dashboard.quickActions}</h3>
               <div className="grid grid-cols-3 gap-2">
-                <Link href="/catalog">
+                <Link href="/organizations">
                   <div className="bg-card border border-border rounded-xl p-3 text-center active:bg-secondary">
                     <Search className="w-5 h-5 text-muted-foreground/60 mx-auto mb-1" />
                     <p className="text-[10px] font-medium text-foreground/80">{t.dashboard.browse}</p>
@@ -415,7 +415,7 @@ export default function Dashboard() {
             >
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">{t.dashboard.quickActions}</h3>
               <div className="space-y-2">
-                <Link href="/catalog">
+                <Link href="/organizations">
                   <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-secondary transition-colors text-left">
                     <span className="flex items-center gap-2 text-sm font-medium text-foreground/80">
                       <Search className="w-4 h-4 text-muted-foreground/60" />

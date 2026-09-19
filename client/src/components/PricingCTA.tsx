@@ -55,11 +55,11 @@ export default function PricingCTA({
       () => {
         // The Paddle webhook is the source of truth for activation. Invalidate
         // local caches and give the webhook ~2s to land before redirecting,
-        // so /catalog reflects the new "active" status on first paint.
+        // so /organizations reflects the new "active" status on first paint.
         utils.auth.me.invalidate();
         utils.subscription.status.invalidate();
         setTimeout(() => {
-          window.location.href = "/catalog";
+          window.location.href = "/organizations";
         }, 2000);
       }
     );

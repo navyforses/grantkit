@@ -133,7 +133,7 @@ export default function Home() {
         title={t.seo.homeTitle}
         description={t.seo.homeDescription}
         canonicalPath="/"
-        keywords="grants, medical grants, startup grants, scholarships, financial assistance, funding, research grants"
+        keywords="immigrant integration, organizations in France, asylum, residence permit, housing, health, French classes, free help"
         noSuffix
       />
       <OrganizationJsonLd />

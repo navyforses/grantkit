@@ -108,7 +108,7 @@ export default function Contact() {
                 >
                   {t.contact.sendAnother}
                 </Button>
-                <Link href="/catalog">
+                <Link href="/organizations">
                   <Button className="bg-primary hover:bg-primary h-11 md:h-10 rounded-xl md:rounded-md w-full md:w-auto">
                     {t.contact.browseCatalog}
                   </Button>
