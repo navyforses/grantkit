@@ -1174,6 +1174,14 @@ export interface Translations {
       statBranches: string;
       statPrograms: string;
       statCategories: string;
+      // Phase 1.7 — mobile action bar + error states
+      call: string;
+      directions: string;
+      website: string;
+      networkError: string;
+      retry: string;
+      notFound: string;
+      notFoundDesc: string;
     };
     empty: string;
     loading: string;
