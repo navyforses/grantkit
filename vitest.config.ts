@@ -12,8 +12,10 @@ export default defineConfig({
       "@assets": path.resolve(templateRoot, "attached_assets"),
     },
   },
+  // Component render tests (client/src/**/*.test.tsx) use the automatic JSX runtime.
+  esbuild: { jsx: "automatic" },
   test: {
     environment: "node",
-    include: ["server/**/*.test.ts", "server/**/*.spec.ts", "shared/**/*.test.ts"],
+    include: ["server/**/*.test.ts", "server/**/*.spec.ts", "shared/**/*.test.ts", "client/src/**/*.test.tsx"],
   },
 });
