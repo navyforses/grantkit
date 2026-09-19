@@ -1,4 +1,5 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { DOMAIN_KEYS } from "@shared/domains";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
@@ -41,6 +42,18 @@ import { runGrantChatAssistant } from "./grantAssistant";
 import { expandQuery } from "./queryExpander";
 import { searchGrantsMultiTerm } from "./smartSearch";
 import { z } from "zod";
+
+/** Integration-domain + accessibility filters shared by `organizations.list`
+ *  and `organizations.mapPoints` (Phase 1 item 1.4). Enum values mirror
+ *  `drizzle/schema.ts` organizations columns; `"unknown"` is not filterable. */
+const orgAccessFilterInput = {
+  domain: z.enum(DOMAIN_KEYS).optional(),
+  language: z.string().min(2).max(8).optional(),
+  serviceCost: z.enum(["free", "sliding_scale", "paid", "insurance", "mixed"]).optional(),
+  acceptsUndocumented: z.enum(["yes", "no", "case_by_case"]).optional(),
+  acceptsUninsured: z.enum(["yes", "no"]).optional(),
+  appointmentPolicy: z.enum(["required", "walk_in", "both"]).optional(),
+};
 
 export const appRouter = router({
   system: systemRouter,
@@ -1326,7 +1339,9 @@ export const appRouter = router({
   // sort) off the organizations tables. Kept parallel in shape so the
   // frontend adapter stays trivial.
   organizations: router({
-    /** Paginated list with all toolbar filters. Mirror of catalog.list. */
+    /** Paginated list with all toolbar filters. Mirror of catalog.list.
+     *  Phase 1 (1.4): domain / language / accessibility filters — mapping
+     *  only, no schema change (see shared/domains.ts). */
     list: publicProcedure
       .input(z.object({
         search: z.string().optional(),
@@ -1335,6 +1350,7 @@ export const appRouter = router({
         country: z.string().optional(),
         state: z.string().optional(),
         city: z.string().optional(),
+        ...orgAccessFilterInput,
         sortBy: z.string().optional(),
         bounds: z.object({
           swLat: z.number(),
@@ -1348,10 +1364,12 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const {
           search, category, region, country, state, city, sortBy, bounds,
+          domain, language, serviceCost, acceptsUndocumented, acceptsUninsured, appointmentPolicy,
           page = 1, pageSize = 20,
         } = input || {};
         const result = await listOrganizations({
           search, category, region, country, state, city, sortBy, bounds,
+          domain, language, serviceCost, acceptsUndocumented, acceptsUninsured, appointmentPolicy,
           limit: pageSize,
           offset: (page - 1) * pageSize,
         });
@@ -1387,6 +1405,7 @@ export const appRouter = router({
         country: z.string().optional(),
         state: z.string().optional(),
         city: z.string().optional(),
+        ...orgAccessFilterInput,
         bounds: z.object({
           swLat: z.number(),
           swLng: z.number(),
