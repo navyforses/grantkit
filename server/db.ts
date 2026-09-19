@@ -1,9 +1,10 @@
 import { eq, and, or, like, desc, asc, count, sql, inArray, gte, lte, isNotNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations, notificationHistory, organizations, organizationBranches, processedWebhookEvents } from "../drizzle/schema";
+import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations, notificationHistory, organizations, organizationBranches, organizationHousing, processedWebhookEvents } from "../drizzle/schema";
 import type { Grant, InsertGrant, GrantTranslation, Organization, OrganizationBranch } from "../drizzle/schema";
 import * as crypto from "crypto";
 import { sourceValuesForDomain, type Domain } from "@shared/domains";
+import { mapOrganizationDetail, type OrganizationDetailResult } from "./organizationDetail";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -1860,15 +1861,13 @@ export async function searchOrganizationsMultiTerm(
   }));
 }
 
-/** Get a single organization by orgId plus its branches. */
-export async function getOrganizationDetail(orgId: string): Promise<{
-  organization: Organization | null;
-  branches: OrganizationBranch[];
-}> {
+/** Get a single organization by orgId plus its branches, its housing row
+ *  (organization_housing, one per org — Phase 1.6) and normalised translations. */
+export async function getOrganizationDetail(orgId: string): Promise<OrganizationDetailResult> {
   const db = await getDb();
-  if (!db) return { organization: null, branches: [] };
+  if (!db) return { organization: null, branches: [], housing: null, translations: {} };
 
-  const [orgRows, branchRows] = await Promise.all([
+  const [orgRows, branchRows, housingRows] = await Promise.all([
     db
       .select()
       .from(organizations)
@@ -1879,12 +1878,18 @@ export async function getOrganizationDetail(orgId: string): Promise<{
       .from(organizationBranches)
       .where(eq(organizationBranches.orgId, orgId))
       .orderBy(asc(organizationBranches.branchType), asc(organizationBranches.city)),
+    db
+      .select()
+      .from(organizationHousing)
+      .where(eq(organizationHousing.orgId, orgId))
+      .limit(1),
   ]);
 
-  return {
-    organization: orgRows[0] ?? null,
+  return mapOrganizationDetail({
+    organization: orgRows[0],
     branches: branchRows,
-  };
+    housing: housingRows[0],
+  });
 }
 
 /**

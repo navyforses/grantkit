@@ -1333,6 +1333,25 @@ export interface Translations {
     stepNeedsHint: string;
   };
 
+  // France fields on the organization page (Phase 1.6): housing, services, audience, badges
+  orgFrance: {
+    servicesTitle: string;
+    audienceTitle: string;
+    housingTitle: string;
+    housingTypeLabel: string;
+    housingType: { parents_house: string; shelter: string; social: string; temporary: string; hotel: string; apartment: string; other: string };
+    capacity: string;
+    maxStay: string;
+    registration: string;
+    cost: string;
+    childrenFriendly: string;
+    disabledAccessible: string;
+    yes: string;
+    no: string;
+    nationwide: string; // template: "All of {country}"
+    purpose: { all: string; study: string; medical: string; work: string; family: string; asylum: string; other: string };
+  };
+
   // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
   orgTrust: {
     lastChecked: string;
