@@ -1330,6 +1330,7 @@ export const en: Translations = {
     reportSubject: "Error report",
     reportCta: "Report an error by email",
     contactCta: "Write to us",
+  },
   // Onboarding v2 (Phase 1.3): country → city+language → status (client-only) → needs
   onboardingV2: {
     welcomeTitle: "Welcome to GrantKit",

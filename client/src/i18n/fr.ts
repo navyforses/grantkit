@@ -1328,6 +1328,7 @@ export const fr: Translations = {
     reportSubject: "Signalement d'erreur",
     reportCta: "Signaler une erreur par e-mail",
     contactCta: "Nous écrire",
+  },
   // Onboarding v2 (Phase 1.3): country → city+language → status (client-only) → needs
   onboardingV2: {
     welcomeTitle: "Bienvenue sur GrantKit",

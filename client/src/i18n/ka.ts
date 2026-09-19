@@ -1330,6 +1330,7 @@ export const ka: Translations = {
     reportSubject: "შეცდომის შეტყობინება",
     reportCta: "შეცდომის შეტყობინება ელფოსტით",
     contactCta: "მოგვწერეთ",
+  },
   // Onboarding v2 (Phase 1.3): country → city+language → status (client-only) → needs
   onboardingV2: {
     welcomeTitle: "მოგესალმებით GrantKit-ში",
