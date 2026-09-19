@@ -88,6 +88,13 @@ export const LanguageContext = createContext<LanguageContextType | undefined>(un
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
+    // `?lang=xx` (hreflang alternates from server/seoHead.ts) wins over the
+    // saved preference and becomes the new saved preference.
+    const fromUrl = new URLSearchParams(window.location.search).get("lang");
+    if (fromUrl && fromUrl in translations) {
+      localStorage.setItem("grantkit-lang", fromUrl);
+      return fromUrl as Language;
+    }
     const saved = localStorage.getItem("grantkit-lang");
     return (saved as Language) || "en";
   });

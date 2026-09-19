@@ -1,17 +1,20 @@
 /**
- * SEO Routes — sitemap.xml and robots.txt server endpoints
- * Generates dynamic sitemap with all grant pages and static pages
- * Supports multilingual URLs with hreflang alternate links
+ * SEO Routes — sitemap.xml, robots.txt and legacy-path redirects.
+ *
+ * Single sitemap (no per-language index): the site has no /:lang URLs yet
+ * (Phase 4). Language is `?lang=xx` on the same page, so each <url> carries
+ * xhtml:link hreflang alternates instead of 5 near-duplicate sitemaps.
+ * /grant/:id and /catalog are 301s (Phase 1.8) and are not listed.
  */
 
 import type { Express } from "express";
-import { getAllGrantItemIds, getAllOrgIds } from "./db";
+import { getAllOrgIds, getGrantOrgId } from "./db";
+import { LANGS } from "./seoHead";
 
 // Static pages with their change frequency and priority
 const STATIC_PAGES = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
-  { path: "/catalog", changefreq: "daily", priority: "0.9" },
-  { path: "/organizations", changefreq: "daily", priority: "0.8" },
+  { path: "/organizations", changefreq: "daily", priority: "0.9" },
   { path: "/contact", changefreq: "monthly", priority: "0.5" },
   { path: "/privacy", changefreq: "yearly", priority: "0.3" },
   { path: "/terms", changefreq: "yearly", priority: "0.3" },
@@ -37,7 +40,33 @@ function formatDate(date: Date): string {
   return date.toISOString().split("T")[0];
 }
 
+function alternates(baseUrl: string, path: string): string {
+  let xml = "";
+  for (const lang of LANGS) {
+    xml += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${escapeXml(`${baseUrl}${path}?lang=${lang}`)}"/>\n`;
+  }
+  xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(baseUrl + path)}"/>\n`;
+  return xml;
+}
+
 export function registerSeoRoutes(app: Express) {
+  // ===== Legacy paths (Phase 1.8) =====
+  app.get("/catalog", (req, res) => {
+    const qs = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
+    res.redirect(301, "/organizations" + qs);
+  });
+  app.get("/grant/:id", async (req, res) => {
+    try {
+      const row = await getGrantOrgId(req.params.id);
+      // DB unavailable → temporary redirect so crawlers keep the old URL.
+      if (row === undefined) return res.redirect(302, "/organizations");
+      return res.redirect(301, row?.orgId ? `/organizations/${row.orgId}` : "/organizations");
+    } catch (error) {
+      console.error("[Redirect] /grant/:id lookup failed:", error);
+      return res.redirect(302, "/organizations");
+    }
+  });
+
   // ===== robots.txt =====
   app.get("/robots.txt", (req, res) => {
     const baseUrl = getBaseUrl(req);
@@ -63,7 +92,7 @@ export function registerSeoRoutes(app: Express) {
   app.get("/sitemap.xml", async (req, res) => {
     try {
       const baseUrl = getBaseUrl(req);
-      const [grantItems, orgItems] = await Promise.all([getAllGrantItemIds(), getAllOrgIds()]);
+      const orgItems = await getAllOrgIds();
       const now = formatDate(new Date());
 
       let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -77,28 +106,19 @@ export function registerSeoRoutes(app: Express) {
         xml += `    <lastmod>${now}</lastmod>\n`;
         xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
         xml += `    <priority>${page.priority}</priority>\n`;
+        xml += alternates(baseUrl, page.path);
         xml += "  </url>\n";
       }
 
-      // Organization detail pages (primary detail pages)
+      // Organization detail pages
       for (const org of orgItems) {
-        const lastmod = formatDate(org.updatedAt);
+        const path = "/organizations/" + org.orgId;
         xml += "  <url>\n";
-        xml += `    <loc>${escapeXml(baseUrl + "/organizations/" + org.orgId)}</loc>\n`;
-        xml += `    <lastmod>${lastmod}</lastmod>\n`;
+        xml += `    <loc>${escapeXml(baseUrl + path)}</loc>\n`;
+        xml += `    <lastmod>${formatDate(org.updatedAt)}</lastmod>\n`;
         xml += `    <changefreq>monthly</changefreq>\n`;
         xml += `    <priority>0.8</priority>\n`;
-        xml += "  </url>\n";
-      }
-
-      // Grant detail pages
-      for (const grant of grantItems) {
-        const lastmod = formatDate(grant.updatedAt);
-        xml += "  <url>\n";
-        xml += `    <loc>${escapeXml(baseUrl + "/grant/" + grant.itemId)}</loc>\n`;
-        xml += `    <lastmod>${lastmod}</lastmod>\n`;
-        xml += `    <changefreq>monthly</changefreq>\n`;
-        xml += `    <priority>0.7</priority>\n`;
+        xml += alternates(baseUrl, path);
         xml += "  </url>\n";
       }
 
@@ -109,36 +129,6 @@ export function registerSeoRoutes(app: Express) {
       res.send(xml);
     } catch (error) {
       console.error("[Sitemap] Error generating sitemap:", error);
-      res.status(500).set("Content-Type", "text/plain").send("Error generating sitemap");
-    }
-  });
-
-  // ===== sitemap-grants.xml (dedicated grant sitemap for large catalogs) =====
-  app.get("/sitemap-grants.xml", async (req, res) => {
-    try {
-      const baseUrl = getBaseUrl(req);
-      const grantItems = await getAllGrantItemIds();
-
-      let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-      xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-
-      for (const grant of grantItems) {
-        const lastmod = formatDate(grant.updatedAt);
-        xml += "  <url>\n";
-        xml += `    <loc>${escapeXml(baseUrl + "/grant/" + grant.itemId)}</loc>\n`;
-        xml += `    <lastmod>${lastmod}</lastmod>\n`;
-        xml += `    <changefreq>monthly</changefreq>\n`;
-        xml += `    <priority>0.7</priority>\n`;
-        xml += "  </url>\n";
-      }
-
-      xml += "</urlset>";
-
-      res.set("Content-Type", "application/xml; charset=utf-8");
-      res.set("Cache-Control", "public, max-age=3600");
-      res.send(xml);
-    } catch (error) {
-      console.error("[Sitemap-Grants] Error:", error);
       res.status(500).set("Content-Type", "text/plain").send("Error generating sitemap");
     }
   });

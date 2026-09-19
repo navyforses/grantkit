@@ -38,7 +38,7 @@
     "null:bad-coords:apply": "tsx scripts/null-bad-coords.ts --apply",
     "normalize:countries:dry": "tsx scripts/normalize-country-codes.ts --dry-run",
     "normalize:countries": "tsx scripts/normalize-country-codes.ts",
-    "sitemap:generate": "tsx scripts/generate-sitemap.ts",
+    "check:sitemap": "tsx scripts/check-sitemap.ts",
     "audit:locations": "tsx scripts/audit-locations.ts",
     "audit:db": "tsx scripts/audit-db-content.ts",
     "fix:countries": "tsx scripts/fix-country-codes.ts",
@@ -106,19 +106,19 @@
     "country-state-city": "^3.2.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.2",
-    "drizzle-orm": "^0.44.5",
+    "drizzle-orm": "^0.45.2",
     "embla-carousel-react": "^8.6.0",
     "exceljs": "^4.4.0",
     "express": "^5.1.0",
-    "express-rate-limit": "^8.4.1",
+    "express-rate-limit": "^8.7.0",
     "framer-motion": "^12.23.22",
     "helmet": "^8.1.0",
     "input-otp": "^1.4.2",
     "jose": "6.1.0",
     "lru-cache": "^11.3.5",
     "lucide-react": "^0.453.0",
-    "mysql2": "^3.15.0",
-    "nanoid": "^5.1.5",
+    "mysql2": "^3.24.4",
+    "nanoid": "^5.1.16",
     "next-themes": "^0.4.6",
     "papaparse": "^5.5.3",
     "react": "^19.2.1",
@@ -177,7 +177,14 @@
       "wouter@3.7.1": "patches/wouter@3.7.1.patch"
     },
     "overrides": {
-      "tailwindcss>nanoid": "3.3.7"
+      "tailwindcss>nanoid": "3.3.7",
+      "lodash@<4.18.0": "4.18.1",
+      "lodash-es@<4.18.0": "4.18.1",
+      "tmp@<0.2.6": "0.2.7",
+      "brace-expansion@1": "1.1.21",
+      "brace-expansion@2": "2.1.4",
+      "ip-address@<10.3.1": "10.7.2",
+      "fast-xml-builder@<1.1.7": "1.3.1"
     },
     "ignoredBuiltDependencies": [
       "esbuild"

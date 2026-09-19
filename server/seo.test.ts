@@ -3,12 +3,9 @@ import express from "express";
 import request from "supertest";
 
 // Mock the db module before importing seoRoutes
+const getGrantOrgId = vi.fn();
 vi.mock("./db", () => ({
-  getAllGrantItemIds: vi.fn().mockResolvedValue([
-    { itemId: "item_0001", updatedAt: new Date("2026-03-15") },
-    { itemId: "item_0002", updatedAt: new Date("2026-03-20") },
-    { itemId: "item_0003", updatedAt: new Date("2026-03-25") },
-  ]),
+  getGrantOrgId: (id: string) => getGrantOrgId(id),
   getAllOrgIds: vi.fn().mockResolvedValue([
     { orgId: "org_001", updatedAt: new Date("2026-04-01") },
     { orgId: "org_002", updatedAt: new Date("2026-04-10") },
@@ -78,29 +75,23 @@ describe("SEO Routes", () => {
       const res = await request(app).get("/sitemap.xml");
 
       // Check for static page paths
-      expect(res.text).toContain("/catalog");
+      expect(res.text).toContain("/organizations</loc>");
       expect(res.text).toContain("/contact");
       expect(res.text).toContain("/privacy");
       expect(res.text).toContain("/terms");
       expect(res.text).toContain("/refund");
     });
 
-    it("includes grant detail pages from database", async () => {
+    it("lists organization pages with lastmod and hreflang alternates, not legacy paths", async () => {
       const app = createTestApp();
       const res = await request(app).get("/sitemap.xml");
 
-      expect(res.text).toContain("/grant/item_0001");
-      expect(res.text).toContain("/grant/item_0002");
-      expect(res.text).toContain("/grant/item_0003");
-    });
-
-    it("includes lastmod dates for grants", async () => {
-      const app = createTestApp();
-      const res = await request(app).get("/sitemap.xml");
-
-      expect(res.text).toContain("2026-03-15");
-      expect(res.text).toContain("2026-03-20");
-      expect(res.text).toContain("2026-03-25");
+      expect(res.text).toContain("/organizations/org_001</loc>");
+      expect(res.text).toContain("2026-04-01");
+      expect(res.text).toMatch(/hreflang="ka" href="http:\/\/127\.0\.0\.1:\d+\/organizations\/org_001\?lang=ka"/);
+      expect(res.text).toMatch(/hreflang="x-default" href="http:\/\/127\.0\.0\.1:\d+\/organizations\/org_001"/);
+      expect(res.text).not.toContain("/grant/");
+      expect(res.text).not.toContain("/catalog");
     });
 
     it("includes changefreq and priority for all URLs", async () => {
@@ -138,39 +129,38 @@ describe("SEO Routes", () => {
     });
   });
 
-  describe("sitemap-grants.xml", () => {
-    it("returns valid XML with only grant URLs", async () => {
-      const app = createTestApp();
-      const res = await request(app).get("/sitemap-grants.xml");
+  describe("legacy redirects (Phase 1.8)", () => {
+    beforeEach(() => getGrantOrgId.mockReset());
 
-      expect(res.status).toBe(200);
-      expect(res.headers["content-type"]).toContain("application/xml");
-      expect(res.text).toContain("/grant/item_0001");
-      expect(res.text).toContain("/grant/item_0002");
-      expect(res.text).toContain("/grant/item_0003");
+    it("301s /catalog to /organizations, keeping the query string", async () => {
+      const res = await request(createTestApp()).get("/catalog?country=FR");
+      expect(res.status).toBe(301);
+      expect(res.headers.location).toBe("/organizations?country=FR");
     });
 
-    it("does not include static pages in grants sitemap", async () => {
-      const app = createTestApp();
-      const res = await request(app).get("/sitemap-grants.xml");
-
-      // Should not contain static pages (only grant URLs)
-      expect(res.text).not.toContain("<loc>http://127.0.0.1/</loc>");
-      expect(res.text).not.toContain("/catalog</loc>");
-      expect(res.text).not.toContain("/contact</loc>");
+    it("301s /grant/:id to the linked organization", async () => {
+      getGrantOrgId.mockResolvedValue({ orgId: "ORG-0061" });
+      const res = await request(createTestApp()).get("/grant/item_0001");
+      expect(res.status).toBe(301);
+      expect(res.headers.location).toBe("/organizations/ORG-0061");
     });
-  });
-});
 
-describe("SEO - getAllGrantItemIds", () => {
-  it("returns array of grant items with itemId and updatedAt", async () => {
-    const { getAllGrantItemIds } = await import("./db");
-    const items = await getAllGrantItemIds();
+    it("301s /grant/:id without an orgId (or unknown) to /organizations", async () => {
+      getGrantOrgId.mockResolvedValueOnce({ orgId: null }).mockResolvedValueOnce(null);
+      for (const id of ["item_0002", "nope"]) {
+        const res = await request(createTestApp()).get(`/grant/${id}`);
+        expect(res.status).toBe(301);
+        expect(res.headers.location).toBe("/organizations");
+      }
+    });
 
-    expect(Array.isArray(items)).toBe(true);
-    expect(items.length).toBe(3);
-    expect(items[0]).toHaveProperty("itemId");
-    expect(items[0]).toHaveProperty("updatedAt");
-    expect(items[0]!.itemId).toBe("item_0001");
+    it("302s /grant/:id when the DB is unavailable or the lookup throws", async () => {
+      getGrantOrgId.mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error("boom"));
+      for (let i = 0; i < 2; i++) {
+        const res = await request(createTestApp()).get("/grant/item_0001");
+        expect(res.status).toBe(302);
+        expect(res.headers.location).toBe("/organizations");
+      }
+    });
   });
 });
