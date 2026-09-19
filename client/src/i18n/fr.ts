@@ -1084,11 +1084,30 @@ export const fr: Translations = {
       label: "Catégorie",
       all: "Toutes les catégories",
     },
+    domain: { label: "Besoin", all: "Tous les besoins" },
+    language: { label: "Langue", all: "Toutes les langues" },
+    cost: { label: "Coût", all: "Tous", free: "Gratuit", sliding_scale: "Selon les revenus", paid: "Payant", insurance: "Via l'assurance", mixed: "Mixte" },
+    status: { label: "Sans papiers", all: "Indifférent", yes: "Accueillis", case_by_case: "Au cas par cas", no: "Non accueillis" },
+    health: { b2Label: "Visa B-2", b2All: "Indifférent", b2Yes: "Éligibles B-2 uniquement", diagnosisPlaceholder: "Diagnostic (ex. cancer)" },
     view: {
       ariaLabel: "Mode d'affichage",
       map: "Carte",
       list: "Liste",
     },
+  },
+
+  domains: {
+    legal_status: { label: "Séjour & papiers", description: "Asile, titre de séjour, avocat, consulat" },
+    housing: { label: "Logement", description: "Hébergement d'urgence, logement social, aide au loyer" },
+    health: { label: "Santé", description: "Médecin, PASS, assurance maladie, médicaments" },
+    mental_health: { label: "Santé mentale", description: "Psychologue, stress, addictions" },
+    language_education: { label: "Langue & formation", description: "Cours de français, école, université" },
+    work_income: { label: "Travail", description: "Recherche d'emploi, reconnaissance des diplômes, création d'entreprise" },
+    money_benefits: { label: "Argent & aides", description: "Allocations, compte bancaire, aide alimentaire, aide d'urgence" },
+    family_children: { label: "Famille & enfants", description: "Inscription scolaire, garde d'enfants, regroupement familial, femmes" },
+    community_social: { label: "Communauté", description: "Diaspora, culte, clubs, bénévolat" },
+    safety_rights: { label: "Droits & sécurité", description: "Discrimination, violences, rétention" },
+    daily_life: { label: "Vie quotidienne", description: "Transports, téléphone, interprète, documents" },
   },
 
   mobileCatalog: {

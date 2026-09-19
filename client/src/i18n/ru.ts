@@ -1084,11 +1084,30 @@ export const ru: Translations = {
       label: "Категория",
       all: "Все категории",
     },
+    domain: { label: "Что нужно", all: "Все темы" },
+    language: { label: "Язык", all: "Любой язык" },
+    cost: { label: "Стоимость", all: "Любая", free: "Бесплатно", sliding_scale: "По доходу", paid: "Платно", insurance: "По страховке", mixed: "Смешанная" },
+    status: { label: "Без документов", all: "Не важно", yes: "Принимают", case_by_case: "Индивидуально", no: "Не принимают" },
+    health: { b2Label: "Виза B-2", b2All: "Не важно", b2Yes: "Только с B-2", diagnosisPlaceholder: "Диагноз (напр. рак)" },
     view: {
       ariaLabel: "Режим просмотра",
       map: "Карта",
       list: "Список",
     },
+  },
+
+  domains: {
+    legal_status: { label: "Легализация и документы", description: "Убежище, вид на жительство, адвокат, консульство" },
+    housing: { label: "Жильё", description: "Приют, социальное жильё, помощь с арендой" },
+    health: { label: "Здоровье", description: "Врач, бесплатная клиника, страховка, лекарства" },
+    mental_health: { label: "Психологическая помощь", description: "Психолог, стресс, зависимости" },
+    language_education: { label: "Язык и учёба", description: "Языковые курсы, школа, университет" },
+    work_income: { label: "Работа", description: "Поиск работы, признание диплома, своё дело" },
+    money_benefits: { label: "Деньги и пособия", description: "Пособия, банковский счёт, продукты, экстренная помощь" },
+    family_children: { label: "Семья и дети", description: "Запись в школу, детский сад, воссоединение семьи, женщины" },
+    community_social: { label: "Сообщество", description: "Диаспора, церковь, клубы, волонтёрство" },
+    safety_rights: { label: "Права и безопасность", description: "Дискриминация, насилие, задержание" },
+    daily_life: { label: "Повседневная жизнь", description: "Транспорт, телефон, переводчик, документы" },
   },
 
   mobileCatalog: {

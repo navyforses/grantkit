@@ -1086,11 +1086,30 @@ export const ka: Translations = {
       label: "კატეგორია",
       all: "ყველა კატეგორია",
     },
+    domain: { label: "რა გჭირდება", all: "ყველა თემა" },
+    language: { label: "ენა", all: "ნებისმიერი ენა" },
+    cost: { label: "ფასი", all: "ნებისმიერი", free: "უფასო", sliding_scale: "შემოსავლის მიხედვით", paid: "ფასიანი", insurance: "დაზღვევით", mixed: "შერეული" },
+    status: { label: "საბუთების გარეშე", all: "არ აქვს მნიშვნელობა", yes: "იღებენ", case_by_case: "ინდივიდუალურად", no: "არ იღებენ" },
+    health: { b2Label: "B-2 ვიზა", b2All: "ნებისმიერი", b2Yes: "მხოლოდ B-2-ით", diagnosisPlaceholder: "დიაგნოზი (მაგ. კიბო)" },
     view: {
       ariaLabel: "ხედვის რეჟიმი",
       map: "რუკა",
       list: "სია",
     },
+  },
+
+  domains: {
+    legal_status: { label: "ბინადრობა და საბუთები", description: "თავშესაფარი, ბინადრობის ნებართვა, ადვოკატი, საკონსულო" },
+    housing: { label: "საცხოვრებელი", description: "თავშესაფარი, სოციალური ბინა, ქირის დახმარება" },
+    health: { label: "ჯანდაცვა", description: "ექიმი, უფასო კლინიკა, დაზღვევა, წამალი" },
+    mental_health: { label: "ფსიქიკური ჯანმრთელობა", description: "ფსიქოლოგი, სტრესი, დამოკიდებულება" },
+    language_education: { label: "ენა და სწავლა", description: "ენის კურსები, სკოლა, უნივერსიტეტი" },
+    work_income: { label: "სამუშაო", description: "სამსახურის ძებნა, დიპლომის აღიარება, საკუთარი საქმე" },
+    money_benefits: { label: "ფული და დახმარება", description: "შემწეობა, ბანკის ანგარიში, საკვები, გადაუდებელი დახმარება" },
+    family_children: { label: "ოჯახი და ბავშვები", description: "სკოლაში ჩარიცხვა, ბაღი, ოჯახის გაერთიანება, ქალები" },
+    community_social: { label: "საზოგადოება", description: "დიასპორა, ეკლესია, კლუბები, მოხალისეობა" },
+    safety_rights: { label: "უფლებები და უსაფრთხოება", description: "დისკრიმინაცია, ძალადობა, დაკავება" },
+    daily_life: { label: "ყოველდღიური ცხოვრება", description: "ტრანსპორტი, ტელეფონი, თარჯიმანი, საბუთები" },
   },
 
   mobileCatalog: {

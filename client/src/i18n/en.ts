@@ -1086,11 +1086,30 @@ export const en: Translations = {
       label: "Category",
       all: "All categories",
     },
+    domain: { label: "Need", all: "All needs" },
+    language: { label: "Language", all: "Any language" },
+    cost: { label: "Cost", all: "Any cost", free: "Free", sliding_scale: "Sliding scale", paid: "Paid", insurance: "Via insurance", mixed: "Mixed" },
+    status: { label: "Without papers", all: "Any", yes: "Accepted", case_by_case: "Case by case", no: "Not accepted" },
+    health: { b2Label: "B-2 visa", b2All: "Any", b2Yes: "B-2 eligible only", diagnosisPlaceholder: "Diagnosis (e.g. cancer)" },
     view: {
       ariaLabel: "View mode",
       map: "Map",
       list: "List",
     },
+  },
+
+  domains: {
+    legal_status: { label: "Residence & papers", description: "Asylum, residence permit, lawyer, consulate" },
+    housing: { label: "Housing", description: "Shelter, social housing, rent support" },
+    health: { label: "Health", description: "Doctor, free clinic, insurance, medication" },
+    mental_health: { label: "Mental health", description: "Psychologist, stress, addiction" },
+    language_education: { label: "Language & learning", description: "Language courses, school, university" },
+    work_income: { label: "Work", description: "Job search, diploma recognition, own business" },
+    money_benefits: { label: "Money & benefits", description: "Allowances, bank account, food aid, emergency cash" },
+    family_children: { label: "Family & children", description: "School enrolment, childcare, family reunification, women" },
+    community_social: { label: "Community", description: "Diaspora, faith, clubs, volunteering" },
+    safety_rights: { label: "Rights & safety", description: "Discrimination, violence, detention" },
+    daily_life: { label: "Daily life", description: "Transport, phone, interpreter, documents" },
   },
 
   mobileCatalog: {
