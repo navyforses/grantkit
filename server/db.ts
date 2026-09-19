@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users, savedGrants, newsletterSubscribers, grants, grantTranslations, notificationHistory, organizations, organizationBranches, processedWebhookEvents } from "../drizzle/schema";
 import type { Grant, InsertGrant, GrantTranslation, Organization, OrganizationBranch } from "../drizzle/schema";
 import * as crypto from "crypto";
+import { sourceValuesForDomain, type Domain } from "@shared/domains";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -1381,7 +1382,6 @@ export async function getRelatedGrants(itemId: string, category: string, limit =
   return result;
 }
 
-/** Get all active grant itemIds and updatedAt for sitemap generation */
 /**
  * orgId of a grant, for the /grant/:id → /organizations/:orgId 301.
  * Returns undefined when the DB is unavailable (caller decides the fallback).
@@ -1397,6 +1397,7 @@ export async function getGrantOrgId(itemId: string): Promise<{ orgId: string | n
   return rows[0] ?? null;
 }
 
+/** Get all active grant itemIds and updatedAt for sitemap generation */
 export async function getAllGrantItemIds(): Promise<Array<{ itemId: string; updatedAt: Date }>> {
   const db = await getDb();
   if (!db) return [];
@@ -1440,10 +1441,31 @@ export interface ListOrganizationsOptions {
   city?: string;
   category?: string;          // matched against comma-separated `categories` column
   search?: string;
+  // Integration-domain filters (Phase 1 item 1.4 — mapping only, no schema change)
+  domain?: Domain;            // → mapped `mainCategory` / `categories` source values
+  language?: string;          // ISO code token in `orgLanguages` CSV
+  serviceCost?: string;       // equality on `serviceCost` enum
+  acceptsUndocumented?: string;
+  acceptsUninsured?: string;
+  appointmentPolicy?: string;
   sortBy?: string;            // "name-asc" | "name-desc" | "branches-desc" | "programs-desc"
   bounds?: { swLat: number; swLng: number; neLat: number; neLng: number };
   limit?: number;
   offset?: number;
+}
+
+/** Match one token inside a comma-separated text column with boundary LIKE
+ *  patterns, so "medical" does not match "medical_equipment" and "ka" does
+ *  not match "kab". Tolerates the ", " spacing some imports wrote. */
+function csvTokenMatch(column: any, token: string) {
+  return or(
+    eq(column, token),
+    like(column, `${token},%`),
+    like(column, `%,${token}`),
+    like(column, `%,${token},%`),
+    like(column, `%, ${token}`),
+    like(column, `%, ${token},%`),
+  );
 }
 
 /**
@@ -1451,9 +1473,31 @@ export interface ListOrganizationsOptions {
  * Extracted so that `listOrganizations`, `getOrgDistinctCountries`, etc. can
  * reuse the same filter logic and stay in sync.
  */
-function buildOrgConditions(options: ListOrganizationsOptions): any[] {
-  const { country, region, state, city, category, search, bounds } = options;
+export function buildOrgConditions(options: ListOrganizationsOptions): any[] {
+  const {
+    country, region, state, city, category, search, bounds,
+    domain, language, serviceCost, acceptsUndocumented, acceptsUninsured, appointmentPolicy,
+  } = options;
   const conditions: any[] = [eq(organizations.isActive, true)];
+
+  if (domain) {
+    // Domain = union of every legacy source value that maps to it
+    // (shared/domains.ts). `mainCategory` is a scalar → IN; `categories`
+    // is a CSV → token-boundary LIKE per value.
+    const { categories: cats, mainCategories } = sourceValuesForDomain(domain);
+    conditions.push(
+      or(
+        inArray(organizations.mainCategory, mainCategories),
+        ...cats.map((c) => csvTokenMatch(organizations.categories, c)),
+      ),
+    );
+  }
+
+  if (language) conditions.push(csvTokenMatch(organizations.languages, language));
+  if (serviceCost) conditions.push(eq(organizations.serviceCost, serviceCost as any));
+  if (acceptsUndocumented) conditions.push(eq(organizations.acceptsUndocumented, acceptsUndocumented as any));
+  if (acceptsUninsured) conditions.push(eq(organizations.acceptsUninsured, acceptsUninsured as any));
+  if (appointmentPolicy) conditions.push(eq(organizations.appointmentPolicy, appointmentPolicy as any));
 
   if (country && country !== "all") {
     conditions.push(eq(organizations.country, country));
@@ -1481,16 +1525,7 @@ function buildOrgConditions(options: ListOrganizationsOptions): any[] {
   }
 
   if (category && category !== "all") {
-    // `categories` is a comma-separated text column — match the token with
-    // boundary LIKE patterns so "medical" does not match "medical_equipment".
-    conditions.push(
-      or(
-        eq(organizations.categories, category),
-        like(organizations.categories, `${category},%`),
-        like(organizations.categories, `%,${category},%`),
-        like(organizations.categories, `%,${category}`),
-      ),
-    );
+    conditions.push(csvTokenMatch(organizations.categories, category));
   }
 
   if (search) {
@@ -1869,6 +1904,12 @@ export async function getOrganizationMapPoints(options: {
   city?: string;
   category?: string;
   search?: string;
+  domain?: Domain;
+  language?: string;
+  serviceCost?: string;
+  acceptsUndocumented?: string;
+  acceptsUninsured?: string;
+  appointmentPolicy?: string;
   limit?: number;
 }): Promise<Array<{
   branchId: string;
@@ -1893,6 +1934,12 @@ export async function getOrganizationMapPoints(options: {
     city: options.city,
     category: options.category,
     search: options.search,
+    domain: options.domain,
+    language: options.language,
+    serviceCost: options.serviceCost,
+    acceptsUndocumented: options.acceptsUndocumented,
+    acceptsUninsured: options.acceptsUninsured,
+    appointmentPolicy: options.appointmentPolicy,
   });
 
   const branchConditions: any[] = [

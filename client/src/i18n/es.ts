@@ -1084,11 +1084,30 @@ export const es: Translations = {
       label: "Categoría",
       all: "Todas las categorías",
     },
+    domain: { label: "Necesidad", all: "Todas las necesidades" },
+    language: { label: "Idioma", all: "Cualquier idioma" },
+    cost: { label: "Coste", all: "Cualquiera", free: "Gratis", sliding_scale: "Según ingresos", paid: "De pago", insurance: "Con seguro", mixed: "Mixto" },
+    status: { label: "Sin papeles", all: "Indiferente", yes: "Se atiende", case_by_case: "Caso por caso", no: "No se atiende" },
+    health: { b2Label: "Visado B-2", b2All: "Indiferente", b2Yes: "Solo aptos para B-2", diagnosisPlaceholder: "Diagnóstico (p. ej. cáncer)" },
     view: {
       ariaLabel: "Modo de vista",
       map: "Mapa",
       list: "Lista",
     },
+  },
+
+  domains: {
+    legal_status: { label: "Residencia y papeles", description: "Asilo, permiso de residencia, abogado, consulado" },
+    housing: { label: "Vivienda", description: "Albergue, vivienda social, ayuda al alquiler" },
+    health: { label: "Salud", description: "Médico, clínica gratuita, seguro, medicamentos" },
+    mental_health: { label: "Salud mental", description: "Psicólogo, estrés, adicciones" },
+    language_education: { label: "Idioma y estudios", description: "Cursos de idioma, escuela, universidad" },
+    work_income: { label: "Trabajo", description: "Búsqueda de empleo, homologación de títulos, negocio propio" },
+    money_benefits: { label: "Dinero y ayudas", description: "Prestaciones, cuenta bancaria, ayuda alimentaria, ayuda de emergencia" },
+    family_children: { label: "Familia e hijos", description: "Matrícula escolar, guardería, reagrupación familiar, mujeres" },
+    community_social: { label: "Comunidad", description: "Diáspora, iglesia, clubes, voluntariado" },
+    safety_rights: { label: "Derechos y seguridad", description: "Discriminación, violencia, detención" },
+    daily_life: { label: "Vida diaria", description: "Transporte, teléfono, intérprete, documentos" },
   },
 
   mobileCatalog: {

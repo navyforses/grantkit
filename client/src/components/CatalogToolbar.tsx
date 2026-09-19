@@ -23,8 +23,16 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/useMobile";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { LANGUAGES, useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import { DOMAIN_KEYS, type Domain } from "@shared/domains";
+
+// Phase 1 (1.4) — accessibility filter values, mirrors organizations enums
+// (`"unknown"` is not offered — it means "we don't know", not a preference).
+export const COST_OPTIONS = ["free", "sliding_scale", "paid", "insurance", "mixed"] as const;
+export const STATUS_OPTIONS = ["yes", "case_by_case", "no"] as const;
+export type CostValue = (typeof COST_OPTIONS)[number];
+export type StatusValue = (typeof STATUS_OPTIONS)[number];
 
 export type ToolbarTypeValue = "all" | "grant" | "resource";
 export type ToolbarViewMode = "map" | "list";
@@ -64,6 +72,21 @@ export interface CatalogToolbarProps {
   cityFilter: string | null;
   onCityChange: (c: string | null) => void;
 
+  // Phase 1 (1.4) — domain × language × cost × status
+  domainFilter: Domain | null;
+  onDomainChange: (d: Domain | null) => void;
+  languageFilter: string | null;
+  onLanguageChange: (l: string | null) => void;
+  costFilter: CostValue | null;
+  onCostChange: (c: CostValue | null) => void;
+  statusFilter: StatusValue | null;           // acceptsUndocumented
+  onStatusChange: (s: StatusValue | null) => void;
+  // Health-only sub-filter (diagnosis / B-2) — rendered only when domain=health
+  b2VisaFilter: string;                       // "all" | "yes"
+  onB2VisaChange: (v: string) => void;
+  diagnosisFilter: string;                    // "all" | free text
+  onDiagnosisChange: (v: string) => void;
+
   viewMode: ToolbarViewMode;
   onViewChange: (m: ToolbarViewMode) => void;
 
@@ -86,6 +109,18 @@ export default function CatalogToolbar({
   onStateChange,
   cityFilter,
   onCityChange,
+  domainFilter,
+  onDomainChange,
+  languageFilter,
+  onLanguageChange,
+  costFilter,
+  onCostChange,
+  statusFilter,
+  onStatusChange,
+  b2VisaFilter,
+  onB2VisaChange,
+  diagnosisFilter,
+  onDiagnosisChange,
   viewMode,
   onViewChange,
   availableRegions,
@@ -138,10 +173,22 @@ export default function CatalogToolbar({
   );
 
   const isMobile = useIsMobile();
-  // Active location filters — used to badge the mobile "Filters" button so
-  // users see at a glance how many location dimensions are narrowing the list.
-  const activeFilterCount = [regionFilter, countryFilter, stateFilter, cityFilter]
-    .filter(Boolean).length;
+  const isHealth = domainFilter === "health";
+  // Active filters — used to badge the mobile "Filters" button so users see
+  // at a glance how many dimensions are narrowing the list.
+  const activeFilterCount = [
+    regionFilter, countryFilter, stateFilter, cityFilter,
+    domainFilter, languageFilter, costFilter, statusFilter,
+    isHealth && b2VisaFilter !== "all" ? b2VisaFilter : null,
+    isHealth && diagnosisFilter !== "all" ? diagnosisFilter : null,
+  ].filter(Boolean).length;
+
+  const domainLabel = domainFilter ? t.domains[domainFilter].label : t.toolbar.domain.all;
+  const languageLabel = languageFilter
+    ? (LANGUAGES.find((l) => l.code === languageFilter)?.nativeName ?? languageFilter)
+    : t.toolbar.language.all;
+  const costLabel = costFilter ? t.toolbar.cost[costFilter] : t.toolbar.cost.all;
+  const statusLabel = statusFilter ? t.toolbar.status[statusFilter] : t.toolbar.status.all;
 
   // Smart search input — shared between mobile and desktop layouts.
   const smartSearchInput = (
@@ -317,6 +364,129 @@ export default function CatalogToolbar({
     </ToolbarDropdown>
   );
 
+  // ── Phase 1 (1.4) — domain × language × cost × status dropdowns.
+  const domainDropdown = (
+    <ToolbarDropdown
+      label={t.toolbar.domain.label}
+      value={domainLabel}
+      active={!!domainFilter}
+      ariaLabel={t.toolbar.domain.label}
+      fullWidth={isMobile}
+    >
+      <DropdownMenuItem data-active={domainFilter === null} onSelect={() => onDomainChange(null)}>
+        {t.toolbar.domain.all}
+      </DropdownMenuItem>
+      {DOMAIN_KEYS.map((d) => (
+        <DropdownMenuItem
+          key={d}
+          data-active={domainFilter === d}
+          onSelect={() => onDomainChange(d)}
+          title={t.domains[d].description}
+        >
+          <span>{t.domains[d].label}</span>
+        </DropdownMenuItem>
+      ))}
+    </ToolbarDropdown>
+  );
+
+  const languageDropdown = (
+    <ToolbarDropdown
+      label={t.toolbar.language.label}
+      value={languageLabel}
+      active={!!languageFilter}
+      ariaLabel={t.toolbar.language.label}
+      fullWidth={isMobile}
+    >
+      <DropdownMenuItem data-active={languageFilter === null} onSelect={() => onLanguageChange(null)}>
+        {t.toolbar.language.all}
+      </DropdownMenuItem>
+      {LANGUAGES.map((l) => (
+        <DropdownMenuItem
+          key={l.code}
+          data-active={languageFilter === l.code}
+          onSelect={() => onLanguageChange(l.code)}
+        >
+          <span className="mr-2">{l.flag}</span>
+          <span>{l.nativeName}</span>
+        </DropdownMenuItem>
+      ))}
+    </ToolbarDropdown>
+  );
+
+  const costDropdown = (
+    <ToolbarDropdown
+      label={t.toolbar.cost.label}
+      value={costLabel}
+      active={!!costFilter}
+      ariaLabel={t.toolbar.cost.label}
+      fullWidth={isMobile}
+    >
+      <DropdownMenuItem data-active={costFilter === null} onSelect={() => onCostChange(null)}>
+        {t.toolbar.cost.all}
+      </DropdownMenuItem>
+      {COST_OPTIONS.map((c) => (
+        <DropdownMenuItem key={c} data-active={costFilter === c} onSelect={() => onCostChange(c)}>
+          {t.toolbar.cost[c]}
+        </DropdownMenuItem>
+      ))}
+    </ToolbarDropdown>
+  );
+
+  const statusDropdown = (
+    <ToolbarDropdown
+      label={t.toolbar.status.label}
+      value={statusLabel}
+      active={!!statusFilter}
+      ariaLabel={t.toolbar.status.label}
+      fullWidth={isMobile}
+    >
+      <DropdownMenuItem data-active={statusFilter === null} onSelect={() => onStatusChange(null)}>
+        {t.toolbar.status.all}
+      </DropdownMenuItem>
+      {STATUS_OPTIONS.map((s) => (
+        <DropdownMenuItem key={s} data-active={statusFilter === s} onSelect={() => onStatusChange(s)}>
+          {t.toolbar.status[s]}
+        </DropdownMenuItem>
+      ))}
+    </ToolbarDropdown>
+  );
+
+  // Diagnosis / B-2 visa are medical-grant concepts — kept only as a
+  // sub-filter of the `health` domain (MASTER-PLAN v1 §1.3 row 3).
+  const healthSubFilter = isHealth ? (
+    <div
+      data-testid="health-subfilter"
+      className={cn("flex items-center gap-2", isMobile ? "flex-col items-stretch" : "flex-shrink-0")}
+    >
+      <ToolbarDropdown
+        label={t.toolbar.health.b2Label}
+        value={b2VisaFilter === "yes" ? t.toolbar.health.b2Yes : t.toolbar.health.b2All}
+        active={b2VisaFilter === "yes"}
+        ariaLabel={t.toolbar.health.b2Label}
+        fullWidth={isMobile}
+      >
+        <DropdownMenuItem data-active={b2VisaFilter === "all"} onSelect={() => onB2VisaChange("all")}>
+          {t.toolbar.health.b2All}
+        </DropdownMenuItem>
+        <DropdownMenuItem data-active={b2VisaFilter === "yes"} onSelect={() => onB2VisaChange("yes")}>
+          {t.toolbar.health.b2Yes}
+        </DropdownMenuItem>
+      </ToolbarDropdown>
+      <input
+        type="search"
+        value={diagnosisFilter === "all" ? "" : diagnosisFilter}
+        onChange={(e) => onDiagnosisChange(e.target.value.trim() || "all")}
+        placeholder={t.toolbar.health.diagnosisPlaceholder}
+        aria-label={t.filters.condition}
+        className={cn(
+          "rounded-md border border-border bg-transparent px-3 text-foreground placeholder:text-muted-foreground/70",
+          "focus:outline-none focus:border-[var(--brand-green)] focus:ring-2 focus:ring-[var(--brand-green)]/30",
+          isMobile ? "h-12 text-base w-full" : "h-8 text-[13px] w-40",
+        )}
+      />
+    </div>
+  ) : null;
+
   // ── Mobile layout — search + Filters drawer + view toggle, no overflow.
   if (isMobile) {
     const clearAllFilters = () => {
@@ -324,6 +494,12 @@ export default function CatalogToolbar({
       onCountryChange(null);
       onStateChange(null);
       onCityChange(null);
+      onDomainChange(null);
+      onLanguageChange(null);
+      onCostChange(null);
+      onStatusChange(null);
+      onB2VisaChange("all");
+      onDiagnosisChange("all");
     };
 
     return (
@@ -376,10 +552,15 @@ export default function CatalogToolbar({
             </DrawerHeader>
 
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+              {domainDropdown}
+              {healthSubFilter}
               {regionDropdown}
               {countryDropdown}
               {stateDropdown}
               {cityDropdown}
+              {languageDropdown}
+              {costDropdown}
+              {statusDropdown}
             </div>
 
             {activeFilterCount > 0 && (
@@ -408,10 +589,15 @@ export default function CatalogToolbar({
       aria-label={t.toolbar.ariaLabel}
       className="h-12 px-2 sm:px-6 flex items-center gap-2 sm:gap-3 bg-background border-b border-border overflow-x-auto scrollbar-hide"
     >
+      {domainDropdown}
+      {healthSubFilter}
       {regionDropdown}
       {countryDropdown}
       {stateDropdown}
       {cityDropdown}
+      {languageDropdown}
+      {costDropdown}
+      {statusDropdown}
       {smartSearchInput}
 
       {/* Push view toggle to the right on large screens */}

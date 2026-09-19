@@ -25,7 +25,10 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
 import SmartSearchPanel from "@/components/SmartSearchPanel";
-import CatalogToolbar, { type ToolbarViewMode } from "@/components/CatalogToolbar";
+import CatalogToolbar, {
+  type ToolbarViewMode, type CostValue, type StatusValue, COST_OPTIONS, STATUS_OPTIONS,
+} from "@/components/CatalogToolbar";
+import { isDomain, type Domain } from "@shared/domains";
 import GrantGrid from "@/components/GrantGrid";
 import CatalogSidebar from "@/components/CatalogSidebar";
 import MobileCatalogView, { type MobileCatalogTab } from "@/components/MobileCatalogView";
@@ -69,6 +72,11 @@ function readFiltersFromURL(search: string) {
     mapCountryCode: params.get("mc") || "",
     mapStateCode: params.get("ms") || "",
     mapCityName: params.get("mcity") || "",
+    // Phase 1 (1.4) — domain × language × cost × status
+    domain: ((d) => (isDomain(d) ? d : null))(params.get("domain")) as Domain | null,
+    language: params.get("lang") || null,
+    cost: ((c) => (COST_OPTIONS.includes(c as CostValue) ? (c as CostValue) : null))(params.get("cost")),
+    status: ((s) => (STATUS_OPTIONS.includes(s as StatusValue) ? (s as StatusValue) : null))(params.get("undoc")),
   };
 }
 
@@ -107,6 +115,10 @@ export default function Catalog() {
   const [mapCountryCode, setMapCountryCode] = useState(initial.mapCountryCode);
   const [mapStateCode, setMapStateCode] = useState(initial.mapStateCode);
   const [mapCityName, setMapCityName] = useState(initial.mapCityName);
+  const [selectedDomain, setSelectedDomain] = useState<Domain | null>(initial.domain);
+  const [languageFilter, setLanguageFilter] = useState<string | null>(initial.language);
+  const [costFilter, setCostFilter] = useState<CostValue | null>(initial.cost);
+  const [statusFilter, setStatusFilter] = useState<StatusValue | null>(initial.status);
 
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
@@ -136,13 +148,30 @@ export default function Catalog() {
     if (mapCountryCode) params.set("mc", mapCountryCode);
     if (mapStateCode) params.set("ms", mapStateCode);
     if (mapCityName) params.set("mcity", mapCityName);
+    if (selectedDomain) params.set("domain", selectedDomain);
+    if (languageFilter) params.set("lang", languageFilter);
+    if (costFilter) params.set("cost", costFilter);
+    if (statusFilter) params.set("undoc", statusFilter);
     const qs = params.toString();
     navigate(qs ? `/catalog?${qs}` : "/catalog", { replace: true });
   }, [
     selectedCategory, selectedType, searchQuery, sortBy, page,
     fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
-    mapRegionCode, mapCountryCode, mapStateCode, mapCityName, navigate,
+    mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
+    selectedDomain, languageFilter, costFilter, statusFilter, navigate,
   ]);
+
+  // Shared by organizations.list and organizations.mapPoints so markers and
+  // list stay in sync (server applies the same buildOrgConditions).
+  const accessFilters = useMemo(
+    () => ({
+      domain:              selectedDomain ?? undefined,
+      language:            languageFilter ?? undefined,
+      serviceCost:         costFilter ?? undefined,
+      acceptsUndocumented: statusFilter ?? undefined,
+    }),
+    [selectedDomain, languageFilter, costFilter, statusFilter],
+  );
 
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
 
@@ -170,6 +199,7 @@ export default function Catalog() {
       country:  mapCountryCode || undefined,
       state:    mapStateCode || undefined,
       city:     mapCityName || undefined,
+      ...accessFilters,
       sortBy:   orgSortBy,
       page:     subStatus?.isActive ? page : 1,
       pageSize: subStatus?.isActive ? PAGE_SIZE : PREVIEW_ITEMS,
@@ -177,7 +207,7 @@ export default function Catalog() {
     [
       debouncedSearch, selectedCategory, orgSortBy,
       page, subStatus?.isActive,
-      mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
+      mapRegionCode, mapCountryCode, mapStateCode, mapCityName, accessFilters,
     ]
   );
 
@@ -450,11 +480,12 @@ export default function Catalog() {
       country:  mapCountryCode || undefined,
       state:    mapStateCode || undefined,
       city:     mapCityName || undefined,
+      ...accessFilters,
       limit: 3000,
     }),
     [
       debouncedSearch, selectedCategory,
-      mapRegionCode, mapCountryCode, mapStateCode, mapCityName,
+      mapRegionCode, mapCountryCode, mapStateCode, mapCityName, accessFilters,
     ]
   );
   const { data: mapPointsData } = trpc.organizations.mapPoints.useQuery(
@@ -531,6 +562,10 @@ export default function Catalog() {
     setB2VisaEligible("all");
     setHasDeadline(false);
     setPage(1);
+    setSelectedDomain(null);
+    setLanguageFilter(null);
+    setCostFilter(null);
+    setStatusFilter(null);
     setMapRegionCode("");
     setMapCountryCode("");
     setMapStateCode("");
@@ -676,6 +711,23 @@ export default function Catalog() {
           setMapCityName(value ?? "");
           setPage(1);
         }}
+        domainFilter={selectedDomain}
+        onDomainChange={(d) => {
+          setSelectedDomain(d);
+          // Diagnosis / B-2 only make sense inside `health` — drop them otherwise.
+          if (d !== "health") { setTargetDiagnosis("all"); setB2VisaEligible("all"); }
+          setPage(1);
+        }}
+        languageFilter={languageFilter}
+        onLanguageChange={(l) => { setLanguageFilter(l); setPage(1); }}
+        costFilter={costFilter}
+        onCostChange={(c) => { setCostFilter(c); setPage(1); }}
+        statusFilter={statusFilter}
+        onStatusChange={(s) => { setStatusFilter(s); setPage(1); }}
+        b2VisaFilter={b2VisaEligible}
+        onB2VisaChange={(v) => { setB2VisaEligible(v); setPage(1); }}
+        diagnosisFilter={targetDiagnosis}
+        onDiagnosisChange={(v) => { setTargetDiagnosis(v); setPage(1); }}
         viewMode={layoutMode}
         onViewChange={setLayoutMode}
         availableRegions={availableRegions}
