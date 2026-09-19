@@ -952,7 +952,7 @@
             "entity": "railway.app"
           },
           {
-            "url": "https://maps.googleapis.com/maps/api/js?libraries=maps%2Cmarker%2Cplaces&key=AIzaSyD1N7aD6tjP5FTcYU3LhfraJU27beIZ9qM&v=quarterly&callback=google.maps.__ib__",
+            "url": "https://maps.googleapis.com/maps/api/js?libraries=maps%2Cmarker%2Cplaces&key=<REDACTED_GOOGLE_MAPS_BROWSER_KEY>&v=quarterly&callback=google.maps.__ib__",
             "sessionTargetType": "page",
             "protocol": "h2",
             "rendererStartTime": 5646.718999998644,
@@ -2257,7 +2257,7 @@
             "unusedBytes": 0
           },
           {
-            "name": "https://maps.googleapis.com/maps/api/js?libraries=maps%2Cmarker%2Cplaces&key=AIzaSyD1N7aD6tjP5FTcYU3LhfraJU27beIZ9qM&v=quarterly&callback=google.maps.__ib__",
+            "name": "https://maps.googleapis.com/maps/api/js?libraries=maps%2Cmarker%2Cplaces&key=<REDACTED_GOOGLE_MAPS_BROWSER_KEY>&v=quarterly&callback=google.maps.__ib__",
             "resourceBytes": 13082,
             "encodedBytes": 2575,
             "unusedBytes": 91
@@ -2693,7 +2693,7 @@
             "wastedBytes": 10807.919999999998
           },
           {
-            "url": "https://maps.googleapis.com/maps/api/js?libraries=maps%2Cmarker%2Cplaces&key=AIzaSyD1N7aD6tjP5FTcYU3LhfraJU27beIZ9qM&v=quarterly&callback=google.maps.__ib__",
+            "url": "https://maps.googleapis.com/maps/api/js?libraries=maps%2Cmarker%2Cplaces&key=<REDACTED_GOOGLE_MAPS_BROWSER_KEY>&v=quarterly&callback=google.maps.__ib__",
             "cacheLifetimeMs": 1800000,
             "totalBytes": 2933,
             "wastedBytes": 2529.7125
@@ -3464,7 +3464,7 @@
                   "transferSize": 20731
                 },
                 {
-                  "url": "https://maps.googleapis.com/maps/api/js?libraries=maps%2Cmarker%2Cplaces&key=AIzaSyD1N7aD6tjP5FTcYU3LhfraJU27beIZ9qM&v=quarterly&callback=google.maps.__ib__",
+                  "url": "https://maps.googleapis.com/maps/api/js?libraries=maps%2Cmarker%2Cplaces&key=<REDACTED_GOOGLE_MAPS_BROWSER_KEY>&v=quarterly&callback=google.maps.__ib__",
                   "mainThreadTime": 9.38200000114739,
                   "transferSize": 2933
                 },

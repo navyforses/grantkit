@@ -25,10 +25,11 @@ async function generateSitemap() {
     const { eq } = await import("drizzle-orm");
 
     const db = await getDb();
+    if (!db) throw new Error("Database is not available");
     const allGrants = await db
       .select({ itemId: grants.itemId })
       .from(grants)
-      .where(eq(grants.isActive, 1));
+      .where(eq(grants.isActive, true));
 
     grantUrls = allGrants
       .filter((g) => g.itemId)

@@ -40,7 +40,7 @@ export default function MobileBottomNav() {
           {
             href: "/ai-assistant",
             icon: Sparkles,
-            label: "AI",
+            label: t.detail.aiShort,
             active: location === "/ai-assistant",
           },
         ]

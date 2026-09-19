@@ -14,7 +14,7 @@
  *   }
  * — language keys are omitted entirely when all three fields are NULL.
  *
- * Five fixed decisions (see .grantkit-redesign/PLAN-france-orgs-import.md §8):
+ * Five fixed decisions (see _archive/grantkit-redesign/PLAN-france-orgs-import.md §8):
  *   1. NEW (Excel) overrides OLD on every non-NULL cell during UPSERT.
  *   2. Cost text → 6-enum via COST_MAPPING (free / paid / sliding_scale /
  *      insurance / mixed / unknown). Unknown is the fallback.
@@ -185,7 +185,7 @@ export function cellToString(v: ExcelJS.CellValue): string | null {
   if (typeof v === "boolean") return v ? "true" : "false";
   if (v instanceof Date) return v.toISOString();
   if (typeof v === "object" && v !== null) {
-    const any = v as Record<string, unknown>;
+    const any = v as unknown as Record<string, unknown>;
     if (typeof any.text === "string") return (any.text as string).trim() || null;
     if (typeof any.hyperlink === "string") return String(any.hyperlink).trim() || null;
     if (Array.isArray(any.richText)) {

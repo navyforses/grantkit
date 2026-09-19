@@ -2,6 +2,8 @@
 
 ეს ფაილი ყოველ სესიაში იკითხება. **ყოველთვის** გაითვალისწინე ამ ფაილის შინაარსი სანამ რაიმე ცვლილებას გააკეთებ.
 
+> ეს ფაილი მხოლოდ **წესებსა და პოინტერებს** შეიცავს. რიცხვები (გრანტები, ორგანიზაციები, migration-ის სტატუსი), route-ები, tRPC endpoint-ები და ფაზის პროგრესი აქ **არ** იწერება — მათი ერთადერთი წყაროა `.grantkit-redesign/PROJECT_MAP.md` (რუკა + Session Log) და `.grantkit-redesign/PIVOT.md` (სტრატეგია + ფაზა).
+
 ---
 
 ## 🧭 #0 ფილტრი — `.grantkit-redesign/KARPATHY_GUIDELINES.md`
@@ -26,7 +28,7 @@
 **GrantKit გადადის ემიგრანტების ინტეგრაციის მხარდაჭერის პლატფორმაზე** (გადაწყვეტილება 2026-04-23, გეგმა 2026-09-18, PR #247).
 
 👉 **[`.grantkit-redesign/PIVOT.md`](.grantkit-redesign/PIVOT.md)** — განმარტება, პოზიციონირება, მიმდინარე ფაზა, მფლობელის გადაწყვეტილებების ჟურნალი, ოპერატორის P0 სია, აგენტის პროტოკოლი.
-👉 **[`.grantkit-redesign/integration-pivot/00-MASTER-PLAN.md`](.grantkit-redesign/integration-pivot/00-MASTER-PLAN.md)** — სრული გეგმა: დიაგნოსტიკა, gap analysis, 5 ფაზა „done when" კრიტერიუმებით, აგენტების გუნდი (§6), KPI, 18 გადაწყვეტილება (§8), უახლოესი 7 დღე (§9). სპეციალისტების ანგარიშები: `integration-pivot/01–04`.
+👉 **[`.grantkit-redesign/integration-pivot/00-MASTER-PLAN.md`](.grantkit-redesign/integration-pivot/00-MASTER-PLAN.md)** — სრული გეგმა: დიაგნოსტიკა, gap analysis, 5 ფაზა „done when" კრიტერიუმებით, აგენტების გუნდი (§6), KPI, მფლობელის გადაწყვეტილებები (§8), უახლოესი 7 დღე (§9). სპეციალისტების ანგარიშები: `integration-pivot/01–07`.
 
 **წესი:** pivot-თან დაკავშირებული ნებისმიერი სამუშაო იწყება `PIVOT.md` §3 (სად ვართ) და MASTER-PLAN §5 (ფაზის ცხრილი) წაკითხვით. ახალი feature, რომელიც გეგმის არცერთ item-ს არ ეკუთვნის — ჯერ მფლობელს ეკითხება.
 
@@ -47,6 +49,8 @@
 - სანამ ფაილს შეცვლი → PROJECT_MAP.md-ის „Frozen / Legacy" სია
 
 **თუ PROJECT_MAP.md არ წავიკითხე ამ სესიის დასაწყისში — ცდის არცერთი მოქმედება არ არის სანდო.**
+
+გუნდი (persona-ები = Claude Code სესიები) და ვინ რას ფლობს: `.grantkit-redesign/TEAM_ROSTER.md`. სესიის პროტოკოლი: `.grantkit-redesign/WORKFLOW.md`. ისტორიული დოკუმენტები (2026-04/05): `_archive/grantkit-redesign/` — მხოლოდ საცნობაროდ, დაგეგმვისთვის არა.
 
 ---
 
@@ -118,7 +122,7 @@ Drizzle გენერირებს SQL-ს schema.ts-ის კოლონ�
 
 ## პროექტი
 
-**რა არის:** 643+ grant-ის კატალოგი — სამედიცინო, საგანმანათლებლო, საბინაო და სხვა დახმარებები 29 ქვეყნიდან. Subscription-based SaaS.
+**რა არის:** ემიგრანტების ინტეგრაციის ნავიგატორი — ორგანიზაციების, პროცედურებისა და დახმარების კატალოგი მომხმარებლის ენაზე; განმარტება, პოზიციონირება და მოდელი → `.grantkit-redesign/PIVOT.md`. მიმდინარე რიცხვები → `.grantkit-redesign/PROJECT_MAP.md`.
 
 **ენები:** ინგლისური, ფრანგული, ესპანური, რუსული, ქართული (5 ენა)
 
@@ -130,7 +134,7 @@ Drizzle გენერირებს SQL-ს schema.ts-ის კოლონ�
 |------|-----------|
 | Frontend | React 19, TypeScript, Vite, TailwindCSS 4 |
 | UI | Radix UI, Framer Motion |
-| Backend | Node.js, Express, tRPC 11 |
+| Backend | Node.js, Express 5, tRPC 11 |
 | Database | MySQL + Drizzle ORM |
 | Auth | Email/password — JWT cookie (jose) |
 | Payments | Paddle |
@@ -145,7 +149,7 @@ Drizzle გენერირებს SQL-ს schema.ts-ის კოლონ�
 ```
 grantkit/
 ├── client/src/
-│   ├── pages/          # Home, Catalog, GrantDetail, Dashboard, Admin,
+│   ├── pages/          # Home, Catalog, OrganizationDetail, Dashboard, Admin,
 │   │                   # AiAssistant, Profile, Login, Contact, Analytics...
 │   ├── components/     # Navbar, FilterBar, CatalogCard, AIChatBox...
 │   ├── contexts/       # LanguageContext (i18n)
@@ -156,19 +160,19 @@ grantkit/
 │   │   ├── index.ts    # Express server entry point
 │   │   ├── trpc.ts     # publicProcedure, protectedProcedure, adminProcedure
 │   │   └── env.ts      # ENV object (ყველა env var აქედან)
-│   ├── routers.ts      # ყველა tRPC endpoint (~960 ხაზი)
+│   ├── routers.ts      # ყველა tRPC endpoint (სია: PROJECT_MAP.md §tRPC)
 │   ├── db.ts           # Drizzle ORM queries
 │   ├── externalGrants.ts  # GrantedAI API (searchExternalGrants, getExternalGrantDetail)
 │   ├── emailService.ts    # Resend email notifications
 │   ├── toolboxClient.ts   # AI assistant — direct Drizzle queries (no MCP needed)
 │   └── importGrants.ts    # CSV/Excel bulk import
 ├── drizzle/
-│   └── schema.ts       # MySQL tables: users, grants, grantTranslations,
-│                       #   savedGrants, newsletterSubscribers, notificationHistory
+│   └── schema.ts       # MySQL ცხრილები (სია: PROJECT_MAP.md §Database)
 ├── scripts/
 │   ├── enrich-descriptions.ts  # GrantedAI-ს გამოყენება description-ების შესავსებად
 │   ├── start-toolbox.sh        # googleapis/mcp-toolbox სერვერის გაშვება
 │   └── [stage*.cjs]            # ისტორიული enrichment სკრიპტები (არ შეეხო)
+├── _archive/           # ისტორიული დოკუმენტები / სკრიპტები / Manus მოდულები (მხოლოდ საცნობაროდ)
 ├── tools.yaml          # googleapis/mcp-toolbox კონფიგი (MySQL → MCP tools)
 ├── .mcp.json           # Claude Code MCP სერვერები
 ├── vercel.json         # Vercel frontend კონფიგი (secondary)
@@ -179,13 +183,7 @@ grantkit/
 
 ## Database
 
-**Schema** (`drizzle/schema.ts`):
-- `users` — auth, Paddle subscription fields, role (user/admin)
-- `grants` — კატალოგი (itemId unique slug, category, country, isActive...)
-- `grantTranslations` — multilingual content (en/fr/es/ru/ka)
-- `savedGrants` — user bookmarks
-- `newsletterSubscribers` — email list
-- `notificationHistory` — sent email campaigns
+**Schema:** `drizzle/schema.ts`. ცხრილების სია, სვეტები და migration-ების სტატუსი → `.grantkit-redesign/PROJECT_MAP.md` §Database (აქ არ დუბლირდება).
 
 **Commands:**
 ```bash
@@ -217,10 +215,12 @@ pnpm db:push          # schema generate + migrate
 
 | სერვისი | ENV | გამოყენება |
 |---------|-----|-----------|
-| GrantedAI | `BUILT_IN_FORGE_API_URL` + `BUILT_IN_FORGE_API_KEY` | 84,000+ grant ძიება (`externalGrants.ts`) |
+| GrantedAI | `BUILT_IN_FORGE_API_URL` + `BUILT_IN_FORGE_API_KEY` | გარე grant-ების ძიება (`externalGrants.ts`) |
 | Paddle | `PADDLE_API_KEY` + `PADDLE_WEBHOOK_SECRET` | Subscription payments |
 | Resend | `RESEND_API_KEY` | Email notifications |
 | Auth | `JWT_SECRET` | Email/password login → JWT cookie |
+| Anthropic | `ANTHROPIC_API_KEY` | AI assistant, smart search |
+| Google Maps / Places | `VITE_GOOGLE_MAPS_BROWSER_KEY` (browser), `GOOGLE_MAPS_API_KEY` (server, local only) | რუკა, geocoding, enrichment — დეტალი `OPS.md` |
 
 **GrantedAI API** (`server/externalGrants.ts`):
 - `searchExternalGrants()` → `POST /v1/search_grants`
@@ -230,20 +230,9 @@ pnpm db:push          # schema generate + migrate
 
 ---
 
-## tRPC API სტრუქტურა (`server/routers.ts`)
+## tRPC API
 
-```
-auth.me / auth.logout
-catalog.list / catalog.detail / catalog.count / catalog.preview / catalog.states / catalog.cities
-grants.savedList / grants.toggleSave / grants.exportSaved (TODO)
-newsletter.subscribe / newsletter.unsubscribe
-subscription.status / subscription.cancel / subscription.activate
-admin.stats / admin.grants / admin.users / admin.updateRole / admin.updateSubscription
-admin.createGrant / admin.updateGrant / admin.deleteGrant / admin.hardDeleteGrant
-admin.parseImport / admin.executeImport
-admin.searchExternal / admin.getExternalDetail / admin.importExternal / admin.searchFunders
-ai.grantChat
-```
+ყველა endpoint `server/routers.ts`-შია. **სია აქ არ იწერება** — მიმდინარე router-ების და procedure-ების ცხრილი: `.grantkit-redesign/PROJECT_MAP.md` §tRPC API Endpoints (ცვლილებისას იქ განაახლე).
 
 ---
 
@@ -265,24 +254,34 @@ pnpm enrich:metadata           # enriched ველების შევსე�
 pnpm enrich:metadata:dry       # dry-run (DB-ს არ ცვლის)
 pnpm translate:audit           # თარგმანების coverage აუდიტი
 pnpm translate:missing         # აკლია თარგმანების შევსება
+pnpm discovery                 # ყოველდღიური LLM discovery → pending-imports/ (GitHub Action 08:00 UTC)
+pnpm import:grants -- --file=pending-imports/discovery-YYYY-MM-DD.json [--notify]
+pnpm audit:db                  # DB content audit (რიცხვების წყარო PROJECT_MAP-ისთვის)
 ```
+
+სრული სია (geocode, import:france, enrich:contacts, audit:*, fix:*): `package.json` → `scripts`; სკრიპტების აღწერა: `PROJECT_MAP.md` §Scripts.
 
 ---
 
 ## Railway Environment Variables
 
-Railway Dashboard-ზე დაყენებული უნდა იყოს:
+Railway Dashboard-ზე დაყენებული უნდა იყოს (სახელები; მნიშვნელობები არასდროს დოკუმენტში):
 ```
 DATABASE_URL          ← Railway-ი ავტომატურად ამატებს MySQL plugin-დან
 NODE_ENV=production
 PORT=8080
 JWT_SECRET
+ANTHROPIC_API_KEY
 BUILT_IN_FORGE_API_URL
 BUILT_IN_FORGE_API_KEY
 PADDLE_API_KEY
 PADDLE_WEBHOOK_SECRET
 RESEND_API_KEY
+VITE_GOOGLE_MAPS_BROWSER_KEY
+VITE_GOOGLE_MAPS_MAP_ID
 ```
+
+რომელი რეალურად არის დაყენებული და როგორ ბრუნავს — `.grantkit-redesign/OPS.md` (Credentials Inventory, Secret rotation).
 
 ---
 
@@ -297,94 +296,6 @@ RESEND_API_KEY
 7. **i18n:** ახალი UI ტექსტი ყველა 5 ენაში უნდა დაემატოს (`client/src/i18n/`)
 8. **Scripts:** `scripts/` საქაღალდეში `stage*.cjs` ფაილებს **ნუ შეეხები** — ისტორიული მონაცემთა enrichment სკრიპტებია
 9. **Ops runbook:** სანამ ოპერატორს (მომხმარებელს) API key შექმნის / Railway env var-ის დაყენების / ნებისმიერი setup task-ის გაკეთებას სთხოვ — **ჯერ წაიკითხე `.grantkit-redesign/OPS.md`**. იქ ჩაწერილია რა უკვე არსებობს (server-side Google Maps key, MySQL public URL და ა.შ.) რომ იგივე სამუშაო ორჯერ არ გაკეთდეს.
-
----
-
-## 5-ფაზიანი განვითარების გეგმა — პროგრესი
-
-> ბოლო განახლება: 2026-04-16 (Phase 3 metadata enrichment დასრულდა)
-
-### ფაზა 0: გაწმენდა + Deploy Fix ✅
-- ✅ `package.json` merge conflict გამოსწორდა (commit `5137dab`)
-- ✅ Vercel deploy გამოსწორდა (PR #69)
-- ✅ Root artifacts გაწმენდილია → `_archive/`
-- ✅ Railway deploy fix (PR #70): `railway.toml`, `/healthz`, resilient CMD, `static.ts` diagnostics
-
-### ფაზა 1: Onboarding + Dashboard + Smart Search ✅
-- ✅ Onboarding 3-step flow (StepCountry, StepPurpose, StepNeeds)
-- ✅ პერსონალიზებული Dashboard (funding + needs sections)
-- ✅ Smart Search (Claude Haiku + MySQL fallback, 5 ენა)
-- ✅ i18n — profile + country + smartSearch keys ყველა ენაში
-- ✅ DB migration `drizzle/0009_user_profile.sql`
-- ✅ Supabase SQL `supabase/smart-search-and-tags.sql`
-
-### ფაზა 2: თარგმანების დასრულება ✅
-- ✅ `scripts/audit-translations.ts` შექმნილია
-- ✅ `scripts/translate-missing.ts` შექმნილია (Forge API / Gemini 2.5-flash)
-- ✅ UI strings — 100% coverage ყველა 5 ენაში
-- ✅ DB translations — 629/629 გრანტი, 4 ენა (FR/ES/RU/KA) — **100%**
-
-### ფაზა 3: მონაცემთა გამდიდრება ✅
-> ბოლო განახლება: 2026-04-16
-
-**Core fields — სტატუსი:**
-- ✅ category — 629/629 (100%)
-- ✅ country — 629/629 (100%)
-- ✅ eligibility — 629/629 (100%)
-- ✅ description (არსებობა) — 629/629 (100%)
-- ✅ description (< 50 სიმბოლო) — **349/349 გამდიდრდა** (OpenRouter LLM, 2026-04-16)
-
-**Enriched fields — შევსებულია:**
-- ✅ deadline — 629/629 (100%)
-- ✅ applicationProcess — 629/629 (100%)
-- ✅ targetDiagnosis — 629/629 (100%)
-- ✅ ageRange — 629/629 (100%)
-- ✅ geographicScope — 629/629 (100%)
-- ✅ documentsRequired — 629/629 (100%)
-- გაშვებული: `pnpm enrich:metadata` (OpenRouter API, google/gemini-2.0-flash-001)
-
-**დარჩენილი:** არაფერი — ფაზა 3 სრულად დასრულებულია.
-
-### ფაზა 4: Daily Discovery Routine ✅
-> ბოლო განახლება: 2026-04-16
-
-**შექმნილი სკრიპტები:**
-- ✅ `scripts/daily-discovery.ts` — LLM-ით ახალი გრანტების მოძიება (10 კატეგორია, 5+ ქვეყანა)
-- ✅ `scripts/import-new-grants.ts` — სრული pipeline: DB insert → metadata enrichment → translations (4 ენა)
-- ✅ `pending-imports/import-2026-04-16.mjs` — 8 social/immigration გრანტი იმპორტირებულია
-
-**Pipeline flow:**
-```
-daily-discovery.ts → pending-imports/discovery-{date}.json → import-new-grants.ts → DB
-```
-
-**გამოყენება:**
-```bash
-pnpm discovery                    # ყოველდღიური discovery (2 კატეგორია ავტომატურად)
-pnpm discovery:category           # კონკრეტული კატეგორია: --category=medical_treatment --country=US
-pnpm import:grants                # JSON-დან იმპორტი: --file=pending-imports/discovery-2026-04-16.json
-```
-
-**DB სტატუსი:** 637 აქტიური გრანტი (629 + 8 ახალი)
-
-**Newsletter notification:**
-- ✅ `--notify` ფლაგი `import-new-grants.ts`-ში — Resend API-ით batch email
-- ✅ notificationHistory DB-ში იწერება
-
-**Scheduling:**
-- ✅ `.github/workflows/daily-discovery.yml` — ყოველ დღე 08:00 UTC
-- ✅ Manual trigger: workflow_dispatch (category, country, notify inputs)
-- ✅ GitHub Secrets დამატებულია: `DATABASE_URL`, `ENRICHMENT_API_URL`, `ENRICHMENT_API_KEY`, `RESEND_API_KEY`
-
-**გამოყენება (ხელით):**
-```bash
-pnpm discovery                                        # ავტომატური როტაცია
-pnpm discovery -- --category=medical_treatment --country=US  # კონკრეტული
-pnpm import:grants -- --file=pending-imports/discovery-2026-04-16.json --notify
-```
-
-### ფაზა 5: შემდეგი ნაბიჯები (დაუგეგმავი)
-- Admin panel გაუმჯობესება
-- Analytics dashboard
-- SEO ოპტიმიზაცია
-- Mobile UX გაუმჯობესება
+10. **PR ზომა და რიგი:** ≤ 300 შეცვლილი ხაზი, ერთი concern; schema PR ყოველთვის ცალკე და migration-ის შემდეგ merge; „refactor while here" აკრძალულია; ≤ 3 ღია PR. დეტალი: `WORKFLOW.md`.
+11. **No-monetization zone:** პარტნიორის/Pro/ფასიანი CTA-ს ნებისმიერი რენდერი `server/offers/placement.ts` + `content/offers-allowlist.json`-ზე გადის; „არასდროს" ტესტების გარეშე მონეტიზაციის PR არ merge-დება. სია: `PIVOT.md` §6 წესი 4.
+12. **სესიის ბოლოს:** `PROJECT_MAP.md` Session Log 3 ხაზი (+ `PIVOT.md` §3, თუ ფაზა/ბლოკერი შეიცვალა). რიცხვები ხელით არ იწერება — `pnpm audit:db` / `STATUS.json`.

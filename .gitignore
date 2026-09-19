@@ -127,8 +127,8 @@ __pycache__/
 # Go module cache (when fetched locally)
 /root/
 
-# Archived development artifacts
-_archive/
+# Archived development artifacts — tracked since Phase 0.8 (2026-09-19): _archive/ holds
+# moved docs/scripts that must stay in the repo; nothing under it is ignored.
 
 # Pending grant imports — tracked for daily discovery commits
 # pending-imports/

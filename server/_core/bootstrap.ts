@@ -16,6 +16,18 @@ import { createContext } from "./context";
 // stays out of the production esbuild graph entirely.
 export type FrontendSetup = (app: Express, server: Server) => Promise<void> | void;
 
+// tRPC batch URLs comma-join procedure names
+// (/api/trpc/catalog.list,catalog.smartSearch?batch=1), so the two
+// path-scoped policies below match by substring rather than by prefix.
+/** catalog.smartSearch + organizations.smartSearch — one Claude call per uncached query. */
+export function isSmartSearchPath(path: string): boolean {
+  return path.includes("smartSearch");
+}
+/** admin.parseImport carries a base64 CSV/Excel file inside the tRPC JSON body. */
+export function isImportPath(path: string): boolean {
+  return /admin\.(parseImport|executeImport)/.test(path);
+}
+
 function unsubscribeHtml(success: boolean, message: string): string {
   const color = success ? "#16a34a" : "#dc2626";
   const icon = success ? "&#10003;" : "&#10007;";
@@ -132,6 +144,12 @@ export async function startServer(setupFrontend: FrontendSetup) {
   app.use("/api/trpc/auth", rateLimit({ ...rlBase, windowMs: 60_000, limit: 10 }));
   // AI endpoints — expensive compute: 20 req/min/IP
   app.use("/api/trpc/ai", rateLimit({ ...rlBase, windowMs: 60_000, limit: 20 }));
+  // smartSearch endpoints — Claude Haiku per uncached query: 10 req/min/IP
+  // (worst case 10 × 60 × 24 × ~$0.001 ≈ $14/day/IP, was $144).
+  const smartSearchLimiter = rateLimit({ ...rlBase, windowMs: 60_000, limit: 10 });
+  app.use("/api/trpc", (req, res, next) =>
+    isSmartSearchPath(req.path) ? smartSearchLimiter(req, res, next) : next()
+  );
   // General tRPC baseline: 100 req/min/IP
   app.use("/api/trpc", rateLimit({ ...rlBase, windowMs: 60_000, limit: 100 }));
   // Paddle webhook needs the raw body bytes for HMAC signature verification.
@@ -139,9 +157,14 @@ export async function startServer(setupFrontend: FrontendSetup) {
   // the stream first; otherwise JSON.stringify(req.body) would be byte-
   // mismatched against what Paddle signed.
   registerPaddleWebhookRoute(app);
-  // Configure body parser with larger size limit for file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Body parsers: 2 MB globally (memory-DoS surface); only the admin import
+  // route (base64 file inside tRPC JSON) keeps the 50 MB limit.
+  const jsonBody = express.json({ limit: "2mb" });
+  const jsonBodyImport = express.json({ limit: "50mb" });
+  app.use((req, res, next) =>
+    (isImportPath(req.path) ? jsonBodyImport : jsonBody)(req, res, next)
+  );
+  app.use(express.urlencoded({ limit: "2mb", extended: true }));
   // SEO routes (sitemap.xml, robots.txt)
   registerSeoRoutes(app);
 

@@ -36,7 +36,7 @@ Project: **"My Project 30040"** (Cloud Console-ში ხილული სა�
 - **Environment:** `production`
 - **Variables available** on the MySQL service (Railway dashboard → MySQL → Variables):
   - `MYSQL_URL` — internal (`mysql.railway.internal:3306`) — used by the grantkit service in-cluster
-  - `MYSQL_PUBLIC_URL` — public (`mainline.proxy.rlwy.net:<PORT>`) — for external tooling like `pnpm geocode:grants`
+  - `MYSQL_PUBLIC_URL` — public (`<MYSQL_PUBLIC_URL host:port>`) — for external tooling like `pnpm geocode:grants`
   - `MYSQL_ROOT_PASSWORD`, `MYSQLUSER`, `MYSQLPASSWORD`, `MYSQLDATABASE`, `MYSQLHOST`, `MYSQLPORT` — component parts
 
 ### Grantkit Service — Railway
@@ -46,6 +46,41 @@ Project: **"My Project 30040"** (Cloud Console-ში ხილული სა�
 - **Variables set:** `DATABASE_URL`, `ANTHROPIC_API_KEY`, `NODE_ENV`, `PORT`, `VITE_GOOGLE_MAPS_BROWSER_KEY`, `VITE_GOOGLE_MAPS_MAP_ID` (`889cfa3974b93649dcc6c265`)
 
 > ⚠️ **`GOOGLE_MAPS_API_KEY` (server)** is **NOT** set on Railway because the batch geocoding script runs **ad-hoc from an operator's machine**, not from the Railway container. The operator exports it locally before running `pnpm geocode:grants`.
+
+#### Railway env var names — `grantkit` service (names only, never values)
+
+Source of truth for what the app reads: `server/_core/env.ts` plus the direct
+`process.env` / `import.meta.env` reads listed. "Present per OPS 2026-05 list"
+= whether the name appeared in the **Variables set** line above when it was
+written (2026-05); `unknown` = never verified in the Railway dashboard —
+checking it is an operator P0 item (`PIVOT.md` §5).
+
+| Name | Required? | Used by | Present per OPS 2026-05 list |
+|---|---|---|---|
+| `DATABASE_URL` | required | `server/_core/env.ts`, `server/db.ts`, `server/migrate.ts` | yes |
+| `NODE_ENV` | required (`production`; set in `Dockerfile`) | `server/_core/env.ts`, `server/_core/bootstrap.ts`, `static.ts`, `trpc.ts`, `vite.ts`, `server/grantAssistant.ts`, `server/paddleWebhook.ts` | yes |
+| `PORT` | required (`8080`; default in `Dockerfile`) | `server/_core/bootstrap.ts` | yes |
+| `JWT_SECRET` | required — signs the auth cookie | `server/_core/env.ts` → `server/_core/sdk.ts` | no |
+| `ANTHROPIC_API_KEY` | required for AI assistant + smart search | `server/_core/env.ts` → `server/grantAssistant.ts`, `server/queryExpander.ts`, `server/toolboxClient.ts` | yes |
+| `RESEND_API_KEY` | optional — transactional + newsletter email | `server/_core/env.ts` → `server/emailService.ts` | no |
+| `PADDLE_API_KEY` | optional — only if D2 keeps billing | `server/_core/env.ts` (read; no consumer in `server/` today) | no |
+| `PADDLE_WEBHOOK_SECRET` | optional — only if D2 keeps billing | `server/_core/env.ts` → `server/paddleWebhook.ts` | unknown — operator P0 check (`PIVOT.md` §5) |
+| `BUILT_IN_FORGE_API_URL` | optional — Forge / GrantedAI helpers | `server/_core/env.ts` → `server/_core/llm.ts`, `dataApi.ts`, `map.ts`, `imageGeneration.ts`, `notification.ts`, `voiceTranscription.ts`, `server/storage.ts` | no |
+| `BUILT_IN_FORGE_API_KEY` | optional — same | same files | no |
+| `APP_URL` | optional — falls back to the hard-coded Railway URL | `server/_core/env.ts` → `server/routers.ts` | no |
+| `RAILWAY_PUBLIC_DOMAIN` | optional — Railway injects it; code falls back to the hard-coded URL | `server/emailService.ts`, `server/seoRoutes.ts` | unknown (Railway-provided) |
+| `VITE_GOOGLE_MAPS_BROWSER_KEY` | required for maps — **build-time** (`Dockerfile` `ARG`, baked into the SPA bundle) | `client/src/lib/googleMapsLoader.ts`, `Dockerfile` | yes |
+| `VITE_GOOGLE_MAPS_MAP_ID` | optional — build-time | `client/src/lib/googleMapsLoader.ts`, `Dockerfile` | yes |
+| `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` | legacy — `Dockerfile` `ARG`s with no reader in `client/src` | `Dockerfile` only | no |
+| `VITE_ANALYTICS_ENDPOINT`, `VITE_ANALYTICS_WEBSITE_ID` | optional — planned (Umami, Phase 0 item 0.10); today only a comment | `client/index.html` (comment) | no |
+
+**Not Railway variables** (scripts / GitHub Secrets / operator machine only —
+do not add them to the service): `GOOGLE_MAPS_API_KEY`, `GOOGLE_PLACES_API_KEY`,
+`VITE_GOOGLE_MAPS_API_KEY` (`scripts/geocode-*.ts`, `scripts/enrich-org-contacts.ts`,
+`scripts/verify-api-keys.ts`), `ENRICHMENT_API_URL`, `ENRICHMENT_API_KEY`
+(`scripts/daily-discovery.ts`, `scripts/import-new-grants.ts` — GitHub Secrets),
+`TEMP_ADMIN_EMAIL` / `TEMP_ADMIN_PASSWORD` / `TEMP_ADMIN_NAME`
+(`scripts/create-temp-admin.ts`), `ANALYZE` (`vite.config.ts` bundle analyzer, local).
 
 ---
 
@@ -252,3 +287,100 @@ Rotation steps:
 1. Google Cloud → Credentials → key → **Regenerate** → update Railway variable + local script runs
 2. Railway MySQL → Settings → Reset root password → update any external tools holding the old URL
 3. Anthropic Console → API Keys → Revoke → Create new → update Railway variable
+
+### History rewrite (D3) — run only after owner decides D3
+
+> ⛔ **Do not run until `PIVOT.md` §4 has a dated answer for D3.** History
+> rewrite is owner-only (`PIVOT.md` §6 rule 7).
+>
+> What is in history: the production MySQL root password in the PowerShell
+> `<pw-assignment pattern>` line of
+> `.grantkit-redesign/AUDIT-CONTINUATION-2026-05-03.md`, introduced in
+> `45155f7` (2026-05-03), redacted at HEAD in `951e363` (PR #247). Concrete
+> `MYSQL_PUBLIC_URL` host:port strings (docs since 2026-04-22) and the Google
+> Maps browser key (Lighthouse reports, 2026-05-03) were redacted at HEAD by
+> the `chore(security)` purge PR. A rewrite is **in addition to** rotation,
+> never instead of it — the values are compromised either way.
+
+#### D3 = (a) purge + rotation + history rewrite
+
+Preconditions
+1. Rotation done (steps 1–3 above): Railway MySQL root reset, both Maps keys
+   regenerated; old values verified dead (`Access denied` / HTTP 403).
+2. Repo is private and collaborators ≤ 3 (the (a) recommendation); every
+   collaborator told about the push-freeze window.
+3. All open PRs merged, or their branches noted for re-creation.
+4. `git filter-repo` installed on the operator machine
+   (`pip install git-filter-repo`; needs git ≥ 2.22). It is **not** installed
+   in the Claude sandbox and cannot run there (shallow clone, no push).
+
+Steps (operator machine, bash)
+
+```bash
+# 1. Fresh mirror clone — never rewrite inside a working clone or a worktree.
+git clone --mirror https://github.com/navyforses/grantkit.git grantkit-rewrite.git
+cd grantkit-rewrite.git
+
+# 2. Expressions file OUTSIDE the repo (never commit it; shred it afterwards).
+#    One line per secret:  literal:<old value>==><replacement>
+#    Take the old values from the Railway / GCP dashboards, NOT from any doc.
+cat > ~/grantkit-purge.txt <<'EOF'
+literal:<old MySQL root password>==><REDACTED-BY-FILTER-REPO>
+literal:<old MYSQL_PUBLIC_URL host:port, 1st port>==><MYSQL_PUBLIC_URL host:port>
+literal:<old MYSQL_PUBLIC_URL host:port, 2nd port>==><MYSQL_PUBLIC_URL host:port>
+literal:<old Google Maps browser key>==><REDACTED_GOOGLE_MAPS_BROWSER_KEY>
+EOF
+# Which old host:port strings existed (bare host from the Railway dashboard):
+#   git log -p -S'<MYSQL_PUBLIC_URL host>' -- '*.md'
+
+# 3. Dry run first — writes only to .git/filter-repo/, changes nothing.
+git filter-repo --replace-text ~/grantkit-purge.txt --dry-run
+
+# 4. Real run — rewrites every branch and tag; drops the `origin` remote on purpose.
+git filter-repo --replace-text ~/grantkit-purge.txt
+
+# 5. Verify nothing is left anywhere in history.
+git log --all -S'<old MySQL root password>' --oneline | wc -l   # → 0
+git log --all -S'<old MYSQL_PUBLIC_URL host:port>' --oneline | wc -l   # → 0 (repeat per old port)
+git log --all -S'AIza' --oneline | wc -l                          # → 0
+
+# 6. Force-push all refs. GitHub: Settings → Branches → `main` rule →
+#    temporarily enable "Allow force pushes" (or bypass as admin), then re-disable.
+git remote add origin https://github.com/navyforses/grantkit.git
+git push --force --mirror origin
+
+# 7. Clean up the expressions file.
+shred -u ~/grantkit-purge.txt   # macOS: rm -P
+```
+
+After the push
+- **Every collaborator re-clones.** `git pull` / `git merge` on an old clone
+  re-introduces the old objects — delete the old clone (and its worktrees)
+  first. Open branches: `git rebase --onto` the new `main`, or re-create from
+  a patch.
+- **GitHub still caches the old objects** (PR diffs, `commit/<sha>` URLs,
+  forks, Compare views). Open a GitHub Support ticket ("remove sensitive data
+  — cached views / dangling commits"), list the old SHAs (`45155f7`,
+  `6f2ace6`, `cb67d0f`, `951e363`, and the pre-rewrite `main` head), and ask
+  for a server-side gc. Delete every fork you control.
+- GitHub Actions runs whose logs/artifacts printed a value: delete those runs.
+- Railway deploys from the `main` head, so it is unaffected — still check that
+  the next auto-deploy is green.
+- Record in `PIVOT.md` §7 and `PROJECT_MAP.md` Session Log: date,
+  old → new `main` SHA, support ticket number.
+
+#### D3 = (b) purge + rotation only (no rewrite)
+
+- Rotation (steps 1–3 above) is what neutralises the leak; the doc purge
+  (PR #247 + the `chore(security)` purge PR) keeps HEAD clean. The old
+  password stays in history from `45155f7` to `951e363` — dead, but readable
+  to anyone with repo access.
+- Record the accepted residual in the `PIVOT.md` §4 D3 answer: "(b) — value
+  rotated on <date>; remains in history, harmless".
+- Shrink who can read history: keep the repo private; prune stale
+  collaborators, deploy keys and personal tokens (Settings → Collaborators,
+  Deploy keys).
+- Prevent a repeat: GitHub Settings → Code security → enable **secret
+  scanning + push protection**; the Phase 0 CI PR adds `git grep` guards for
+  the `<MYSQL_PUBLIC_URL host>` literal and the `<pw-assignment pattern>`.
+- If the repo is ever made public, or a fork/leak is suspected → switch to (a).

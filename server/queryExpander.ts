@@ -6,7 +6,20 @@
  */
 
 import Anthropic from "@anthropic-ai/sdk";
+import { LRUCache } from "lru-cache";
 import { ENV } from "./_core/env";
+
+// Cost cap (Phase 0.5): an identical query hits Claude Haiku once per 24 h.
+// One cache serves both catalog.smartSearch and organizations.smartSearch.
+const expansionCache = new LRUCache<string, ExpandedQuery>({
+  max: 5_000,
+  ttl: 24 * 60 * 60 * 1000,
+});
+
+/** Cache key: NFC(lowercase(collapse-whitespace(query))). */
+export function cacheKey(query: string): string {
+  return query.trim().toLowerCase().replace(/\s+/g, " ").normalize("NFC");
+}
 
 export interface ExpandedQuery {
   original: string;
@@ -46,6 +59,14 @@ export async function expandQuery(userQuery: string): Promise<ExpandedQuery> {
     };
   }
 
+  const key = cacheKey(trimmed);
+  const cached = expansionCache.get(key);
+  if (cached) {
+    console.log(`[QueryExpander] cache hit (${expansionCache.size}/${expansionCache.max})`);
+    return { ...cached, original: trimmed };
+  }
+  console.log(`[QueryExpander] cache miss → Anthropic call (${expansionCache.size}/${expansionCache.max})`);
+
   try {
     const client = new Anthropic({ apiKey: ENV.anthropicApiKey });
 
@@ -67,7 +88,7 @@ export async function expandQuery(userQuery: string): Promise<ExpandedQuery> {
       terms?: string[];
     };
 
-    return {
+    const result: ExpandedQuery = {
       original: trimmed,
       terms: Array.isArray(parsed.terms)
         ? parsed.terms.filter((t): t is string => typeof t === "string" && t.length > 0)
@@ -75,6 +96,8 @@ export async function expandQuery(userQuery: string): Promise<ExpandedQuery> {
       detectedLanguage: parsed.detected_language ?? "en",
       englishQuery: parsed.english ?? trimmed,
     };
+    expansionCache.set(key, result);
+    return result;
   } catch (err) {
     console.error("[QueryExpander] Failed to expand query:", err);
     return fallback(trimmed);

@@ -22,16 +22,9 @@ export interface Translations {
     subtitle: string;
     cta: string;
     seeCatalog: string;
-    statCountries: string;
-    statCountriesLabel: string;
-    statMedical: string;
-    statMedicalLabel: string;
-    statFinancial: string;
-    statFinancialLabel: string;
-    statUpdated: string;
-    statUpdatedLabel: string;
-    statGrants: string;
     statGrantsLabel: string;
+    statOrganizationsLabel: string;
+    statCountriesLabel: string;
   };
 
   // Problem section
@@ -90,19 +83,6 @@ export interface Translations {
     step2Desc: string;
     step3Title: string;
     step3Desc: string;
-  };
-
-  // Testimonials / Social Proof
-  testimonials: {
-    title: string;
-    subtitle: string;
-    items: { name: string; role: string; text: string }[];
-    statUsers: string;
-    statUsersLabel: string;
-    statGrants: string;
-    statGrantsLabel: string;
-    statCountries: string;
-    statCountriesLabel: string;
   };
 
   // Pricing section
@@ -1171,7 +1151,7 @@ export interface Translations {
     nativeAppHint: string;        // a11y description for mobile
   };
 
-  // Organizations catalog (Phase 7 — 538 orgs / 872 branches)
+  // Organizations catalog (Phase 7)
   organizations: {
     title: string;
     subtitle: string;
