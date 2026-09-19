@@ -4,7 +4,7 @@
 > project. Any new session (Claude / Cowork / human) must scan this before
 > opening a PR, asking the user for setup, or touching schema/env vars.
 >
-> Last updated: **2026-09-19 (c)** — Phase 0.6 docs single source of truth (stale redesign docs → `_archive/grantkit-redesign/`, CLAUDE.md rules-only, TEAM_ROSTER/WORKFLOW v2, numbers below re-cited to the 2026-05-02 audit) + Phase 0.8 dead-code archive (`_archive/server-core-manus/`, `_archive/server-oneoffs/`, `_archive/pending-imports/`). Previous: **2026-09-19** — MASTER PLAN v2 (finance-driven) + PIVOT.md v2; see integration-pivot/. Previous: **2026-09-18** — integration-pivot diagnostic + master plan added (`.grantkit-redesign/integration-pivot/`); leaked DB credential redacted from AUDIT-CONTINUATION (rotation still required). Previous: **2026-05-04** — Phase 4 data-quality findings closed via Task 2.2 (operator): 13 country fixes + 618 orphan grants linked + 1,245 branches geocoded (94 % success).
+> Last updated: **2026-09-19 (e)** — Phase 0.9 single migration mechanism (ADR `adr/0001-migrations.md`; journal 0000–0020; boot-time migrator removed from Dockerfile). Previous: **2026-09-19 (c)** — Phase 0.6 docs single source of truth (stale redesign docs → `_archive/grantkit-redesign/`, CLAUDE.md rules-only, TEAM_ROSTER/WORKFLOW v2, numbers below re-cited to the 2026-05-02 audit) + Phase 0.8 dead-code archive (`_archive/server-core-manus/`, `_archive/server-oneoffs/`, `_archive/pending-imports/`). Previous: **2026-09-19** — MASTER PLAN v2 (finance-driven) + PIVOT.md v2; see integration-pivot/. Previous: **2026-09-18** — integration-pivot diagnostic + master plan added (`.grantkit-redesign/integration-pivot/`); leaked DB credential redacted from AUDIT-CONTINUATION (rotation still required). Previous: **2026-05-04** — Phase 4 data-quality findings closed via Task 2.2 (operator): 13 country fixes + 618 orphan grants linked + 1,245 branches geocoded (94 % success).
 
 ---
 
@@ -15,6 +15,7 @@
 | Production URL | https://grantkit-production-06f7.up.railway.app |
 | Migrations applied | `0000`–`0016` verified (last direct apply: `0011`, 2026-05-03). `0017`–`0019` applied (indirect evidence — production code uses `orgId`, `geocodedAt`, France columns). See §Scripts → Migrations. |
 | Pending migrations | `0020_processed_webhook_events` — **unverified on production** (operator: `node scripts/check-migration-0020.mjs`, PIVOT.md §5). |
+| Migration mechanism | **One:** `scripts/apply-migration-XXXX.mjs` by hand, before merge. No boot-time migrator (removed 2026-09-19, Phase 0.9). Journal `0000`–`0020` complete; snapshot `0020` ≡ `schema.ts`. ADR: `.grantkit-redesign/adr/0001-migrations.md`. |
 | Active PR | _(none open — #247 merged 2026-09-19)_ |
 | Current phase | **Integration pivot — Phase 0 (hygiene + P0)**; see `PIVOT.md` §3 and `integration-pivot/00-MASTER-PLAN.md` §5. (Contact enrichment Phase B folded into Phase 0.7.) |
 | Blocker | _(none — Google Places server key exists as `grantkit-server-geocoding-v2`)_ |
@@ -140,9 +141,11 @@ Helpers:
 ## ⚙️ Scripts — `scripts/` directory
 
 ### 🛠 Migrations
+Mechanism (ADR `.grantkit-redesign/adr/0001-migrations.md`, 2026-09-19): `drizzle-kit generate` (dummy `DATABASE_URL`, no DB connection) writes SQL + snapshot + journal entry; the SQL is applied to Railway **by hand, before merge**, with a per-migration apply script. There is no boot-time migrator (`server/migrate.ts` deleted; `Dockerfile` CMD = `node dist/index.js`). `pnpm db:push` is for an empty local DB only.
+
 Each DB migration has both an SQL file and an apply script:
-- `drizzle/00XX_*.sql` — the SQL
-- `scripts/apply-migration-00XX.mjs` — applies it to Railway MySQL
+- `drizzle/00XX_*.sql` — the SQL (statements separated by `--> statement-breakpoint`)
+- `scripts/apply-migration-00XX.mjs` — applies it to Railway MySQL and records it in `__drizzle_migrations`
 
 Migration files in `drizzle/` (`ls drizzle/*.sql`, 2026-09-19):
 
@@ -156,7 +159,9 @@ Migration files in `drizzle/` (`ls drizzle/*.sql`, 2026-09-19):
 | `0019_branches_geocoded_at` | applied (indirect evidence: `geocode-branches.ts --apply` ran 2026-05-04) |
 | `0020_processed_webhook_events` | **unverified on production** — `node scripts/check-migration-0020.mjs` (Phase 0.2 / 0.9) |
 
-Next numbers are reserved by MASTER-PLAN v2 §5: 0021 Phase 2 · 0022–0023 Phase 3 · 0024–0025 Phase 4 · 0026 later. 0021 is not written before 0.9 (migration mechanism) is done.
+Journal (`drizzle/meta/_journal.json`) lists `0000`–`0020`; snapshots exist for `0000`–`0008`, `0010`–`0013`, `0020` (gaps are fine for drizzle-kit). Known drift not covered by `schema.ts`: `grants.fk_grants_org` FK (0017) and nullable `organization_housing.createdAt` (0018) — decide in the 0021 PR.
+
+Next numbers are reserved by MASTER-PLAN v2 §5: 0021 Phase 2 · 0022–0023 Phase 3 · 0024–0025 Phase 4 · 0026 later. Gate for 0021 (Phase 0.9) is code-complete; remaining operator step: `check-migration-0020.mjs` on Railway.
 
 ### 📥 Data import
 - `scripts/import-organizations.ts` — loads orgs from Excel
@@ -251,6 +256,7 @@ _Each session appends a 3-line summary so the next session knows what was done a
 - **2026-09-19 (c)** — Phase 0.6 (Ilias, docs single source of truth): 28 stale planning files (`STATE.md`, `todo.md`, roadmaps, diagnostics, inventories, `wave1-pr2/`, `.pptx`) → `_archive/grantkit-redesign/` (README there); `.grantkit-redesign/` now holds 6 `.md` + `integration-pivot/`; `CLAUDE.md` rules-only (tRPC list, phase progress, hard-coded counts removed); `TEAM_ROSTER.md` / `WORKFLOW.md` rewritten from MASTER-PLAN v2 §6; DB numbers here re-cited to the 2026-05-02 audit; `deferred-issues.md` folded into the list at the bottom. `_archive/` un-ignored in `.gitignore`. Kept in place because scripts read them: `geocode-checkpoint.json`, `location-audit-report.json`. Note: `pnpm audit:locations` still writes `location-audit-report.md` into `.grantkit-redesign/` (7th .md if re-run).
 - **2026-09-19 (d)** — Phase 0.8 (Ilias, dead-code archive, move only): `server/_core/{imageGeneration,voiceTranscription,dataApi,map,llm}.ts` (0 importers in server/client/shared/scripts) → `_archive/server-core-manus/`; 13 `server/*.mjs|cjs` one-offs (not referenced by package.json, Dockerfile, workflows or imports) → `_archive/server-oneoffs/`; all 60 `pending-imports/*` (last commit ≤ 2026-05-12) → `_archive/pending-imports/`, `pending-imports/.gitkeep` kept because `daily-discovery.ts` writes and `daily-discovery.yml` reads `discovery-*.json` there. `scripts/stage*.cjs` untouched. Verified: `pnpm check` 0 errors · `pnpm build` OK · `pnpm test` 201 passed / 1 skipped.
 - **2026-09-19 (b)** — Finance-driven transformation: PRs #249 (reports 05 financial analysis, 06 profitable-site models, 07 monetization architecture) + this PR (`00-MASTER-PLAN.md` **v2**, v1 archived to `integration-pivot/archive/`, `PIVOT.md` v2). Verdict: $9/mo B2C cannot work; model = free ka/ru navigator + org-sold Org Pro/Institutional + ring-fenced `/health-abroad` concierge + partner offers behind code-level no-monetization zones; grants = runway. Helper Pro individual dropped. New financial P0: public `smartSearch` abuse exposure (cache + 10/min). 26 owner decisions, 9 blocking (D26 horizon first).
+- **2026-09-19 (e)** — Phase 0.9 (Mira, single migration mechanism): ADR `adr/0001-migrations.md`; `_journal.json` extended 0014–0020 (`when` = SQL commit time, strictly increasing); `0020_snapshot.json` generated from `schema.ts` (`drizzle-kit generate` now reports no changes); `--> statement-breakpoint` added to 0018/0019; `server/migrate.ts` + `dist/migrate.js` build step + Dockerfile `COPY drizzle` removed, CMD = `node dist/index.js`. Verified: `drizzle-kit check` clean, `readMigrationFiles` 21 entries / single-statement chunks, check 0 errors, tests 210 passed, build OK. Left for operator: fresh-DB `drizzle-kit migrate` run + `check-migration-0020.mjs` on Railway. Batch 1 (PR #251) merged by owner 13:31 UTC.
 
 ## 🔎 How to use this file
 

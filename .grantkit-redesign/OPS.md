@@ -57,7 +57,7 @@ checking it is an operator P0 item (`PIVOT.md` §5).
 
 | Name | Required? | Used by | Present per OPS 2026-05 list |
 |---|---|---|---|
-| `DATABASE_URL` | required | `server/_core/env.ts`, `server/db.ts`, `server/migrate.ts` | yes |
+| `DATABASE_URL` | required | `server/_core/env.ts`, `server/db.ts`, `scripts/apply-migration-*.mjs` | yes |
 | `NODE_ENV` | required (`production`; set in `Dockerfile`) | `server/_core/env.ts`, `server/_core/bootstrap.ts`, `static.ts`, `trpc.ts`, `vite.ts`, `server/grantAssistant.ts`, `server/paddleWebhook.ts` | yes |
 | `PORT` | required (`8080`; default in `Dockerfile`) | `server/_core/bootstrap.ts` | yes |
 | `JWT_SECRET` | required — signs the auth cookie | `server/_core/env.ts` → `server/_core/sdk.ts` | no |
