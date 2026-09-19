@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["scripts/**/*.ts"],
+  "exclude": ["node_modules", "scripts/stage*.cjs"],
+  "compilerOptions": {
+    "incremental": false,
+    "target": "es2022"
+  }
+}
