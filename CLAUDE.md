@@ -17,7 +17,18 @@
 3. **Surgical Changes** — მხოლოდ ის რაც აუცილებელია. ყოველი შეცვლილი ხაზი უნდა მიდიოდეს მოთხოვნამდე
 4. **Goal-Driven Execution** — წარმატების კრიტერიუმი + ციკლი სანამ არ გადამოწმდება
 
-**წაკითხვის რიგი ყოველი სესიის დასაწყისში:** `KARPATHY_GUIDELINES.md` → `CLAUDE.md` → `PROJECT_MAP.md` → `OPS.md`
+**წაკითხვის რიგი ყოველი სესიის დასაწყისში:** `KARPATHY_GUIDELINES.md` → `CLAUDE.md` → `PROJECT_MAP.md` → `OPS.md` → `PIVOT.md`
+
+---
+
+## 🧭 მიმდინარე სტრატეგია — `.grantkit-redesign/PIVOT.md`
+
+**GrantKit გადადის ემიგრანტების ინტეგრაციის მხარდაჭერის პლატფორმაზე** (გადაწყვეტილება 2026-04-23, გეგმა 2026-09-18, PR #247).
+
+👉 **[`.grantkit-redesign/PIVOT.md`](.grantkit-redesign/PIVOT.md)** — განმარტება, პოზიციონირება, მიმდინარე ფაზა, მფლობელის გადაწყვეტილებების ჟურნალი, ოპერატორის P0 სია, აგენტის პროტოკოლი.
+👉 **[`.grantkit-redesign/integration-pivot/00-MASTER-PLAN.md`](.grantkit-redesign/integration-pivot/00-MASTER-PLAN.md)** — სრული გეგმა: დიაგნოსტიკა, gap analysis, 5 ფაზა „done when" კრიტერიუმებით, აგენტების გუნდი (§6), KPI, 18 გადაწყვეტილება (§8), უახლოესი 7 დღე (§9). სპეციალისტების ანგარიშები: `integration-pivot/01–04`.
+
+**წესი:** pivot-თან დაკავშირებული ნებისმიერი სამუშაო იწყება `PIVOT.md` §3 (სად ვართ) და MASTER-PLAN §5 (ფაზის ცხრილი) წაკითხვით. ახალი feature, რომელიც გეგმის არცერთ item-ს არ ეკუთვნის — ჯერ მფლობელს ეკითხება.
 
 ---
 
