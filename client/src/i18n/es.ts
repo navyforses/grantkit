@@ -134,6 +134,7 @@ export const es: Translations = {
     contact: "Contacto",
     paddle: "Pagos por Paddle",
     rights: "Todos los derechos reservados.",
+    trust: "Confianza y socios",
   },
   catalog: {
     title: "Catálogo de subvenciones y recursos",
@@ -1248,5 +1249,69 @@ export const es: Translations = {
     ratingHidden: "La valoración de Google se muestra a partir de 5 reseñas",
     disclaimer: "La información puede cambiar — verifíquela con la organización.",
     reportError: "Informar de un error",
+  },
+  trust: {
+    seoTitle: "Contrato de confianza y socios | GrantKit",
+    seoDescription: "Cómo GrantKit sigue siendo gratuito para personas migrantes, quién nos paga, dónde nunca hay dinero y cómo tratamos tus datos.",
+    title: "Nuestro contrato de confianza",
+    intro: "GrantKit es un navegador para personas que se instalan en un nuevo país. Como puedes estar en una situación vulnerable, ponemos nuestras reglas por escrito. Esta página es el contrato; si lo incumplimos, dínoslo.",
+    points: [
+      {
+        title: "1. Todo es gratuito para las personas migrantes — y seguirá siéndolo",
+        body: "El directorio de organizaciones, las guías, la lista de pasos y el asistente de IA son gratuitos. No hay muro de pago ni versión premium para quien necesita ayuda.",
+      },
+      {
+        title: "2. Quién nos paga",
+        body: "Empresas socias (siempre marcadas como «Socio»), organizaciones que compran una ficha Pro, familias que reservan el servicio de acompañamiento de salud en el extranjero y patrocinadores. La lista de socios es pública en esta página y se actualiza con cada cambio.",
+      },
+      {
+        title: "3. Dónde nunca hay dinero",
+        body: "En los temas siguientes no puede aparecer ningún socio, anuncio ni ficha de pago. No es una promesa de palabra: el código no lo permite, diga lo que diga un contrato.",
+      },
+      {
+        title: "4. Cómo se muestran los socios",
+        body: "Cada mención de un socio lleva la palabra «Socio» y el aviso de que recibimos una comisión. El dinero no cambia el orden: las organizaciones sin ánimo de lucro y los servicios públicos van siempre antes que lo comercial, y una insignia Pro no significa «verificado» — verificar es una fecha y una fuente. Junto a cada socio hay siempre una alternativa gratuita o sin socio.",
+      },
+      {
+        title: "5. Tus datos",
+        body: "Tu situación de residencia y tu situación de salud nunca se guardan en nuestro servidor: las eliges solo en tu navegador. Un clic en un enlace de socio se cuenta de forma anónima — sin cookie, sin píxel de seguimiento. Nuestras estadísticas no usan cookies.",
+      },
+      {
+        title: "6. Cómo informar de un error",
+        body: "Cada página de organización tiene un enlace «Informar de un error» — un solo clic. También puedes escribirnos por correo. Una persona lo lee y responde.",
+      },
+      {
+        title: "7. Lo que nunca hacemos",
+        body: "Las reglas que se mantienen pase lo que pase con nuestra financiación:",
+      },
+      {
+        title: "8. Contacto",
+        body: "Preguntas sobre esta página, un socio o tus datos: escríbenos. Respondemos en tu idioma cuando podemos.",
+      },
+    ],
+    neverZone: [
+      "Permiso de residencia, asilo y asistencia jurídica",
+      "Atención sanitaria urgente, consultas gratuitas y seguro médico para solicitantes de asilo",
+      "Salud mental",
+      "Seguridad y derechos: violencia, explotación, discriminación",
+      "Alojamiento de emergencia",
+      "Protección de menores y mujeres víctimas de violencia",
+      "Páginas de organizaciones sin ánimo de lucro y servicios públicos",
+      "El asistente de IA y las versiones para imprimir de cualquier página",
+    ],
+    neverDo: [
+      "El asistente de IA nunca recomienda un socio: informa, no aconseja, y siempre enlaza a la propia organización.",
+      "Sin banners, sin ventanas emergentes, sin muros de boletín.",
+      "Nunca vendemos ni compartimos tus datos con socios.",
+      "Nadie puede pagar para subir en la lista ni para aparecer como «verificado».",
+      "Ningún socio en temas de residencia, salud, seguridad o alojamiento — nunca.",
+    ],
+    partnersTitle: "Nuestros socios",
+    partnersIntro: "Empresas con las que tenemos un acuerdo de afiliación. Hoy solo aparecen aquí. En otras páginas un socio solo puede aparecer donde la regla 3 lo permite, siempre marcado, siempre con una alternativa gratuita al lado.",
+    partnersEmpty: "Todavía no hay socios. Esta lista se actualiza el mismo día en que se añade uno.",
+    partnerLabel: "Socio",
+    reportSubject: "Informe de error",
+    reportCta: "Informar de un error por correo",
+    contactCta: "Escríbenos",
   },
 };

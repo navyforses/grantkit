@@ -28,6 +28,7 @@ const Contact     = lazy(() => import("./pages/Contact"));
 const Privacy     = lazy(() => import("./pages/Privacy"));
 const Terms       = lazy(() => import("./pages/Terms"));
 const Refund      = lazy(() => import("./pages/Refund"));
+const Trust       = lazy(() => import("./pages/Trust"));
 const Admin       = lazy(() => import("./pages/Admin"));
 const Analytics   = lazy(() => import("./pages/Analytics"));
 const AiAssistant = lazy(() => import("./pages/AiAssistant"));
@@ -61,6 +62,7 @@ function Router() {
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
         <Route path="/refund" component={Refund} />
+        <Route path="/trust" component={Trust} />
         <Route path="/admin" component={Admin} />
         <Route path="/analytics" component={Analytics} />
         <Route path="/ai-assistant" component={AiAssistant} />

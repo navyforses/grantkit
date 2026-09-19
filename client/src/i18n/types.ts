@@ -135,6 +135,7 @@ export interface Translations {
     contact: string;
     paddle: string;
     rights: string;
+    trust: string;
   };
 
   // Catalog page (unified grants + resources)
@@ -1325,5 +1326,26 @@ export interface Translations {
     ratingHidden: string;
     disclaimer: string;
     reportError: string;
+  };
+
+  // /trust — the trust contract (MASTER-PLAN 1.13, Levan §4.4, D19)
+  trust: {
+    seoTitle: string;
+    seoDescription: string;
+    title: string;
+    intro: string;
+    /** Exactly 8 points, in the order of the trust contract. */
+    points: Array<{ title: string; body: string }>;
+    /** Plain-word list of the no-monetization zone (rendered inside point 3). */
+    neverZone: string[];
+    /** Plain-word list of things we never do (rendered inside point 7). */
+    neverDo: string[];
+    partnersTitle: string;
+    partnersIntro: string;
+    partnersEmpty: string;
+    partnerLabel: string;
+    reportSubject: string;
+    reportCta: string;
+    contactCta: string;
   };
 }

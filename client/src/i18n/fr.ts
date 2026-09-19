@@ -134,6 +134,7 @@ export const fr: Translations = {
     contact: "Contact",
     paddle: "Paiements par Paddle",
     rights: "Tous droits réservés.",
+    trust: "Confiance & partenaires",
   },
   catalog: {
     title: "Catalogue de subventions et ressources",
@@ -1248,5 +1249,69 @@ export const fr: Translations = {
     ratingHidden: "La note Google s'affiche à partir de 5 avis",
     disclaimer: "Les informations peuvent changer — vérifiez auprès de l'organisation.",
     reportError: "Signaler une erreur",
+  },
+  trust: {
+    seoTitle: "Contrat de confiance & partenaires | GrantKit",
+    seoDescription: "Comment GrantKit reste gratuit pour les personnes migrantes, qui nous paie, où il n'y a jamais d'argent, et comment nous traitons vos données.",
+    title: "Notre contrat de confiance",
+    intro: "GrantKit est un navigateur pour les personnes qui s'installent dans un nouveau pays. Parce que vous pouvez être en situation de vulnérabilité, nous mettons nos règles par écrit. Cette page est le contrat ; si nous le rompons, dites-le-nous.",
+    points: [
+      {
+        title: "1. Tout est gratuit pour les personnes migrantes — et le reste",
+        body: "L'annuaire des organisations, les guides, la checklist et l'assistant IA sont gratuits. Il n'y a ni mur payant ni version premium pour la personne qui a besoin d'aide.",
+      },
+      {
+        title: "2. Qui nous paie",
+        body: "Des entreprises partenaires (toujours signalées « Partenaire »), des organisations qui achètent une fiche Pro, des familles qui réservent le service d'accompagnement santé à l'étranger, et des sponsors. La liste des partenaires est publique sur cette page et mise à jour à chaque changement.",
+      },
+      {
+        title: "3. Là où il n'y a jamais d'argent",
+        body: "Sur les sujets ci-dessous, aucun partenaire, aucune publicité, aucune fiche payante ne peut apparaître. Ce n'est pas une promesse en paroles : le code ne le permet pas, quoi que dise un contrat.",
+      },
+      {
+        title: "4. Comment les partenaires sont affichés",
+        body: "Chaque mention d'un partenaire porte le mot « Partenaire » et l'indication que nous percevons une commission. L'argent ne change pas l'ordre : les associations et les services publics passent toujours avant le commercial, et un badge Pro ne signifie pas « vérifié » — la vérification, c'est une date et une source. À côté de chaque partenaire, il y a toujours une alternative gratuite ou non partenaire.",
+      },
+      {
+        title: "5. Vos données",
+        body: "Votre statut de séjour et votre situation de santé ne sont jamais enregistrés sur notre serveur : vous les choisissez uniquement dans votre navigateur. Un clic sur un lien partenaire est compté de façon anonyme — sans cookie, sans pixel de suivi. Nos statistiques sont sans cookies.",
+      },
+      {
+        title: "6. Comment signaler une erreur",
+        body: "Chaque page d'organisation a un lien « Signaler une erreur » — un seul clic. Vous pouvez aussi nous écrire par e-mail. Un humain lit et répond.",
+      },
+      {
+        title: "7. Ce que nous ne faisons jamais",
+        body: "Les règles qui tiennent quoi qu'il arrive à notre financement :",
+      },
+      {
+        title: "8. Contact",
+        body: "Une question sur cette page, un partenaire ou vos données : écrivez-nous. Nous répondons dans votre langue quand nous le pouvons.",
+      },
+    ],
+    neverZone: [
+      "Titre de séjour, asile et aide juridique",
+      "Soins urgents, consultations gratuites et couverture santé des demandeurs d'asile",
+      "Santé mentale",
+      "Sécurité et droits : violences, exploitation, discrimination",
+      "Hébergement d'urgence",
+      "Protection de l'enfance et femmes victimes de violences",
+      "Pages des associations et des services publics",
+      "L'assistant IA et les versions imprimables de toute page",
+    ],
+    neverDo: [
+      "L'assistant IA ne recommande jamais un partenaire : il informe, ne conseille pas, et renvoie toujours vers l'organisation elle-même.",
+      "Pas de bannières, pas de pop-ups, pas de mur de newsletter.",
+      "Nous ne vendons ni ne partageons jamais vos données avec des partenaires.",
+      "Personne ne peut payer pour remonter dans la liste ou être marqué « vérifié ».",
+      "Aucun partenaire sur les sujets statut, santé, sécurité ou hébergement — jamais.",
+    ],
+    partnersTitle: "Nos partenaires",
+    partnersIntro: "Entreprises avec lesquelles nous avons un accord d'affiliation. Aujourd'hui, elles n'apparaissent qu'ici. Sur les autres pages, un partenaire ne peut apparaître que là où la règle 3 le permet, toujours signalé, toujours avec une alternative gratuite à côté.",
+    partnersEmpty: "Aucun partenaire pour l'instant. Cette liste est mise à jour le jour où un partenaire est ajouté.",
+    partnerLabel: "Partenaire",
+    reportSubject: "Signalement d'erreur",
+    reportCta: "Signaler une erreur par e-mail",
+    contactCta: "Nous écrire",
   },
 };

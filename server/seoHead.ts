@@ -25,7 +25,7 @@ export const LANGS = ["en", "fr", "es", "ru", "ka"] as const;
 export type Lang = (typeof LANGS)[number];
 
 /** Landing routes that get canonical + hreflang (title/description stay static). */
-const LANDING_PATHS = new Set(["/", "/organizations", "/contact", "/privacy", "/terms", "/refund"]);
+const LANDING_PATHS = new Set(["/", "/organizations", "/contact", "/privacy", "/terms", "/refund", "/trust"]);
 const ORG_PATH = /^\/organizations\/([A-Za-z0-9_-]{1,16})$/;
 const DESCRIPTION_MAX = 160;
 
