@@ -14,7 +14,7 @@
  *   }
  * — language keys are omitted entirely when all three fields are NULL.
  *
- * Five fixed decisions (see .grantkit-redesign/PLAN-france-orgs-import.md §8):
+ * Five fixed decisions (see _archive/grantkit-redesign/PLAN-france-orgs-import.md §8):
  *   1. NEW (Excel) overrides OLD on every non-NULL cell during UPSERT.
  *   2. Cost text → 6-enum via COST_MAPPING (free / paid / sliding_scale /
  *      insurance / mixed / unknown). Unknown is the fallback.
