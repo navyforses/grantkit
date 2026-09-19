@@ -15,8 +15,8 @@
 | Production URL | https://grantkit-production-06f7.up.railway.app |
 | Migrations applied | `0011` (users auth, applied 2026-05-03) + `0012`-`0016` (grants/orgs, applied earlier). Schema.ts in sync with DB. |
 | Pending migrations | _(none)_ |
-| Active PR | [#247](https://github.com/navyforses/grantkit/pull/247) — integration-pivot diagnostic + master plan (docs only, draft) |
-| Current phase | **Contact enrichment — Phase B (scraping script)** |
+| Active PR | _(none open — #247 merged 2026-09-19)_ |
+| Current phase | **Integration pivot — Phase 0 (hygiene + P0)**; see `PIVOT.md` §3 and `integration-pivot/00-MASTER-PLAN.md` §5. (Contact enrichment Phase B folded into Phase 0.7.) |
 | Blocker | _(none — Google Places server key exists as `grantkit-server-geocoding-v2`)_ |
 
 ---
@@ -233,6 +233,7 @@ _Each session appends a 3-line summary so the next session knows what was done a
 
 ---
 - **2026-09-18** — Integration-pivot planning session (4 parallel specialist agents + 1 manager): `.grantkit-redesign/integration-pivot/` — `00-MASTER-PLAN.md` (definition, positioning, consolidated diagnostic, 5-phase roadmap with done-when, agent team, KPIs, 18 owner decisions) + reports 01–04. Verified `pnpm check` 0 errors / `pnpm test` 201/202 / `pnpm build` OK / `pnpm audit --prod` 57 vuln (0 critical). **P0 found:** production MySQL root password was committed in `AUDIT-CONTINUATION-2026-05-03.md` → redacted in PR #247, value still in git history → operator must rotate (OPS.md §Secret rotation) + both Google Maps keys; Paddle webhook fail-closed while `PADDLE_WEBHOOK_SECRET` absent from documented Railway env and migration 0020 unverified. Note: `subscription.activate` no longer exists (removed 2026-05-12) — tRPC list in CLAUDE.md is stale. Blocking owner decisions: D1 paywall, D2 billing, D3 history rewrite, D5 beachhead, D6 status question (plan §8). Docs-only PR: #247 (draft).
+- **2026-09-19** — PR #247 merged by owner. Added `.grantkit-redesign/PIVOT.md` (strategy + status + owner-decision log + operator P0 list + agent protocol) and pointers in `CLAUDE.md` / this file so every future session sees the integration-pivot plan. Current phase set to Integration pivot — Phase 0. Owner decisions D1–D6 and secret rotation still pending.
 
 ## 🔎 How to use this file
 
