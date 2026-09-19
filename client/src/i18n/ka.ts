@@ -980,6 +980,13 @@ export const ka: Translations = {
       statBranches: "ფილიალი",
       statPrograms: "პროგრამა",
       statCategories: "კატეგორია",
+      call: "დარეკვა",
+      directions: "მარშრუტი",
+      website: "საიტი",
+      networkError: "კავშირი არ არის — სცადეთ თავიდან",
+      retry: "თავიდან ცდა",
+      notFound: "ორგანიზაცია ვერ მოიძებნა",
+      notFoundDesc: "ასეთი ორგანიზაცია არ არსებობს ან კატალოგში აღარ არის.",
     },
     empty: "ფილტრების მიხედვით ორგანიზაცია ვერ მოიძებნა.",
     loading: "ორგანიზაციები იტვირთება...",
@@ -1225,5 +1232,23 @@ export const ka: Translations = {
       both: "ორივე ვარიანტი",
       unknown: "ვიზიტის წესი დასადასტურებელია",
     },
+  },
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: "ბოლოს შემოწმდა {date} · წყარო: {source}",
+    needsRecheck: "ბოლოს შემოწმდა {date} · გადასამოწმებელია",
+    unverified: "დაუდასტურებელია — დარეკეთ და გადაამოწმეთ",
+    source: {
+      google_places: "Google Places",
+      website: "ორგანიზაციის ვებსაიტი",
+      manual: "ხელით შემოწმება",
+      imported: "იმპორტირებული მონაცემი",
+      unknown: "წყარო უცნობია",
+    },
+    nothingKnown: "ინფორმაცია დასაზუსტებელია",
+    ratingHidden: "Google-ის რეიტინგი ჩანს მხოლოდ 5 ან მეტი შეფასების შემთხვევაში",
+    disclaimer: "ინფორმაცია შეიძლება შეიცვალოს — გადაამოწმეთ ორგანიზაციასთან.",
+    reportError: "შეცდომის შეტყობინება",
   },
 };

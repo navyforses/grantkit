@@ -978,6 +978,13 @@ export const ru: Translations = {
       statBranches: "Филиалы",
       statPrograms: "Программы",
       statCategories: "Категории",
+      call: "Позвонить",
+      directions: "Маршрут",
+      website: "Сайт",
+      networkError: "Нет соединения — попробуйте ещё раз",
+      retry: "Повторить",
+      notFound: "Организация не найдена",
+      notFoundDesc: "Такой организации нет или она больше не в каталоге.",
     },
     empty: "Нет организаций, соответствующих фильтрам.",
     loading: "Загрузка организаций...",
@@ -1223,5 +1230,23 @@ export const ru: Translations = {
       both: "Без записи и по записи",
       unknown: "Политика визитов не подтверждена",
     },
+  },
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: "Проверено {date} · источник: {source}",
+    needsRecheck: "Проверено {date} · требует повторной проверки",
+    unverified: "Не проверено — позвоните и уточните",
+    source: {
+      google_places: "Google Places",
+      website: "сайт организации",
+      manual: "ручная проверка",
+      imported: "импортированные данные",
+      unknown: "источник неизвестен",
+    },
+    nothingKnown: "Информация уточняется",
+    ratingHidden: "Рейтинг Google показывается при наличии не менее 5 отзывов",
+    disclaimer: "Информация может измениться — уточните в организации.",
+    reportError: "Сообщить об ошибке",
   },
 };

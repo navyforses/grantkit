@@ -978,6 +978,13 @@ export const es: Translations = {
       statBranches: "Sucursales",
       statPrograms: "Programas",
       statCategories: "Categorías",
+      call: "Llamar",
+      directions: "Cómo llegar",
+      website: "Sitio web",
+      networkError: "Sin conexión — inténtelo de nuevo",
+      retry: "Reintentar",
+      notFound: "Organización no encontrada",
+      notFoundDesc: "Esta organización no existe o ya no figura en el catálogo.",
     },
     empty: "Ninguna organización coincide con tus filtros.",
     loading: "Cargando organizaciones...",
@@ -1223,5 +1230,23 @@ export const es: Translations = {
       both: "Sin cita y con cita",
       unknown: "Política de visita por confirmar",
     },
+  },
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: "Verificado el {date} · fuente: {source}",
+    needsRecheck: "Verificado el {date} · requiere nueva verificación",
+    unverified: "Sin verificar — llame para confirmar",
+    source: {
+      google_places: "Google Places",
+      website: "sitio web de la organización",
+      manual: "verificación manual",
+      imported: "datos importados",
+      unknown: "fuente desconocida",
+    },
+    nothingKnown: "Información por confirmar",
+    ratingHidden: "La valoración de Google se muestra a partir de 5 reseñas",
+    disclaimer: "La información puede cambiar — verifíquela con la organización.",
+    reportError: "Informar de un error",
   },
 };

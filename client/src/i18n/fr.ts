@@ -978,6 +978,13 @@ export const fr: Translations = {
       statBranches: "Filiales",
       statPrograms: "Programmes",
       statCategories: "Catégories",
+      call: "Appeler",
+      directions: "Itinéraire",
+      website: "Site web",
+      networkError: "Pas de connexion — réessayez",
+      retry: "Réessayer",
+      notFound: "Organisation introuvable",
+      notFoundDesc: "Cette organisation n'existe pas ou n'est plus référencée.",
     },
     empty: "Aucune organisation ne correspond à vos filtres.",
     loading: "Chargement des organisations...",
@@ -1223,5 +1230,23 @@ export const fr: Translations = {
       both: "Visites libres & rendez-vous",
       unknown: "Politique de visite à confirmer",
     },
+  },
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: "Vérifié le {date} · source : {source}",
+    needsRecheck: "Vérifié le {date} · à revérifier",
+    unverified: "Non vérifié — appelez pour confirmer",
+    source: {
+      google_places: "Google Places",
+      website: "site de l'organisation",
+      manual: "vérification manuelle",
+      imported: "données importées",
+      unknown: "source inconnue",
+    },
+    nothingKnown: "Informations à confirmer",
+    ratingHidden: "La note Google s'affiche à partir de 5 avis",
+    disclaimer: "Les informations peuvent changer — vérifiez auprès de l'organisation.",
+    reportError: "Signaler une erreur",
   },
 };

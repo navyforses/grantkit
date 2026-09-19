@@ -43,6 +43,18 @@ export const LANGUAGES: LanguageOption[] = [
 
 const translations: Record<Language, Translations> = { en, fr, es, ru, ka };
 
+const SUPPORTED: Language[] = ["en", "fr", "es", "ru", "ka"];
+
+/**
+ * Map a BCP-47 browser tag ("ka-GE", "fr", "es-419") to a supported
+ * language; anything else → "en". Used on the first visit only — once a
+ * preference is stored it always wins (Phase 1.7).
+ */
+export function detectBrowserLanguage(navLang: string | undefined | null): Language {
+  const prefix = (navLang ?? "").toLowerCase().split(/[-_]/)[0];
+  return (SUPPORTED as string[]).includes(prefix) ? (prefix as Language) : "en";
+}
+
 interface TranslatedContent {
   name: string;
   description: string;
@@ -89,14 +101,15 @@ export const LanguageContext = createContext<LanguageContextType | undefined>(un
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     // `?lang=xx` (hreflang alternates from server/seoHead.ts) wins over the
-    // saved preference and becomes the new saved preference.
+    // saved preference and becomes the new saved preference (Phase 1.8).
     const fromUrl = new URLSearchParams(window.location.search).get("lang");
-    if (fromUrl && fromUrl in translations) {
+    if (fromUrl && (SUPPORTED as string[]).includes(fromUrl)) {
       localStorage.setItem("grantkit-lang", fromUrl);
       return fromUrl as Language;
     }
     const saved = localStorage.getItem("grantkit-lang");
-    return (saved as Language) || "en";
+    if (saved && (SUPPORTED as string[]).includes(saved)) return saved as Language;
+    return detectBrowserLanguage(typeof navigator !== "undefined" ? navigator.language : undefined);
   });
 
   const setLanguage = useCallback((lang: Language) => {
@@ -131,7 +144,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const tCountry = useCallback(
     (country: string): string => {
       const labels = COUNTRY_LABELS[country];
-      return labels?.[language] || country;
+      if (labels?.[language]) return labels[language];
+      // ISO codes (FR, DE, …) → the per-language `country` dictionary.
+      const dict = translations[language].country as Record<string, string | undefined>;
+      return dict[country] || country;
     },
     [language]
   );
