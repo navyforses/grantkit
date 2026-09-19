@@ -1,4 +1,5 @@
 import type { Domain } from "@shared/domains";
+import type { ViewerStatus } from "@/lib/onboardingLocal";
 
 export interface Translations {
   // Navbar
@@ -838,6 +839,12 @@ export interface Translations {
     totalAvailable: string;
     removeFromSaved: string;
     toastRemoveError: string;
+    // Phase 1.3 — organizations for the user's country / domains
+    forYou: string;
+    forYouAll: string;
+    forYouEmpty: string;
+    seeAll: string;
+    yourNeeds: string;
   };
 
   // Dashboard layout
@@ -1317,6 +1324,42 @@ export interface Translations {
       both: string;
       unknown: string;
     };
+  };
+
+  // Onboarding v2 (Phase 1.3): country → city+language → status (client-only, D6) → needs
+  onboardingV2: {
+    welcomeTitle: string;
+    welcomeSubtitle: string;
+    stepCity: string;
+    stepCityHint: string;
+    cityLabel: string;
+    cityPlaceholder: string;
+    languageLabel: string;
+    stepStatus: string;
+    stepStatusHint: string;
+    privacyNote: string;
+    statuses: Record<ViewerStatus, string>;
+    stepNeeds: string;
+    stepNeedsHint: string;
+  };
+
+  // France fields on the organization page (Phase 1.6): housing, services, audience, badges
+  orgFrance: {
+    servicesTitle: string;
+    audienceTitle: string;
+    housingTitle: string;
+    housingTypeLabel: string;
+    housingType: { parents_house: string; shelter: string; social: string; temporary: string; hotel: string; apartment: string; other: string };
+    capacity: string;
+    maxStay: string;
+    registration: string;
+    cost: string;
+    childrenFriendly: string;
+    disabledAccessible: string;
+    yes: string;
+    no: string;
+    nationwide: string; // template: "All of {country}"
+    purpose: { all: string; study: string; medical: string; work: string; family: string; asylum: string; other: string };
   };
 
   // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).

@@ -628,21 +628,24 @@ export const appRouter = router({
       return { success: true };
     }),
 
+    /** Onboarding v2 (Phase 1.3): `needs` holds integration-domain keys
+     *  (shared/domains.ts). `purposes` is optional. Immigration status is
+     *  client-only (D6) — it is not an input here and must never become one. */
     saveProfile: protectedProcedure
       .input(z.object({
         targetCountry: z.string(),
-        purposes: z.array(z.string()),
-        purposeDetails: z.array(z.string()),
         needs: z.array(z.string()),
-        needDetails: z.array(z.string()),
+        purposes: z.array(z.string()).optional(),
+        purposeDetails: z.array(z.string()).optional(),
+        needDetails: z.array(z.string()).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateUserProfile(ctx.user.id, {
           targetCountry: input.targetCountry,
-          purposes: JSON.stringify(input.purposes),
-          purposeDetails: JSON.stringify(input.purposeDetails),
           needs: JSON.stringify(input.needs),
-          needDetails: JSON.stringify(input.needDetails),
+          ...(input.purposes !== undefined && { purposes: JSON.stringify(input.purposes) }),
+          ...(input.purposeDetails !== undefined && { purposeDetails: JSON.stringify(input.purposeDetails) }),
+          ...(input.needDetails !== undefined && { needDetails: JSON.stringify(input.needDetails) }),
         });
         await completeOnboarding(ctx.user.id);
         return { success: true };
