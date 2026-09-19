@@ -15,7 +15,7 @@
 -- See `.grantkit-redesign/HANDOFF-claude-code-wave1.md` for column rationale.
 
 -- Block 1 — drop dead Phase 2 table
-DROP TABLE IF EXISTS `organization_translations`;
+DROP TABLE IF EXISTS `organization_translations`;--> statement-breakpoint
 --> statement-breakpoint
 
 -- Block 2 — organizations extensions
@@ -29,16 +29,16 @@ ALTER TABLE `organizations`
   ADD COLUMN `foundedYear`         INT,
   ADD COLUMN `legalStatus`         VARCHAR(255),
   ADD COLUMN `mainCategory`        VARCHAR(64),
-  ADD COLUMN `isNational`          BOOLEAN NOT NULL DEFAULT FALSE;
+  ADD COLUMN `isNational`          BOOLEAN NOT NULL DEFAULT FALSE;--> statement-breakpoint
 --> statement-breakpoint
 
-CREATE INDEX `orgs_main_category_idx` ON `organizations` (`mainCategory`);
+CREATE INDEX `orgs_main_category_idx` ON `organizations` (`mainCategory`);--> statement-breakpoint
 --> statement-breakpoint
 
-CREATE INDEX `orgs_is_national_idx` ON `organizations` (`isNational`);
+CREATE INDEX `orgs_is_national_idx` ON `organizations` (`isNational`);--> statement-breakpoint
 --> statement-breakpoint
 
-CREATE INDEX `orgs_org_type_idx` ON `organizations` (`organizationType`);
+CREATE INDEX `orgs_org_type_idx` ON `organizations` (`organizationType`);--> statement-breakpoint
 --> statement-breakpoint
 
 -- Block 3 — housing table (102 rows for shelters / temp housing)

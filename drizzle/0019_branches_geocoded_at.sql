@@ -14,7 +14,7 @@
 -- swallows ER_DUP_FIELDNAME so re-runs are safe.
 
 ALTER TABLE `organization_branches`
-  ADD COLUMN `geocodedAt` TIMESTAMP NULL;
+  ADD COLUMN `geocodedAt` TIMESTAMP NULL;--> statement-breakpoint
 --> statement-breakpoint
 
 CREATE INDEX `branches_geocoded_at_idx` ON `organization_branches` (`geocodedAt`);
