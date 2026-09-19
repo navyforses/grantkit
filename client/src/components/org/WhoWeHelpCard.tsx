@@ -2,15 +2,15 @@
  * WhoWeHelpCard — the five accessibility signals for newcomers.
  *
  * Renders languages + immigration-status + insurance + cost + appointment
- * as a single card. Every row renders, even with missing data — unknown
- * rows show a greyed placeholder + alert icon so the user sees the
- * structure and the admin team sees what still needs filling.
+ * as a single card. Only rows with a known value render (Phase 1.5, D7):
+ * an `unknown` enum is never shown as "unconfirmed". When nothing is
+ * known the card collapses to a single muted "to be confirmed" line.
  *
  * Rows fade/slide-in staggered on viewport entry.
  */
 
 import { motion } from "framer-motion";
-import { AlertCircle, DollarSign, Globe, HeartPulse, Languages, ShieldCheck } from "lucide-react";
+import { DollarSign, Globe, HeartPulse, Languages, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
   appointmentLabel,
@@ -50,7 +50,7 @@ export default function WhoWeHelpCard(props: Props) {
     tone: "active" | "muted";
   };
 
-  const rows: Row[] = [
+  const allRows: Row[] = [
     {
       icon: <Languages className="w-4 h-4" aria-hidden />,
       label: e.languagesLabel,
@@ -82,6 +82,7 @@ export default function WhoWeHelpCard(props: Props) {
       tone: isKnownEnum(props.appointmentPolicy) ? "active" : "muted",
     },
   ];
+  const rows = allRows.filter((row) => row.tone === "active");
 
   return (
     <motion.div
@@ -95,6 +96,11 @@ export default function WhoWeHelpCard(props: Props) {
         <ShieldCheck className="w-3.5 h-3.5 text-[color:var(--brand-green)]" aria-hidden />
         {e.whoWeHelpTitle}
       </h2>
+      {rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground/70 italic" data-testid="who-we-help-empty">
+          {t.orgTrust.nothingKnown}
+        </p>
+      ) : (
       <ul className="space-y-3">
         {rows.map((row, i) => (
           <motion.li
@@ -126,15 +132,10 @@ export default function WhoWeHelpCard(props: Props) {
                 {row.value}
               </div>
             </div>
-            {row.tone === "muted" && (
-              <AlertCircle
-                className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0 mt-1"
-                aria-label="data missing"
-              />
-            )}
           </motion.li>
         ))}
       </ul>
+      )}
     </motion.div>
   );
 }

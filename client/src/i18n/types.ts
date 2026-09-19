@@ -1,3 +1,5 @@
+import type { Domain } from "@shared/domains";
+
 export interface Translations {
   // Navbar
   nav: {
@@ -1037,12 +1039,22 @@ export interface Translations {
       label: string;
       all: string;
     };
+    // Phase 1 (1.4) — integration-domain × language × cost × status filters
+    domain: { label: string; all: string };
+    language: { label: string; all: string };
+    cost: { label: string; all: string; free: string; sliding_scale: string; paid: string; insurance: string; mixed: string };
+    status: { label: string; all: string; yes: string; case_by_case: string; no: string };
+    // Health-only sub-filter (diagnosis / B-2 visa) — shown when domain=health
+    health: { b2Label: string; b2All: string; b2Yes: string; diagnosisPlaceholder: string };
     view: {
       ariaLabel: string;       // aria-label on the Map/List tablist
       map: string;
       list: string;
     };
   };
+
+  // The 11 integration domains (shared/domains.ts) — everyday words, not jargon
+  domains: Record<Domain, { label: string; description: string }>;
 
   // Mobile catalog tab switcher (Phase 4B — list/map tabs below 768px)
   mobileCatalog: {
@@ -1174,6 +1186,14 @@ export interface Translations {
       statBranches: string;
       statPrograms: string;
       statCategories: string;
+      // Phase 1.7 — mobile action bar + error states
+      call: string;
+      directions: string;
+      website: string;
+      networkError: string;
+      retry: string;
+      notFound: string;
+      notFoundDesc: string;
     };
     empty: string;
     loading: string;
@@ -1287,5 +1307,23 @@ export interface Translations {
       both: string;
       unknown: string;
     };
+  };
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: string;
+    needsRecheck: string;
+    unverified: string;
+    source: {
+      google_places: string;
+      website: string;
+      manual: string;
+      imported: string;
+      unknown: string;
+    };
+    nothingKnown: string;
+    ratingHidden: string;
+    disclaimer: string;
+    reportError: string;
   };
 }

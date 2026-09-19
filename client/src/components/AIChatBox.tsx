@@ -4,7 +4,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Send, User, Sparkles, RotateCcw, Copy, AlertCircle, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Streamdown } from "streamdown";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { AnimatePresence } from "framer-motion";
 import { GrantFocusChip } from "./GrantFocusChip";
 import type { ParsedGrant } from "./GrantCard";
@@ -59,7 +60,7 @@ function formatTime(date: Date): string {
 }
 
 /**
- * Custom link component for Streamdown — opens external links in new tab
+ * Custom link component for ReactMarkdown — opens external links in new tab
  */
 function MarkdownLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   const { href, children, ...rest } = props;
@@ -77,7 +78,8 @@ function MarkdownLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   );
 }
 
-const streamdownComponents = { a: MarkdownLink };
+const markdownComponents = { a: MarkdownLink };
+const remarkPlugins = [remarkGfm];
 
 export function AIChatBox({
   messages,
@@ -274,7 +276,7 @@ export function AIChatBox({
                       >
                         {message.role === "assistant" ? (
                           <div className="prose prose-base dark:prose-invert max-w-none text-[15px] leading-relaxed prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-li:leading-snug prose-headings:mt-4 prose-headings:mb-2 prose-headings:leading-tight prose-hr:my-3 prose-blockquote:my-2">
-                            <Streamdown components={streamdownComponents}>{cleanNonGeorgianText(message.content)}</Streamdown>
+                            <ReactMarkdown components={markdownComponents} remarkPlugins={remarkPlugins}>{cleanNonGeorgianText(message.content)}</ReactMarkdown>
                           </div>
                         ) : (
                           <p className="whitespace-pre-wrap text-base">

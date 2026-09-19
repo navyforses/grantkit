@@ -10,6 +10,7 @@ import { usePaddleInit } from "./hooks/usePaddle";
 import { lazy, Suspense, useEffect } from "react";
 import MobileHeader from "./components/MobileHeader";
 import MobileBottomNav from "./components/MobileBottomNav";
+import PageFallback from "./components/PageFallback";
 import Home from "./pages/Home";
 import OnboardingModal from "./components/OnboardingModal";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -36,11 +37,6 @@ const VerifyEmail     = lazy(() => import("./pages/VerifyEmail"));
 const ForgotPassword  = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword   = lazy(() => import("./pages/ResetPassword"));
 
-// Blank screen (matches app background) shown while a lazy chunk downloads.
-// Avoids white flash on theme-aware pages.
-function PageFallback() {
-  return <div className="min-h-screen bg-background" />;
-}
 
 function Router() {
   return (
@@ -54,6 +50,8 @@ function Router() {
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/reset-password" component={ResetPassword} />
         {/* Everything else is lazy */}
+        <Route path="/organizations" component={Catalog} />
+        {/* Legacy path — Express 301s it; client-side navigation lands here. */}
         <Route path="/catalog" component={Catalog} />
         <Route path="/grant/:id" component={EntityDetail} />
         <Route path="/profile" component={Profile} />

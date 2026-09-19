@@ -980,6 +980,13 @@ export const en: Translations = {
       statBranches: "Branches",
       statPrograms: "Programs",
       statCategories: "Categories",
+      call: "Call",
+      directions: "Directions",
+      website: "Website",
+      networkError: "No connection — try again",
+      retry: "Retry",
+      notFound: "Organization not found",
+      notFoundDesc: "This organization doesn't exist or is no longer listed.",
     },
     empty: "No organizations match your filters.",
     loading: "Loading organizations...",
@@ -1086,11 +1093,30 @@ export const en: Translations = {
       label: "Category",
       all: "All categories",
     },
+    domain: { label: "Need", all: "All needs" },
+    language: { label: "Language", all: "Any language" },
+    cost: { label: "Cost", all: "Any cost", free: "Free", sliding_scale: "Sliding scale", paid: "Paid", insurance: "Via insurance", mixed: "Mixed" },
+    status: { label: "Without papers", all: "Any", yes: "Accepted", case_by_case: "Case by case", no: "Not accepted" },
+    health: { b2Label: "B-2 visa", b2All: "Any", b2Yes: "B-2 eligible only", diagnosisPlaceholder: "Diagnosis (e.g. cancer)" },
     view: {
       ariaLabel: "View mode",
       map: "Map",
       list: "List",
     },
+  },
+
+  domains: {
+    legal_status: { label: "Residence & papers", description: "Asylum, residence permit, lawyer, consulate" },
+    housing: { label: "Housing", description: "Shelter, social housing, rent support" },
+    health: { label: "Health", description: "Doctor, free clinic, insurance, medication" },
+    mental_health: { label: "Mental health", description: "Psychologist, stress, addiction" },
+    language_education: { label: "Language & learning", description: "Language courses, school, university" },
+    work_income: { label: "Work", description: "Job search, diploma recognition, own business" },
+    money_benefits: { label: "Money & benefits", description: "Allowances, bank account, food aid, emergency cash" },
+    family_children: { label: "Family & children", description: "School enrolment, childcare, family reunification, women" },
+    community_social: { label: "Community", description: "Diaspora, faith, clubs, volunteering" },
+    safety_rights: { label: "Rights & safety", description: "Discrimination, violence, detention" },
+    daily_life: { label: "Daily life", description: "Transport, phone, interpreter, documents" },
   },
 
   mobileCatalog: {
@@ -1206,5 +1232,23 @@ export const en: Translations = {
       both: "Walk-ins & appointments",
       unknown: "Visit policy unconfirmed",
     },
+  },
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: "Last checked {date} · source: {source}",
+    needsRecheck: "Last checked {date} · needs re-verification",
+    unverified: "Unverified — call to double-check",
+    source: {
+      google_places: "Google Places",
+      website: "organization website",
+      manual: "manual check",
+      imported: "imported data",
+      unknown: "unknown source",
+    },
+    nothingKnown: "Information to be confirmed",
+    ratingHidden: "Google rating is shown once there are at least 5 reviews",
+    disclaimer: "Information may change — verify with the organization.",
+    reportError: "Report an error",
   },
 };

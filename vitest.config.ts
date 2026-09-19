@@ -12,8 +12,11 @@ export default defineConfig({
       "@assets": path.resolve(templateRoot, "attached_assets"),
     },
   },
+  // tsconfig has jsx: "preserve" (Vite handles it); vitest needs the runtime.
+  esbuild: { jsx: "automatic" },
   test: {
     environment: "node",
-    include: ["server/**/*.test.ts", "server/**/*.spec.ts"],
+    // Client component tests opt into jsdom with `// @vitest-environment jsdom`.
+    include: ["server/**/*.test.ts", "server/**/*.spec.ts", "shared/**/*.test.ts", "client/src/**/*.test.{ts,tsx}"],
   },
 });

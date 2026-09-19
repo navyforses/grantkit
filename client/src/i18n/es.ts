@@ -978,6 +978,13 @@ export const es: Translations = {
       statBranches: "Sucursales",
       statPrograms: "Programas",
       statCategories: "Categorías",
+      call: "Llamar",
+      directions: "Cómo llegar",
+      website: "Sitio web",
+      networkError: "Sin conexión — inténtelo de nuevo",
+      retry: "Reintentar",
+      notFound: "Organización no encontrada",
+      notFoundDesc: "Esta organización no existe o ya no figura en el catálogo.",
     },
     empty: "Ninguna organización coincide con tus filtros.",
     loading: "Cargando organizaciones...",
@@ -1084,11 +1091,30 @@ export const es: Translations = {
       label: "Categoría",
       all: "Todas las categorías",
     },
+    domain: { label: "Necesidad", all: "Todas las necesidades" },
+    language: { label: "Idioma", all: "Cualquier idioma" },
+    cost: { label: "Coste", all: "Cualquiera", free: "Gratis", sliding_scale: "Según ingresos", paid: "De pago", insurance: "Con seguro", mixed: "Mixto" },
+    status: { label: "Sin papeles", all: "Indiferente", yes: "Se atiende", case_by_case: "Caso por caso", no: "No se atiende" },
+    health: { b2Label: "Visado B-2", b2All: "Indiferente", b2Yes: "Solo aptos para B-2", diagnosisPlaceholder: "Diagnóstico (p. ej. cáncer)" },
     view: {
       ariaLabel: "Modo de vista",
       map: "Mapa",
       list: "Lista",
     },
+  },
+
+  domains: {
+    legal_status: { label: "Residencia y papeles", description: "Asilo, permiso de residencia, abogado, consulado" },
+    housing: { label: "Vivienda", description: "Albergue, vivienda social, ayuda al alquiler" },
+    health: { label: "Salud", description: "Médico, clínica gratuita, seguro, medicamentos" },
+    mental_health: { label: "Salud mental", description: "Psicólogo, estrés, adicciones" },
+    language_education: { label: "Idioma y estudios", description: "Cursos de idioma, escuela, universidad" },
+    work_income: { label: "Trabajo", description: "Búsqueda de empleo, homologación de títulos, negocio propio" },
+    money_benefits: { label: "Dinero y ayudas", description: "Prestaciones, cuenta bancaria, ayuda alimentaria, ayuda de emergencia" },
+    family_children: { label: "Familia e hijos", description: "Matrícula escolar, guardería, reagrupación familiar, mujeres" },
+    community_social: { label: "Comunidad", description: "Diáspora, iglesia, clubes, voluntariado" },
+    safety_rights: { label: "Derechos y seguridad", description: "Discriminación, violencia, detención" },
+    daily_life: { label: "Vida diaria", description: "Transporte, teléfono, intérprete, documentos" },
   },
 
   mobileCatalog: {
@@ -1204,5 +1230,23 @@ export const es: Translations = {
       both: "Sin cita y con cita",
       unknown: "Política de visita por confirmar",
     },
+  },
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: "Verificado el {date} · fuente: {source}",
+    needsRecheck: "Verificado el {date} · requiere nueva verificación",
+    unverified: "Sin verificar — llame para confirmar",
+    source: {
+      google_places: "Google Places",
+      website: "sitio web de la organización",
+      manual: "verificación manual",
+      imported: "datos importados",
+      unknown: "fuente desconocida",
+    },
+    nothingKnown: "Información por confirmar",
+    ratingHidden: "La valoración de Google se muestra a partir de 5 reseñas",
+    disclaimer: "La información puede cambiar — verifíquela con la organización.",
+    reportError: "Informar de un error",
   },
 };

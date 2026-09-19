@@ -29,21 +29,25 @@ import {
   LayoutGrid,
   Mail,
   MapPin,
+  Navigation,
   Network,
   Phone,
-  Share2,
+  RefreshCw,
   Sparkles,
+  WifiOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
+import PageFallback from "@/components/PageFallback";
 import OrganizationsMap, { type OrgMapPoint } from "@/components/OrganizationsMap";
 const OrgAiChat = lazy(() => import("@/components/OrgAiChat"));
 import GrantDetailHeader from "@/components/grant/GrantDetailHeader";
 import TrustPanel from "@/components/org/TrustPanel";
 import WhoWeHelpCard from "@/components/org/WhoWeHelpCard";
 import SocialMediaRow from "@/components/org/SocialMediaRow";
+import ProvenanceLine from "@/components/org/ProvenanceLine";
 import {
   parseSocialMedia,
   type AcceptsUndocumented,
@@ -59,7 +63,7 @@ import { toast } from "sonner";
 export default function OrganizationDetail() {
   const params = useParams<{ orgId: string }>();
   const orgId = params.orgId;
-  const { t, tCountry } = useLanguage();
+  const { t, tCategory, tCountry } = useLanguage();
   const { isAuthenticated } = useAuth();
   const [aiOpen, setAiOpen] = useState(false);
   // Latch — once the chat has been opened we keep the lazy chunk mounted
@@ -112,10 +116,20 @@ export default function OrganizationDetail() {
   }
 
   if (detailQuery.isLoading) {
+    return <PageFallback />;
+  }
+
+  // Network / server failure — distinct from "not found" (Phase 1.7).
+  if (detailQuery.isError) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        <main className="flex-1 container py-10 flex items-center justify-center">
-          <p className="text-muted-foreground">{t.organizations.loading}</p>
+        <main className="flex-1 container py-10 flex flex-col items-center justify-center text-center gap-4" data-testid="org-network-error">
+          <WifiOff className="w-8 h-8 text-muted-foreground/60" aria-hidden />
+          <p className="text-foreground font-medium">{t.organizations.detail.networkError}</p>
+          <Button variant="outline" className="gap-2" onClick={() => detailQuery.refetch()}>
+            <RefreshCw className="w-4 h-4" />
+            {t.organizations.detail.retry}
+          </Button>
         </main>
       </div>
     );
@@ -124,11 +138,11 @@ export default function OrganizationDetail() {
   if (!org) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        <main className="flex-1 container py-10">
+        <main className="flex-1 container py-10" data-testid="org-not-found">
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            {t.grantDetail.notFound}
+            {t.organizations.detail.notFound}
           </h1>
-          <p className="text-muted-foreground mb-4">{t.grantDetail.notFoundDesc}</p>
+          <p className="text-muted-foreground mb-4">{t.organizations.detail.notFoundDesc}</p>
           <Link href="/catalog">
             <Button variant="outline" className="gap-2">
               <ChevronRight className="w-4 h-4 rotate-180" />
@@ -153,6 +167,14 @@ export default function OrganizationDetail() {
   const websiteHref = website
     ? website.startsWith("http") ? website : `https://${website}`
     : "";
+  // Directions — HQ coordinates when geocoded, else the postal address.
+  const hqPoint = mapPoints.find((p) => p.branchType === "HQ") ?? mapPoints[0];
+  const directionsTarget = hqPoint
+    ? `${hqPoint.latitude},${hqPoint.longitude}`
+    : [org.hqAddress, org.city, org.country].filter(Boolean).join(", ");
+  const directionsHref = directionsTarget
+    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(directionsTarget)}`
+    : "";
 
   // ── Enrichment fields (v2 — 7 user-approved signals) ─────────────────
   // Read with safe defaults so the cards degrade gracefully when a row
@@ -170,6 +192,19 @@ export default function OrganizationDetail() {
   const missionStatement: string | null = anyOrg.missionStatement ?? null;
   const languagesRaw: string | null = anyOrg.orgLanguages ?? anyOrg.languages ?? null;
   const socialMedia = parseSocialMedia(anyOrg.socialMedia ?? null);
+  // Contact provenance (Phase 1.5, D7/D8) — the most recent of phone/email.
+  const phoneVerifiedAt: string | null = anyOrg.phoneVerifiedAt ?? null;
+  const phoneSource: string | null = anyOrg.phoneSource ?? null;
+  const emailVerifiedAt: string | null = anyOrg.emailVerifiedAt ?? null;
+  const emailSource: string | null = anyOrg.emailSource ?? null;
+  const latestVerified =
+    phoneVerifiedAt && emailVerifiedAt
+      ? new Date(phoneVerifiedAt) >= new Date(emailVerifiedAt)
+        ? { at: phoneVerifiedAt, source: phoneSource }
+        : { at: emailVerifiedAt, source: emailSource }
+      : phoneVerifiedAt
+      ? { at: phoneVerifiedAt, source: phoneSource }
+      : { at: emailVerifiedAt, source: emailSource };
 
   // ── 3-card stat strip — always 3 values for orgs (unlike grants where
   //    several are DATA_GAPS). Matches the grant page's pattern visually.
@@ -258,7 +293,7 @@ export default function OrganizationDetail() {
                   key={i}
                   className="inline-flex items-center text-[11px] font-medium px-2.5 py-1 rounded-full border border-border bg-muted/60 text-foreground/85"
                 >
-                  {cat}
+                  {tCategory(cat)}
                 </span>
               ))}
               {categories.length > 4 && (
@@ -309,10 +344,12 @@ export default function OrganizationDetail() {
               </div>
             )}
 
-            {/* Google rating & Trust — only renders when we have a rating */}
+            {/* Trust — always renders; rating only with enough reviews (D8) */}
             <TrustPanel
               googleRating={googleRating}
               googleReviewCount={googleReviewCount}
+              verifiedAt={latestVerified.at}
+              verifiedSource={latestVerified.source}
             />
 
             {/* Description + optional mission statement banner */}
@@ -335,7 +372,7 @@ export default function OrganizationDetail() {
               </div>
             )}
 
-            {/* Who we help — always renders, greyed rows signal "data missing" */}
+            {/* Who we help — only known rows; one muted line when nothing is known */}
             <WhoWeHelpCard
               languages={languagesRaw}
               acceptsUndocumented={acceptsUndocumented}
@@ -428,22 +465,28 @@ export default function OrganizationDetail() {
                   </a>
                 )}
                 {org.phone && (
-                  <a
-                    href={`tel:${org.phone}`}
-                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
-                  >
-                    <Phone className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
-                    <span className="truncate">{org.phone}</span>
-                  </a>
+                  <div className="min-w-0">
+                    <a
+                      href={`tel:${org.phone}`}
+                      className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
+                    >
+                      <Phone className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
+                      <span className="truncate">{org.phone}</span>
+                    </a>
+                    <ProvenanceLine verifiedAt={phoneVerifiedAt} source={phoneSource} className="mt-0.5 pl-6" />
+                  </div>
                 )}
                 {org.email && (
-                  <a
-                    href={`mailto:${org.email}`}
-                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
-                  >
-                    <Mail className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
-                    <span className="truncate">{org.email}</span>
-                  </a>
+                  <div className="min-w-0">
+                    <a
+                      href={`mailto:${org.email}`}
+                      className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
+                    >
+                      <Mail className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
+                      <span className="truncate">{org.email}</span>
+                    </a>
+                    <ProvenanceLine verifiedAt={emailVerifiedAt} source={emailSource} className="mt-0.5 pl-6" />
+                  </div>
                 )}
                 {org.officeHours && (
                   <div className="flex items-center gap-2 text-sm text-foreground/85 min-w-0">
@@ -456,6 +499,17 @@ export default function OrganizationDetail() {
 
             {/* Social media links — compact chips, hides when empty */}
             <SocialMediaRow links={socialMedia} />
+
+            {/* Disclaimer + error report (Phase 1.5) — on every org page */}
+            <p className="text-xs text-muted-foreground/70 leading-relaxed px-1" data-testid="org-disclaimer">
+              {t.orgTrust.disclaimer}{" "}
+              <a
+                href={`mailto:hello@grantkit.co?subject=${encodeURIComponent(`Error report ${orgId}`)}`}
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                {t.orgTrust.reportError}
+              </a>
+            </p>
 
             {/* Branches — the feature that makes the org page different
                 from the grant page. Keeps the verified HQ + Google Places
@@ -489,7 +543,7 @@ export default function OrganizationDetail() {
                         </span>
                       </div>
                       <div className="text-foreground/90 font-medium">
-                        {[b.city, b.state, b.country].filter(Boolean).join(", ")}
+                        {[b.city, b.state, b.country ? tCountry(b.country) : null].filter(Boolean).join(", ")}
                       </div>
                       {b.address && (
                         <div className="text-xs text-muted-foreground/80 mt-0.5 leading-relaxed">
@@ -552,29 +606,40 @@ export default function OrganizationDetail() {
         </SheetContent>
       </Sheet>
 
-      {/* Mobile sticky bottom CTA — sits above MobileBottomNav (h ≈ 56 px) */}
-      {website && (
-        <div className="lg:hidden fixed bottom-16 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-bottom">
+      {/* Mobile sticky action bar (Phase 1.7) — Call · Directions · Website,
+          each only when data exists. Sits above MobileBottomNav (h-16,
+          hidden md+) so the two never overlap; hidden on lg+ where the
+          desktop CTAs render inline. */}
+      {(org.phone || directionsHref || website) && (
+        <div
+          className="lg:hidden fixed bottom-16 md:bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-bottom"
+          data-testid="org-action-bar"
+        >
           <div className="flex gap-2">
-            <a
-              href={websiteHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1"
-            >
-              <Button className="w-full h-12 bg-[color:var(--brand-green)] active:bg-[color:var(--brand-green)]/90 text-white font-semibold gap-2 rounded-xl">
-                <ArrowUpRight className="w-4 h-4" />
-                {t.organizations.detail.visitWebsite}
-              </Button>
-            </a>
-            <Button
-              variant="outline"
-              className="h-12 w-12 shrink-0 rounded-xl border-border text-foreground/80"
-              onClick={handleShare}
-              aria-label={t.grantDetail.share}
-            >
-              <Share2 className="w-5 h-5" />
-            </Button>
+            {org.phone && (
+              <a href={`tel:${org.phone}`} className="flex-1 min-w-0">
+                <Button className="w-full h-12 bg-[color:var(--brand-green)] active:bg-[color:var(--brand-green)]/90 text-white font-semibold gap-2 rounded-xl">
+                  <Phone className="w-4 h-4" />
+                  {t.organizations.detail.call}
+                </Button>
+              </a>
+            )}
+            {directionsHref && (
+              <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0">
+                <Button variant="outline" className="w-full h-12 rounded-xl border-border text-foreground/85 gap-2">
+                  <Navigation className="w-4 h-4" />
+                  {t.organizations.detail.directions}
+                </Button>
+              </a>
+            )}
+            {website && (
+              <a href={websiteHref} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0">
+                <Button variant="outline" className="w-full h-12 rounded-xl border-border text-foreground/85 gap-2">
+                  <ArrowUpRight className="w-4 h-4" />
+                  {t.organizations.detail.website}
+                </Button>
+              </a>
+            )}
           </div>
         </div>
       )}
