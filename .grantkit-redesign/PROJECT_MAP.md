@@ -4,7 +4,7 @@
 > project. Any new session (Claude / Cowork / human) must scan this before
 > opening a PR, asking the user for setup, or touching schema/env vars.
 >
-> Last updated: **2026-09-18** — integration-pivot diagnostic + master plan added (`.grantkit-redesign/integration-pivot/`); leaked DB credential redacted from AUDIT-CONTINUATION (rotation still required). Previous: **2026-05-04** — Phase 4 data-quality findings closed via Task 2.2 (operator): 13 country fixes + 618 orphan grants linked + 1,245 branches geocoded (94 % success).
+> Last updated: **2026-09-19** — MASTER PLAN v2 (finance-driven) + PIVOT.md v2; see integration-pivot/. Previous: **2026-09-18** — integration-pivot diagnostic + master plan added (`.grantkit-redesign/integration-pivot/`); leaked DB credential redacted from AUDIT-CONTINUATION (rotation still required). Previous: **2026-05-04** — Phase 4 data-quality findings closed via Task 2.2 (operator): 13 country fixes + 618 orphan grants linked + 1,245 branches geocoded (94 % success).
 
 ---
 
@@ -234,6 +234,7 @@ _Each session appends a 3-line summary so the next session knows what was done a
 ---
 - **2026-09-18** — Integration-pivot planning session (4 parallel specialist agents + 1 manager): `.grantkit-redesign/integration-pivot/` — `00-MASTER-PLAN.md` (definition, positioning, consolidated diagnostic, 5-phase roadmap with done-when, agent team, KPIs, 18 owner decisions) + reports 01–04. Verified `pnpm check` 0 errors / `pnpm test` 201/202 / `pnpm build` OK / `pnpm audit --prod` 57 vuln (0 critical). **P0 found:** production MySQL root password was committed in `AUDIT-CONTINUATION-2026-05-03.md` → redacted in PR #247, value still in git history → operator must rotate (OPS.md §Secret rotation) + both Google Maps keys; Paddle webhook fail-closed while `PADDLE_WEBHOOK_SECRET` absent from documented Railway env and migration 0020 unverified. Note: `subscription.activate` no longer exists (removed 2026-05-12) — tRPC list in CLAUDE.md is stale. Blocking owner decisions: D1 paywall, D2 billing, D3 history rewrite, D5 beachhead, D6 status question (plan §8). Docs-only PR: #247 (draft).
 - **2026-09-19** — PR #247 merged by owner. Added `.grantkit-redesign/PIVOT.md` (strategy + status + owner-decision log + operator P0 list + agent protocol) and pointers in `CLAUDE.md` / this file so every future session sees the integration-pivot plan. Current phase set to Integration pivot — Phase 0. Owner decisions D1–D6 and secret rotation still pending.
+- **2026-09-19 (b)** — Finance-driven transformation: PRs #249 (reports 05 financial analysis, 06 profitable-site models, 07 monetization architecture) + this PR (`00-MASTER-PLAN.md` **v2**, v1 archived to `integration-pivot/archive/`, `PIVOT.md` v2). Verdict: $9/mo B2C cannot work; model = free ka/ru navigator + org-sold Org Pro/Institutional + ring-fenced `/health-abroad` concierge + partner offers behind code-level no-monetization zones; grants = runway. Helper Pro individual dropped. New financial P0: public `smartSearch` abuse exposure (cache + 10/min). 26 owner decisions, 9 blocking (D26 horizon first).
 
 ## 🔎 How to use this file
 
