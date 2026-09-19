@@ -44,6 +44,7 @@ import GrantDetailHeader from "@/components/grant/GrantDetailHeader";
 import TrustPanel from "@/components/org/TrustPanel";
 import WhoWeHelpCard from "@/components/org/WhoWeHelpCard";
 import SocialMediaRow from "@/components/org/SocialMediaRow";
+import ProvenanceLine from "@/components/org/ProvenanceLine";
 import {
   parseSocialMedia,
   type AcceptsUndocumented,
@@ -170,6 +171,19 @@ export default function OrganizationDetail() {
   const missionStatement: string | null = anyOrg.missionStatement ?? null;
   const languagesRaw: string | null = anyOrg.orgLanguages ?? anyOrg.languages ?? null;
   const socialMedia = parseSocialMedia(anyOrg.socialMedia ?? null);
+  // Contact provenance (Phase 1.5, D7/D8) — the most recent of phone/email.
+  const phoneVerifiedAt: string | null = anyOrg.phoneVerifiedAt ?? null;
+  const phoneSource: string | null = anyOrg.phoneSource ?? null;
+  const emailVerifiedAt: string | null = anyOrg.emailVerifiedAt ?? null;
+  const emailSource: string | null = anyOrg.emailSource ?? null;
+  const latestVerified =
+    phoneVerifiedAt && emailVerifiedAt
+      ? new Date(phoneVerifiedAt) >= new Date(emailVerifiedAt)
+        ? { at: phoneVerifiedAt, source: phoneSource }
+        : { at: emailVerifiedAt, source: emailSource }
+      : phoneVerifiedAt
+      ? { at: phoneVerifiedAt, source: phoneSource }
+      : { at: emailVerifiedAt, source: emailSource };
 
   // ── 3-card stat strip — always 3 values for orgs (unlike grants where
   //    several are DATA_GAPS). Matches the grant page's pattern visually.
@@ -309,10 +323,12 @@ export default function OrganizationDetail() {
               </div>
             )}
 
-            {/* Google rating & Trust — only renders when we have a rating */}
+            {/* Trust — always renders; rating only with enough reviews (D8) */}
             <TrustPanel
               googleRating={googleRating}
               googleReviewCount={googleReviewCount}
+              verifiedAt={latestVerified.at}
+              verifiedSource={latestVerified.source}
             />
 
             {/* Description + optional mission statement banner */}
@@ -335,7 +351,7 @@ export default function OrganizationDetail() {
               </div>
             )}
 
-            {/* Who we help — always renders, greyed rows signal "data missing" */}
+            {/* Who we help — only known rows; one muted line when nothing is known */}
             <WhoWeHelpCard
               languages={languagesRaw}
               acceptsUndocumented={acceptsUndocumented}
@@ -428,22 +444,28 @@ export default function OrganizationDetail() {
                   </a>
                 )}
                 {org.phone && (
-                  <a
-                    href={`tel:${org.phone}`}
-                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
-                  >
-                    <Phone className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
-                    <span className="truncate">{org.phone}</span>
-                  </a>
+                  <div className="min-w-0">
+                    <a
+                      href={`tel:${org.phone}`}
+                      className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
+                    >
+                      <Phone className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
+                      <span className="truncate">{org.phone}</span>
+                    </a>
+                    <ProvenanceLine verifiedAt={phoneVerifiedAt} source={phoneSource} className="mt-0.5 pl-6" />
+                  </div>
                 )}
                 {org.email && (
-                  <a
-                    href={`mailto:${org.email}`}
-                    className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
-                  >
-                    <Mail className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
-                    <span className="truncate">{org.email}</span>
-                  </a>
+                  <div className="min-w-0">
+                    <a
+                      href={`mailto:${org.email}`}
+                      className="flex items-center gap-2 text-sm text-foreground/85 hover:text-foreground transition-colors min-w-0"
+                    >
+                      <Mail className="w-4 h-4 shrink-0 text-[color:var(--brand-green)]" />
+                      <span className="truncate">{org.email}</span>
+                    </a>
+                    <ProvenanceLine verifiedAt={emailVerifiedAt} source={emailSource} className="mt-0.5 pl-6" />
+                  </div>
                 )}
                 {org.officeHours && (
                   <div className="flex items-center gap-2 text-sm text-foreground/85 min-w-0">
@@ -456,6 +478,17 @@ export default function OrganizationDetail() {
 
             {/* Social media links — compact chips, hides when empty */}
             <SocialMediaRow links={socialMedia} />
+
+            {/* Disclaimer + error report (Phase 1.5) — on every org page */}
+            <p className="text-xs text-muted-foreground/70 leading-relaxed px-1" data-testid="org-disclaimer">
+              {t.orgTrust.disclaimer}{" "}
+              <a
+                href={`mailto:hello@grantkit.co?subject=${encodeURIComponent(`Error report ${orgId}`)}`}
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                {t.orgTrust.reportError}
+              </a>
+            </p>
 
             {/* Branches — the feature that makes the org page different
                 from the grant page. Keeps the verified HQ + Google Places

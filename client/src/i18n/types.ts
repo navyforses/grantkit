@@ -1288,4 +1288,22 @@ export interface Translations {
       unknown: string;
     };
   };
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: string;
+    needsRecheck: string;
+    unverified: string;
+    source: {
+      google_places: string;
+      website: string;
+      manual: string;
+      imported: string;
+      unknown: string;
+    };
+    nothingKnown: string;
+    ratingHidden: string;
+    disclaimer: string;
+    reportError: string;
+  };
 }

@@ -1207,4 +1207,22 @@ export const en: Translations = {
       unknown: "Visit policy unconfirmed",
     },
   },
+
+  // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
+  orgTrust: {
+    lastChecked: "Last checked {date} · source: {source}",
+    needsRecheck: "Last checked {date} · needs re-verification",
+    unverified: "Unverified — call to double-check",
+    source: {
+      google_places: "Google Places",
+      website: "organization website",
+      manual: "manual check",
+      imported: "imported data",
+      unknown: "unknown source",
+    },
+    nothingKnown: "Information to be confirmed",
+    ratingHidden: "Google rating is shown once there are at least 5 reviews",
+    disclaimer: "Information may change — verify with the organization.",
+    reportError: "Report an error",
+  },
 };
