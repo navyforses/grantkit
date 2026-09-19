@@ -16,7 +16,6 @@ import {
   Mail,
   Search,
   Shield,
-  Star,
   UserPlus,
   Zap,
 } from "lucide-react";
@@ -29,6 +28,7 @@ import PricingCTA from "@/components/PricingCTA";
 import { type CatalogItem } from "@/lib/constants";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useStats, formatStat } from "@/hooks/useStats";
 import SEO from "@/components/SEO";
 import { OrganizationJsonLd, WebSiteJsonLd, FaqJsonLd } from "@/components/JsonLd";
 import { trpc } from "@/lib/trpc";
@@ -64,7 +64,8 @@ export default function Home() {
     undefined,
     { retry: false }
   );
-  const { data: countData } = trpc.catalog.count.useQuery(undefined, { retry: false });
+  const stats = useStats();
+  const grantCount = formatStat(stats.grants);
 
   // Static 5-item preview baked at build time — see catalogPreview.ts.
   // Avoids shipping the full 765 KB catalog.json in the main bundle just
@@ -103,8 +104,6 @@ export default function Home() {
       };
     });
   }, [previewData, staticPreview, language]);
-
-  const totalGrants = countData?.total || 640;
 
   const newsletterMutation = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => {
@@ -190,11 +189,9 @@ export default function Home() {
             className="mt-16 md:mt-24 flex items-center justify-center gap-10 md:gap-16 text-center"
           >
             {[
-              { value: t.hero.statGrants, label: t.hero.statGrantsLabel },
-              { value: t.hero.statCountries, label: t.hero.statCountriesLabel },
-              { value: t.hero.statMedical, label: t.hero.statMedicalLabel },
-              { value: t.hero.statFinancial, label: t.hero.statFinancialLabel },
-              { value: t.hero.statUpdated, label: t.hero.statUpdatedLabel },
+              { value: grantCount, label: t.hero.statGrantsLabel },
+              { value: formatStat(stats.organizations), label: t.hero.statOrganizationsLabel },
+              { value: formatStat(stats.countries), label: t.hero.statCountriesLabel },
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-xl md:text-3xl font-bold text-foreground">{stat.value}</p>
@@ -232,7 +229,7 @@ export default function Home() {
                   icon: Shield,
                   step: "02",
                   title: t.howItWorks.step2Title,
-                  desc: t.howItWorks.step2Desc,
+                  desc: t.howItWorks.step2Desc.replace("{count}", grantCount),
                   color: "bg-[color:var(--color-accent-honey)]/20 text-[color:var(--color-accent-sand)]",
                 },
                 {
@@ -366,7 +363,7 @@ export default function Home() {
               {t.preview.title}
             </h2>
             <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto">
-              {t.preview.subtitle}
+              {t.preview.subtitle.replace("{count}", grantCount)}
             </p>
           </motion.div>
 
@@ -401,69 +398,10 @@ export default function Home() {
             <div className="md:absolute md:inset-0 flex flex-col items-center justify-center mt-4 md:mt-0">
               <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl px-6 py-5 md:px-8 md:py-6 text-center shadow-lg w-full md:w-auto">
                 <Lock className="w-7 h-7 md:w-8 md:h-8 text-muted-foreground/60 mx-auto mb-2 md:mb-3" />
-                <p className="font-semibold text-foreground mb-1">{t.preview.lockedTitle}</p>
+                <p className="font-semibold text-foreground mb-1">{t.preview.lockedTitle.replace("{count}", grantCount)}</p>
                 <p className="text-sm text-muted-foreground mb-3 md:mb-4">{t.preview.lockedSubtitle}</p>
                 <PricingCTA text={t.preview.unlockCta} className="w-full md:w-auto justify-center" />
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== TESTIMONIALS SECTION ===== */}      <section className="py-12 md:py-20 bg-background">
-        <div className="container">
-          <motion.div {...fadeInUp} className="text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-foreground tracking-tight mb-3 md:mb-4">
-              {t.testimonials.title}
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
-              {t.testimonials.subtitle}
-            </p>
-          </motion.div>
-
-          {/* Stats bar */}
-          <motion.div {...fadeInUp} className="flex justify-center gap-6 md:gap-16 mb-8 md:mb-14">
-            {[
-              { value: t.testimonials.statUsers, label: t.testimonials.statUsersLabel },
-              { value: t.testimonials.statGrants, label: t.testimonials.statGrantsLabel },
-              { value: t.testimonials.statCountries, label: t.testimonials.statCountriesLabel },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-2xl md:text-4xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs md:text-sm text-muted-foreground mt-0.5 md:mt-1">{stat.label}</p>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Testimonial cards — horizontal scroll on mobile */}
-          <div className="md:grid md:grid-cols-3 md:gap-6 md:max-w-5xl md:mx-auto">
-            <div className="flex md:contents gap-4 overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
-              {t.testimonials.items.map((item, i) => (
-                <motion.div
-                  key={i}
-                  {...stagger}
-                  transition={{ duration: 0.4, delay: i * 0.12 }}
-                  className="bg-secondary border border-border rounded-xl p-5 md:p-6 flex-shrink-0 w-[80vw] md:w-auto snap-center"
-                >
-                  <div className="flex gap-1 mb-3 md:mb-4">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-[color:var(--color-accent-honey)] text-[color:var(--color-accent-honey)]" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4 md:mb-5 italic">
-                    "{item.text}"
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-sm">
-                      {item.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-foreground text-sm">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.role}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
             </div>
           </div>
         </div>
@@ -640,7 +578,7 @@ export default function Home() {
               {t.finalCta.title}
             </h2>
             <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto mb-6 md:mb-8">
-              {t.finalCta.subtitle}
+              {t.finalCta.subtitle.replace("{count}", grantCount)}
             </p>
             <PricingCTA text={t.finalCta.cta} size="large" className="w-full sm:w-auto justify-center" />
           </motion.div>

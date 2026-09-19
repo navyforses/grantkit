@@ -15,12 +15,14 @@ import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import { Sparkles, Database, Globe, Search } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useStats, formatStat } from "@/hooks/useStats";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { buildGrantFocusContext } from "@/lib/grantFocusContext";
 
 export default function AiAssistant() {
   const { t, language } = useLanguage();
+  const stats = useStats();
   const [messages, setMessages] = useState<Message[]>([]);
   const [lastInput, setLastInput] = useState<{
     message: string;
@@ -141,8 +143,8 @@ export default function AiAssistant() {
 
   const FEATURE_PILLS = [
     { icon: Database, label: t.aiAssistant.liveDatabase },
-    { icon: Globe, label: t.aiAssistant.countries },
-    { icon: Search, label: t.aiAssistant.grants },
+    { icon: Globe, label: t.aiAssistant.countries.replace("{count}", formatStat(stats.countries)) },
+    { icon: Search, label: t.aiAssistant.grants.replace("{count}", formatStat(stats.grants)) },
   ];
 
   const hasMessages = messages.length > 0;
