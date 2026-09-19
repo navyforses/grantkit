@@ -17,6 +17,7 @@
 | 2 | [`02-competitors.md`](./02-competitors.md) | Nino — ბაზრის ანალიტიკოსი | 24 პლატფორმა (Réfugiés.info, Soliguide, Integreat, Handbook Germany, USAHello, Signpost, Findhelp, Turn2us…); feature matrix; კონტენტ- და ბიზნეს-მოდელები; white space (ქართული არავის აქვს); 3 პოზიციონირების ვარიანტი; რისკები (65 წყარო) |
 | 3 | [`03-tech-diagnostic.md`](./03-tech-diagnostic.md) | Arash — Staff engineer | გადამოწმებული `pnpm check/test/build/audit`; 25 finding P0–P3 `file:line`-ით; არქიტექტურა; დოკუმენტაციის წინააღმდეგობები; 14-capability pivot-readiness; reuse vs rebuild; top-10 ტექნიკური ნაბიჯი |
 | 4 | [`04-product-ux-data.md`](./04-product-ux-data.md) | Priya — პროდუქტის დიზაინერი | 12-განზომილებიანი scorecard (საშუალო 1.9/5); top-10 პრობლემა; მონაცემთა მოდელის შესაბამისობა + ტაქსონომიის mapping + დაფარვის რიცხვები; quick wins vs სტრუქტურული; 3 სამიზნე journey; ka copy spot-check; screenshot-ები [`screens/`](./screens/) |
+| 8 | [`08-online-validation.md`](./08-online-validation.md) | Ezra — ინტეგრაციის მკვლევარი | Phase 1 item 1.1-ის ონლაინ ჩანაცვლება (2026-09-19): ka/ru მოთხოვნის ევიდენსი (OFPRA/EUAA რანგები, არხები, 20 განმეორებადი კითხვა), ტაქსონომიის label-ების შემოწმება, FR მონაცემთა სიახლის baseline (5 org), WTP comparables (Integreat/Soliguide/Findhelp/facilitator-ები), €0 fake-door ტესტი, ვერდიქტი 1.1-ის done-when-ზე |
 
 ## TL;DR (სრულად — `00-MASTER-PLAN.md` §0, v2)
 
