@@ -19,6 +19,7 @@ const STATIC_PAGES = [
   { path: "/privacy", changefreq: "yearly", priority: "0.3" },
   { path: "/terms", changefreq: "yearly", priority: "0.3" },
   { path: "/refund", changefreq: "yearly", priority: "0.3" },
+  { path: "/trust", changefreq: "monthly", priority: "0.5" },
 ] as const;
 
 function getBaseUrl(req: { protocol: string; get: (name: string) => string | undefined }): string {

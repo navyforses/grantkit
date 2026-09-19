@@ -134,6 +134,7 @@ export const en: Translations = {
     contact: "Contact",
     paddle: "Payments by Paddle",
     rights: "All rights reserved.",
+    trust: "Trust & partners",
   },
   catalog: {
     title: "Grants & Resources Catalog",
@@ -1250,5 +1251,69 @@ export const en: Translations = {
     ratingHidden: "Google rating is shown once there are at least 5 reviews",
     disclaimer: "Information may change — verify with the organization.",
     reportError: "Report an error",
+  },
+  trust: {
+    seoTitle: "Trust contract & partners | GrantKit",
+    seoDescription: "How GrantKit stays free for migrants, who pays us, where there is never money, and how we handle your data.",
+    title: "Our trust contract",
+    intro: "GrantKit is a navigator for people settling in a new country. Because you may be in a vulnerable situation, we put our rules in writing. This page is the contract; if we break it, tell us.",
+    points: [
+      {
+        title: "1. Everything is free for migrants — and stays free",
+        body: "The directory of organizations, the guides, the checklist and the AI assistant are free. There is no paywall and no premium version for the person who needs help.",
+      },
+      {
+        title: "2. Who pays us",
+        body: "Partner companies (always marked \"Partner\"), organizations that buy a Pro listing, families who book the health-abroad concierge, and sponsors. The list of partners is public on this page and is updated whenever it changes.",
+      },
+      {
+        title: "3. Where there is never money",
+        body: "On the topics below no partner, ad or paid listing can appear. This is not a promise in words: the code does not allow it, whatever a contract says.",
+      },
+      {
+        title: "4. How partners are shown",
+        body: "Every partner mention carries the word \"Partner\" and a disclosure that we earn a commission. Money does not change the order: non-profit and public organizations always come before commercial ones, and a Pro badge does not mean \"verified\" — verification is a date and a source. Next to every partner there is always a free or non-partner alternative.",
+      },
+      {
+        title: "5. Your data",
+        body: "Your residence status and your health situation are never stored on our server: you choose them only in your browser. Clicking a partner link is counted anonymously — no cookie, no tracking pixel. Our analytics are cookieless.",
+      },
+      {
+        title: "6. How to report an error",
+        body: "Every organization page has a \"Report an error\" link — one click. You can also email us. A human reads it and answers.",
+      },
+      {
+        title: "7. What we never do",
+        body: "The rules that hold whatever happens to our funding:",
+      },
+      {
+        title: "8. Contact",
+        body: "Questions about this page, a partner, or your data: write to us. We answer in your language where we can.",
+      },
+    ],
+    neverZone: [
+      "Residence status, asylum and legal aid",
+      "Emergency healthcare, free clinics and health insurance for asylum seekers",
+      "Mental health",
+      "Safety and rights: violence, exploitation, discrimination",
+      "Emergency shelter",
+      "Child protection and women facing violence",
+      "Pages of non-profit and public organizations",
+      "The AI assistant and printed versions of any page",
+    ],
+    neverDo: [
+      "The AI assistant never recommends a partner: it gives information, not advice, and always links to the organization itself.",
+      "No banners, no pop-ups, no newsletter walls.",
+      "We never sell or share your data with partners.",
+      "Nobody can pay to be ranked higher or to be marked \"verified\".",
+      "No partner on status, health, safety or shelter topics — ever.",
+    ],
+    partnersTitle: "Our partners",
+    partnersIntro: "Companies we have an affiliate agreement with. Today they appear only here. On other pages a partner may appear only where rule 3 allows it, always marked, always with a free alternative next to it.",
+    partnersEmpty: "No partners yet. This list is updated the day one is added.",
+    partnerLabel: "Partner",
+    reportSubject: "Error report",
+    reportCta: "Report an error by email",
+    contactCta: "Write to us",
   },
 };

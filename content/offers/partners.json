@@ -1,0 +1,65 @@
+{
+  "$schema": "./partners.schema.json",
+  "partners": [
+    {
+      "slug": "wise",
+      "name": "Wise",
+      "domain": "money_benefits",
+      "countries": ["FR"],
+      "excludedStatuses": ["asylum_seeker", "undocumented"],
+      "disclosure": {
+        "en": "Partner offer. If you open an account through our link, GrantKit receives a commission. It costs you nothing extra, and a free or non-partner alternative is always shown next to it.",
+        "fr": "Offre partenaire. Si vous ouvrez un compte via notre lien, GrantKit perçoit une commission. Cela ne vous coûte rien de plus, et une alternative gratuite ou non partenaire est toujours indiquée à côté.",
+        "es": "Oferta de socio. Si abres una cuenta a través de nuestro enlace, GrantKit recibe una comisión. No te cuesta nada más, y siempre mostramos al lado una alternativa gratuita o sin socio.",
+        "ru": "Партнёрское предложение. Если вы откроете счёт по нашей ссылке, GrantKit получит комиссию. Для вас это ничего не стоит, а рядом всегда указана бесплатная или непартнёрская альтернатива.",
+        "ka": "პარტნიორის შეთავაზება. თუ ანგარიშს ჩვენი ბმულით გახსნით, GrantKit საკომისიოს იღებს. თქვენ ზედმეტს არაფერს იხდით, გვერდით კი ყოველთვის უფასო ან არაპარტნიორი ალტერნატივაა."
+      },
+      "trackingUrl": "TODO-after-registration"
+    },
+    {
+      "slug": "remitly",
+      "name": "Remitly",
+      "domain": "money_benefits",
+      "countries": ["FR"],
+      "excludedStatuses": ["asylum_seeker", "undocumented"],
+      "disclosure": {
+        "en": "Partner offer. If you send money through our link, GrantKit receives a commission. It costs you nothing extra, and a free or non-partner alternative is always shown next to it.",
+        "fr": "Offre partenaire. Si vous envoyez de l'argent via notre lien, GrantKit perçoit une commission. Cela ne vous coûte rien de plus, et une alternative gratuite ou non partenaire est toujours indiquée à côté.",
+        "es": "Oferta de socio. Si envías dinero a través de nuestro enlace, GrantKit recibe una comisión. No te cuesta nada más, y siempre mostramos al lado una alternativa gratuita o sin socio.",
+        "ru": "Партнёрское предложение. Если вы отправите деньги по нашей ссылке, GrantKit получит комиссию. Для вас это ничего не стоит, а рядом всегда указана бесплатная или непартнёрская альтернатива.",
+        "ka": "პარტნიორის შეთავაზება. თუ ფულს ჩვენი ბმულით გაგზავნით, GrantKit საკომისიოს იღებს. თქვენ ზედმეტს არაფერს იხდით, გვერდით კი ყოველთვის უფასო ან არაპარტნიორი ალტერნატივაა."
+      },
+      "trackingUrl": "TODO-after-registration"
+    },
+    {
+      "slug": "lebara",
+      "name": "Lebara",
+      "domain": "daily_life",
+      "countries": ["FR"],
+      "excludedStatuses": ["asylum_seeker", "undocumented"],
+      "disclosure": {
+        "en": "Partner offer. If you order a SIM through our link, GrantKit receives a commission. It costs you nothing extra, and a free or non-partner alternative is always shown next to it.",
+        "fr": "Offre partenaire. Si vous commandez une carte SIM via notre lien, GrantKit perçoit une commission. Cela ne vous coûte rien de plus, et une alternative gratuite ou non partenaire est toujours indiquée à côté.",
+        "es": "Oferta de socio. Si pides una SIM a través de nuestro enlace, GrantKit recibe una comisión. No te cuesta nada más, y siempre mostramos al lado una alternativa gratuita o sin socio.",
+        "ru": "Партнёрское предложение. Если вы закажете SIM-карту по нашей ссылке, GrantKit получит комиссию. Для вас это ничего не стоит, а рядом всегда указана бесплатная или непартнёрская альтернатива.",
+        "ka": "პარტნიორის შეთავაზება. თუ SIM-ბარათს ჩვენი ბმულით შეუკვეთავთ, GrantKit საკომისიოს იღებს. თქვენ ზედმეტს არაფერს იხდით, გვერდით კი ყოველთვის უფასო ან არაპარტნიორი ალტერნატივაა."
+      },
+      "trackingUrl": "TODO-after-registration"
+    },
+    {
+      "slug": "lingoda",
+      "name": "Lingoda",
+      "domain": "language_education",
+      "countries": ["FR"],
+      "excludedStatuses": ["asylum_seeker", "undocumented"],
+      "disclosure": {
+        "en": "Partner offer. If you book a course through our link, GrantKit receives a commission. It costs you nothing extra, and free language classes (associations, OFII) are always listed next to it.",
+        "fr": "Offre partenaire. Si vous réservez un cours via notre lien, GrantKit perçoit une commission. Cela ne vous coûte rien de plus, et des cours de langue gratuits (associations, OFII) sont toujours indiqués à côté.",
+        "es": "Oferta de socio. Si reservas un curso a través de nuestro enlace, GrantKit recibe una comisión. No te cuesta nada más, y siempre mostramos al lado clases de idioma gratuitas (asociaciones, OFII).",
+        "ru": "Партнёрское предложение. Если вы запишетесь на курс по нашей ссылке, GrantKit получит комиссию. Для вас это ничего не стоит, а рядом всегда указаны бесплатные языковые курсы (ассоциации, OFII).",
+        "ka": "პარტნიორის შეთავაზება. თუ კურსს ჩვენი ბმულით დაჯავშნით, GrantKit საკომისიოს იღებს. თქვენ ზედმეტს არაფერს იხდით, გვერდით კი ყოველთვის უფასო ენის კურსებია (ასოციაციები, OFII)."
+      },
+      "trackingUrl": "TODO-after-registration"
+    }
+  ]
+}
