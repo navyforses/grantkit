@@ -66,7 +66,7 @@ function getResendClient(): Resend | null {
 const BRAND_COLOR = "#6C3AED"; // Purple
 const BRAND_GREEN = "#16a34a";
 const BRAND_NAME = "GrantKit";
-const FROM_EMAIL = "onboarding@resend.dev"; // Resend default sender for testing
+const FROM_EMAIL = ENV.fromEmail;
 const SUPPORT_EMAIL = "support@grantkit.io";
 const SITE_URL = process.env.RAILWAY_PUBLIC_DOMAIN
   ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
@@ -356,6 +356,9 @@ export async function sendSubscriptionEmail(
 export async function sendAdminNewSubscriberNotification(
   subscriber: EmailRecipient
 ): Promise<SendEmailResult> {
+  if (!ENV.adminNotifyEmail) {
+    return { success: false, error: "ADMIN_NOTIFY_EMAIL not configured" };
+  }
   const resend = getResendClient();
   if (!resend) {
     return { success: false, error: "Email service not configured" };
@@ -364,7 +367,7 @@ export async function sendAdminNewSubscriberNotification(
   try {
     const { data, error } = await resend.emails.send({
       from: `${BRAND_NAME} <${FROM_EMAIL}>`,
-      to: [FROM_EMAIL], // Send to the default sender (admin)
+      to: [ENV.adminNotifyEmail],
       subject: `New GrantKit Pro subscriber: ${subscriber.name || subscriber.email}`,
       html: baseTemplate("New Subscriber", `
         <h2 style="margin:0 0 16px;color:#18181b;font-size:22px;font-weight:600;">New subscriber!</h2>
@@ -385,6 +388,39 @@ export async function sendAdminNewSubscriberNotification(
       return { success: false, error: error.message };
     }
 
+    return { success: true, messageId: data?.id };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("[Email] Error sending admin notification:", message);
+    return { success: false, error: message };
+  }
+}
+
+/**
+ * Plain-text notification to the owner inbox (ADMIN_NOTIFY_EMAIL).
+ * No-ops (success: false, no API call) when ADMIN_NOTIFY_EMAIL or
+ * RESEND_API_KEY is missing, so callers can fire-and-forget.
+ */
+export async function notifyAdmin(subject: string, text: string): Promise<SendEmailResult> {
+  if (!ENV.adminNotifyEmail) {
+    return { success: false, error: "ADMIN_NOTIFY_EMAIL not configured" };
+  }
+  const resend = getResendClient();
+  if (!resend) {
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: `${BRAND_NAME} <${FROM_EMAIL}>`,
+      to: [ENV.adminNotifyEmail],
+      subject: `[GrantKit] ${subject}`,
+      text,
+    });
+    if (error) {
+      console.error("[Email] Failed to send admin notification:", error);
+      return { success: false, error: error.message };
+    }
     return { success: true, messageId: data?.id };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
