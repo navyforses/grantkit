@@ -7,14 +7,14 @@ import { Helmet } from "react-helmet-async";
 
 const DEFAULT_OG_IMAGE = "https://d2xsxph8kpxj0f.cloudfront.net/310519663102724389/ne96tB4yURpkfMNLLJuy9T/og-image-LT43qbv2mf3WDHuJv8pmuH.png";
 const SITE_NAME = "GrantKit";
-const DEFAULT_DESCRIPTION = "Curated database of grants for medical treatment, financial assistance, and academic scholarships. Updated monthly.";
+const DEFAULT_DESCRIPTION = "Organizations that help immigrants in France with papers, housing, health, language and work — in your language, whatever your status. Free.";
 
 interface SEOProps {
   /** Page title — will be suffixed with " | GrantKit" unless noSuffix is true */
   title?: string;
   /** Meta description for search engines */
   description?: string;
-  /** Canonical URL path (e.g., "/catalog" or "/grant/item_0001") */
+  /** Canonical URL path (e.g., "/organizations" or "/organizations/org_0001") */
   canonicalPath?: string;
   /** Open Graph image URL */
   ogImage?: string;
@@ -42,7 +42,7 @@ export default function SEO({
     ? noSuffix
       ? title
       : `${title} | ${SITE_NAME}`
-    : `${SITE_NAME} — Find Medical & Startup Grants Worldwide`;
+    : `${SITE_NAME} — Immigrant integration navigator`;
 
   const canonicalUrl = canonicalPath
     ? `${window.location.origin}${canonicalPath}`

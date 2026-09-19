@@ -1389,11 +1389,14 @@ export const appRouter = router({
         return getOrganizationDetail(input.orgId);
       }),
 
-    /** Total active organizations count — used for the header stats bar. */
-    count: publicProcedure.query(async () => {
-      const result = await listOrganizations({ limit: 1, offset: 0 });
-      return { total: result.total };
-    }),
+    /** Total active organizations count — header stats bar; `country`
+     *  narrows it for the country-first hero (Phase 1.2). */
+    count: publicProcedure
+      .input(z.object({ country: z.string().max(2).optional() }).optional())
+      .query(async ({ input }) => {
+        const result = await listOrganizations({ country: input?.country, limit: 1, offset: 0 });
+        return { total: result.total };
+      }),
 
     /** Branch coordinates for the map. Honors all toolbar filters so
      *  markers stay in sync with the list. */

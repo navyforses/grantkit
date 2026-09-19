@@ -143,7 +143,7 @@ export default function OrganizationDetail() {
             {t.organizations.detail.notFound}
           </h1>
           <p className="text-muted-foreground mb-4">{t.organizations.detail.notFoundDesc}</p>
-          <Link href="/catalog">
+          <Link href="/organizations">
             <Button variant="outline" className="gap-2">
               <ChevronRight className="w-4 h-4 rotate-180" />
               {t.catalog.title}
@@ -263,7 +263,7 @@ export default function OrganizationDetail() {
       <GrantDetailHeader
         breadcrumb={[
           { label: t.detail.breadcrumbHome, href: "/" },
-          { label: t.catalog.title, href: "/catalog" },
+          { label: t.organizations.title, href: "/organizations" },
           { label: orgName },
         ]}
         isAuthenticated={isAuthenticated}
@@ -305,7 +305,7 @@ export default function OrganizationDetail() {
 
             {/* Title + subtitle line (location) */}
             <div>
-              <h1 className="text-2xl md:text-3xl lg:text-[32px] font-bold text-white leading-tight tracking-tight flex items-start gap-3">
+              <h1 className="text-2xl md:text-3xl lg:text-[32px] font-bold text-foreground leading-tight tracking-tight flex items-start gap-3">
                 <Building2 className="w-6 h-6 lg:w-7 lg:h-7 text-[color:var(--brand-green)] mt-1 shrink-0" aria-hidden />
                 <span>{orgName}</span>
               </h1>

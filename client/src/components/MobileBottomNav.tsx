@@ -29,10 +29,10 @@ export default function MobileBottomNav() {
       active: location === "/",
     },
     {
-      href: "/catalog",
+      href: "/organizations",
       icon: Search,
       label: t.nav.catalog,
-      active: location === "/catalog" || location.startsWith("/grant/"),
+      active: location.startsWith("/organizations") || location.startsWith("/grant/"),
     },
     // AI Assistant tab — shown only for non-admin users (admins already have 5 tabs)
     ...(!isAdmin

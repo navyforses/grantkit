@@ -20,6 +20,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useState, useRef } from "react";
+import { Link } from "wouter";
 import Footer from "@/components/Footer";
 import CatalogCard from "@/components/CatalogCard";
 import CatalogCardSkeleton from "@/components/CatalogCardSkeleton";
@@ -42,6 +43,9 @@ const fadeInUp = {
   viewport: { once: true, amount: 0.1 },
   transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as const },
 };
+
+// Beachhead cities (D5 France; PIVOT §3). Proper nouns — same in all 5 languages.
+const HERO_CITIES = ["Paris", "Reims", "Lyon", "Strasbourg"] as const;
 
 const stagger = {
   initial: { opacity: 0, y: 16 },
@@ -66,6 +70,7 @@ export default function Home() {
   );
   const stats = useStats();
   const grantCount = formatStat(stats.grants);
+  const franceCount = formatStat(stats.franceOrganizations);
 
   // Static 5-item preview baked at build time — see catalogPreview.ts.
   // Avoids shipping the full 765 KB catalog.json in the main bundle just
@@ -128,7 +133,7 @@ export default function Home() {
         title={t.seo.homeTitle}
         description={t.seo.homeDescription}
         canonicalPath="/"
-        keywords="grants, medical grants, startup grants, scholarships, financial assistance, funding, research grants"
+        keywords="immigrant integration, organizations in France, asylum, residence permit, housing, health, French classes, free help"
         noSuffix
       />
       <OrganizationJsonLd />
@@ -145,51 +150,80 @@ export default function Home() {
         </div>
 
         <div className="relative container py-20 md:py-32 lg:py-40">
-          {/* SEO */}
-          <h1 className="sr-only">{t.hero.title}{t.hero.titleAccent}</h1>
-
           {/* ── GRANTKIT branding ── */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className="text-center mb-10 md:mb-14 select-none"
+            className="text-center mb-8 md:mb-12 select-none"
             aria-hidden="true"
           >
-            <span className="hero-brand-text text-[clamp(4rem,14vw,11rem)] font-bold leading-none tracking-tighter">
+            <span className="hero-brand-text text-[clamp(3rem,10vw,8rem)] font-bold leading-none tracking-tighter">
               <span className="text-brand-green">GRANT</span>
               <span className="hero-sage">KIT</span>
             </span>
           </motion.div>
 
-          {/* ── CTA only ── */}
+          {/* ── Country-first entry (Phase 1.2: France beachhead, status-blind) ── */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="text-center"
+            className="text-center max-w-3xl mx-auto"
           >
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-              <PricingCTA text={t.hero.cta} size="large" className="w-full sm:w-auto justify-center" />
-              <a
-                href="/catalog"
-                className="inline-flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-3 sm:py-0"
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight leading-tight">
+              {t.hero.title.replace("{count}", franceCount)}
+              <span className="text-brand-green">{t.hero.titleAccent}</span>
+            </h1>
+            <p className="mt-4 md:mt-5 text-sm md:text-lg text-muted-foreground leading-relaxed">
+              {t.hero.subtitle}
+            </p>
+            <p className="mt-3 text-sm md:text-base font-medium text-foreground/80">{t.hero.free}</p>
+
+            <div className="mt-6 md:mt-8 flex justify-center">
+              <Link
+                href="/organizations?mc=FR"
+                className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 rounded-xl bg-brand-green text-white text-base font-semibold hover:bg-brand-green-hover transition-colors"
               >
-                {t.hero.seeCatalog}
+                {t.hero.cta}
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </Link>
             </div>
+
+            {/* City chooser — beachhead cities (PIVOT §3, report 08 §1.1) */}
+            <div className="mt-5 md:mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
+              <span className="text-muted-foreground">{t.hero.cityPrompt}</span>
+              {HERO_CITIES.map((city) => (
+                <Link
+                  key={city}
+                  href={`/organizations?mc=FR&mcity=${encodeURIComponent(city)}`}
+                  className="px-3 py-1.5 rounded-full border border-border bg-card text-foreground hover:border-brand-green hover:text-brand-green transition-colors"
+                >
+                  {city}
+                </Link>
+              ))}
+            </div>
+
+            {/* Organization line — mailto until /partner exists (MASTER-PLAN v2 1.2) */}
+            <p className="mt-6 text-xs md:text-sm text-muted-foreground">
+              {t.hero.orgLine}{" "}
+              <a
+                href="mailto:hello@grantkit.co?subject=Partner"
+                className="font-medium text-foreground underline underline-offset-4 hover:text-brand-green"
+              >
+                {t.hero.orgCta} →
+              </a>
+            </p>
           </motion.div>
 
-          {/* Stats row */}
+          {/* Stats row — live counts only (no hardcoded numbers) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            className="mt-16 md:mt-24 flex items-center justify-center gap-10 md:gap-16 text-center"
+            className="mt-12 md:mt-16 flex items-center justify-center gap-10 md:gap-16 text-center"
           >
             {[
-              { value: grantCount, label: t.hero.statGrantsLabel },
               { value: formatStat(stats.organizations), label: t.hero.statOrganizationsLabel },
               { value: formatStat(stats.countries), label: t.hero.statCountriesLabel },
             ].map((stat) => (
@@ -516,7 +550,7 @@ export default function Home() {
                 </button>
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    openFaq === i ? "max-h-64" : "max-h-0"
+                    openFaq === i ? "max-h-[32rem]" : "max-h-0"
                   }`}
                 >
                   <p className="px-4 md:px-6 pb-4 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>

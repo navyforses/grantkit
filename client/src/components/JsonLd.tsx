@@ -14,7 +14,7 @@ export function OrganizationJsonLd() {
     url: window.location.origin,
     logo: "https://d2xsxph8kpxj0f.cloudfront.net/310519663102724389/ne96tB4yURpkfMNLLJuy9T/og-image-LT43qbv2mf3WDHuJv8pmuH.png",
     description:
-      "Curated database of grants for medical treatment, financial assistance, and academic scholarships worldwide.",
+      "Immigrant integration navigator: organizations that help with papers, housing, health, language and work, in the user's language, whatever their status.",
     contactPoint: {
       "@type": "ContactPoint",
       email: "hello@grantkit.co",
@@ -40,12 +40,12 @@ export function WebSiteJsonLd() {
     name: "GrantKit",
     url: origin,
     description:
-      "Find medical, financial, and academic grants worldwide. Curated database updated monthly.",
+      "Find organizations that help immigrants in France — papers, housing, health, language, work — whatever your status.",
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${origin}/catalog?search={search_term_string}`,
+        urlTemplate: `${origin}/organizations?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },
@@ -129,8 +129,8 @@ export function GrantJsonLd({
       {
         "@type": "ListItem",
         position: 2,
-        name: "Grants Catalog",
-        item: `${origin}/catalog`,
+        name: "Organizations",
+        item: `${origin}/organizations`,
       },
       {
         "@type": "ListItem",
