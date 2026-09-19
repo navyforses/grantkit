@@ -369,7 +369,7 @@ async function main() {
   }
 
   const where: string[] = [];
-  const params: unknown[] = [];
+  const params: (string | number)[] = [];
   if (!FORCE) {
     where.push("b.latitude IS NULL", "b.longitude IS NULL");
   }
