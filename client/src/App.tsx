@@ -25,6 +25,7 @@ const Profile     = lazy(() => import("./pages/Profile"));
 const Dashboard   = lazy(() => import("./pages/Dashboard"));
 const Onboarding  = lazy(() => import("./pages/Onboarding"));
 const Contact     = lazy(() => import("./pages/Contact"));
+const HealthAbroad = lazy(() => import("./pages/HealthAbroad")); // 1.11 — ring-fenced, not in nav
 const Privacy     = lazy(() => import("./pages/Privacy"));
 const Terms       = lazy(() => import("./pages/Terms"));
 const Refund      = lazy(() => import("./pages/Refund"));
@@ -59,6 +60,7 @@ function Router() {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/onboarding" component={Onboarding} />
         <Route path="/contact" component={Contact} />
+        <Route path="/health-abroad" component={HealthAbroad} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
         <Route path="/refund" component={Refund} />

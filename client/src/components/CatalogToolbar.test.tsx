@@ -66,6 +66,12 @@ describe("CatalogToolbar — domain × language × cost × status filters", () =
     expect(health).toContain('value="cancer"');
   });
 
+  it("links to /health-abroad only inside the health domain context (1.11, D17)", () => {
+    expect(render({ domainFilter: "health" })).toContain('href="/health-abroad"');
+    expect(render()).not.toContain("health-abroad");
+    expect(render({ domainFilter: "housing" })).not.toContain("health-abroad");
+  });
+
   it("reflects selected language / cost / status values", () => {
     const html = render({ languageFilter: "ka", costFilter: "free", statusFilter: "yes" });
     expect(html).toContain("ქართული");

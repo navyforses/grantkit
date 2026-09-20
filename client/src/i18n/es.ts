@@ -1,4 +1,5 @@
 import type { Translations } from "./types";
+import { en } from "./en";
 
 export const es: Translations = {
   nav: {
@@ -1385,4 +1386,7 @@ export const es: Translations = {
       other: "Otro",
     },
   },
+
+  // /health-abroad targets ka/ru families (1.11); es reuses the English copy with typed parity.
+  healthAbroad: en.healthAbroad,
 };
