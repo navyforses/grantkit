@@ -16,7 +16,20 @@ vi.mock("./emailService", () => ({ sendConciergeIntakeEmail: sendMock }));
 
 // Any DB access from the concierge path would go through ./db — make it explode.
 const dbSpy = vi.fn();
-vi.mock("./db", () => new Proxy({}, { get: (_t, prop) => { dbSpy(prop); return vi.fn(); } }));
+vi.mock("./db", () =>
+  new Proxy(
+    {},
+    {
+      get: (_t, prop) => {
+        // Never trap `then` or symbols: a thenable module namespace makes
+        // `await import("./db")` hang forever instead of resolving.
+        if (prop === "then" || typeof prop === "symbol") return undefined;
+        dbSpy(prop);
+        return vi.fn();
+      },
+    },
+  ),
+);
 
 const { appRouter } = await import("./routers");
 
@@ -87,10 +100,14 @@ describe("1.11 'never' rules (source grep)", () => {
   const read = (p: string) => readFileSync(path.join(root, p), "utf8");
 
   it("conciergeRouter imports no DB module and logs nothing", () => {
-    const src = read("server/conciergeRouter.ts");
-    expect(src).not.toMatch(/from\s+["']\.\/db["']/);
-    expect(src).not.toMatch(/drizzle/);
-    expect(src).not.toMatch(/console\./);
+    // Strip comments first: the rule is about code, and the file documents
+    // the rule itself in its header ("must not import ./db or drizzle").
+    const code = read("server/conciergeRouter.ts")
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/^\s*\/\/.*$/gm, "");
+    expect(code).not.toMatch(/from\s+["']\.\/db["']/);
+    expect(code).not.toMatch(/drizzle/);
+    expect(code).not.toMatch(/console\./);
   });
 
   it("/health-abroad is not linked from Navbar, MobileBottomNav or Home (D17)", () => {
