@@ -1,4 +1,5 @@
 import type { Domain } from "@shared/domains";
+import type { ConciergeCountry, DiagnosisCategory, TreatmentStage } from "@shared/concierge";
 
 export interface Translations {
   // Navbar
@@ -1325,5 +1326,45 @@ export interface Translations {
     ratingHidden: string;
     disclaimer: string;
     reportError: string;
+  };
+
+  // /health-abroad — ring-fenced concierge v0 (Phase 1.11, D17/D20). Not in nav.
+  healthAbroad: {
+    seoTitle: string;
+    seoDescription: string;
+    heading: string;
+    intro: string;
+    notMedicalAdvice: string;
+    countriesHeading: string;
+    countriesNote: string;
+    country: Record<ConciergeCountry, { name: string; note: string }>;
+    catalogLink: string;      // "{country}: health organisations"
+    housingLink: string;      // "{country}: housing near treatment"
+    diagnosisLinks: string;   // "Narrow by diagnosis:"
+    diagnosisQuick: { cancer: string; pediatric: string; rare: string };
+    officialHeading: string;
+    officialIntro: string;
+    official: { pass: string; ame: string; b2: string; de: string; tr: string };
+    fundraisingHeading: string;
+    fundraisingNote: string;
+    pricingHeading: string;
+    orientation: { title: string; description: string };
+    accompaniment: { title: string; description: string };
+    paymentNote: string;
+    formHeading: string;
+    formIntro: string;
+    fields: { country: string; diagnosis: string; stage: string; language: string; contact: string; contactPlaceholder: string };
+    diagnosis: Record<DiagnosisCategory, string>;
+    stage: Record<TreatmentStage, string>;
+    consentLabel: string;
+    consentText: string;
+    retention: string;
+    submit: string;
+    sending: string;
+    successTitle: string;
+    successMessage: string;
+    toastError: string;
+    toastValidation: string;
+    catalogHint: string;      // one line under the health sub-filter in the catalog
   };
 }

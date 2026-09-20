@@ -2,6 +2,7 @@ import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { DOMAIN_KEYS } from "@shared/domains";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
+import { conciergeRouter } from "./conciergeRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
 import { sdk } from "./_core/sdk";
 import { ENV } from "./_core/env";
@@ -57,6 +58,8 @@ const orgAccessFilterInput = {
 
 export const appRouter = router({
   system: systemRouter,
+  // Health-abroad concierge v0 (1.11) — ring-fenced paid surface, no DB.
+  concierge: conciergeRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {

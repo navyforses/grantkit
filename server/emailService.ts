@@ -718,3 +718,60 @@ export async function sendPasswordResetEmail(
     return { success: false, error: message };
   }
 }
+
+// ===== Health-abroad concierge intake (item 1.11) =====
+
+export interface ConciergeIntakeEmailData {
+  country: string;
+  diagnosisCategory: string;
+  stage: string;
+  language: string;
+  contact: string;
+}
+
+/** Owner inbox for intakes: ADMIN_NOTIFY_EMAIL when set, else the existing admin fallback. */
+export function conciergeIntakeRecipient(): string {
+  return ENV.adminNotifyEmail || FROM_EMAIL;
+}
+
+/**
+ * Email one concierge intake to the owner. The intake is NOT stored anywhere
+ * else (no DB, no log of the contact) — the owner deletes it within 90 days
+ * (INTAKE_RETENTION_DAYS, promised on /health-abroad).
+ */
+export async function sendConciergeIntakeEmail(intake: ConciergeIntakeEmailData): Promise<SendEmailResult> {
+  const resend = getResendClient();
+  if (!resend) {
+    return { success: false, error: "Email service not configured" };
+  }
+  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  try {
+    const { data, error } = await resend.emails.send({
+      from: `${BRAND_NAME} <${FROM_EMAIL}>`,
+      to: [conciergeIntakeRecipient()],
+      subject: `[health-abroad] intake: ${intake.country} / ${intake.diagnosisCategory} / ${intake.language}`,
+      html: baseTemplate("Health-abroad intake", `
+        <h2 style="margin:0 0 16px;color:#18181b;font-size:22px;font-weight:600;">New concierge intake</h2>
+        <div style="background-color:#f0fdf4;border-left:4px solid #16a34a;padding:16px 20px;border-radius:0 8px 8px 0;margin:24px 0;">
+          <p style="margin:0;color:#166534;font-size:14px;line-height:1.7;">
+            <strong>Country:</strong> ${esc(intake.country)}<br/>
+            <strong>Diagnosis category:</strong> ${esc(intake.diagnosisCategory)}<br/>
+            <strong>Stage:</strong> ${esc(intake.stage)}<br/>
+            <strong>Language:</strong> ${esc(intake.language)}<br/>
+            <strong>Contact:</strong> ${esc(intake.contact)}
+          </p>
+        </div>
+        <p style="margin:0;color:#71717a;font-size:13px;">Art. 9 consent given on the form. Delete this email within 90 days. Never copy it into a tracker with PII.</p>
+      `),
+    });
+    if (error) {
+      console.error("[Email] Failed to send concierge intake:", error.message);
+      return { success: false, error: error.message };
+    }
+    return { success: true, messageId: data?.id };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("[Email] Error sending concierge intake:", message);
+    return { success: false, error: message };
+  }
+}

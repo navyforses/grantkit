@@ -8,5 +8,7 @@ export const ENV = {
   paddleWebhookSecret: process.env.PADDLE_WEBHOOK_SECRET ?? "",
   paddleApiKey: process.env.PADDLE_API_KEY ?? "",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
+  // Optional owner inbox for /health-abroad intakes (item 1.11); falls back to the Resend sender.
+  adminNotifyEmail: process.env.ADMIN_NOTIFY_EMAIL ?? "",
   appUrl: process.env.APP_URL ?? "https://grantkit-production-06f7up.railway.app",
 };

@@ -484,6 +484,13 @@ export default function CatalogToolbar({
           isMobile ? "h-12 text-base w-full" : "h-8 text-[13px] w-40",
         )}
       />
+      {/* 1.11 (D17): the ONLY link to the ring-fenced /health-abroad page — health domain context, never nav. */}
+      <a
+        href="/health-abroad"
+        className={cn("text-muted-foreground underline underline-offset-2 hover:text-foreground", isMobile ? "text-sm" : "text-[12px] whitespace-nowrap")}
+      >
+        {t.healthAbroad.catalogHint}
+      </a>
     </div>
   ) : null;
 
