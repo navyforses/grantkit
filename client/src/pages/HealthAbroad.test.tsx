@@ -61,6 +61,7 @@ describe("/health-abroad renders in ka / ru / en", () => {
   it("ka copy is Georgian, not English, and the language select defaults to the page language", () => {
     const html = render("ka", ka);
     expect(ka.healthAbroad.heading).not.toBe(en.healthAbroad.heading);
-    expect(html).toContain('<option selected="" value="ka">');
+    // React renders the attributes as value-then-selected; match the pair, not the order.
+    expect(html).toMatch(/<option value="ka"[^>]*selected/);
   });
 });
