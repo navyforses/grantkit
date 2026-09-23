@@ -144,6 +144,8 @@ export async function startServer(setupFrontend: FrontendSetup) {
   app.use("/api/trpc/auth", rateLimit({ ...rlBase, windowMs: 60_000, limit: 10 }));
   // AI endpoints — expensive compute: 20 req/min/IP
   app.use("/api/trpc/ai", rateLimit({ ...rlBase, windowMs: 60_000, limit: 20 }));
+  // Concierge intake form (item 1.11) — one owner email per call: same ceiling as AI
+  app.use("/api/trpc/concierge", rateLimit({ ...rlBase, windowMs: 60_000, limit: 20 }));
   // smartSearch endpoints — Claude Haiku per uncached query: 10 req/min/IP
   // (worst case 10 × 60 × 24 × ~$0.001 ≈ $14/day/IP, was $144).
   const smartSearchLimiter = rateLimit({ ...rlBase, windowMs: 60_000, limit: 10 });

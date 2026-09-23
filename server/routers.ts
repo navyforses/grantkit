@@ -2,6 +2,7 @@ import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { DOMAIN_KEYS } from "@shared/domains";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
+import { conciergeRouter } from "./conciergeRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
 import { sdk } from "./_core/sdk";
 import { ENV } from "./_core/env";
@@ -57,6 +58,8 @@ const orgAccessFilterInput = {
 
 export const appRouter = router({
   system: systemRouter,
+  // Health-abroad concierge v0 (1.11) — ring-fenced paid surface, no DB.
+  concierge: conciergeRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -628,21 +631,24 @@ export const appRouter = router({
       return { success: true };
     }),
 
+    /** Onboarding v2 (Phase 1.3): `needs` holds integration-domain keys
+     *  (shared/domains.ts). `purposes` is optional. Immigration status is
+     *  client-only (D6) — it is not an input here and must never become one. */
     saveProfile: protectedProcedure
       .input(z.object({
         targetCountry: z.string(),
-        purposes: z.array(z.string()),
-        purposeDetails: z.array(z.string()),
         needs: z.array(z.string()),
-        needDetails: z.array(z.string()),
+        purposes: z.array(z.string()).optional(),
+        purposeDetails: z.array(z.string()).optional(),
+        needDetails: z.array(z.string()).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateUserProfile(ctx.user.id, {
           targetCountry: input.targetCountry,
-          purposes: JSON.stringify(input.purposes),
-          purposeDetails: JSON.stringify(input.purposeDetails),
           needs: JSON.stringify(input.needs),
-          needDetails: JSON.stringify(input.needDetails),
+          ...(input.purposes !== undefined && { purposes: JSON.stringify(input.purposes) }),
+          ...(input.purposeDetails !== undefined && { purposeDetails: JSON.stringify(input.purposeDetails) }),
+          ...(input.needDetails !== undefined && { needDetails: JSON.stringify(input.needDetails) }),
         });
         await completeOnboarding(ctx.user.id);
         return { success: true };
@@ -1389,11 +1395,14 @@ export const appRouter = router({
         return getOrganizationDetail(input.orgId);
       }),
 
-    /** Total active organizations count — used for the header stats bar. */
-    count: publicProcedure.query(async () => {
-      const result = await listOrganizations({ limit: 1, offset: 0 });
-      return { total: result.total };
-    }),
+    /** Total active organizations count — header stats bar; `country`
+     *  narrows it for the country-first hero (Phase 1.2). */
+    count: publicProcedure
+      .input(z.object({ country: z.string().max(2).optional() }).optional())
+      .query(async ({ input }) => {
+        const result = await listOrganizations({ country: input?.country, limit: 1, offset: 0 });
+        return { total: result.total };
+      }),
 
     /** Branch coordinates for the map. Honors all toolbar filters so
      *  markers stay in sync with the list. */

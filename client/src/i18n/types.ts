@@ -1,4 +1,6 @@
 import type { Domain } from "@shared/domains";
+import type { ViewerStatus } from "@/lib/onboardingLocal";
+import type { ConciergeCountry, DiagnosisCategory, TreatmentStage } from "@shared/concierge";
 
 export interface Translations {
   // Navbar
@@ -17,14 +19,17 @@ export interface Translations {
   };
 
   // Hero
+  // Country-first entry (Phase 1.2, D5 France / D17 language + status).
+  // No "grant" wording in any hero key — enforced by Home.hero.test.ts.
   hero: {
-    badge: string;
-    title: string;
+    title: string;        // "{count}" = live FR organization count
     titleAccent: string;
     subtitle: string;
+    free: string;
     cta: string;
-    seeCatalog: string;
-    statGrantsLabel: string;
+    cityPrompt: string;
+    orgLine: string;
+    orgCta: string;
     statOrganizationsLabel: string;
     statCountriesLabel: string;
   };
@@ -135,6 +140,7 @@ export interface Translations {
     contact: string;
     paddle: string;
     rights: string;
+    trust: string;
   };
 
   // Catalog page (unified grants + resources)
@@ -662,32 +668,33 @@ export interface Translations {
     lastUpdated: string;
     privacyTitle: string;
     termsTitle: string;
-    privacyIntroTitle: string;
-    privacyIntroText: string;
+    privacyControllerTitle: string;
+    privacyControllerText: string;
     privacyCollectTitle: string;
-    privacyCollectText: string;
-    privacyCollect1: string;
-    privacyCollect2: string;
-    privacyCollect3: string;
-    privacyCollect4: string;
-    privacyCollectDetails: string;
-    privacyUseTitle: string;
-    privacyUseText: string;
-    privacyUse1: string;
-    privacyUse2: string;
-    privacyUse3: string;
-    privacyUse4: string;
-    privacyUse5: string;
-    privacyPaymentTitle: string;
-    privacyPaymentText: string;
+    privacyCollectIntro: string;
+    privacyCollectAccount: string;
+    privacyCollectOnboarding: string;
+    privacyCollectStatus: string;
+    privacyCollectQueries: string;
+    privacyCollectContact: string;
+    privacyBasisTitle: string;
+    privacyBasisText: string;
+    privacyBasisArt9: string;
+    privacyRetentionTitle: string;
+    privacyRetentionAccount: string;
+    privacyRetentionLogs: string;
+    privacyRetentionBrowser: string;
     privacyCookiesTitle: string;
     privacyCookiesText: string;
-    privacyShareTitle: string;
-    privacyShareText: string;
-    privacySecurityTitle: string;
-    privacySecurityText: string;
-    privacyRetentionTitle: string;
-    privacyRetentionText: string;
+    privacyCookiesStorage: string;
+    privacyCookiesNone: string;
+    privacyThirdTitle: string;
+    privacyThirdIntro: string;
+    privacyThirdRailway: string;
+    privacyThirdResend: string;
+    privacyThirdMaps: string;
+    privacyThirdAnthropic: string;
+    privacyThirdPaddle: string;
     privacyRightsTitle: string;
     privacyRightsText: string;
     privacyRights1: string;
@@ -695,6 +702,11 @@ export interface Translations {
     privacyRights3: string;
     privacyRights4: string;
     privacyRights5: string;
+    privacyRights6: string;
+    privacyRightsHow: string;
+    privacyMoneyTitle: string;
+    privacyMoneyText: string;
+    privacyMoneyLink: string;
     privacyChangesTitle: string;
     privacyChangesText: string;
     privacyContactTitle: string;
@@ -828,6 +840,12 @@ export interface Translations {
     totalAvailable: string;
     removeFromSaved: string;
     toastRemoveError: string;
+    // Phase 1.3 — organizations for the user's country / domains
+    forYou: string;
+    forYouAll: string;
+    forYouEmpty: string;
+    seeAll: string;
+    yourNeeds: string;
   };
 
   // Dashboard layout
@@ -1309,6 +1327,42 @@ export interface Translations {
     };
   };
 
+  // Onboarding v2 (Phase 1.3): country → city+language → status (client-only, D6) → needs
+  onboardingV2: {
+    welcomeTitle: string;
+    welcomeSubtitle: string;
+    stepCity: string;
+    stepCityHint: string;
+    cityLabel: string;
+    cityPlaceholder: string;
+    languageLabel: string;
+    stepStatus: string;
+    stepStatusHint: string;
+    privacyNote: string;
+    statuses: Record<ViewerStatus, string>;
+    stepNeeds: string;
+    stepNeedsHint: string;
+  };
+
+  // France fields on the organization page (Phase 1.6): housing, services, audience, badges
+  orgFrance: {
+    servicesTitle: string;
+    audienceTitle: string;
+    housingTitle: string;
+    housingTypeLabel: string;
+    housingType: { parents_house: string; shelter: string; social: string; temporary: string; hotel: string; apartment: string; other: string };
+    capacity: string;
+    maxStay: string;
+    registration: string;
+    cost: string;
+    childrenFriendly: string;
+    disabledAccessible: string;
+    yes: string;
+    no: string;
+    nationwide: string; // template: "All of {country}"
+    purpose: { all: string; study: string; medical: string; work: string; family: string; asylum: string; other: string };
+  };
+
   // Provenance / trust signals on the organization page (Phase 1.5, D7/D8).
   orgTrust: {
     lastChecked: string;
@@ -1325,5 +1379,65 @@ export interface Translations {
     ratingHidden: string;
     disclaimer: string;
     reportError: string;
+  };
+
+  // /trust — the trust contract (MASTER-PLAN 1.13, Levan §4.4, D19)
+  trust: {
+    seoTitle: string;
+    seoDescription: string;
+    title: string;
+    intro: string;
+    /** Exactly 8 points, in the order of the trust contract. */
+    points: Array<{ title: string; body: string }>;
+    /** Plain-word list of the no-monetization zone (rendered inside point 3). */
+    neverZone: string[];
+    /** Plain-word list of things we never do (rendered inside point 7). */
+    neverDo: string[];
+    partnersTitle: string;
+    partnersIntro: string;
+    partnersEmpty: string;
+    partnerLabel: string;
+    reportSubject: string;
+    reportCta: string;
+    contactCta: string;
+  };
+  // /health-abroad — ring-fenced concierge v0 (Phase 1.11, D17/D20). Not in nav.
+  healthAbroad: {
+    seoTitle: string;
+    seoDescription: string;
+    heading: string;
+    intro: string;
+    notMedicalAdvice: string;
+    countriesHeading: string;
+    countriesNote: string;
+    country: Record<ConciergeCountry, { name: string; note: string }>;
+    catalogLink: string;      // "{country}: health organisations"
+    housingLink: string;      // "{country}: housing near treatment"
+    diagnosisLinks: string;   // "Narrow by diagnosis:"
+    diagnosisQuick: { cancer: string; pediatric: string; rare: string };
+    officialHeading: string;
+    officialIntro: string;
+    official: { pass: string; ame: string; b2: string; de: string; tr: string };
+    fundraisingHeading: string;
+    fundraisingNote: string;
+    pricingHeading: string;
+    orientation: { title: string; description: string };
+    accompaniment: { title: string; description: string };
+    paymentNote: string;
+    formHeading: string;
+    formIntro: string;
+    fields: { country: string; diagnosis: string; stage: string; language: string; contact: string; contactPlaceholder: string };
+    diagnosis: Record<DiagnosisCategory, string>;
+    stage: Record<TreatmentStage, string>;
+    consentLabel: string;
+    consentText: string;
+    retention: string;
+    submit: string;
+    sending: string;
+    successTitle: string;
+    successMessage: string;
+    toastError: string;
+    toastValidation: string;
+    catalogHint: string;      // one line under the health sub-filter in the catalog
   };
 }

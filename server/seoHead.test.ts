@@ -138,3 +138,19 @@ describe("seoHead — degrades gracefully", () => {
     expect(out).toContain("H\n  </head>");
   });
 });
+
+describe("seoHead — /health-abroad (1.11) is a landing route with noindex", () => {
+  it("gets canonical + hreflang and a robots noindex meta", async () => {
+    const tags = await buildHeadTags(req("/health-abroad", { lang: "ka" }), async () => null);
+    expect(tags?.canonical).toBe("https://grantkit.test/health-abroad?lang=ka");
+    expect(tags?.noindex).toBe(true);
+    const out = applyHeadTags(TEMPLATE, tags!);
+    expect(out).toContain('<meta name="robots" content="noindex, nofollow" />');
+  });
+
+  it("other landing routes stay indexable", async () => {
+    const tags = await buildHeadTags(req("/organizations"), async () => null);
+    expect(tags?.noindex).toBeUndefined();
+    expect(applyHeadTags(TEMPLATE, tags!)).not.toContain("noindex");
+  });
+});

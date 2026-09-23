@@ -41,6 +41,10 @@ export default function Footer() {
               {t.legal?.refundTitle || "Refund Policy"}
             </Link>
             <span className="text-border">|</span>
+            <Link href="/trust" className="hover:text-foreground dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+              {t.footer.trust}
+            </Link>
+            <span className="text-border">|</span>
             <span className="text-muted-foreground/60 dark:text-gray-500 text-xs">
               {t.footer.paddle}
             </span>

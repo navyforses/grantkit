@@ -48,6 +48,9 @@ import TrustPanel from "@/components/org/TrustPanel";
 import WhoWeHelpCard from "@/components/org/WhoWeHelpCard";
 import SocialMediaRow from "@/components/org/SocialMediaRow";
 import ProvenanceLine from "@/components/org/ProvenanceLine";
+import HousingCard from "@/components/org/HousingCard";
+import { ServicesOfferedCard, TargetAudienceCard } from "@/components/org/OrgTextCards";
+import { pickLocalized } from "@/lib/localizeEntity";
 import {
   parseSocialMedia,
   type AcceptsUndocumented,
@@ -63,7 +66,7 @@ import { toast } from "sonner";
 export default function OrganizationDetail() {
   const params = useParams<{ orgId: string }>();
   const orgId = params.orgId;
-  const { t, tCategory, tCountry } = useLanguage();
+  const { t, tCategory, tCountry, language } = useLanguage();
   const { isAuthenticated } = useAuth();
   const [aiOpen, setAiOpen] = useState(false);
   // Latch — once the chat has been opened we keep the lazy chunk mounted
@@ -80,6 +83,10 @@ export default function OrganizationDetail() {
 
   const org = detailQuery.data?.organization;
   const branches = detailQuery.data?.branches ?? [];
+  const housing = detailQuery.data?.housing ?? null;
+  // Phase 1.6 — per-language prose from organizations.translations, with
+  // pickLocalized falling back to the raw (source-language) column.
+  const apiTranslations = detailQuery.data?.translations?.[language] ?? null;
 
   const mapPoints: OrgMapPoint[] = useMemo(() => {
     if (!org) return [];
@@ -143,7 +150,7 @@ export default function OrganizationDetail() {
             {t.organizations.detail.notFound}
           </h1>
           <p className="text-muted-foreground mb-4">{t.organizations.detail.notFoundDesc}</p>
-          <Link href="/catalog">
+          <Link href="/organizations">
             <Button variant="outline" className="gap-2">
               <ChevronRight className="w-4 h-4 rotate-180" />
               {t.catalog.title}
@@ -155,8 +162,8 @@ export default function OrganizationDetail() {
   }
 
   // ── Derived display data ────────────────────────────────────────────────
-  const orgName = String(org.name);
-  const orgDescription = org.description ? String(org.description) : "";
+  const orgName = pickLocalized(org, "name", apiTranslations) || String(org.name);
+  const orgDescription = pickLocalized(org, "description", apiTranslations);
   const translatedCountry = org.country ? tCountry(org.country) : "";
   const countryFlag = org.country === "US" ? "🇺🇸"
     : org.country === "International" ? "🌐"
@@ -189,7 +196,15 @@ export default function OrganizationDetail() {
   const googleRating: number | null =
     anyOrg.googleRating != null ? Number(anyOrg.googleRating) : null;
   const googleReviewCount: number | null = anyOrg.googleReviewCount ?? null;
-  const missionStatement: string | null = anyOrg.missionStatement ?? null;
+  const missionStatement: string | null = pickLocalized(anyOrg, "missionStatement", apiTranslations) || null;
+  // France import fields (Phase 1.6) — localised prose + badges.
+  const servicesOffered: string | null = pickLocalized(anyOrg, "servicesOffered", apiTranslations) || null;
+  const targetAudience: string | null = pickLocalized(anyOrg, "targetAudience", apiTranslations) || null;
+  const emigrationPurposes: string[] = String(anyOrg.emigrationPurpose ?? "")
+    .split(",")
+    .map((p: string) => p.trim())
+    .filter(Boolean);
+  const isNational = Boolean(anyOrg.isNational);
   const languagesRaw: string | null = anyOrg.orgLanguages ?? anyOrg.languages ?? null;
   const socialMedia = parseSocialMedia(anyOrg.socialMedia ?? null);
   // Contact provenance (Phase 1.5, D7/D8) — the most recent of phone/email.
@@ -263,7 +278,7 @@ export default function OrganizationDetail() {
       <GrantDetailHeader
         breadcrumb={[
           { label: t.detail.breadcrumbHome, href: "/" },
-          { label: t.catalog.title, href: "/catalog" },
+          { label: t.organizations.title, href: "/organizations" },
           { label: orgName },
         ]}
         isAuthenticated={isAuthenticated}
@@ -301,11 +316,29 @@ export default function OrganizationDetail() {
                   +{categories.length - 4}
                 </span>
               )}
+              {isNational && (
+                <span
+                  className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full border border-[color:var(--brand-green)]/40 bg-[color:var(--brand-green)]/10 text-foreground/90"
+                  data-testid="badge-national"
+                >
+                  <Globe className="w-3 h-3" aria-hidden />
+                  {t.orgFrance.nationwide.replace("{country}", translatedCountry)}
+                </span>
+              )}
+              {emigrationPurposes.map((purpose) => (
+                <span
+                  key={purpose}
+                  className="inline-flex items-center text-[11px] font-medium px-2.5 py-1 rounded-full border border-border bg-muted/60 text-foreground/85"
+                  data-testid="badge-purpose"
+                >
+                  {t.orgFrance.purpose[purpose as keyof typeof t.orgFrance.purpose] ?? purpose}
+                </span>
+              ))}
             </div>
 
             {/* Title + subtitle line (location) */}
             <div>
-              <h1 className="text-2xl md:text-3xl lg:text-[32px] font-bold text-white leading-tight tracking-tight flex items-start gap-3">
+              <h1 className="text-2xl md:text-3xl lg:text-[32px] font-bold text-foreground leading-tight tracking-tight flex items-start gap-3">
                 <Building2 className="w-6 h-6 lg:w-7 lg:h-7 text-[color:var(--brand-green)] mt-1 shrink-0" aria-hidden />
                 <span>{orgName}</span>
               </h1>
@@ -380,6 +413,11 @@ export default function OrganizationDetail() {
               serviceCost={serviceCost}
               appointmentPolicy={appointmentPolicy}
             />
+
+            {/* France import fields (Phase 1.6) — each card hides when empty */}
+            <ServicesOfferedCard text={servicesOffered} />
+            <TargetAudienceCard text={targetAudience} />
+            <HousingCard housing={housing} />
 
             {/* Service area */}
             {org.serviceArea && (

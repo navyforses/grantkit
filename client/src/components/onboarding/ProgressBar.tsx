@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 
 interface ProgressBarProps {
   currentStep: number;
-  totalSteps: 3;
+  totalSteps: 4;
 }
 
 export default function ProgressBar({ currentStep }: ProgressBarProps) {
   const { t } = useLanguage();
-  const labels = [t.profile.stepCountry, t.profile.stepPurpose, t.profile.stepNeeds];
+  const labels = [t.profile.stepCountry, t.onboardingV2.stepCity, t.onboardingV2.stepStatus, t.onboardingV2.stepNeeds];
 
   return (
     <div className="w-full space-y-2">

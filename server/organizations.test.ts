@@ -128,3 +128,21 @@ describe("organizations.list router → listOrganizations pass-through", () => {
     await expect(caller.organizations.list({ serviceCost: "unknown" as any })).rejects.toThrow();
   });
 });
+
+describe("organizations.count — optional country (Phase 1.2 country-first hero)", () => {
+  const caller = appRouter.createCaller(publicCtx());
+
+  it("no input → global count, country undefined", async () => {
+    listOrganizationsMock.mockClear();
+    await caller.organizations.count();
+    expect(listOrganizationsMock.mock.calls[0]![0]).toMatchObject({ limit: 1, offset: 0 });
+    expect((listOrganizationsMock.mock.calls[0]![0] as any).country).toBeUndefined();
+  });
+
+  it("country=FR is forwarded", async () => {
+    listOrganizationsMock.mockClear();
+    const res = await caller.organizations.count({ country: "FR" });
+    expect(listOrganizationsMock.mock.calls[0]![0]).toMatchObject({ country: "FR", limit: 1, offset: 0 });
+    expect(res).toEqual({ total: 0 });
+  });
+});

@@ -25,7 +25,9 @@ export const LANGS = ["en", "fr", "es", "ru", "ka"] as const;
 export type Lang = (typeof LANGS)[number];
 
 /** Landing routes that get canonical + hreflang (title/description stay static). */
-const LANDING_PATHS = new Set(["/", "/organizations", "/contact", "/privacy", "/terms", "/refund"]);
+const LANDING_PATHS = new Set(["/", "/organizations", "/contact", "/privacy", "/terms", "/refund", "/trust", "/health-abroad"]);
+/** Ring-fenced paid surface (1.11): noindex until the owner decides on indexing. */
+const NOINDEX_PATHS = new Set(["/health-abroad"]);
 const ORG_PATH = /^\/organizations\/([A-Za-z0-9_-]{1,16})$/;
 const DESCRIPTION_MAX = 160;
 
@@ -131,6 +133,7 @@ export interface HeadTags {
   canonical: string;
   hreflang: string;
   jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
 }
 
 /**
@@ -149,6 +152,7 @@ export async function buildHeadTags(
   const baseUrl = getBaseUrl(req);
   const canonical = `${baseUrl}${path}${lang ? `?lang=${lang}` : ""}`;
   const tags: HeadTags = { canonical, hreflang: hreflangLinks(baseUrl, path) };
+  if (NOINDEX_PATHS.has(path)) tags.noindex = true;
   if (!orgMatch) return tags;
 
   const orgId = orgMatch[1];
@@ -188,6 +192,7 @@ export function applyHeadTags(html: string, tags: HeadTags): string {
     `<link rel="canonical" href="${escapeHtml(tags.canonical)}" />`,
     `<meta property="og:url" content="${escapeHtml(tags.canonical)}" />`,
     tags.hreflang,
+    tags.noindex ? `<meta name="robots" content="noindex, nofollow" />` : "",
     // JSON.stringify output contains no "</" unless a value does; neutralise it.
     tags.jsonLd
       ? `<script type="application/ld+json">${JSON.stringify(tags.jsonLd).replace(/<\//g, "<\\/")}</script>`

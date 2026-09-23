@@ -12,7 +12,7 @@ import MobileHeader from "./components/MobileHeader";
 import MobileBottomNav from "./components/MobileBottomNav";
 import PageFallback from "./components/PageFallback";
 import Home from "./pages/Home";
-import OnboardingModal from "./components/OnboardingModal";
+import OnboardingPrompt from "./components/onboarding/OnboardingPrompt";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { ONBOARDING_STATE_STORAGE_KEY } from "@/components/onboarding/OnboardingFlow";
 
@@ -25,9 +25,11 @@ const Profile     = lazy(() => import("./pages/Profile"));
 const Dashboard   = lazy(() => import("./pages/Dashboard"));
 const Onboarding  = lazy(() => import("./pages/Onboarding"));
 const Contact     = lazy(() => import("./pages/Contact"));
+const HealthAbroad = lazy(() => import("./pages/HealthAbroad")); // 1.11 — ring-fenced, not in nav
 const Privacy     = lazy(() => import("./pages/Privacy"));
 const Terms       = lazy(() => import("./pages/Terms"));
 const Refund      = lazy(() => import("./pages/Refund"));
+const Trust       = lazy(() => import("./pages/Trust"));
 const Admin       = lazy(() => import("./pages/Admin"));
 const Analytics   = lazy(() => import("./pages/Analytics"));
 const AiAssistant = lazy(() => import("./pages/AiAssistant"));
@@ -58,9 +60,11 @@ function Router() {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/onboarding" component={Onboarding} />
         <Route path="/contact" component={Contact} />
+        <Route path="/health-abroad" component={HealthAbroad} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
         <Route path="/refund" component={Refund} />
+        <Route path="/trust" component={Trust} />
         <Route path="/admin" component={Admin} />
         <Route path="/analytics" component={Analytics} />
         <Route path="/ai-assistant" component={AiAssistant} />
@@ -109,7 +113,7 @@ function App() {
             <PaddleInitializer />
             <HtmlLangSetter />
             <OnboardingResumeGuard />
-            <OnboardingModal />
+            <OnboardingPrompt />
             {/* Mobile-only header (hidden on md+) */}
             <MobileHeader />
             {/* Main content with bottom padding on mobile for bottom nav */}

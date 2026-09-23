@@ -63,6 +63,8 @@ checking it is an operator P0 item (`PIVOT.md` §5).
 | `JWT_SECRET` | required — signs the auth cookie | `server/_core/env.ts` → `server/_core/sdk.ts` | no |
 | `ANTHROPIC_API_KEY` | required for AI assistant + smart search | `server/_core/env.ts` → `server/grantAssistant.ts`, `server/queryExpander.ts`, `server/toolboxClient.ts` | yes |
 | `RESEND_API_KEY` | optional — transactional + newsletter email | `server/_core/env.ts` → `server/emailService.ts` | no |
+| `FROM_EMAIL` | optional — sender of every transactional email; default `hello@grantkit.co`; **must be on the Resend-verified domain** (see §Resend DNS) or Resend rejects the send | `server/_core/env.ts` → `server/emailService.ts` | no (1.9) |
+| `ADMIN_NOTIFY_EMAIL` | optional — owner inbox for admin notifications (`notifyAdmin`, new-subscriber mail); unset = notifications silently disabled | `server/_core/env.ts` → `server/emailService.ts` | no (1.9) |
 | `PADDLE_API_KEY` | optional — only if D2 keeps billing | `server/_core/env.ts` (read; no consumer in `server/` today) | no |
 | `PADDLE_WEBHOOK_SECRET` | optional — only if D2 keeps billing | `server/_core/env.ts` → `server/paddleWebhook.ts` | unknown — operator P0 check (`PIVOT.md` §5) |
 | `BUILT_IN_FORGE_API_URL` | optional — Forge / GrantedAI helpers | `server/_core/env.ts` → `server/_core/llm.ts`, `dataApi.ts`, `map.ts`, `imageGeneration.ts`, `notification.ts`, `voiceTranscription.ts`, `server/storage.ts` | no |
@@ -81,6 +83,40 @@ do not add them to the service): `GOOGLE_MAPS_API_KEY`, `GOOGLE_PLACES_API_KEY`,
 (`scripts/daily-discovery.ts`, `scripts/import-new-grants.ts` — GitHub Secrets),
 `TEMP_ADMIN_EMAIL` / `TEMP_ADMIN_PASSWORD` / `TEMP_ADMIN_NAME`
 (`scripts/create-temp-admin.ts`), `ANALYZE` (`vite.config.ts` bundle analyzer, local).
+
+---
+
+## ✉️ Resend DNS — Operator Runbook (Phase 1.9, decision D14)
+
+Goal: verification / password-reset emails land in the inbox (not spam) on
+Gmail, Outlook and Yahoo, sent from `FROM_EMAIL` (`hello@grantkit.co`).
+Until the domain is verified, Resend refuses to send from that address —
+so this is a **prerequisite** for registration working in production.
+
+1. Resend dashboard → **Domains → Add domain** → `grantkit.co` (region: EU
+   if offered). Resend then shows the exact records; copy them from there —
+   never from this file.
+2. Add the **4 records** at the DNS host of `grantkit.co` (names/values are
+   generated per account; generic shape only):
+
+   | # | Type | Host (subdomain) | Purpose |
+   |---|------|------------------|---------|
+   | 1 | `TXT` | `resend._domainkey` | DKIM public key — signs outgoing mail |
+   | 2 | `TXT` | `send` (Resend's bounce subdomain) | SPF — `v=spf1 include:amazonses.com ~all` as shown by Resend |
+   | 3 | `MX`  | `send` (same subdomain) | Return-path / bounce handling (`feedback-smtp.<region>.amazonses.com`, priority 10) |
+   | 4 | `TXT` | `_dmarc` | DMARC policy — start with `v=DMARC1; p=none;` and a `rua=` mailbox, tighten later |
+
+3. Wait for propagation (minutes to a few hours) → Resend shows **Verified**.
+4. Railway → `grantkit` service → Variables: set `RESEND_API_KEY`,
+   `FROM_EMAIL=hello@grantkit.co`, `ADMIN_NOTIFY_EMAIL=<owner inbox>`.
+   Redeploy.
+5. Done-when (MASTER-PLAN 1.9): register a test account with a Gmail, an
+   Outlook and a Yahoo address → verification email in the **inbox** on all
+   three; `ADMIN_NOTIFY_EMAIL` receives admin mail when triggered.
+
+Notes: `hello@grantkit.co` is the contact address shown on `/privacy`,
+`/terms`, `/refund`; the mailbox itself must exist (or forward) at the mail
+provider — Resend only sends, it does not receive.
 
 ---
 
@@ -238,6 +274,38 @@ pnpm normalize:countries       # apply — transactional, idempotent
 
 The script touches only rows whose current value differs from the
 normalised form. It's safe to run repeatedly.
+
+---
+
+## 🤝 Affiliate accounts (D19, operator) — Phase 1 item 1.13
+
+> Self-serve registrations the **operator** does once D19 is answered "yes"
+> (MASTER-PLAN §8). Code side is already merged: `content/offers/partners.json`
+> (public registry, rendered on `/trust` as names + disclosure only) and its
+> schema `content/offers/partners.schema.json` (`pnpm test` validates it).
+> **No placement on any page until Phase 2.9** (`server/offers/placement.ts`).
+>
+> Rule: a tracking URL is public and goes in the repo; a postback/API secret
+> **never** goes in the repo — env var only.
+
+| Partner | Programme / where to register | Approval | What you get back |
+|---|---|---|---|
+| Wise | "Wise Affiliates" programme (self-serve form on wise.com; runs on the Partnerize network) | manual review, days–weeks | tracking link (`wise.com/…?partnerizecampaignID=…` or `wise.prf.hn/…`) |
+| Remitly | Impact.com publisher account → marketplace → apply to "Remitly" — https://app.impact.com/ | manual review | tracking link (`remitly.sjv.io/…`) |
+| Lebara **or** Lyca (FR) | Awin publisher account → join programme "Lebara France" / "Lycamobile France" — https://www.awin.com/ | Awin account (small refundable deposit) + advertiser approval | tracking link (`awin1.com/cread.php?awinmid=…&awinaffid=…`) |
+| Lingoda | "Lingoda affiliate/partner programme" page on lingoda.com (network varies by region — follow the page) | manual review | tracking link |
+
+Programme URLs above were not verified from this sandbox — search the partner's site for the programme name; the network names come from MASTER-PLAN 1.13 / report 06 §5.2.
+
+**Checklist, per partner:**
+
+1. Register with the GrantKit contact email; describe the site as "integration navigator for migrants in France, 5 languages, disclosure on every offer".
+2. Once approved, copy the **public tracking URL** into `content/offers/partners.json` → that partner's `trackingUrl` (replace `TODO-after-registration`). Open a PR; `pnpm test` must stay green (schema requires `https://…`).
+3. If the programme offers a **postback / server-to-server** conversion secret (Impact "postback key", Awin "API key", Partnerize "conversion API key"): put it on Railway as `AFFILIATE_POSTBACK_SECRET` (one variable; per-partner suffix `AFFILIATE_POSTBACK_SECRET_<SLUG>` only if two programmes need different secrets). Value never in a file, issue, chat log or doc. Consumer: none until Phase 2.9/4 (`POST /api/partners/postback`, report 07 §I).
+4. Paste the programme's **disclosure requirements** (if any) into the PR description; Salomé checks the 5 `disclosure` texts against them (loi influenceurs 2023 / DGCCRF).
+5. Record in `PROJECT_MAP.md` Session Log: partner slug, date approved, no amounts.
+
+**Do not:** add a partner in a `NEVER_MONETIZE` domain (test fails), remove `asylum_seeker`/`undocumented` from `excludedStatuses` without an owner decision (PIVOT §6 rule 4), or paste a tracking URL anywhere except `partners.json`.
 
 ---
 

@@ -153,7 +153,7 @@ export default function Catalog() {
     if (costFilter) params.set("cost", costFilter);
     if (statusFilter) params.set("undoc", statusFilter);
     const qs = params.toString();
-    navigate(qs ? `/catalog?${qs}` : "/catalog", { replace: true });
+    navigate(qs ? `/organizations?${qs}` : "/organizations", { replace: true });
   }, [
     selectedCategory, selectedType, searchQuery, sortBy, page,
     fundingType, targetDiagnosis, b2VisaEligible, hasDeadline,
@@ -659,8 +659,8 @@ export default function Catalog() {
       <SEO
         title={t.seo.catalogTitle}
         description={t.seo.catalogDescription}
-        canonicalPath="/catalog"
-        keywords="grant catalog, search grants, medical grants, startup funding, scholarships, financial aid"
+        canonicalPath="/organizations"
+        keywords="immigrant support organizations, France, asylum, residence permit, social worker, free help, integration"
       />
 
       {/* Skip navigation — keyboard users can jump straight to the grant list/map */}

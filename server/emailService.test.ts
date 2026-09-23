@@ -14,6 +14,8 @@ vi.mock("resend", () => ({
 vi.mock("./_core/env", () => ({
   ENV: {
     resendApiKey: "re_test_key_123",
+    fromEmail: "hello@grantkit.co",
+    adminNotifyEmail: "owner@example.com",
   },
 }));
 
@@ -159,6 +161,8 @@ describe("Email Notification Service", () => {
 
       expect(result.success).toBe(true);
       const callArgs = mockSend.mock.calls[0][0];
+      expect(callArgs.from).toBe("GrantKit <hello@grantkit.co>");
+      expect(callArgs.to).toEqual(["owner@example.com"]);
       expect(callArgs.subject).toContain("New GrantKit Pro subscriber");
       expect(callArgs.html).toContain("New User");
       expect(callArgs.html).toContain("newuser@example.com");
