@@ -12,7 +12,6 @@ import {
   ChevronDown,
   Clock,
   Globe,
-  Lock,
   Mail,
   Search,
   Shield,
@@ -57,7 +56,6 @@ export default function Home() {
   let { user, loading, error, isAuthenticated, logout } = useAuth();
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [pricingPlan, setPricingPlan] = useState<"monthly" | "annual">("monthly");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { t, language } = useLanguage();
@@ -422,101 +420,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Blurred/locked section */}
-          <div className="relative mt-6 max-w-5xl mx-auto">
-            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 blur-sm opacity-50 pointer-events-none select-none">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-card border border-border rounded-lg p-5 h-48" />
-              ))}
-            </div>
-            <div className="md:absolute md:inset-0 flex flex-col items-center justify-center mt-4 md:mt-0">
-              <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl px-6 py-5 md:px-8 md:py-6 text-center shadow-lg w-full md:w-auto">
-                <Lock className="w-7 h-7 md:w-8 md:h-8 text-muted-foreground/60 mx-auto mb-2 md:mb-3" />
-                <p className="font-semibold text-foreground mb-1">{t.preview.lockedTitle.replace("{count}", grantCount)}</p>
-                <p className="text-sm text-muted-foreground mb-3 md:mb-4">{t.preview.lockedSubtitle}</p>
-                <PricingCTA text={t.preview.unlockCta} className="w-full md:w-auto justify-center" />
-              </div>
-            </div>
+          <div className="mt-6 text-center">
+            <PricingCTA className="w-full md:w-auto justify-center" />
           </div>
-        </div>
-      </section>
-
-      {/* ===== PRICING SECTION ===== */}
-      <section id="pricing" className="py-12 md:py-20 bg-secondary">
-        <div className="container">
-          <motion.div {...fadeInUp} className="text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-foreground tracking-tight mb-3 md:mb-4">
-              {t.pricing.title}
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
-              {t.pricing.subtitle}
-            </p>
-          </motion.div>
-
-          {/* Plan toggle — animated pill selector */}
-          <div className="flex items-center justify-center mb-8 md:mb-10">
-            <div className="bg-card border border-border rounded-full p-1 flex items-center">
-              <button
-                onClick={() => setPricingPlan("monthly")}
-                className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  pricingPlan === "monthly"
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {t.pricing.monthly}
-              </button>
-              <button
-                onClick={() => setPricingPlan("annual")}
-                className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                  pricingPlan === "annual"
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {t.pricing.annual}
-                <span className="text-xs bg-brand-green text-white px-2 py-0.5 rounded-full font-semibold">
-                  {t.pricing.annualSave}
-                </span>
-              </button>
-            </div>
-          </div>
-
-          {/* Pricing card */}
-          <motion.div {...fadeInUp} className="max-w-md mx-auto">
-            <div className="relative bg-card rounded-2xl p-6 md:p-8 shadow-lg ring-2 ring-brand-green/40 shadow-brand-green/10">
-              <div className="text-center mb-5 md:mb-6">
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-4xl md:text-5xl font-bold text-foreground">
-                    {pricingPlan === "monthly" ? t.pricing.monthlyPrice : t.pricing.annualPrice}
-                  </span>
-                  <span className="text-muted-foreground text-base md:text-lg">
-                    {pricingPlan === "monthly" ? t.pricing.perMonth : t.pricing.perYear}
-                  </span>
-                </div>
-                {pricingPlan === "annual" && (
-                  <p className="text-sm text-brand-green font-medium mt-2">
-                    {t.pricing.annualMonthlyPrice}{t.pricing.perMonth}
-                  </p>
-                )}
-              </div>
-
-              <ul className="space-y-3 mb-6 md:mb-8">
-                {t.pricing.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-foreground/80">
-                    <Check className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <PricingCTA
-                text={t.pricing.cta}
-                size="large"
-                className="w-full justify-center"
-              />
-            </div>
-          </motion.div>
         </div>
       </section>
 
