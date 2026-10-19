@@ -94,7 +94,7 @@ describe("content/offers/partners.json", () => {
     const readers = ["client/src", "server"]
       .flatMap((d) => filesUnder(path.join(ROOT, d)))
       .filter((f) => /\.(ts|tsx|js|mjs)$/.test(f) && fs.readFileSync(f, "utf-8").includes("partners.json"))
-      .map((f) => path.relative(ROOT, f));
+      .map((f) => path.relative(ROOT, f).split(path.sep).join("/"));
     expect(readers).toEqual(["client/src/pages/Trust.tsx"]);
   });
 });
