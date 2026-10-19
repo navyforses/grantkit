@@ -1,15 +1,8 @@
-/*
- * PricingCTA Component
- * Design: Structured Clarity — vivid green CTA button with Paddle checkout overlay
- * Now auth-aware: redirects to login if not authenticated, opens Paddle if authenticated
- */
+// B2C checkout is paused; legacy callers lead to the free directory.
 
 import { ArrowRight } from "lucide-react";
-import { openPaddleCheckout } from "@/hooks/usePaddle";
+import { Link } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
-import { trpc } from "@/lib/trpc";
 
 interface PricingCTAProps {
   text?: string;
@@ -19,14 +12,11 @@ interface PricingCTAProps {
 }
 
 export default function PricingCTA({
-  text = "Get Access — $9/month",
   variant = "primary",
   size = "default",
   className = "",
 }: PricingCTAProps) {
-  const { language } = useLanguage();
-  const { user, isAuthenticated } = useAuth();
-  const utils = trpc.useUtils();
+  const { t } = useLanguage();
 
   const baseStyles = "inline-flex items-center gap-2 font-semibold rounded-full transition-all duration-200 group cursor-pointer hover:scale-[1.02] active:scale-[0.99]";
   const sizeStyles = size === "large"
@@ -36,43 +26,12 @@ export default function PricingCTA({
     ? "bg-brand-green text-white hover:bg-brand-green-hover shadow-sm hover:shadow-md"
     : "border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white";
 
-  const handleClick = () => {
-    if (!isAuthenticated) {
-      // Redirect to login first, then come back
-      window.location.href = getLoginUrl();
-      return;
-    }
-
-    if (!user?.id) {
-      console.warn("PricingCTA: cannot open checkout without user.id");
-      return;
-    }
-
-    openPaddleCheckout(
-      user.id,
-      language,
-      user.email ?? undefined,
-      () => {
-        // The Paddle webhook is the source of truth for activation. Invalidate
-        // local caches and give the webhook ~2s to land before redirecting,
-        // so /organizations reflects the new "active" status on first paint.
-        utils.auth.me.invalidate();
-        utils.subscription.status.invalidate();
-        setTimeout(() => {
-          window.location.href = "/organizations";
-        }, 2000);
-      }
-    );
-  };
-
   return (
-    <button
-      type="button"
-      onClick={handleClick}
+    <Link href="/organizations?mc=FR"
       className={`${baseStyles} ${sizeStyles} ${variantStyles} ${className}`}
     >
-      {text}
+      {t.hero.cta}
       <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-    </button>
+    </Link>
   );
 }

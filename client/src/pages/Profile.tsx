@@ -230,7 +230,7 @@ export default function Profile() {
                   <p className="text-xs md:text-sm text-muted-foreground">{t.profile.adminAccess}</p>
                 ) : (
                   <>
-                    <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">{t.profile.subscribeDesc}</p>
+                    <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">{t.hero.free}</p>
                     <PricingCTA text={t.profile.subscribeCta} size="default" />
                   </>
                 )}

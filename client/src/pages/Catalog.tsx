@@ -53,7 +53,7 @@ const GrantDetailPanel = lazy(() => import("@/components/map/GrantDetailPanel"))
 import { useGoogleMapFlyTo } from "@/hooks/useGoogleMapFlyTo";
 
 const PAGE_SIZE = 30;
-const PREVIEW_ITEMS = 3;
+
 const SEARCH_DEBOUNCE_MS = 300;
 
 function readFiltersFromURL(search: string) {
@@ -175,10 +175,6 @@ export default function Catalog() {
 
   const debouncedSearch = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
 
-  const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {
-    enabled: isAuthenticated,
-    retry: false,
-  });
 
   // Catalog now sources from the organizations tables — the toolbar
   // (region / country / state / city / category / smart search / sort)
@@ -201,12 +197,12 @@ export default function Catalog() {
       city:     mapCityName || undefined,
       ...accessFilters,
       sortBy:   orgSortBy,
-      page:     subStatus?.isActive ? page : 1,
-      pageSize: subStatus?.isActive ? PAGE_SIZE : PREVIEW_ITEMS,
+      page,
+      pageSize: PAGE_SIZE,
     }),
     [
       debouncedSearch, selectedCategory, orgSortBy,
-      page, subStatus?.isActive,
+      page,
       mapRegionCode, mapCountryCode, mapStateCode, mapCityName, accessFilters,
     ]
   );

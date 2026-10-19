@@ -187,31 +187,13 @@ export default function Dashboard() {
                 <p className="text-[10px] font-medium text-foreground/80">{t.dashboard.active}</p>
               </>
             ) : (
-              <Link href="/#pricing">
+              <Link href="/organizations">
                 <Sparkles className="w-5 h-5 text-emerald-500 mb-0.5" />
-                <p className="text-[10px] font-medium text-emerald-600">{t.dashboard.upgrade}</p>
+                <p className="text-[10px] font-medium text-emerald-600">{t.nav.organizations}</p>
               </Link>
             )}
           </div>
         </div>
-
-        {/* Mobile: subscription CTA (if not active) */}
-        {!isActive && (
-          <div className="md:hidden bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4">
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-8 h-8 text-emerald-500 shrink-0" />
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground">{t.dashboard.unlockTitle}</p>
-                <p className="text-xs text-muted-foreground">{t.dashboard.unlockDesc.replace("{count}", availableCount)}</p>
-              </div>
-              <Link href="/#pricing">
-                <Button size="sm" className="bg-emerald-600 active:bg-emerald-700 text-white h-9 text-xs rounded-lg">
-                  {t.dashboard.priceMonth}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        )}
 
         <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
           {/* Main content area */}
@@ -318,12 +300,12 @@ export default function Dashboard() {
               ) : (
                 <div>
                   <p className="text-sm text-muted-foreground mb-4">
-                    {t.dashboard.subscribePrompt.replace("{count}", availableCount)}
+                    {t.hero.free}
                   </p>
-                  <Link href="/#pricing">
+                  <Link href="/organizations">
                     <Button size="sm" className="w-full bg-brand-green hover:bg-brand-green-hover gap-1.5">
                       <Sparkles className="w-4 h-4" />
-                      {t.dashboard.subscribeCta}
+                      {t.hero.cta}
                     </Button>
                   </Link>
                 </div>

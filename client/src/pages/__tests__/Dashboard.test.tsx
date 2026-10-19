@@ -52,6 +52,14 @@ function wrap() {
 const FR_ORG = { orgId: "ORG-FR-001", name: "France terre d'asile", city: "Paris", description: "Hébergement et accompagnement." };
 
 describe("Dashboard — organizations for the user's needs", () => {
+  it("offers free browsing rather than a paid upgrade to an inactive user", () => {
+    state.profile = null;
+    state.count = { total: 10 };
+    state.orgs = [];
+    const { container } = wrap();
+    expect(container.querySelector('a[href="/#pricing"]')).toBeNull();
+    expect(screen.getByText(en.hero.free)).toBeTruthy();
+  });
   it("queries organizations.list per top domain (legacy Need values mapped) and shows ≥1 org", () => {
     state.profile = { targetCountry: "FR", needs: ["HOUSING", "legal_status"], profileCompletedAt: "2026-09-19T00:00:00Z" };
     state.count = { total: 1234 };
@@ -64,7 +72,7 @@ describe("Dashboard — organizations for the user's needs", () => {
     ]));
     expect(screen.getAllByText(FR_ORG.name).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByTestId("domain-section-housing")).toBeTruthy();
-    expect(screen.getAllByText("1,234").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText((1234).toLocaleString()).length).toBeGreaterThanOrEqual(1);
   });
 
   it("works with no needs: one country-wide section, no domain filter", () => {
